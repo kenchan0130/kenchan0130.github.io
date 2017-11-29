@@ -1,0 +1,19 @@
+general:
+  branches:
+    only:
+      - /development/
+
+machine:
+  timezone: Asia/Tokyo
+
+test:
+  override:
+    - bundle exec jekyll build
+
+deployment:
+  development:
+    branch: /development/
+    commands:
+      - git config --global user.name "kenchan0130"
+      - git config --global user.email "<>"
+      - bundle exec rake deploy --trace
