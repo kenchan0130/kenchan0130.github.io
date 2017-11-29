@@ -1,4 +1,4 @@
-# kenchan0130.github.io
+# kenchan0130.github.io [![CircleCI](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development.svg?style=svg)](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development)
 
 ## Powered by
 
