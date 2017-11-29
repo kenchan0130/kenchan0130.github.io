@@ -8,6 +8,8 @@ plugins:
 exclude:
   - "/vendor/"
   - Rakefile
+  - Gemfile
+  - Gemfile.lock
 
 # Site settings
 title: "kenchan0130 blog"
