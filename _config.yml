@@ -1,6 +1,6 @@
 # External gems
 # See http://ixti.net/software/2013/01/28/using-jekyll-plugins-on-github-pages.html for making `jekyll archives` work.
-gems:
+plugins:
   - jekyll-archives # Sorry, not GitHub pages friendly!
   - jekyll-sitemap
   - jekyll-paginate
@@ -12,13 +12,19 @@ exclude:
 title: "kenchan0130 blog"
 subtitle: "Web Developer's blog"
 email:
-name: kenchan0130
+name: Tadayuki Onishi
 description: >
   Web エンジニア。記録に残したいことを雑に備忘するブログ。
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "https://kenchan0130.github.io" # the base hostname & protocol for your site
 cover: "/assets/header_image.png"
 logo: "/assets/logo.png"
+
+main_nav:
+  - url: '/archives/'
+    title: 'Archives'
+  # - url: '/profile/'
+  #   title: 'Profile'
 
 # Build settings
 markdown: kramdown
@@ -27,7 +33,7 @@ paginate_path: "/page:num/"
 inter_post_navigation: false
 highlightjs_theme: "darcula"
 
-  # Archive settings (see https://github.com/jekyll/jekyll-archives/)
+# Archive settings (see https://github.com/jekyll/jekyll-archives/)
 jekyll-archives:
   enabled:
     - categories
@@ -36,6 +42,7 @@ jekyll-archives:
   permalinks:
     category: '/category/:name/'
     tag: '/tag/:name/'
+
 # Disqus comments
 # disqus_shortname: bencentra
 
@@ -46,6 +53,9 @@ ga_tracking_id: "UA-79827366-2"
 descriptions:
   - cat: system-administration
     desc: ""
+
+feed :
+  path : feed.xml
 
 # Social icons and sharing options
 #
@@ -175,11 +185,6 @@ social:
     desc: Share to Hacker News
     share: false
 
-  - name: LINE
-    img: "/assets/thirdparty/linebutton.png"
-    desc: "LINEで送る"
-    share: true
-
 # Social sharing protocols
 # These are for automatically generating sharing metadata for FB and Twitter
 # OS Protocol is for sharing the source of your site, if you're interested. For more, see osprotocol.com
@@ -194,3 +199,6 @@ protocols:
   os_repo: "https://github.com/kenchan0130/kenchan0130.github.io"
   os_rcs_type: "git"
   os_src: "git@github.com:kenchan0130/kenchan0130.github.io.git"
+
+kramdown:
+  toc_levels: 1..2
