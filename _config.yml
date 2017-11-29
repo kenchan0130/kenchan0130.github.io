@@ -7,10 +7,11 @@ plugins:
 
 exclude:
   - "/vendor/"
+  - Rakefile
 
 # Site settings
 title: "kenchan0130 blog"
-subtitle: "Web Developer's blog"
+subtitle: "A web Developer's blog"
 email:
 name: Tadayuki Onishi
 description: >
@@ -53,9 +54,6 @@ ga_tracking_id: "UA-79827366-2"
 descriptions:
   - cat: system-administration
     desc: ""
-
-feed :
-  path : feed.xml
 
 # Social icons and sharing options
 #

@@ -1,0 +1,46 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: ~/kenchan0130.github.io
+    docker:
+      - image: ruby:2.4
+        environment:
+          - TZ: "/usr/share/zoneinfo/Asia/Tokyo"
+          - LANG: ja_JP.UTF-8
+          - LC_ALL: C.UTF-8
+          - LANGUAGE: ja_JP.UTF-8
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Ruby dependencies
+          command: bundle install -j 4 --path vendor/bundle
+
+      - save_cache:
+          paths:
+            - vendor/bundle
+          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
+
+
+      - run:
+          name: Build Jekyll
+          command: bundle exec jekyll build --verbose
+
+      - run:
+          name: Test for generated HTML
+          command: bundle exec htmlproofer ./_site --check-html --disable-external
+
+      - deploy:
+          name: Deploy development branch to master
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "development" ]; then
+              git config --global user.name "kenchan0130"
+              git config --global user.email "<>"
+              bundle exec rake deploy --trace
+            fi
