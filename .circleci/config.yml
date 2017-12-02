@@ -35,7 +35,7 @@ jobs:
 
       - run:
           name: Build Jekyll
-          command: bundle exec jekyll build --verbose
+          command: bundle exec jekyll build --verbose --config "_config.yml,_config_production.yml"
 
       - run:
           name: Test for generated HTML
