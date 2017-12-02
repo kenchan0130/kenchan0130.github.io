@@ -6,27 +6,32 @@ jobs:
     docker:
       - image: circleci/ruby:2.4-node
         environment:
-          - TZ: "/usr/share/zoneinfo/Asia/Tokyo"
-          - LANG: ja_JP.UTF-8
-          - LC_ALL: C.UTF-8
-          - LANGUAGE: ja_JP.UTF-8
+          BUNDLE_JOBS: 4
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          TZ: "/usr/share/zoneinfo/Asia/Tokyo"
+          LANG: ja_JP.UTF-8
+          LC_ALL: C.UTF-8
+          LANGUAGE: ja_JP.UTF-8
 
     steps:
       - checkout
 
-      # - restore_cache:
-      #    keys:
-      #      - v2-dependencies-{{ checksum "Gemfile.lock" }}
+      - restore_cache:
+          keys:
+            - v0-dependencies-{{ checksum "Gemfile.lock" }}
+            - v0-dependencies-
+          paths:
+            - vendor/bundle
 
       - run:
           name: Ruby dependencies
-          command: bundle install -j 4 --path vendor/bundle
+          command: bundle install
 
       - save_cache:
           paths:
             - vendor/bundle
-          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
-
+          key: v0-dependencies-{{ checksum "Gemfile.lock" }}
 
       - run:
           name: Build Jekyll
