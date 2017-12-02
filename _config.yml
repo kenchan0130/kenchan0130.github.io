@@ -24,12 +24,10 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 url: "https://kenchan0130.github.io" # the base hostname & protocol for your site
 cover: "/assets/header_image.jpg"
 logo: "/assets/logo.png"
-
-main_nav:
-  - url: '/archives/'
-    title: 'Archives'
-  # - url: '/profile/'
-  #   title: 'Profile'
+profile_images:
+  - "/assets/profile1.png"
+  - "/assets/profile2.png"
+  - "/assets/profile3.png"
 
 # External library versions
 external_lib:
