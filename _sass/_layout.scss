@@ -74,7 +74,6 @@ pre code.hljs {
 	text-align: center;
 	&.has-cover {
 		color: $white;
-		text-shadow: 0 2px 1px rgba(0,0,0,0.67) !important;
 		background-position: 50% 50%;
 		background-size: cover;
 		.title {
@@ -201,9 +200,21 @@ pre code.hljs {
 	/*
 	*	index.html
 	*/
+  .post-link {
+    color: $gray;
+    &:hover {
+      .post-title {
+        color: lighten($action-color, 20%);
+        transition: color .5s;
+      }
+    }
+  }
 	.post-list {
 		padding-top: 1em !important;
 		@extend %default-ul;
+    p {
+      color: darken($gray, 15%);
+    }
 	}
 	.post-meta {
 		@include outer-container;
@@ -268,6 +279,43 @@ pre code.hljs {
 		}
 		.post-content {
 			padding: 1em 0;
+			p {
+				line-height: 2;
+				margin-bottom: 20px;
+			}
+			blockquote {
+				margin-left: 12px;
+				padding-left: 16px;
+				border-left: 6px solid $light-gray;
+				font-style: italic;
+				font-size: 90%;
+			}
+			code {
+				padding: 0 0.5rem;
+				line-height: 1.3;
+				font-size: 92%;
+			}
+			.highlight code {
+				padding: 0.8rem 1.0rem;
+			}
+			h3 {
+				margin-top: 72px;
+				border-bottom: 1px solid $light-gray;
+			}
+			h4 {
+				margin-top: 40px;
+			}
+			h3 + h4 {
+				margin-top: 0;
+			}
+			.footnotes {
+				font-size: 80%;
+				margin-top: 44px;
+				margin-bottom: 28px;
+				p {
+					margin-bottom: 8px;
+				}
+			}
 		}
 		.tags {
 			font-size: 0.9em;

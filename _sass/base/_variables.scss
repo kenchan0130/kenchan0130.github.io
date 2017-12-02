@@ -36,11 +36,20 @@ $red:	#c0392b;				// Pomegranate
 $gray: #7f8c8d;				// Asbestos
 // Even more colors
 $bc-red: #bc0000;
+// Custom colors
+$blue-gray-100: #cfd8dc;
+$blue-gray-200: #b0bec5;
+$blue-gray-300: #90a4ae;
+$blue-gray-400: #78909c;
+$blue-gray-500: #607d8b;
+$blue-gray-600: #546e7a;
+$blue-gray-700: #455a64;
+$blue-gray-800: #37474f;
 
 // Font Colors
 $base-background-color: #fff;
-$base-font-color: $dark-gray;
-$action-color: $blue;
+$base-font-color: $blue-gray-700;
+$action-color: $red;
 $highlight-color: tint($action-color, 33%);
 
 // Border
