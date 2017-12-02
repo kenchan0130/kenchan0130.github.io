@@ -8,7 +8,7 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
 
   # The commit message will contain hash of the source commit.
   t.commit_message = -> {
-    "[CI skip]Built from #{`git rev-parse --short HEAD`.strip}"
+    "[CI skip] Built from #{`git rev-parse --short HEAD`.strip}"
   }
 
   # Use URL of the 'origin' remote to fetch/push the built site into. If env.
