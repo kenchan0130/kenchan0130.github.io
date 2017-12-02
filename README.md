@@ -6,3 +6,22 @@ This is kenchan0130's web developer blog.
 
 - [jekyll](https://jekyllrb.com/) - Static web site generator
 - [centrarium](https://github.com/bencentra/centrarium) - A simple yet classy theme for your Jekyll website or blog.
+
+## How to develop and write
+
+```sh
+bundle install --path=vendor/bundle
+bundle exec jekyll s --watch --future
+```
+
+## Test
+
+```sh
+bundle exec htmlproofer ./_site --check-html --disable-external
+```
+
+## Deployment
+
+I use [rake-jekyll](https://github.com/jirutka/rake-jekyll) with CircleCI.
+
+Please check `Rakefile` and `.circleci/config.yml` for more detail.
