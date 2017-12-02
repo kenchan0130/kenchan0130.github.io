@@ -22,7 +22,7 @@ description: >
   投稿内容は個人の見解であり所属する組織の公式見解ではありません。
 baseurl: "" # the subpath of your site, e.g. /blog/
 url: "https://kenchan0130.github.io" # the base hostname & protocol for your site
-cover: "/assets/header_image.png"
+cover: "/assets/header_image.jpg"
 logo: "/assets/logo.png"
 
 main_nav:
