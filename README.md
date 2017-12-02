@@ -1,5 +1,7 @@
 # kenchan0130.github.io [![CircleCI](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development.svg?style=svg)](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development)
 
+This is kenchan0130's web developer blog.
+
 ## Powered by
 
 - [jekyll](https://jekyllrb.com/) - Static web site generator
