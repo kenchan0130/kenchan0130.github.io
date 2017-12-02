@@ -2,8 +2,9 @@
 # See http://ixti.net/software/2013/01/28/using-jekyll-plugins-on-github-pages.html for making `jekyll archives` work.
 plugins:
   - jekyll-archives # Sorry, not GitHub pages friendly!
-  - jekyll-sitemap
+  - jekyll-minifier
   - jekyll-paginate
+  - jekyll-sitemap
 
 exclude:
   - "/vendor/"
@@ -203,3 +204,6 @@ protocols:
 
 kramdown:
   toc_levels: 1..2
+
+jekyll-minifier:
+  exclude: 'feed.xml'

@@ -11,8 +11,10 @@ GEM
     colorator (1.1.0)
     colorize (0.8.1)
     concurrent-ruby (1.0.5)
+    cssminify2 (2.0.1)
     ethon (0.11.0)
       ffi (>= 1.3.0)
+    execjs (2.7.0)
     ffi (1.9.18)
     forwardable-extended (2.6.0)
     html-proofer (3.7.5)
@@ -24,6 +26,7 @@ GEM
       parallel (~> 1.3)
       typhoeus (~> 0.7)
       yell (~> 2.0)
+    htmlcompressor (0.3.1)
     i18n (0.9.1)
       concurrent-ruby (~> 1.0)
     jekyll (3.6.2)
@@ -39,6 +42,11 @@ GEM
       safe_yaml (~> 1.0)
     jekyll-archives (2.1.1)
       jekyll (>= 2.4)
+    jekyll-minifier (0.1.5)
+      cssminify2 (~> 2.0)
+      htmlcompressor (~> 0.3)
+      jekyll (~> 3.5)
+      uglifier (~> 3.2)
     jekyll-paginate (1.1.0)
     jekyll-sass-converter (1.5.0)
       sass (~> 3.4)
@@ -78,6 +86,8 @@ GEM
       ethon (>= 0.8.0)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
+    uglifier (3.2.0)
+      execjs (>= 0.3.0, < 3)
     yell (2.0.7)
 
 PLATFORMS
@@ -87,6 +97,7 @@ DEPENDENCIES
   html-proofer
   jekyll
   jekyll-archives
+  jekyll-minifier
   jekyll-paginate
   jekyll-sitemap
   rake-jekyll
