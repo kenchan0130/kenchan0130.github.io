@@ -47,9 +47,9 @@
 </footer>
 
 <!-- Scripts -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.5/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/{{ site.external_lib.highlight_js.version }}/highlight.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -68,7 +68,6 @@ $(document).ready(function() {
     });
   });
 });
-
 </script>
 
 {% if page.custom_js %}

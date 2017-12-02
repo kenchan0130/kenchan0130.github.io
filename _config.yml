@@ -31,6 +31,19 @@ main_nav:
   # - url: '/profile/'
   #   title: 'Profile'
 
+# External library versions
+external_lib:
+  highlight_js:
+    version: "9.12.0"
+  lightbox2:
+    version: "2.10.0"
+  font-awesome:
+    version: "4.7.0"
+  jquery:
+    version: "3.2.1"
+  jquery:
+    version: "3.2.1"
+
 # Build settings
 markdown: kramdown
 paginate: 5
