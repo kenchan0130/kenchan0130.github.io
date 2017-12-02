@@ -206,4 +206,4 @@ kramdown:
   toc_levels: 1..2
 
 jekyll-minifier:
-  exclude: 'feed.xml'
+  exclude: '*.xml'
