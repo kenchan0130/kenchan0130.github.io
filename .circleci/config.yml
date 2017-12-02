@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/kenchan0130.github.io
     docker:
-      - image: circleci/ruby:2.4
+      - image: circleci/ruby:2.4-node
         environment:
           - TZ: "/usr/share/zoneinfo/Asia/Tokyo"
           - LANG: ja_JP.UTF-8
@@ -14,9 +14,9 @@ jobs:
     steps:
       - checkout
 
-      - restore_cache:
-          keys:
-            - v2-dependencies-{{ checksum "Gemfile.lock" }}
+      # - restore_cache:
+      #    keys:
+      #      - v2-dependencies-{{ checksum "Gemfile.lock" }}
 
       - run:
           name: Ruby dependencies
