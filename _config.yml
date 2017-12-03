@@ -64,9 +64,6 @@ jekyll-archives:
 # Disqus comments
 # disqus_shortname: bencentra
 
-# Google analytics
-ga_tracking_id: "UA-79827366-2"
-
 # Category descriptions (for archive pages)
 descriptions:
   - cat: system-administration
