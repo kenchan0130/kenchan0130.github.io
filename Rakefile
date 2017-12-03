@@ -1,5 +1,10 @@
 require 'rake-jekyll'
 
+jekyll_configs_for_deply = [
+  '_config.yml',
+  '_config_production.yml'
+]
+
 Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   # Deploy the built site into remote branch named 'gh-pages', or 'master' if
   # the remote repository URL matches `#{gh_user}.github.io.git`.
@@ -9,6 +14,11 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   # The commit message will contain hash of the source commit.
   t.commit_message = -> {
     "[CI skip] Built from #{`git rev-parse --short HEAD`.strip}"
+  }
+
+  t.build_script = ->(dest_dir) {
+    puts "\nRunning Jekyll..."
+    Rake.sh "bundle exec jekyll build --verbose --config '#{jekyll_configs_for_deply.join(',')}' --destination #{dest_dir}"
   }
 
   # Use URL of the 'origin' remote to fetch/push the built site into. If env.
