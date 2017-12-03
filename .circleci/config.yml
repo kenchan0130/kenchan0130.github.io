@@ -9,6 +9,7 @@ jobs:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
+          JEKYLL_ENV: production
           TZ: "/usr/share/zoneinfo/Asia/Tokyo"
           LANG: ja_JP.UTF-8
           LC_ALL: C.UTF-8
@@ -17,21 +18,45 @@ jobs:
     steps:
       - checkout
 
+      # Ruby dependencies
       - restore_cache:
           keys:
-            - v0-dependencies-{{ checksum "Gemfile.lock" }}
-            - v0-dependencies-
+            - v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-ruby-dependencies-
           paths:
             - vendor/bundle
 
       - run:
-          name: Ruby dependencies
+          name: Install ruby dependencies
           command: bundle install
 
       - save_cache:
           paths:
             - vendor/bundle
-          key: v0-dependencies-{{ checksum "Gemfile.lock" }}
+          key: v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
+      # Ruby dependencies end
+
+      # Node dependencies
+      - restore_cache:
+          keys:
+            - v1-node-dependencies-{{ checksum "yarn.lock" }}
+            - v1-node-dependencies-
+          paths:
+            - node_modules
+
+      - run:
+          name: Install node dependencies
+          command: yarn install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-node-dependencies-{{ checksum "yarn.lock" }}
+      # Node dependencies end
+
+      - run:
+          name: Optimize images
+          command: yarn run imagemin
 
       - run:
           name: Build Jekyll

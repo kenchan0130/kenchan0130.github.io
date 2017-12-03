@@ -7,9 +7,13 @@ plugins:
 
 exclude:
   - "/vendor/"
+  - "/node_modules/"
   - Rakefile
   - Gemfile
   - Gemfile.lock
+  - package.json
+  - yarn.lock
+  - gulpfile.js
 
 # Site settings
 title: "kenchan0130 blog"
