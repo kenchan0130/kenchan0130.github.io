@@ -28,9 +28,9 @@ url: "https://kenchan0130.github.io" # the base hostname & protocol for your sit
 cover: "/assets/header_image.jpg"
 logo: "/assets/logo.png"
 profile_images:
-  - "/assets/profile1.png"
-  - "/assets/profile2.png"
-  - "/assets/profile3.png"
+  - "/assets/profile_critical_pass.png"
+  - "/assets/profile_hi.png"
+  - "/assets/profile_standard.png"
 
 # External library versions
 external_lib:
