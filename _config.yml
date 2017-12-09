@@ -42,8 +42,6 @@ external_lib:
     version: "4.7.0"
   jquery:
     version: "3.2.1"
-  jquery:
-    version: "3.2.1"
 
 # Build settings
 markdown: kramdown
