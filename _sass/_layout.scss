@@ -78,18 +78,20 @@ pre code.hljs {
 		background-size: cover;
 		.title {
 			font-size: modular-scale(6);
+			text-shadow: 0 2px 5px rgba(0, 0, 0, .2);
 		}
 		.subtitle, .info {
 			font-size: modular-scale(1);
+			text-shadow: 0 2px 5px rgba(0, 0, 0, .2);
 		}
 	}
 	.scrim {
 		padding: 3em 1em;
 		&.has-cover {
-			background-color: rgba(0,0,0,0.2);
-			padding: 6em 1em !important;
+			background-color: rgba(0, 0, 0, .2);
+			padding: 8em 1em 6em 1em !important;
 			@include media($tablet) {
-				padding: 9em 1em !important;
+				padding: 13em 1em 9em 1em !important;
 			}
 		}
 	}
@@ -268,6 +270,9 @@ pre code.hljs {
 	.post {
 		ul {
 			margin-bottom: 1em;
+			ul {
+				margin-bottom: 1px;
+			}
 		}
 		.post-header-container {
 			.scrim {
@@ -299,7 +304,7 @@ pre code.hljs {
 				padding: 0.8rem 1.0rem;
 			}
 			h3 {
-				margin-top: 72px;
+				margin-top: 20px;
 				border-bottom: 1px solid $light-gray;
 			}
 			h4 {
@@ -319,8 +324,6 @@ pre code.hljs {
 		}
 		.tags {
 			font-size: 0.9em;
-		}
-		.rss {
 			margin: 1em 0 0 0;
 			@include span-columns(12);
 			@include media ($tablet) {
