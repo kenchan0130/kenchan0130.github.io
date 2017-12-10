@@ -1,4 +1,5 @@
 require 'rake-jekyll'
+require 'yamllint/rake_task'
 
 jekyll_configs_for_deply = [
   '_config.yml',
@@ -24,4 +25,14 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   # Use URL of the 'origin' remote to fetch/push the built site into. If env.
   # variable GH_TOKEN is set, then it adds it as a userinfo to the URL.
   t.remote_url = 'git@github.com:kenchan0130/kenchan0130.github.io.git'
+end
+
+YamlLint::RakeTask.new do |t|
+  t.paths = %w[
+    **/*.yaml
+    **/*.yml
+  ]
+  t.exclude_paths = %w[
+    vendor/bundle/**/*
+  ]
 end

@@ -55,6 +55,14 @@ jobs:
       # Node dependencies end
 
       - run:
+          name: YAML Style Check
+          command: bundle exec rake yamllint
+
+      - run:
+          name: RuboCop Style Check
+          command: bundle exec rubocop
+
+      - run:
           name: Optimize images
           command: yarn run imagemin
 

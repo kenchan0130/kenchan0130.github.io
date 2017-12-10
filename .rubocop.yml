@@ -1,0 +1,147 @@
+# 自動生成されるものはチェック対象から除外する
+AllCops:
+  Exclude:
+    - "vendor/**/*"
+    - "db/schema.rb"
+    - "db/migrate/*.rb"
+    - "bin/**/*"
+  DisplayCopNames: true
+
+##################### Style ##################################
+
+# redirect_to xxx and return のイディオムを維持したい
+Style/AndOr:
+  EnforcedStyle: conditionals
+
+# 日本語のコメントを許可する
+Style/AsciiComments:
+  Enabled: false
+
+# option 等、明示的にハッシュにした方が分かりやすい場合もある
+Style/BracesAroundHashParameters:
+  Enabled: false
+
+# rspec では `{ }` の複数行表記を許可する
+# `expect {}` はどうしても長くなってしまうため
+Style/BlockDelimiters:
+  Enabled: true
+  Exclude:
+    - "spec/**/*_spec.rb"
+
+# rspec では `===` に依存してる matcher も多いため
+Style/CaseEquality:
+  Exclude:
+    - "spec/support/**/*"
+
+# ドキュメントの無い public class を許可する
+Style/Documentation:
+  Enabled: false
+
+# nil かもしれない値に対して `!!` というテクニックはよく使う
+Style/DoubleNegation:
+  Enabled: false
+
+# いずれかに揃えるのならば `sprintf` や `format` より String#% が好み
+Style/FormatString:
+  EnforcedStyle: percent
+
+# まだ対応するにははやい
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# if 文の中に 3 行程度のブロックを書くぐらいは許容した方が現実的
+Style/GuardClause:
+  MinBodyLength: 5
+
+# rake タスクの順序の hash は rocket を許可する
+Style/HashSyntax:
+  Exclude:
+    - "**/*.rake"
+
+# scope 等は複数行でも lambda ではなく ->{} で揃えた方が見た目が綺麗
+Style/Lambda:
+  Enabled: false
+
+# 86400 やポート番号等、5 桁までは割と頻出するので許可する
+Style/NumericLiterals:
+  MinDigits: 6
+
+# has_ から始まるメソッドは許可する
+Naming/PredicateName:
+  NamePrefixBlacklist:
+    - "is_"
+    - "have_"
+  NamePrefix:
+    - "is_"
+    - "have_"
+
+# 特に model 内において、ローカル変数とメソッド呼び出しの区別をつけた方が分かりやすい場合が多い
+Style/RedundantSelf:
+  Enabled: false
+
+# 受け取り側で multiple assignment しろというのを明示
+Style/RedundantReturn:
+  AllowMultipleReturnValues: true
+
+# auto-correct 時に Style/StringLiterals とカニバって無限ループになる (v0.28.0)
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+# * migrate
+# * jbuilder
+# * model の association
+# * controller の callback
+# 辺りの桁揃えで引っかかるので全体的にチェックしない
+Layout/SpaceBeforeFirstArg:
+  Enabled: false
+
+# 複数行の場合はケツカンマを入れる
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: no_comma
+
+##################### Lint ##################################
+
+# * 同名のメソッドがある場合にローカル変数に `_` を付ける
+# * 一時変数として `_` を付ける
+# というテクニックは頻出する
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+
+# 子クラスで実装させるつもりのメソッドで引っかかるので
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+##################### Metrics ##################################
+
+# 30 まではギリギリ許せる範囲だった
+Metrics/AbcSize:
+  Max: 30
+
+# 100 は普通に超える
+Metrics/ClassLength:
+  Max: 200
+
+# 6 は強すぎるので緩める
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/BlockLength:
+  Max: 100
+  Exclude:
+    - "spec/**/*.rb"
+
+# * 警告 120文字
+# * 禁止 170文字
+Metrics/LineLength:
+  Max: 170
+  Exclude:
+    - "db/migrate/*.rb"
+
+Metrics/MethodLength:
+  Max: 25
+  Exclude:
+    - "db/migrate/*.rb"
+
+# 分岐の数。ガード句を多用しているとデフォルト 7 だと厳しい
+Metrics/PerceivedComplexity:
+  Max: 8
