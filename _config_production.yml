@@ -6,5 +6,8 @@ plugins:
 # Google analytics
 ga_tracking_id: "UA-79827366-2"
 
+# Facebook App ID
+facebook_app_id: 376889769419405
+
 jekyll-minifier:
   exclude: '*.xml'
