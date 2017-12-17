@@ -77,12 +77,15 @@ pre code.hljs {
 		background-position: 50% 50%;
 		background-size: cover;
 		.title {
-			font-size: modular-scale(6);
-			text-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+			font-size: modular-scale(4);
+			text-shadow: 0 0 7px rgba(0, 0, 0, .35);
+			@include media ($mobile) {
+				font-size: modular-scale(6);
+			}
 		}
 		.subtitle, .info {
 			font-size: modular-scale(1);
-			text-shadow: 0 2px 5px rgba(0, 0, 0, .2);
+			text-shadow: 0 0 7px rgba(0, 0, 0, .35);
 		}
 	}
 	.scrim {
@@ -247,7 +250,7 @@ pre code.hljs {
 	}
 	.site-header-container {
 		color: $white;
-		text-shadow: 0 2px 1px rgba(0,0,0,0.33);
+		text-shadow: 0 2px 1px rgba(0, 0, 0, 0.33);
 		background-color: $highlight-color;
 		.site-header{
 			.title {
