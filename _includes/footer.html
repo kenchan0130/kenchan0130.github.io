@@ -9,7 +9,7 @@
       <p><strong>Site Map</strong></p>
       <ul class="pages">
         {% for page in site.pages %}
-        {% if page.title and page.nav == true %}
+        {% if page.title and (page.nav == true or page.nav == "only-footer") %}
           <li class="nav-link"><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
         {% endif %}
         {% endfor %}
