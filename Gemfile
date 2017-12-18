@@ -13,6 +13,7 @@ group :jekyll_plugins do
   gem 'jekyll-autoprefixer'
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
+  gem 'jemoji'
 end
 
 group :jekyll_plugins, :development do
