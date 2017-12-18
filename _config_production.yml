@@ -10,4 +10,5 @@ ga_tracking_id: "UA-79827366-2"
 facebook_app_id: 376889769419405
 
 jekyll-minifier:
+  remove_comments: false
   exclude: '*.xml'
