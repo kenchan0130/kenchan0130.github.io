@@ -10,6 +10,7 @@ gem 'yamllint'
 
 group :jekyll_plugins do
   gem 'jekyll-archives'
+  gem 'jekyll-autoprefixer'
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
 end

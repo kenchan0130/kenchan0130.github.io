@@ -59,6 +59,10 @@ jekyll-archives:
     category: '/category/:name/'
     tag: '/tag/:name/'
 
+autoprefixer:
+  browsers:
+    - last 2 versions
+
 # Disqus comments
 # disqus_shortname: bencentra
 
