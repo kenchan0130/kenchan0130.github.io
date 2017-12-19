@@ -51,6 +51,16 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/{{ site.external_lib.highlight_js.version }}/highlight.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js"></script>
 
+{% if site.google_ad_client %}
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script type="text/javascript">
+(adsbygoogle = window.adsbygoogle || []).push({
+  google_ad_client: "{{ site.google_ad_client }}",
+  enable_page_level_ads: true
+});
+</script>
+{% endif %}
+
 <script type="text/javascript">
 $(document).ready(function() {
   // Default syntax highlighting

@@ -6,6 +6,9 @@ plugins:
 # Google analytics
 ga_tracking_id: "UA-79827366-2"
 
+# Google AdSense
+google_ad_client: "ca-pub-2444060431947599"
+
 # Facebook App ID
 facebook_app_id: 376889769419405
 
