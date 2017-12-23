@@ -264,8 +264,16 @@ pre code.hljs {
 	}
 	img {
 		display: block;
-		margin: auto;
+		margin: 10px auto;
 		width: 90%;
+		&.emoji {
+			font-family: "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol";
+    	font-weight: normal;
+    	vertical-align: middle;
+			width: inherit;
+			margin: 0 0 5px;
+			display: inline;
+		}
 	}
 	/*
 	*	Posts
