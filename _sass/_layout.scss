@@ -285,6 +285,33 @@ pre code.hljs {
 				margin-bottom: 1px;
 			}
 		}
+
+		#markdown-toc {
+			background: $light-gray;
+			border: $base-border;
+			padding: 10px 15px 10px;
+			&:before {
+				font-weight: bold;
+				content: "目次";
+				margin: 0 auto;
+				width: 100%;
+				display: block;
+				text-align: center;
+			}
+			li {
+				font-size: $base-font-size;
+				padding: 0;
+				margin-left: 20px;
+				list-style-type: disc;
+				& > ul > li {
+					list-style-type: circle;
+				}
+			}
+			li:last-child {
+				margin-bottom: 0;
+			}
+		}
+
 		.post-header-container {
 			.scrim {
 				padding: 2em 1em 1em 1em;
