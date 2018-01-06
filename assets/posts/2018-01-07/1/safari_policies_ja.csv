@@ -77,7 +77,6 @@ com.apple.Safari,ShowFavoritesBar,boolean,,ブックマークバーを表示す�
 com.apple.Safari,ShowFavoritesUnderSmartSearchField,boolean,,スマート検索フィールドの下にお気に入りを表示する,
 com.apple.Safari,ShowFullURLInSmartSearchField,boolean,,アドレスバーに完全な URL を表示する,
 com.apple.Safari,ShowSidebarInTopSites,boolean,,サイドバーの「トップサイト」を表示する,
-com.apple.Safari,SuppressSearchSuggestions,boolean,,検索時にサジェストを出さないようにする,
 com.apple.Safari,SuppressSearchSuggestions,boolean,,検索時に検索エンジンの検索候補を含めるを有効にする,
 com.apple.Safari,TreatSHA1CertificatesAsInsecure,boolean,,SHA-1 証明書を安全でないものとして扱う,
 com.apple.Safari,UniversalSearchEnabled,boolean,,検索時に Spotlight のサジェストを有効にする,
