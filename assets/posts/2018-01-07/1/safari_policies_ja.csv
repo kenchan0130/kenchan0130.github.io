@@ -93,4 +93,3 @@ com.apple.Safari,WebKitPluginsEnabled,boolean,,インターネットプラグイ
 com.apple.Safari,WebKitTabToLinksPreferenceKey,boolean,,Tab キーを押して、書く項目のハイライトを有効にする（レガシーなブラウザバージョン用）,
 com.apple.Safari,WebsiteSpecificSearchEnabled,boolean,,クイック Web サイト検索を有効にする,
 com.apple.Safari,DownloadsPath,string,,ダウンロードフォルダの指定,
-com.apple.Safari,,,,,
