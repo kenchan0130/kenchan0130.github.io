@@ -6,7 +6,6 @@ jekyll_configs_for_deply = [
   '_config.yml',
   '_config_production.yml'
 ]
-jekyll_build_destination_path = ENV['JEKYLL_BUILD_DESTINATION_PATH']
 
 Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   # Deploy the built site into remote branch named 'gh-pages', or 'master' if
@@ -20,12 +19,8 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   }
 
   t.build_script = ->(dest_dir) {
-    if jekyll_build_destination_path && File.exist?(jekyll_build_destination_path)
-      FileUtils.cp_r(jekyll_build_destination_path, dest_dir, { preserve: true, dereference_root: true, verbose: true })
-    else
-      puts "\nRunning Jekyll..."
-      Rake.sh "bundle exec jekyll build --verbose --config '#{jekyll_configs_for_deply.join(',')}' --destination #{dest_dir}"
-    end
+    puts "\nRunning Jekyll..."
+    Rake.sh "bundle exec jekyll build --verbose --config '#{jekyll_configs_for_deply.join(',')}' --destination #{dest_dir}"
   }
 
   # Use URL of the 'origin' remote to fetch/push the built site into. If env.
