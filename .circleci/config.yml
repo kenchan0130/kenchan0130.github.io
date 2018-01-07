@@ -9,6 +9,7 @@ jobs:
           BUNDLE_JOBS: 4
           BUNDLE_RETRY: 3
           BUNDLE_PATH: vendor/bundle
+          JEKYLL_BUILD_DESTINATION_PATH: _site
           JEKYLL_ENV: production
           TZ: "/usr/share/zoneinfo/Asia/Tokyo"
           LANG: ja_JP.UTF-8
@@ -68,11 +69,11 @@ jobs:
 
       - run:
           name: Build Jekyll
-          command: bundle exec jekyll build --verbose --config "_config.yml,_config_production.yml"
+          command: bundle exec jekyll build --verbose --config "_config.yml,_config_production.yml" --destination $JEKYLL_BUILD_DESTINATION_PATH
 
       - run:
           name: Test for generated HTML
-          command: bundle exec htmlproofer ./_site --check-html --disable-external
+          command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --disable-external
 
       - deploy:
           name: Deploy development branch to master
