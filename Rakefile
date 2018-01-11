@@ -19,12 +19,14 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
     "[CI skip] Built from #{`git rev-parse --short HEAD`.strip}"
   }
 
+  t.committer = 'kenchan0130 by CI <>'
+
   t.build_script = ->(dest_dir) {
     has_built = false
 
-    t.public_send(:do_in_working_dir) do
+    t.send(:do_in_working_dir) do
       if jekyll_build_destination_path && File.exist?(jekyll_build_destination_path)
-        FileUtils.cp_r(File.join(jekyll_build_destination_path, '*'), dest_dir, { preserve: true, dereference_root: true, verbose: true })
+        Rake.sh "cp -rp #{File.join(jekyll_build_destination_path, '*')} #{dest_dir}"
         has_built = true
       end
     end
@@ -34,8 +36,6 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
     puts "\nRunning Jekyll..."
     Rake.sh "bundle exec jekyll build --verbose --config '#{jekyll_configs_for_deply.join(',')}' --destination #{dest_dir}"
   }
-
-  t.author = 'kenchan0130 by CI <>'
 
   # Use URL of the 'origin' remote to fetch/push the built site into. If env.
   # variable GH_TOKEN is set, then it adds it as a userinfo to the URL.

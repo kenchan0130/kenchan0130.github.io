@@ -79,5 +79,7 @@ jobs:
           name: Deploy development branch to master
           command: |
             if [ "${CIRCLE_BRANCH}" == "development" ]; then
+              git config --global user.name "kenchan0130 by CI"
+              git config --global user.email "<>"
               bundle exec rake deploy --trace
             fi
