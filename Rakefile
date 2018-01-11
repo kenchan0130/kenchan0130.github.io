@@ -6,6 +6,7 @@ jekyll_configs_for_deply = [
   '_config.yml',
   '_config_production.yml'
 ]
+jekyll_build_destination_path = ENV['JEKYLL_BUILD_DESTINATION_PATH']
 
 Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   # Deploy the built site into remote branch named 'gh-pages', or 'master' if
@@ -19,9 +20,22 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
   }
 
   t.build_script = ->(dest_dir) {
+    has_built = false
+
+    t.public_send(:do_in_working_dir) do
+      if jekyll_build_destination_path && File.exist?(jekyll_build_destination_path)
+        FileUtils.cp_r(File.join(jekyll_build_destination_path, '*'), dest_dir, { preserve: true, dereference_root: true, verbose: true })
+        has_built = true
+      end
+    end
+
+    next if has_built
+
     puts "\nRunning Jekyll..."
     Rake.sh "bundle exec jekyll build --verbose --config '#{jekyll_configs_for_deply.join(',')}' --destination #{dest_dir}"
   }
+
+  t.author = 'kenchan0130 by CI <>'
 
   # Use URL of the 'origin' remote to fetch/push the built site into. If env.
   # variable GH_TOKEN is set, then it adds it as a userinfo to the URL.
