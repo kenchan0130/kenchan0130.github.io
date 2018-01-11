@@ -51,7 +51,7 @@ jobs:
 
       - save_cache:
           paths:
-            - node_modules
+            - ~/.cache/yarn
           key: v1-node-dependencies-{{ checksum "yarn.lock" }}
       # Node dependencies end
 
