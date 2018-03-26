@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'html-proofer'
-gem 'jekyll'
+gem 'jekyll', '~> 3.6.2'
 gem 'jekyll-minifier'
 gem 'rake-jekyll'
 
