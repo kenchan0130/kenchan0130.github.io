@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'html-proofer'
-gem 'jekyll', '~> 3.6.2'
+gem 'jekyll'
 gem 'jekyll-minifier'
 gem 'rake-jekyll'
 
@@ -16,6 +16,5 @@ group :jekyll_plugins do
 end
 
 group :jekyll_plugins, :development do
-  gem 'jekyll-admin'
-  gem 'jekyll-livereload'
+  # gem 'jekyll-admin'
 end
