@@ -39,6 +39,11 @@ external_lib:
   jquery:
     version: "3.3.1"
 
+custom_js:
+  - external-links-new-window
+  - navigation-menu
+  - syntax-highlight
+
 # Build settings
 markdown: kramdown
 paginate: 5
