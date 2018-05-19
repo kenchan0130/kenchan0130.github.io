@@ -42,6 +42,7 @@ external_lib:
 custom_js:
   - external-links-new-window
   - navigation-menu
+  - smallchat
   - syntax-highlight
 
 # Build settings
