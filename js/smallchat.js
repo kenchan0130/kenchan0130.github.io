@@ -28,14 +28,4 @@ $(function(){
       smallchatScript.src = '//embed.small.chat/TAEV2JR5WGAS7P6N2V.js';
     }
   });
-
-  // smallchat close
-  $(document).on('click', function() {
-    var $smallchatCloseButton = $('#Smallchat iframe').contents()
-    .find('#Smallchat .Messenger_header > div.Icon.Messenger_close')
-    if ($smallchatCloseButton.length === 0) {
-      return;
-    }
-    $smallchatCloseButton.click();
-  });
 });
