@@ -69,7 +69,7 @@ jobs:
 
       - run:
           name: Build Jekyll
-          command: bundle exec jekyll build --verbose --config "_config.yml,_config_production.yml" --destination $JEKYLL_BUILD_DESTINATION_PATH
+          command: bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination $JEKYLL_BUILD_DESTINATION_PATH
 
       - run:
           name: Test for generated HTML
