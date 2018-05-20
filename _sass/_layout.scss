@@ -368,6 +368,15 @@ pre code.hljs {
 				margin: 1em 0;
 				@include span-columns(6);
 			}
+
+			.tags-label {
+				display: block;
+				font-weight: bold;
+			}
+
+			a {
+				display: inline-block;
+			}
 		}
 		.share {
 			font-weight: bold;
