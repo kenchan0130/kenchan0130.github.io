@@ -10,7 +10,7 @@ $(function(){
     var docHeight = $(document).innerHeight();
     var windowHeight = $(window).innerHeight();
     var pageBottom = docHeight - windowHeight;
-    var buffer = $('footer').innerHeight() * 2;
+    var buffer = $('footer').innerHeight() * 2.75;
 
     if ((pageBottom - buffer) <= $(window).scrollTop()) {
       var smallchatScript = document.createElement('script');
