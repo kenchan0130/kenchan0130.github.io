@@ -14,4 +14,6 @@ facebook_app_id: 376889769419405
 
 jekyll-minifier:
   remove_comments: false
-  exclude: '*.xml'
+  exclude:
+    - '*.xml'
+    - 'assets/**/*'
