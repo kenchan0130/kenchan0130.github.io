@@ -2,13 +2,16 @@ $(function(){
   // Add smallchat
   $(window).on('scroll', function() {
     var smallchatScriptDomId = 'kenchan0130-smallchat';
+
     if (document.getElementById(smallchatScriptDomId) !== null) {
       return;
     }
+
     var docHeight = $(document).innerHeight();
     var windowHeight = $(window).innerHeight();
     var pageBottom = docHeight - windowHeight;
-    var buffer = $('footer').innerHeight() * 1.75;
+    var buffer = $('footer').innerHeight() * 2;
+
     if ((pageBottom - buffer) <= $(window).scrollTop()) {
       var smallchatScript = document.createElement('script');
       smallchatScript.id = smallchatScriptDomId;
