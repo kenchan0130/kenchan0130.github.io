@@ -16,7 +16,7 @@ Rake::Jekyll::GitDeployTask.new(:deploy) do |t|
 
   # The commit message will contain hash of the source commit.
   t.commit_message = -> {
-    "[CI skip] Built from #{`git rev-parse --short HEAD`.strip}"
+    "[ci skip] Built from #{`git rev-parse --short HEAD`.strip}"
   }
 
   t.committer = 'kenchan0130 by CI <>'
