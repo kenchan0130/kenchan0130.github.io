@@ -37,26 +37,6 @@ jobs:
           key: v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
       # Ruby dependencies end
 
-      # Node dependencies
-      - restore_cache:
-          keys:
-            - v1-node-dependencies-{{ checksum "yarn.lock" }}
-            - v1-node-dependencies-
-          paths:
-            - node_modules/
-            - ~/.cache/yarn
-
-      - run:
-          name: Install node dependencies
-          command: yarn install
-
-      - save_cache:
-          paths:
-            - node_modules/
-            - ~/.cache/yarn
-          key: v1-node-dependencies-{{ checksum "yarn.lock" }}
-      # Node dependencies end
-
       - run:
           name: YAML Style Check
           command: bundle exec rake yamllint
@@ -64,10 +44,6 @@ jobs:
       - run:
           name: RuboCop Style Check
           command: bundle exec rubocop
-
-      - run:
-          name: Optimize images
-          command: yarn run imagemin
 
       - run:
           name: Build Jekyll
