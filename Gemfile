@@ -18,3 +18,7 @@ end
 group :jekyll_plugins, :development do
   # gem 'jekyll-admin'
 end
+
+group :development do
+  gem 'pry-byebug'
+end
