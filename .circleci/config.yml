@@ -53,7 +53,7 @@ jobs:
           name: Test for generated HTML
           command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --disable-external
 
-      - deploy:
+      - run:
           name: Deploy development branch to master
           command: |
             if [ "${CIRCLE_BRANCH}" == "development" ]; then
