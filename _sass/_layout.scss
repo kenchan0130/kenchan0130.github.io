@@ -265,7 +265,7 @@ pre code.hljs {
 	img {
 		display: block;
 		margin: 10px auto;
-		width: 90%;
+		width: 55%;
 		&.emoji {
 			font-family: "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol";
     	font-weight: normal;
@@ -283,6 +283,14 @@ pre code.hljs {
 			margin-bottom: 1em;
 			ul {
 				margin-bottom: 1px;
+			}
+		}
+
+		table {
+			tbody {
+				img {
+					width: 60%;
+				}
 			}
 		}
 
