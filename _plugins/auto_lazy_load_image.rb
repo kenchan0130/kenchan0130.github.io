@@ -2,7 +2,7 @@ require 'jekyll'
 require 'nokogiri'
 
 class AutoLazyLoadImage
-  def self.fromConfig(document, config)
+  def self.from_config(document, config)
     auto_lazy_load_image_config = config&.[]('auto_lazy_load_image')
     new(
       document,
@@ -31,29 +31,37 @@ class AutoLazyLoadImage
 
   def replace_html
     nokogiri_doc.xpath('//img').each do |node|
-      src_value = node.attributes['src'].value
-      if default_image.empty?
-        node.remove_attribute('src')
-      else
-        node.attributes['src'].value = default_image
-      end
-      class_value = node.attributes['class']&.value
-      node.set_attribute('class', '') unless class_value
-      node.attributes['class'].value = [node.attributes['class'].value, @classes.join(' ')].join(' ')
-
-      node.set_attribute(attr_name, src_value)
+      apply_lazy_load_image(node)
     end
     nokogiri_doc.to_html
   end
 
   private
 
+  def apply_lazy_load_image(node)
+    src_value = node.attributes['src'].value
+    if default_image.empty?
+      node.remove_attribute('src')
+    else
+      node.attributes['src'].value = default_image
+    end
+    class_value = node.attributes['class']&.value
+    node.set_attribute('class', '') unless class_value
+    node_class_attr = node.attributes['class']
+    class_array = [node_class_attr.value, @classes].flatten.reject do |class_name|
+      class_name.nil? || class_name.empty?
+    end
+    node_class_attr.value = class_array.join(' ')
+
+    node.set_attribute(attr_name, src_value)
+  end
+
   def nokogiri_doc
-    @_nokogiri_doc ||= Nokogiri::HTML(@document)
+    @nokogiri_doc ||= Nokogiri::HTML(@document)
   end
 end
 
 Jekyll::Hooks.register :posts, :post_render do |document|
-  auto_lazy_load_image = AutoLazyLoadImage.fromConfig(document.output, document.site.config)
+  auto_lazy_load_image = AutoLazyLoadImage.from_config(document.output, document.site.config)
   document.output = auto_lazy_load_image.replace_html
 end
