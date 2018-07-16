@@ -47,9 +47,18 @@
 </footer>
 
 <!-- Scripts -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/{{ site.external_lib.highlight_js.version }}/highlight.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js"></script>
+{% if site.external_lib.jquery %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js" {% if site.external_lib.jquery.async %}async{% endif %}></script>
+{% endif %}
+{% if site.external_lib.highlight_js %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/{{ site.external_lib.highlight_js.version }}/highlight.min.js" {% if site.external_lib.highlight_js.async %}async{% endif %}></script>
+{% endif %}
+{% if site.external_lib.lightbox2 %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js" {% if site.external_lib.lightbox2.async %}async{% endif %}></script>
+{% endif %}
+{% if site.external_lib.lazysizes %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/lazysizes/{{ site.external_lib.lazysizes.version }}/lazysizes.min.js" {% if site.external_lib.lazysizes.async %}async{% endif %}></script>
+{% endif %}
 
 {% if site.custom_js && page.custom_js %}
 <!-- Custom page specific js files -->

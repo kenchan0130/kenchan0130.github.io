@@ -33,11 +33,16 @@ external_lib:
   highlight_js:
     version: "9.12.0"
   lightbox2:
+    async: true
     version: "2.10.0"
   font-awesome:
+    async: true
     version: "4.7.0"
   jquery:
     version: "3.3.1"
+  lazysizes:
+    async: true
+    version: "4.0.4"
 
 custom_js:
   - external-links-new-window
@@ -219,3 +224,9 @@ protocols:
   os_repo: "https://github.com/kenchan0130/kenchan0130.github.io"
   os_rcs_type: "git"
   os_src: "git@github.com:kenchan0130/kenchan0130.github.io.git"
+
+auto_lazy_load_image:
+  attr_name: data-src
+  default_image: "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+  class:
+    - lazyload
