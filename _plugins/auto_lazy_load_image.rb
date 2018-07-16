@@ -1,6 +1,5 @@
 require 'jekyll'
 require 'nokogiri'
-require 'pry'
 
 class AutoLazyLoadImage
   def self.fromConfig(document, config)
