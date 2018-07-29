@@ -286,6 +286,17 @@ pre code.hljs {
 			}
 		}
 
+		ol {
+			li {
+				li {
+    			list-style-type: lower-alpha;
+					li {
+    				list-style-type: lower-roman;
+					}
+				}
+			}
+		}
+
 		table {
 			tbody {
 				img {
