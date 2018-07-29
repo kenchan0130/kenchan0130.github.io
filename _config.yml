@@ -225,8 +225,8 @@ protocols:
   os_rcs_type: "git"
   os_src: "git@github.com:kenchan0130/kenchan0130.github.io.git"
 
-auto_lazy_load_image:
-  attr_name: data-src
-  default_image: "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-  class:
+lazy_load_image:
+  src_attr_name: data-src
+  preload_image: "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+  class_attr_values:
     - lazyload
