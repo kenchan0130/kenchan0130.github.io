@@ -57,7 +57,7 @@ GEM
       jekyll (>= 2.4)
     jekyll-autoprefixer (1.0.1)
       autoprefixer-rails (~> 6.3.6)
-    jekyll-lazy-load-image (0.2.1)
+    jekyll-lazy-load-image (0.3.0)
       jekyll (~> 3.8)
       nokogiri (~> 1.8)
     jekyll-minifier (0.1.6)
