@@ -59,6 +59,7 @@ module Jekyll
       # loop through posts to find match and get slug, method calls for Jekyll 3
       posts.docs.each do |post|
         next unless post.id == page_id
+
         splited_post_file_name = post.basename_without_ext.split('-')
         splited_post_file_name.pop
         return "posts/#{splited_post_file_name.join('-')}/#{post.data['slug']}"

@@ -24,6 +24,7 @@ module Jekyll
       output = super
       path = @path || output.match(/!\[.*?\].*\((.*?)\)/)&.[](1) || output.match(/<img.*src\s*=\s*[\"|\'](.*?)[\"|\'].*>/)&.[](1)
       raise 'Not found image path for ligthbox' if path.to_s.empty?
+
       title = @title || output.match(/!\[(.*?)\].*\(.*?\)/)&.[](1) || output.match(/<img.*alt\s*=\s*[\"|\'](.*?)[\"|\'].*>/)&.[](1)
 
       %(<a href="#{path}" rel="lightbox" title="#{title}">#{output}</a>)
