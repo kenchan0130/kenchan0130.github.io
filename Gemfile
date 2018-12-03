@@ -2,8 +2,7 @@ source 'https://rubygems.org'
 
 gem 'html-proofer'
 gem 'jekyll'
-# TODO: https://github.com/digitalsparky/jekyll-minifier/pull/44
-gem 'jekyll-minifier', '0.1.6'
+gem 'jekyll-minifier'
 gem 'rake-jekyll'
 
 gem 'rubocop'

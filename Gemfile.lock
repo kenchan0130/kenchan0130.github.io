@@ -60,11 +60,11 @@ GEM
     jekyll-lazy-load-image (0.3.0)
       jekyll (~> 3.8)
       nokogiri (~> 1.8)
-    jekyll-minifier (0.1.6)
+    jekyll-minifier (0.1.9)
       cssminify2 (~> 2.0)
-      htmlcompressor (~> 0.3)
-      jekyll (~> 3.5)
-      uglifier (~> 3.2)
+      htmlcompressor (~> 0.4)
+      jekyll (>= 3.5)
+      uglifier (~> 4.1)
     jekyll-paginate (1.1.0)
     jekyll-sass-converter (1.5.2)
       sass (~> 3.4)
@@ -127,7 +127,7 @@ GEM
       ethon (>= 0.9.0)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
-    uglifier (3.2.0)
+    uglifier (4.1.20)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.4.0)
     yamllint (0.0.9)
@@ -143,7 +143,7 @@ DEPENDENCIES
   jekyll-archives
   jekyll-autoprefixer
   jekyll-lazy-load-image
-  jekyll-minifier (= 0.1.6)
+  jekyll-minifier
   jekyll-paginate
   jekyll-sitemap
   pry-byebug
