@@ -468,7 +468,7 @@ pre code.hljs {
    * Profile
    */
   .profile-section {
-    margin: 36px auto;
+    margin: 0 0 36px;
     .profile-item {
       margin: 16px auto;
       &.profile-image {
@@ -479,9 +479,6 @@ pre code.hljs {
           padding: 2px;
           border-radius: 50%;
         }
-        .profile-image-thanks {
-          margin: 10px auto;
-        }
       }
       &.profile-name {
         text-align: center;
@@ -489,8 +486,11 @@ pre code.hljs {
         font-weight: bold;
       }
       &.profile-description {
-        text-align: center;
-        max-width: 360px;
+        max-width: 580px;
+				margin-top: 20px;
+				p {
+					margin: 0 0 10px;
+				}
       }
     }
   }
