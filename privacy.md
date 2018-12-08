@@ -61,7 +61,7 @@ nav: "only-footer"
 
 ## プライバシーポリシーの変更について
 当サイトは、予告無くプライバシーポリシーを改定することがあります。
-プライバシーポリシーの改定があったときは、当サイトまたは[当サイト管理者 Twitter]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) またはその両方にて遅滞なく掲載いたします。
+プライバシーポリシーの改定があったときは、当サイトまたは当サイト管理者の[Twitter アカウント(@{{ site.social | where: "name", "Twitter" | first | map: "username" }})]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) またはその両方にて遅滞なく掲載いたします。
 
 ## 個人情報の取り扱いに関する問い合わせ先
-当サイトにおける個人情報保護に関してご質問などがある場合は、 [{{ site.social | where: "name", "Twitter" | first | map: "username" }}]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) までご連絡ください。
+当サイトにおける個人情報保護に関してご質問などがある場合は、 <a href="javascript:void(0);" class="js-open-smallchat">チャット</a>または [@{{ site.social | where: "name", "Twitter" | first | map: "username" }}]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) までご連絡ください。
