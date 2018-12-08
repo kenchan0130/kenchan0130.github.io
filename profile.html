@@ -18,7 +18,7 @@ nav: true
     <p>アニメを見ること、お布団でぬくぬくすることを生きがいにしています。</p>
 	</div>
 	<div class="profile-item profile-description">
-		<p>ご意見・ご質問、仕事のご相談・ご依頼は<a href="javascript:void(0);" class="js-open-smallchat">チャット</a>、または <a href="https://twitter.com/kenchan0130" target="_blank">@kenchan0130</a> までどうぞ。</p>
+		<p>ご意見・ご質問、仕事のご相談・ご依頼は<a href="javascript:void(0);" class="js-open-smallchat">チャット</a>、または <a href="{{ site.social | where: "name", "Twitter" | first | map: "url" }}" target="_blank">@{{ site.social | where: "name", "Twitter" | first | map: "username" }}</a> までどうぞ。</p>
 	  <p>こちらのアイコンは <a href="https://twitter.com/hajipion" target="_blank">@hajipion</a> に作成いただきました。<p>
 	</div>
 </section>
