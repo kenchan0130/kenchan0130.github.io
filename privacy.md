@@ -23,7 +23,7 @@ nav: "only-footer"
 外部サービスにおける個人情報の取扱いについては、それぞれの外部サービスのプライバシーポリシーをご確認ください。
 
 1. [Google Analytics](https://www.google.com/analytics)
-  - Google Analytics から提供される Cookie を使用して匿名のトラフィックデータを収集することがあります
+  - Google Analyticsから提供されるCookieを使用して匿名のトラフィックデータを収集することがあります
 2. [Smallchat](https://small.chat)
 
 また、次のいずれかの場合には上記の収集目的以外に個人情報を利用し、または開示提供することがあります。
@@ -40,10 +40,10 @@ nav: "only-footer"
 
 ## 広告の配信について
 当サイトは第三者配信の広告サービス [Google Adsense](https://www.google.co.jp/adsense) を利用しています。
-広告配信事業者は、ユーザーの興味に応じた広告を表示するために Cookie を使用することがあります。
+広告配信事業者は、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。
 
 また、当サイトは [Amazon.co.jp](https://www.amazon.co.jp) を宣伝しリンクすることによってサイトが紹介料を獲得できる手段を提供することを目的に設定されたアフィリエイトプログラムである、[Amazon アソシエイト・プログラム](https://affiliate.amazon.co.jp)の参加者です。
-第三者がコンテンツおよび宣伝を提供し、訪問者から直接情報を収集し、訪問者のブラウザに Cookie を設定したりこれを認識したりする場合があります。
+第三者がコンテンツおよび宣伝を提供し、訪問者から直接情報を収集し、訪問者のブラウザにCookieを設定したりこれを認識したりする場合があります。
 
 外部サービスにおけるポリシー・規約については、それぞれの外部サービスのポリシー・規約をご確認ください。
 
@@ -61,7 +61,7 @@ nav: "only-footer"
 
 ## プライバシーポリシーの変更について
 当サイトは、予告無くプライバシーポリシーを改定することがあります。
-プライバシーポリシーの改定があったときは、当サイトまたは当サイト管理者の[Twitter アカウント(@{{ site.social | where: "name", "Twitter" | first | map: "username" }})]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) またはその両方にて遅滞なく掲載いたします。
+プライバシーポリシーの改定があったときは、当サイトまたは当サイト管理者の[Twitterアカウント（@{{ site.social | where: "name", "Twitter" | first | map: "username" }})]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) またはその両方にて遅滞なく掲載いたします。
 
 ## 個人情報の取り扱いに関する問い合わせ先
 当サイトにおける個人情報保護に関してご質問などがある場合は、 <a href="javascript:void(0);" class="js-open-smallchat">チャット</a>または [@{{ site.social | where: "name", "Twitter" | first | map: "username" }}]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) までご連絡ください。
