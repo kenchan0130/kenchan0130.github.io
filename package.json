@@ -5,8 +5,8 @@
   "author": "Tadayuki Onishi",
   "license": "MIT",
   "scripts": {
-    "lint": "textlint -f pretty-error **/*.{md,html}",
-    "lint:fix": "textlint --fix **/*.{md,html}"
+    "lint": "textlint -f pretty-error *.{md,html} posts/",
+    "lint:fix": "textlint --fix *.{md,html} posts/"
   },
   "devDependencies": {
     "textlint": "^11.2.3",
