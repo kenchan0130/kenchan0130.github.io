@@ -58,6 +58,12 @@ layout: default
         <i class="fab fa-{{ social.icon  }} fa-lg"></i>
       </a>
       {% endif %}
+      {% if social.name == "Hatena" and social.share == true %}
+      <a href="//b.hatena.ne.jp/entry/panel/?url={{ full_url | cgi_escape }}"
+        onclick="window.open(this.href, '{{ social.icon }}-share', 'width=550,height=500');return false;">
+        <i class="fab fa-{{ social.icon }} fa-lg"></i>
+      </a>
+      {% endif %}
       {% endfor %}
     </section>
 
