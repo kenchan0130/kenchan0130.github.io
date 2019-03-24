@@ -46,7 +46,9 @@
 
 </footer>
 
+{% comment %}
 <!-- Scripts -->
+{% endcomment %}
 {% if site.external_lib.jquery %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js" {% if site.external_lib.jquery.async %}async{% endif %}></script>
 {% endif %}
@@ -61,7 +63,9 @@
 {% endif %}
 
 {% if site.custom_js && page.custom_js %}
+{% comment %}
 <!-- Custom page specific js files -->
+{% endcomment %}
   {% assign everything_js = page.custom_js | concat: site.custom_js | uniq %}
   {% for js_file in everything_js %}
     <script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
@@ -77,7 +81,9 @@
 {% endif %}
 
 {% if site.ga_tracking_id %}
+{% comment %}
 <!-- Global site tag (gtag.js) - Google Analytics -->
+{% endcomment %}
 <script async src="//www.googletagmanager.com/gtag/js?id={{ site.ga_tracking_id }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
