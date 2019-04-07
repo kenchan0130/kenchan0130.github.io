@@ -14,6 +14,7 @@ group :jekyll_plugins do
   gem 'jekyll-lazy-load-image', require: 'jekyll-lazy-load-image/auto-execution'
   gem 'jekyll-paginate'
   gem 'jekyll-sitemap'
+  gem 'jekyll-target-blank'
 end
 
 group :development do

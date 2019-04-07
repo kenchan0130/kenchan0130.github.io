@@ -44,7 +44,6 @@ external_lib:
     theme: "manni"
 
 custom_js:
-  - external-links-new-window
   - navigation-menu
   - smallchat
 
