@@ -29,8 +29,6 @@ profile_images:
 
 # External library versions
 external_lib:
-  highlight_js:
-    version: "9.15.6"
   lightbox2:
     async: true
     version: "2.10.0"
@@ -42,19 +40,19 @@ external_lib:
   lazysizes:
     async: true
     version: "4.1.5"
+  pygments:
+    theme: "manni"
 
 custom_js:
   - external-links-new-window
   - navigation-menu
   - smallchat
-  - syntax-highlight
 
 # Build settings
 markdown: kramdown
 paginate: 5
 paginate_path: "/page:num/"
 inter_post_navigation: false
-highlightjs_theme: "darcula"
 
 kramdown:
   toc_levels: 1..3

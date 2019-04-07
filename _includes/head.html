@@ -4,7 +4,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-  <meta name="description" content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines -}}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <meta name="description"
+    content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines -}}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
   {% if site.name %}
   <meta name="author" content="{{ site.name }}">
   <meta name="copyright" content="&copy; {{ site.name }} {{ site.time | date: '%Y' }}">
@@ -13,9 +14,12 @@
   {% comment %}
   <!-- External libraries -->
   {% endcomment %}
-  <link rel="stylesheet" href="//use.fontawesome.com/releases/v{{ site.external_lib.font-awesome.version }}/css/all.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/{{ site.external_lib.highlight_js.version }}/styles/{{ site.highlightjs_theme }}.min.css">
-  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css">
+  <link rel="stylesheet"
+    href="//use.fontawesome.com/releases/v{{ site.external_lib.font-awesome.version }}/css/all.css">
+  <link rel="stylesheet"
+    href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css">
+  <link rel="stylesheet"
+    href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css">
 
   {% comment %}
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
@@ -26,15 +30,24 @@
   <link rel="apple-touch-icon" sizes="60x60" href="{{ "/assets/icons/apple-icon-60x60.png" | prepend: site.baseurl }}">
   <link rel="apple-touch-icon" sizes="72x72" href="{{ "/assets/icons/apple-icon-72x72.png" | prepend: site.baseurl }}">
   <link rel="apple-touch-icon" sizes="76x76" href="{{ "/assets/icons/apple-icon-76x76.png" | prepend: site.baseurl }}">
-  <link rel="apple-touch-icon" sizes="114x114" href="{{ "/assets/icons/apple-icon-114x114.png" | prepend: site.baseurl }}">
-  <link rel="apple-touch-icon" sizes="120x120" href="{{ "/assets/icons/apple-icon-120x120.png" | prepend: site.baseurl }}">
-  <link rel="apple-touch-icon" sizes="144x144" href="{{ "/assets/icons/apple-icon-144x144.png" | prepend: site.baseurl }}">
-  <link rel="apple-touch-icon" sizes="152x152" href="{{ "/assets/icons/apple-icon-152x152.png" | prepend: site.baseurl }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ "/assets/icons/apple-icon-180x180.png" | prepend: site.baseurl }}">
-  <link rel="icon" type="image/png" sizes="192x192"  href="{{ "/assets/icons/android-icon-192x192.png" | prepend: site.baseurl }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ "/assets/icons/favicon-32x32.png" | prepend: site.baseurl }}">
-  <link rel="icon" type="image/png" sizes="96x96" href="{{ "/assets/icons/favicon-96x96.png" | prepend: site.baseurl }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ "/assets/icons/favicon-16x16.png" | prepend: site.baseurl }}">
+  <link rel="apple-touch-icon" sizes="114x114"
+    href="{{ "/assets/icons/apple-icon-114x114.png" | prepend: site.baseurl }}">
+  <link rel="apple-touch-icon" sizes="120x120"
+    href="{{ "/assets/icons/apple-icon-120x120.png" | prepend: site.baseurl }}">
+  <link rel="apple-touch-icon" sizes="144x144"
+    href="{{ "/assets/icons/apple-icon-144x144.png" | prepend: site.baseurl }}">
+  <link rel="apple-touch-icon" sizes="152x152"
+    href="{{ "/assets/icons/apple-icon-152x152.png" | prepend: site.baseurl }}">
+  <link rel="apple-touch-icon" sizes="180x180"
+    href="{{ "/assets/icons/apple-icon-180x180.png" | prepend: site.baseurl }}">
+  <link rel="icon" type="image/png" sizes="192x192"
+    href="{{ "/assets/icons/android-icon-192x192.png" | prepend: site.baseurl }}">
+  <link rel="icon" type="image/png" sizes="32x32"
+    href="{{ "/assets/icons/favicon-32x32.png" | prepend: site.baseurl }}">
+  <link rel="icon" type="image/png" sizes="96x96"
+    href="{{ "/assets/icons/favicon-96x96.png" | prepend: site.baseurl }}">
+  <link rel="icon" type="image/png" sizes="16x16"
+    href="{{ "/assets/icons/favicon-16x16.png" | prepend: site.baseurl }}">
   <link rel="manifest" href="{{ "/assets/icons/manifest.json" | prepend: site.baseurl }}">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="msapplication-TileImage" content="{{ "/assets/icons/ms-icon-144x144.png" | prepend: site.baseurl }}">
@@ -47,12 +60,15 @@
   {% comment %}
   <!-- Facebook OGP cards -->
   {% endcomment %}
-  <meta property="og:description" content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}" />
-  <meta property="og:url" content="{% if page.url %}{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.url }}{% endif %}" />
+  <meta property="og:description"
+    content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}" />
+  <meta property="og:url"
+    content="{% if page.url %}{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.url }}{% endif %}" />
   <meta property="og:site_name" content="{{ site.title }}" />
   <meta property="og:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}" />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.fb_image | prepend: site.baseurl | prepend: site.url }}{% endif %}" />
+  <meta property="og:image"
+    content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.fb_image | prepend: site.baseurl | prepend: site.url }}{% endif %}" />
   <meta property="og:image:type" content="{{ site.protocols.fb_image_type }}" />
   <meta property="og:image:width" content="{{ site.protocols.fb_image_width }}" />
   <meta property="og:image:height" content="{{ site.protocols.fb_image_height }}" />
@@ -64,9 +80,12 @@
   {% endcomment %}
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
-  <meta name="twitter:description" content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
-  <meta name="twitter:image" content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.twitter_image | prepend: site.baseurl | prepend: site.url }}{% endif %}">
-  <meta name="twitter:url" content="{% if page.url %}{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.url }}{% endif %}">
+  <meta name="twitter:description"
+    content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+  <meta name="twitter:image"
+    content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.twitter_image | prepend: site.baseurl | prepend: site.url }}{% endif %}">
+  <meta name="twitter:url"
+    content="{% if page.url %}{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.url }}{% endif %}">
   {% endif %}
 
   {% if protocols.os_repo and protocols.os_rcs_type and protocols.os_src %}
@@ -84,7 +103,8 @@
   {% endcomment %}
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}"
+    href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
 
   <meta name="google-site-verification" content="ZxlKORgZZwZ4TTmaQJFFEXLF3jmd6P_NVU9TEVW1bSg" />
   {% if site.google_ad_client %}

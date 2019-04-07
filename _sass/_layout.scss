@@ -13,10 +13,11 @@ $desktop: $b1;
 /*
 *	Globals
 */
-html, body {
-	margin: 0;
-	padding: 0;
-	width: 100%;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 ol.default {
@@ -24,29 +25,35 @@ ol.default {
 }
 
 ul.default {
-	@extend %default-ul;
+  @extend %default-ul;
 }
 
 code {
-	background-color: #eee;
-	display: inline-block;
-	border-radius: 3px;
-	padding: 0 3px;
-	overflow-wrap: break-word;
-	max-width: 100%;
+  color: $action-color;
+  background-color: tint($light-gray, 50%);
+  font-size: 110%;
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0 3px;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 
-pre code.hljs {
-	font-size: modular-scale(-1);
+pre {
+  code {
+    background-color: $light-gray;
+    width: 100%;
+  }
 }
 
 .page-divider {
-	$divider-color: $light-gray;
+  $divider-color: $light-gray;
   display: block;
   width: 50%;
   margin-left: auto;
   margin-right: auto;
   border-top: 1px solid $divider-color;
+
   .one {
     position: relative;
     top: -9px;
@@ -58,6 +65,7 @@ pre code.hljs {
     margin-right: auto;
     border-radius: 50%;
   }
+
   .two {
     position: relative;
     top: -26px;
@@ -71,45 +79,55 @@ pre code.hljs {
   }
 }
 
-.site-header-container, .post-header-container {
-	width: 100%;
-	text-align: center;
-	&.has-cover {
-		color: $white;
-		background-position: 50% 50%;
-		background-size: cover;
-		.title {
-			font-size: modular-scale(4);
-			text-shadow: 0 0 7px rgba(0, 0, 0, .35);
-			@include media ($mobile) {
-				font-size: modular-scale(6);
-			}
-		}
-		.subtitle, .info {
-			font-size: modular-scale(1);
-			text-shadow: 0 0 7px rgba(0, 0, 0, .35);
-		}
-	}
-	.scrim {
-		padding: 3em 1em;
-		&.has-cover {
-			background-color: rgba(0, 0, 0, .2);
-			padding: 6em 1em 4em 1em !important;
-			@include media($tablet) {
-				padding: 13em 1em 9em 1em !important;
-			}
-		}
-	}
+.site-header-container,
+.post-header-container {
+  width: 100%;
+  text-align: center;
+
+  &.has-cover {
+    color: $white;
+    background-position: 50% 50%;
+    background-size: cover;
+
+    .title {
+      font-size: modular-scale(4);
+      text-shadow: 0 0 7px rgba(0, 0, 0, 0.35);
+
+      @include media($mobile) {
+        font-size: modular-scale(6);
+      }
+    }
+
+    .subtitle,
+    .info {
+      font-size: modular-scale(1);
+      text-shadow: 0 0 7px rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  .scrim {
+    padding: 3em 1em;
+
+    &.has-cover {
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 6em 1em 4em 1em !important;
+
+      @include media($tablet) {
+        padding: 13em 1em 9em 1em !important;
+      }
+    }
+  }
 }
 
 /*
 *	Header
 */
 .navigation {
-	box-shadow: 0 2px $highlight-color;
-	padding: 0 1em;
-	margin: 0;
-	/*
+  box-shadow: 0 2px $highlight-color;
+  padding: 0 1em;
+  margin: 0;
+
+  /*
 	*	Navigation Menu - http://refills.bourbon.io/unstyled/ (see "Navigation")
 	*/
   // Mobile view
@@ -119,39 +137,48 @@ pre code.hljs {
     margin: 0;
     font-size: 1.5em;
     padding-top: 0.5em;
-    @include media ($tablet) {
+
+    @include media($tablet) {
       display: none;
     }
   }
+
   // Nav menu
   .navigation-wrapper {
-  	@include outer-container;
+    @include outer-container;
     @include clearfix;
     position: relative;
   }
+
   .logo {
     float: left;
     height: 4em;
-    @include media ($tablet) {
-    	padding-left: $em-base;
+
+    @include media($tablet) {
+      padding-left: $em-base;
     }
+
     img {
-      max-height: 3.0em;
-      margin-top: 0.50em;
+      max-height: 3em;
+      margin-top: 0.5em;
       padding-right: 1em;
     }
+
     span {
-    	font-size: 1.25em;
+      font-size: 1.25em;
     }
   }
+
   nav {
     float: none;
     padding: 1.25em 0;
-    @include media ($tablet) {
+
+    @include media($tablet) {
       float: right;
       line-height: 1.5em;
     }
   }
+
   ul.navigation-menu {
     clear: both;
     display: none;
@@ -159,39 +186,46 @@ pre code.hljs {
     overflow: visible;
     padding: 0;
     width: 100%;
-    @include media ($tablet) {
+
+    @include media($tablet) {
       display: block;
       margin: 0;
       padding: 0;
     }
+
     &.show {
       display: block;
     }
   }
+
   // Nav items
   ul li.nav-link {
     display: block;
     text-align: right;
     width: 100%;
     padding: 0.25em 0;
-    @include media ($tablet) {
+
+    @include media($tablet) {
       background: transparent;
       display: inline;
       text-decoration: none;
       width: auto;
     }
   }
+
   li.nav-link {
-  	a {
-	    display: inline-block;
-	    @include media ($tablet) {
-	      padding-right: 1.5em;
-	    }
-	  }
-	  &:last-child a {
-	  	@include media ($tablet) {
-    		padding-right: 1em;
-    	}
+    a {
+      display: inline-block;
+
+      @include media($tablet) {
+        padding-right: 1.5em;
+      }
+    }
+
+    &:last-child a {
+      @include media($tablet) {
+        padding-right: 1em;
+      }
     }
   }
 }
@@ -200,279 +234,330 @@ pre code.hljs {
 *	Body
 */
 .page-content {
-	.wrapper {
-		@include outer-container;
-		padding: 1em;
-	}
-	/*
+  .wrapper {
+    @include outer-container;
+    padding: 1em;
+  }
+
+  /*
 	*	index.html
 	*/
   .post-link {
     color: $gray;
+
     &:hover {
       .post-title {
         color: lighten($action-color, 20%);
-        transition: color .5s;
+        transition: color 0.5s;
       }
     }
   }
-	.post-list {
-		padding-top: 1em !important;
-		@extend %default-ul;
+
+  .post-list {
+    padding-top: 1em !important;
+    @extend %default-ul;
+
     p {
       color: darken($gray, 15%);
     }
-	}
-	.post-meta {
-		@include outer-container;
-		// padding: 1em 0;
-		color: $medium-gray;
-		.post-date {
-			@include span-columns(6);
-			text-align: left;
-			font-size: 0.9em;
-		}
-		.post-categories {
-			@include span-columns(6);
-			margin-right: 0;
-			text-align: right;
-			font-size: 0.9em;
-		}
-	}
-	.pagination {
-		padding-top: 2em;
-		text-align: center;
-		color: $medium-gray;
-		.page-number {
-			padding: 0 1em;
-		}
+  }
+
+  .post-meta {
+    @include outer-container;
+    // padding: 1em 0;
+    color: $medium-gray;
+
+    .post-date {
+      @include span-columns(6);
+      text-align: left;
+      font-size: 0.9em;
+    }
+
+    .post-categories {
+      @include span-columns(6);
+      margin-right: 0;
+      text-align: right;
+      font-size: 0.9em;
+    }
+  }
+
+  .pagination {
+    padding-top: 2em;
+    text-align: center;
+    color: $medium-gray;
+
+    .page-number {
+      padding: 0 1em;
+    }
+
     a.newer-posts {
       text-decoration: none;
     }
-	}
-	.site-header-container {
-		color: $white;
-		text-shadow: 0 2px 1px rgba(0, 0, 0, 0.33);
-		background-color: $highlight-color;
-		.site-header{
-			.title {
-				font-size: modular-scale(6);
-			}
-			.subtitle {
-				font-style: italic;
-				font-size: modular-scale(1);
-			}
-		}
-	}
-	img {
-		display: block;
-		margin: 10px auto;
-		width: 55%;
-		&.emoji {
-			font-family: "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol";
-    	font-weight: normal;
-    	vertical-align: middle;
-			width: inherit;
-			margin: 0 0 5px;
-			display: inline;
-		}
-	}
-	/*
+  }
+
+  .site-header-container {
+    color: $white;
+    text-shadow: 0 2px 1px rgba(0, 0, 0, 0.33);
+    background-color: $highlight-color;
+
+    .site-header {
+      .title {
+        font-size: modular-scale(6);
+      }
+
+      .subtitle {
+        font-style: italic;
+        font-size: modular-scale(1);
+      }
+    }
+  }
+
+  img {
+    display: block;
+    margin: 10px auto;
+    width: 55%;
+
+    &.emoji {
+      font-family: "Apple Color Emoji", "Segoe UI", "Segoe UI Emoji", "Segoe UI Symbol";
+      font-weight: normal;
+      vertical-align: middle;
+      width: inherit;
+      margin: 0 0 5px;
+      display: inline;
+    }
+  }
+
+  /*
 	*	Posts
 	*/
-	.post {
-		ul {
-			margin-bottom: 1em;
-			ul {
-				margin-bottom: 1px;
-			}
-		}
+  .post {
+    ul {
+      margin-bottom: 1em;
 
-		ol {
-			li {
-				li {
-    			list-style-type: lower-alpha;
-					li {
-    				list-style-type: lower-roman;
-					}
-				}
-			}
-		}
+      ul {
+        margin-bottom: 1px;
+      }
+    }
 
-		table {
-			tbody {
-				img {
-					width: 60%;
-				}
-			}
-		}
+    ol {
+      li {
+        li {
+          list-style-type: lower-alpha;
 
-		#markdown-toc {
-			background: $light-gray;
-			border: $base-border;
-			padding: 10px 15px 10px;
-			&:before {
-				font-weight: bold;
-				content: "目次";
-				margin: 0 auto;
-				width: 100%;
-				display: block;
-				text-align: center;
-			}
-			li {
-				font-size: $base-font-size;
-				padding: 0;
-				margin-left: 20px;
-				list-style-type: disc;
-				& > ul > li {
-					list-style-type: circle;
-				}
-			}
-			li:last-child {
-				margin-bottom: 0;
-			}
-		}
+          li {
+            list-style-type: lower-roman;
+          }
+        }
+      }
+    }
 
-		.post-header-container {
-			.scrim {
-				padding: 2em 1em 1em 1em;
-			}
-		}
-		.post-meta {
-			padding-bottom: 1em;
-		}
-		.post-content {
-			padding: 1em 0;
-			p {
-				line-height: 2;
-				margin-bottom: 20px;
-			}
-			blockquote {
-				margin-left: 12px;
-				padding-left: 16px;
-				border-left: 6px solid $light-gray;
-				font-style: italic;
-				font-size: 90%;
-			}
-			code {
-				padding: 0 0.5rem;
-				line-height: 1.3;
-				font-size: 92%;
-			}
-			.highlight code {
-				padding: 0.8rem 1.0rem;
-			}
-			h3 {
-				margin-top: 20px;
-				border-bottom: 1px solid $light-gray;
-			}
-			h4 {
-				margin-top: 40px;
-			}
-			h3 + h4 {
-				margin-top: 0;
-			}
-			.footnotes {
-				font-size: 80%;
-				margin-top: 44px;
-				margin-bottom: 28px;
-				p {
-					margin-bottom: 8px;
-				}
-			}
-		}
-		.tags {
-			font-size: 0.9em;
-			margin: 1em 0 0 0;
-			@include span-columns(12);
-			@include media ($tablet) {
-				margin: 1em 0;
-				@include span-columns(6);
-			}
+    table {
+      tbody {
+        img {
+          width: 60%;
+        }
+      }
+    }
 
-			.tags-label {
-				display: block;
-				font-weight: bold;
-			}
+    #markdown-toc {
+      background: $light-gray;
+      border: $base-border;
+      padding: 10px 15px 10px;
 
-			a {
-				display: inline-block;
-			}
-		}
-		.share {
-			font-weight: bold;
-			margin: 0 0 1em 0;
-			@include span-columns(12);
-			@include media ($tablet) {
-				@include span-columns(6);
-				margin: 1em 0;
-				text-align: right;
-			}
-			a {
-				width: 1em;
-				padding: 0 0.25em;
-				text-decoration: none;
-			}
-		}
-		.disqus {
-			@include span-columns(12);
-		}
-		.post-navigation {
-			font-size: 0.9em;
-			display: block;
-			width: auto;
-			.prev-post {
-				display: block;
-				width: 50%;
-				float: left;
-				margin: 1em 0;
-			}
-			.next-post {
-				display: block;
-				width: 50%;
-				float: left;
-				margin: 1em 0;
-				text-align: right;
-			}
-		}
-	}
-	/*
+      &:before {
+        font-weight: bold;
+        content: "目次";
+        margin: 0 auto;
+        width: 100%;
+        display: block;
+        text-align: center;
+      }
+
+      li {
+        font-size: $base-font-size;
+        padding: 0;
+        margin-left: 20px;
+        list-style-type: disc;
+
+        &>ul>li {
+          list-style-type: circle;
+        }
+      }
+
+      li:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .post-header-container {
+      .scrim {
+        padding: 2em 1em 1em 1em;
+      }
+    }
+
+    .post-meta {
+      padding-bottom: 1em;
+    }
+
+    .post-content {
+      padding: 1em 0;
+
+      p {
+        line-height: 2;
+        margin-bottom: 20px;
+      }
+
+      blockquote {
+        margin-left: 12px;
+        padding-left: 16px;
+        border-left: 6px solid $light-gray;
+        font-style: italic;
+        font-size: 90%;
+      }
+
+      code {
+        padding: 0 0.5rem;
+        line-height: 1.3;
+        font-size: 92%;
+      }
+
+      .highlight code {
+        padding: 0.8rem 1rem;
+      }
+
+      h3 {
+        margin-top: 20px;
+        border-bottom: 1px solid $light-gray;
+      }
+
+      h4 {
+        margin-top: 40px;
+      }
+
+      h3+h4 {
+        margin-top: 0;
+      }
+
+      .footnotes {
+        font-size: 80%;
+        margin-top: 44px;
+        margin-bottom: 28px;
+
+        p {
+          margin-bottom: 8px;
+        }
+      }
+    }
+
+    .tags {
+      font-size: 0.9em;
+      margin: 1em 0 0 0;
+      @include span-columns(12);
+
+      @include media($tablet) {
+        margin: 1em 0;
+        @include span-columns(6);
+      }
+
+      .tags-label {
+        display: block;
+        font-weight: bold;
+      }
+
+      a {
+        display: inline-block;
+      }
+    }
+
+    .share {
+      font-weight: bold;
+      margin: 0 0 1em 0;
+      @include span-columns(12);
+
+      @include media($tablet) {
+        @include span-columns(6);
+        margin: 1em 0;
+        text-align: right;
+      }
+
+      a {
+        width: 1em;
+        padding: 0 0.25em;
+        text-decoration: none;
+      }
+    }
+
+    .disqus {
+      @include span-columns(12);
+    }
+
+    .post-navigation {
+      font-size: 0.9em;
+      display: block;
+      width: auto;
+
+      .prev-post {
+        display: block;
+        width: 50%;
+        float: left;
+        margin: 1em 0;
+      }
+
+      .next-post {
+        display: block;
+        width: 50%;
+        float: left;
+        margin: 1em 0;
+        text-align: right;
+      }
+    }
+  }
+
+  /*
 	*	Pages
 	*/
-	.page {
-		.post-header {
-			padding: 0.5em 1em 1em 1em;
-			text-align: center;
-		}
-		.posts-list {
-			@extend %default-ul;
-			li {
-				padding: modular-scale(-4);
-				padding-left: 0;
-			}
-			.desc {
-				font-size: 0.9em;
-			}
-			.post-date {
-				color: $medium-gray;
-			}
-		}
-		.profile {
-			max-width: 320px;
-			margin: auto;
-			padding-bottom: 0.5em;
- 		}
-	}
+  .page {
+    .post-header {
+      padding: 0.5em 1em 1em 1em;
+      text-align: center;
+    }
+
+    .posts-list {
+      @extend %default-ul;
+
+      li {
+        padding: modular-scale(-4);
+        padding-left: 0;
+      }
+
+      .desc {
+        font-size: 0.9em;
+      }
+
+      .post-date {
+        color: $medium-gray;
+      }
+    }
+
+    .profile {
+      max-width: 320px;
+      margin: auto;
+      padding-bottom: 0.5em;
+    }
+  }
 
   /*
    * Profile
    */
   .profile-section {
     margin: 0 0 36px;
+
     .profile-item {
       margin: 16px auto;
+
       &.profile-image {
         text-align: center;
+
         img {
           width: 200px;
           height: 200px;
@@ -480,17 +565,20 @@ pre code.hljs {
           border-radius: 50%;
         }
       }
+
       &.profile-name {
         text-align: center;
         font-size: 21px;
         font-weight: bold;
       }
+
       &.profile-description {
         max-width: 580px;
-				margin-top: 20px;
-				p {
-					margin: 0 0 10px;
-				}
+        margin-top: 20px;
+
+        p {
+          margin: 0 0 10px;
+        }
       }
     }
   }
@@ -500,88 +588,106 @@ pre code.hljs {
 *	Footer
 */
 .site-footer {
-	$link-color: $white;
-	padding: 1em 1em 2em 1em;
-	background-color: $highlight-color;
-	color: $white;
-	a {
-	  color: $link-color;
-	  &:active,
-	  &:focus,
-	  &:hover {
-	    color: darken($link-color, 10%);
-	  }
-	  &:active,
-	  &:focus {
-	    outline: none;
-	  }
-	}
-	.wrapper {
-		@include outer-container;
-	}
-	.footer-heading {
+  $link-color: $white;
+  padding: 1em 1em 2em 1em;
+  background-color: $highlight-color;
+  color: $white;
 
-	}
-	/*
+  a {
+    color: $link-color;
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: darken($link-color, 10%);
+    }
+
+    &:active,
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .wrapper {
+    @include outer-container;
+  }
+
+  .footer-heading {}
+
+  /*
 	*	Site Navigation (left)
 	*/
-	.site-navigation {
-		@include span-columns(12);
-		@include media ($mobile) {
-			@include span-columns(6);
-		}
-		@include media ($tablet) {
-			@include span-columns(4);
-		}
-		font-size: 0.9em;
-		ul {
-			@extend %default-ul;
-		}
-	}
-	/*
+  .site-navigation {
+    @include span-columns(12);
+
+    @include media($mobile) {
+      @include span-columns(6);
+    }
+
+    @include media($tablet) {
+      @include span-columns(4);
+    }
+
+    font-size: 0.9em;
+
+    ul {
+      @extend %default-ul;
+    }
+  }
+
+  /*
 	*	Contact Info (center)
 	*/
-	.site-contact {
-		margin-top: 1em;
-		@include span-columns(12);
-		@include media ($mobile) {
-			@include span-columns(6);
-			margin-top: 0;
-			margin-right: 0;
-		}
-		@include media ($tablet) {
-			@include span-columns(4);
-			margin-top: 0;
-		}
-		font-size: 0.9em;
-		i {
-			width: 1.25em;
-			text-align: center;
-		}
-		ul {
-			@extend %default-ul;
-		}
-	}
-	/*
+  .site-contact {
+    margin-top: 1em;
+    @include span-columns(12);
+
+    @include media($mobile) {
+      @include span-columns(6);
+      margin-top: 0;
+      margin-right: 0;
+    }
+
+    @include media($tablet) {
+      @include span-columns(4);
+      margin-top: 0;
+    }
+
+    font-size: 0.9em;
+
+    i {
+      width: 1.25em;
+      text-align: center;
+    }
+
+    ul {
+      @extend %default-ul;
+    }
+  }
+
+  /*
 	*	Site Description/Signature (right)
 	*/
-	.site-signature {
-		margin-top: 1em;
-		@include span-columns(12);
-		@include media ($tablet) {
-			@include span-columns(4);
-			margin-right: 0;
-			margin-top: 0;
-		}
-		font-size: 0.9em;
-		a {
-			text-decoration: underline;
-		}
-	}
+  .site-signature {
+    margin-top: 1em;
+    @include span-columns(12);
 
-	.copyright {
-		text-align: center;
-		margin: 24px auto 0 auto;
-		font-size: 12px;
-	}
+    @include media($tablet) {
+      @include span-columns(4);
+      margin-right: 0;
+      margin-top: 0;
+    }
+
+    font-size: 0.9em;
+
+    a {
+      text-decoration: underline;
+    }
+  }
+
+  .copyright {
+    text-align: center;
+    margin: 24px auto 0 auto;
+    font-size: 12px;
+  }
 }

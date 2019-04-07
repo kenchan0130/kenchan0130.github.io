@@ -10,9 +10,9 @@
       <ul class="pages">
         {% for page in site.pages %}
         {% if page.title and (page.nav == true or page.nav == "only-footer") %}
-          <li class="nav-link"><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
-        {% endif %}
-        {% endfor %}
+        <li class="nav-link"><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
+          {% endif %}
+          {% endfor %}
       </ul>
     </div>
 
@@ -22,21 +22,23 @@
       <ul class="social-media-list">
 
         {% for social in site.social %}
-          {% if social.url != null %}
-          <li>
-            <a href="{{ social.url }}" title="{{ social.desc }}">
-              <i class="fab fa-{{ social.icon }}"></i>
-              <span class="username">{% if social.username %}{{ social.username }}{% else %}{{ social.name }}{% endif %}</span>
-            </a>
-          </li>
-          {% endif %}
+        {% if social.url != null %}
+        <li>
+          <a href="{{ social.url }}" title="{{ social.desc }}">
+            <i class="fab fa-{{ social.icon }}"></i>
+            <span
+              class="username">{% if social.username %}{{ social.username }}{% else %}{{ social.name }}{% endif %}</span>
+          </a>
+        </li>
+        {% endif %}
         {% endfor %}
 
       </ul>
     </div>
 
     <div class="site-signature">
-      <p class="rss-subscribe text"><strong>Subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></strong></p>
+      <p class="rss-subscribe text"><strong>Subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via
+            RSS</a></strong></p>
       <p class="text">{{ site.description }}</p>
     </div>
 
@@ -50,34 +52,34 @@
 <!-- Scripts -->
 {% endcomment %}
 {% if site.external_lib.jquery %}
-<script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js" {% if site.external_lib.jquery.async %}async{% endif %}></script>
-{% endif %}
-{% if site.external_lib.highlight_js %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/{{ site.external_lib.highlight_js.version }}/highlight.min.js" {% if site.external_lib.highlight_js.async %}async{% endif %}></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js"
+  {% if site.external_lib.jquery.async %}async{% endif %}></script>
 {% endif %}
 {% if site.external_lib.lightbox2 %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js" {% if site.external_lib.lightbox2.async %}async{% endif %}></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js"
+  {% if site.external_lib.lightbox2.async %}async{% endif %}></script>
 {% endif %}
 {% if site.external_lib.lazysizes %}
-<script src="//cdnjs.cloudflare.com/ajax/libs/lazysizes/{{ site.external_lib.lazysizes.version }}/lazysizes.min.js" {% if site.external_lib.lazysizes.async %}async{% endif %}></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lazysizes/{{ site.external_lib.lazysizes.version }}/lazysizes.min.js"
+  {% if site.external_lib.lazysizes.async %}async{% endif %}></script>
 {% endif %}
 
 {% if site.custom_js && page.custom_js %}
 {% comment %}
 <!-- Custom page specific js files -->
 {% endcomment %}
-  {% assign everything_js = page.custom_js | concat: site.custom_js | uniq %}
-  {% for js_file in everything_js %}
-    <script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
-  {% endfor %}
+{% assign everything_js = page.custom_js | concat: site.custom_js | uniq %}
+{% for js_file in everything_js %}
+<script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
+{% endfor %}
 {% elsif site.custom_js %}
-  {% for js_file in site.custom_js %}
-    <script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
-  {% endfor %}
+{% for js_file in site.custom_js %}
+<script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
+{% endfor %}
 {% elsif page.custom_js %}
-  {% for js_file in page.custom_js %}
-    <script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
-  {% endfor %}
+{% for js_file in page.custom_js %}
+<script src='/js/{{ js_file }}.js' type="text/javascript" async></script>
+{% endfor %}
 {% endif %}
 
 {% if site.ga_tracking_id %}
@@ -87,7 +89,7 @@
 <script async src="//www.googletagmanager.com/gtag/js?id={{ site.ga_tracking_id }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
   gtag('config', '{{ site.ga_tracking_id }}');
 </script>
