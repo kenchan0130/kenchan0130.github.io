@@ -91,15 +91,20 @@
   {% comment %}
   <!-- External libraries -->
   {% endcomment %}
-  <link rel="stylesheet"
-    href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css">
-  <link rel="stylesheet"
-    href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css">
+  <link rel="preload" as="style"
+    href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css"
+    onload="this.rel='stylesheet'">
+  <link rel="preload" as="style"
+    href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css"
+    onload="this.rel='stylesheet'">
+  <link rel="preload" as="style"
+    href="//use.fontawesome.com/releases/v{{ site.external_lib.font-awesome.version }}/css/all.css"
+    onload="this.rel='stylesheet'">
 
   {% comment %}
   <!-- Site styles -->
   {% endcomment %}
-  <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
+  <link rel="stylesheet" href="{{ '/css/main.css' | prepend: site.baseurl }}">
 
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }}"
