@@ -12,16 +12,6 @@
   {% endif %}
 
   {% comment %}
-  <!-- External libraries -->
-  {% endcomment %}
-  <link rel="stylesheet"
-    href="//use.fontawesome.com/releases/v{{ site.external_lib.font-awesome.version }}/css/all.css">
-  <link rel="stylesheet"
-    href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css">
-  <link rel="stylesheet"
-    href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css">
-
-  {% comment %}
   <!-- Favicon and other icons (made with http://www.favicon-generator.org/) -->
   {% endcomment %}
   <link rel="shortcut icon" href="{{ "/assets/icons/favicon.ico" | prepend: site.baseurl }}" type="image/x-icon">
@@ -99,9 +89,18 @@
   {% endif %}
 
   {% comment %}
+  <!-- External libraries -->
+  {% endcomment %}
+  <link rel="stylesheet"
+    href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css">
+  <link rel="stylesheet"
+    href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css">
+
+  {% comment %}
   <!-- Site styles -->
   {% endcomment %}
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
+
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/atom+xml" title="{{ site.title }}"
     href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
