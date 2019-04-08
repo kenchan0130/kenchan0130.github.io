@@ -75,7 +75,7 @@ jobs:
 
       - run:
           name: Test for generated HTML
-          command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --disable-external
+          command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --disable-external --check-img-http --assume-extension
 
       - run:
           name: Deploy development branch to master
