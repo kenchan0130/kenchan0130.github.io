@@ -45,8 +45,6 @@ module Jekyll
       "#{context.registers[:site].config['baseurl']}/assets/#{path}/#{parameters.filename}".gsub(%r{\/{2,}}, '/')
     end
 
-    private
-
     class Parameters
       def initialize(parameters)
         @parameters = parameters
