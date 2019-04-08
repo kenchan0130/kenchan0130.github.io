@@ -36,15 +36,7 @@ module Jekyll
       parameters = Parameters.new(Liquid::Template.parse(@markup).render(context).strip)
 
       page = context.environments.first['page']
-      post_id = parameters.post_id.empty? ? page['id'] : parameters.post_id
-
-      path = if post_id
-               # if a post
-               posts = context.registers[:site].posts
-               extract_post_path(post_id, posts)
-             else
-               page['url']
-             end
+      path = "posts/#{page['url']}"
 
       # strip filename
       path = File.dirname(path) if path.match?(/\.\w+\z/)
@@ -54,19 +46,6 @@ module Jekyll
     end
 
     private
-
-    def extract_post_path(page_id, posts)
-      # loop through posts to find match and get slug, method calls for Jekyll 3
-      posts.docs.each do |post|
-        next unless post.id == page_id
-
-        splited_post_file_name = post.basename_without_ext.split('-')
-        splited_post_file_name.pop
-        return "posts/#{splited_post_file_name.join('-')}/#{post.data['slug']}"
-      end
-
-      ''
-    end
 
     class Parameters
       def initialize(parameters)
