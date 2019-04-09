@@ -27,10 +27,6 @@ profile_images:
   - "/assets/profile_hi.png"
   - "/assets/profile_standard.png"
 
-stylesheet_rel_types:
-  - preload
-  - prefetch
-
 # External library versions
 external_lib:
   lightbox2:
@@ -44,6 +40,9 @@ external_lib:
   lazysizes:
     async: true
     version: "4.1.5"
+  loadcss:
+    async: true
+    version: "2.1.0"
   pygments:
     theme: "manni"
 

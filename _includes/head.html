@@ -91,17 +91,25 @@
   {% comment %}
   <!-- External libraries -->
   {% endcomment %}
-  {% for rel_type in site.stylesheet_rel_types %}
-  <link rel="{{ rel_type }}" as="style"
+  <link rel="preload" as="style"
     href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css"
     onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="{{ rel_type }}" as="style"
+  <noscript><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/css/lightbox.min.css"></noscript>
+
+  <link rel="preload" as="style"
     href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css"
     onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="{{ rel_type }}" as="style"
+  <noscript><link rel="stylesheet" href="//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/{{ site.external_lib.pygments.theme }}.css"></noscript>
+
+  <link rel="preload" as="style"
     href="//use.fontawesome.com/releases/v{{ site.external_lib.font-awesome.version }}/css/all.css"
     onload="this.onload=null;this.rel='stylesheet'">
-  {% endfor %}
+  <noscript><link rel="stylesheet" href="//use.fontawesome.com/releases/v{{ site.external_lib.font-awesome.version }}/css/all.css"></noscript>
+
+  {% if site.external_lib.loadcss %}
+  <script src="//cdnjs.cloudflare.com/ajax/libs/loadCSS/{{  site.external_lib.lazysizes.version }}/cssrelpreload.min.js"
+    {% if site.external_lib.loadcss.async %}async{% endif %}></script>
+  {% endif %}
 
   {% comment %}
   <!-- Site styles -->
