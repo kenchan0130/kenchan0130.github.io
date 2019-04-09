@@ -1,7 +1,7 @@
-version: 2
+version: 2.1
 
-jobs:
-  build:
+executors:
+  jekyll:
     working_directory: ~/kenchan0130.github.io
     docker:
       - image: circleci/ruby:2.6-node
@@ -16,10 +16,9 @@ jobs:
           LC_ALL: C.UTF-8
           LANGUAGE: ja_JP.UTF-8
 
+commands:
+  ruby-dependencies:
     steps:
-      - checkout
-
-      # Ruby dependencies
       - restore_cache:
           keys:
             - v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
@@ -35,9 +34,9 @@ jobs:
           paths:
             - vendor/bundle
           key: v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
-      # Ruby dependencies end
 
-      # Node dependencies
+  node-dependencies:
+    steps:
       - restore_cache:
           keys:
             - v1-node-dependencies-{{ checksum "yarn.lock" }}
@@ -55,7 +54,15 @@ jobs:
             - node_modules/
             - ~/.cache/yarn
           key: v1-node-dependencies-{{ checksum "yarn.lock" }}
-      # Node dependencies end
+
+jobs:
+  build:
+    executor:
+      name: jekyll
+    steps:
+      - checkout
+      - ruby-dependencies
+      - node-dependencies
 
       - run:
           name: YAML Style Check
@@ -85,3 +92,33 @@ jobs:
               git config --global user.email "<>"
               bundle exec rake deploy --trace
             fi
+
+  nightly-build:
+    executor:
+      name: jekyll
+    steps:
+      - checkout
+      - ruby-dependencies
+
+      - run:
+          name: Build Jekyll
+          command: bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination $JEKYLL_BUILD_DESTINATION_PATH
+
+      - run:
+          name: Check external links for generated HTML
+          command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --check-img-http --assume-extension
+
+workflows:
+  commit-workflow:
+    jobs:
+      - build
+  check-external-link-workflow:
+    triggers:
+      - schedule:
+          cron: "00 18 * * *" # UTC
+          filters:
+            branches:
+              only:
+                - development
+    jobs:
+      - nightly-build
