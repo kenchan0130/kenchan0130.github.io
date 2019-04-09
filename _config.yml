@@ -27,6 +27,10 @@ profile_images:
   - "/assets/profile_hi.png"
   - "/assets/profile_standard.png"
 
+stylesheet_rel_types:
+  - preload
+  - prefetch
+
 # External library versions
 external_lib:
   lightbox2:
