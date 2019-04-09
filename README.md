@@ -17,7 +17,8 @@ bundle exec jekyll s --watch --future
 ## Test
 
 ```sh
-bundle exec htmlproofer ./_site --check-html --disable-external
+bundle exec jekyll build --config "_config.yml,_config_production.yml"
+bundle exec htmlproofer ./_site/ --check-html --check-img-http --assume-extension
 ```
 
 ## Deployment
