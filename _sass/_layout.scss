@@ -280,9 +280,9 @@ pre.highlight {
 
     .post-categories {
       @include span-columns(6);
-      margin-right: 0;
       text-align: right;
       font-size: 0.9em;
+      color: $action-color;
     }
   }
 
