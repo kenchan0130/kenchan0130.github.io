@@ -14,7 +14,8 @@
     },
     "no-doubled-conjunctive-particle-ga": true,
     "no-nfd": true,
-    "@textlint-rule/no-invalid-control-character": true
+    "@textlint-rule/no-invalid-control-character": true,
+    "no-hankaku-kana": true
   },
   "filters": {
     "comments": true
