@@ -20,7 +20,7 @@ layout: default
       <div class="post-date">{{ page.date | date: "%F" }}</div>
       <div class="post-categories">
         {% if page.categories.size > 0 %}
-        <i class="fas fa-fw fa-archive"></i>
+        <i class="fas fa-fw fa-book"></i>
         {% for cat in page.categories %}
         {% if site.jekyll-archives %}
         <a href=" {{ site.baseurl }}/category/{{ cat | downcase | slugify }}">{{ cat }} </a>
