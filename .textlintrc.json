@@ -5,7 +5,16 @@
     },
     "preset-ja-spacing": true,
     "ja-unnatural-alphabet": true,
-    "ja-no-abusage": true
+    "ja-no-abusage": true,
+    "no-mix-dearu-desumasu": {
+      "preferInHeader": "",
+      "preferInBody": "ですます",
+      "preferInList": "",
+      "strict": false
+    },
+    "no-doubled-conjunctive-particle-ga": true,
+    "no-nfd": true,
+    "@textlint-rule/no-invalid-control-character": true
   },
   "filters": {
     "comments": true
