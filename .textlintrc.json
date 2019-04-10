@@ -16,7 +16,8 @@
     "no-nfd": true,
     "@textlint-rule/no-invalid-control-character": true,
     "no-hankaku-kana": true,
-    "ja-no-redundant-expression": true
+    "ja-no-redundant-expression": true,
+    "prefer-tari-tari": true
   },
   "filters": {
     "comments": true
