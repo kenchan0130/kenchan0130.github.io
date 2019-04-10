@@ -5,14 +5,22 @@
   "author": "Tadayuki Onishi",
   "license": "MIT",
   "scripts": {
-    "lint": "textlint -f pretty-error *.{md,html} posts/",
-    "lint:fix": "textlint --fix *.{md,html} posts/"
+    "lint": "textlint -f pretty-error *.{md,html} _posts/ _pages/",
+    "lint:dryrun:fix": "textlint --fix --dry-run --format diff *.{md,html} _posts/ _pages/",
+    "lint:fix": "textlint --fix *.{md,html} _posts/ _pages/"
   },
   "devDependencies": {
+    "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
     "textlint": "^11.2.3",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-ja-no-abusage": "^1.2.2",
+    "textlint-rule-ja-no-redundant-expression": "^3.0.1",
     "textlint-rule-ja-unnatural-alphabet": "^2.0.1",
+    "textlint-rule-no-doubled-conjunctive-particle-ga": "^1.1.0",
+    "textlint-rule-no-hankaku-kana": "^1.0.2",
+    "textlint-rule-no-mix-dearu-desumasu": "^4.0.0",
+    "textlint-rule-no-nfd": "^1.0.1",
+    "textlint-rule-prefer-tari-tari": "^1.0.3",
     "textlint-rule-preset-ja-spacing": "^2.0.1",
     "textlint-rule-preset-jtf-style": "^2.3.3"
   }
