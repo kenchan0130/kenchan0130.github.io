@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "textlint -f pretty-error *.{md,html} _posts/ _pages/",
-    "lint:dryrun:fix": "textlint --fix --dry-run *.{md,html} _posts/ _pages/",
+    "lint:dryrun:fix": "textlint --fix --dry-run --format diff *.{md,html} _posts/ _pages/",
     "lint:fix": "textlint --fix *.{md,html} _posts/ _pages/"
   },
   "devDependencies": {
