@@ -15,7 +15,8 @@
     "no-doubled-conjunctive-particle-ga": true,
     "no-nfd": true,
     "@textlint-rule/no-invalid-control-character": true,
-    "no-hankaku-kana": true
+    "no-hankaku-kana": true,
+    "ja-no-redundant-expression": true
   },
   "filters": {
     "comments": true

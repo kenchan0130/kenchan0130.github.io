@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "textlint -f pretty-error *.{md,html} _posts/ _pages/",
+    "lint:dryrun:fix": "textlint --fix --dry-run *.{md,html} _posts/ _pages/",
     "lint:fix": "textlint --fix *.{md,html} _posts/ _pages/"
   },
   "devDependencies": {
@@ -13,6 +14,7 @@
     "textlint": "^11.2.3",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-ja-no-abusage": "^1.2.2",
+    "textlint-rule-ja-no-redundant-expression": "^3.0.1",
     "textlint-rule-ja-unnatural-alphabet": "^2.0.1",
     "textlint-rule-no-doubled-conjunctive-particle-ga": "^1.1.0",
     "textlint-rule-no-hankaku-kana": "^1.0.2",
