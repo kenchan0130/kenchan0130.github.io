@@ -39,17 +39,7 @@ layout: default
 
     {% include advertisement-post-footer.html %}
 
-    {% if site.jekyll-archives %}
-    {% if page.tags.size > 0 %}
-    <section class="tags">
-      <span class="tags-label">Tags:</span> {% for tag in page.tags %}<a
-        href="{{ site.baseurl }}/tag/{{ tag | downcase | slugify }}">{{ tag }}</a>{% if forloop.last == false %},&nbsp;{% endif %}{% endfor %}
-    </section>
-    {% endif %}
-    {% endif %}
-
     <section class="share">
-      <span class="share-label">Share: </span>
       {% for social in site.social %}
       {% capture full_url %}{{ site.url }}{{ site.baseurl }}{{ page.url }}{% endcapture %}
       {% if social.name == "Twitter" and social.share == true %}
@@ -72,6 +62,21 @@ layout: default
       {% endif %}
       {% endfor %}
     </section>
+
+    {% if site.jekyll-archives %}
+    {% if page.tags.size > 0 %}
+    <section class="tags">
+      <div class="tags-container">
+        <div class="tags-title">Tags</div>
+        <div class="tags-contents">
+          {% for tag in page.tags %}
+          <a href="{{ site.baseurl }}/tag/{{ tag | downcase | slugify }}">{{ tag }}</a>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    {% endif %}
+    {% endif %}
 
     {% if site.inter_post_navigation == true %}
     <section class="post-navigation">
