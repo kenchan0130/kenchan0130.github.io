@@ -35,6 +35,8 @@ code.highlighter-rouge {
   display: inline-block;
   border-radius: 3px;
   padding: 0 3px;
+  overflow: auto;
+  white-space: pre-wrap;
   overflow-wrap: break-word;
   max-width: 100%;
 }
@@ -46,6 +48,8 @@ pre.highlight {
     display: inline-block;
     border-radius: 3px;
     padding: 0 3px;
+    overflow: auto;
+    white-space: pre-wrap;
     overflow-wrap: break-word;
     max-width: 100%;
   }
