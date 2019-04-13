@@ -37,8 +37,6 @@ layout: default
       {{ content }}
     </article>
 
-    {% include advertisement-post-footer.html %}
-
     <section class="share">
       {% for social in site.social %}
       {% capture full_url %}{{ site.url }}{{ site.baseurl }}{{ page.url }}{% endcapture %}
@@ -62,6 +60,8 @@ layout: default
       {% endif %}
       {% endfor %}
     </section>
+
+    {% include advertisement-post-footer.html %}
 
     {% if site.jekyll-archives %}
     {% if page.tags.size > 0 %}
