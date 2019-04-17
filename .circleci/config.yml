@@ -116,7 +116,7 @@ workflows:
   check-external-link-workflow:
     triggers:
       - schedule:
-          cron: "00 18 * * *" # UTC
+          cron: "00 00 * * *" # UTC (JST +9)
           filters:
             branches:
               only:
