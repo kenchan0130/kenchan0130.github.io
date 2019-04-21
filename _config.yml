@@ -43,12 +43,15 @@ external_lib:
   loadcss:
     async: true
     version: "2.1.0"
+  tablesorter:
+    version: "2.31.1" 
   pygments:
     theme: "manni"
 
 custom_js:
   - navigation-menu
   - smallchat
+  - tablesorter
 
 # Build settings
 markdown: kramdown
