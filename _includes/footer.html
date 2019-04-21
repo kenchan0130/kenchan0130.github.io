@@ -55,6 +55,11 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/{{ site.external_lib.jquery.version }}/jquery.min.js"
   {% if site.external_lib.jquery.async %}async{% endif %}></script>
 {% endif %}
+{% if site.external_lib.tablesorter %}
+<script
+  src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/{{ site.external_lib.tablesorter.version }}/js/jquery.tablesorter.min.js"
+  {% if site.external_lib.tablesorter.async %}async{% endif %}></script>
+{% endif %}
 {% if site.external_lib.lightbox2 %}
 <script src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/{{ site.external_lib.lightbox2.version }}/js/lightbox.min.js"
   {% if site.external_lib.lightbox2.async %}async{% endif %}></script>

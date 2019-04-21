@@ -22,4 +22,59 @@ tr,
 td,
 th {
   vertical-align: middle;
+  overflow-wrap: break-word;
+}
+
+// tablesorter specific css
+.tablesorter {
+  th:not(.sorter-false) {
+    cursor: pointer;
+    outline: none;
+    position: relative;
+
+    &.tablesorter-headerAsc {
+      &:after {
+        font-family: "Font Awesome 5 Free";
+        content: "\f0de";
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        margin-top: -7px;
+        width: 14px;
+        height: 14px;
+        background-repeat: no-repeat;
+        line-height: 14px;
+      }
+    }
+
+    &.tablesorter-headerDesc {
+      &:after {
+        font-family: "Font Awesome 5 Free";
+        content: "\f0dd";
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        margin-top: -7px;
+        width: 14px;
+        height: 14px;
+        background-repeat: no-repeat;
+        line-height: 14px;
+      }
+    }
+
+    &.tablesorter-headerUnSorted {
+      &:after {
+        font-family: "Font Awesome 5 Free";
+        content: "\f0dc";
+        position: absolute;
+        right: 5%;
+        top: 50%;
+        margin-top: -7px;
+        width: 14px;
+        height: 14px;
+        background-repeat: no-repeat;
+        line-height: 14px;
+      }
+    }
+  }
 }

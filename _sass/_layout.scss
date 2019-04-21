@@ -276,13 +276,13 @@ pre.highlight {
     color: $medium-gray;
 
     .post-date {
-      @include span-columns(6);
+      @include span-columns(4);
       text-align: left;
       font-size: 0.9em;
     }
 
     .post-categories {
-      @include span-columns(6);
+      @include span-columns(8);
       text-align: right;
       font-size: 0.9em;
       color: $action-color;
