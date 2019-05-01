@@ -1,5 +1,8 @@
 {
   "rules": {
+    "prh": {
+      "rulePaths" :[".textlint-prh/WEB+DB_PRESS.yml"]
+    },
     "preset-jtf-style": {
       "1.1.3.箇条書き": false
     },
@@ -20,6 +23,13 @@
     "prefer-tari-tari": true
   },
   "filters": {
-    "comments": true
+    "comments": true,
+    "whitelist": {
+      "allow": [
+        "/「.+」/",
+        "/\\{%.+%\\}/",
+        "/\\w+\\.(c|cpp|css|gif|html|java|jpeg|jpg|js|jsx|pl|png|r|rb|scss|ts|txt|xml|yml|yaml)/i"
+      ]
+    }
   }
 }
