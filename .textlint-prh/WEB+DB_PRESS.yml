@@ -675,8 +675,9 @@ rules:
     expected: にく$1
   - pattern: /の様([なにだで])/
     expected: のよう$1
-  - pattern: /育([まみむめもん])/
-    expected: はぐく$1
+  - pattern: /([\u4E00-\u9FFF])?育([まみむめもん])/
+    expected: はぐく$2
+    regexpMustEmpty: $1
   - pattern: /(手)?筈/
     expected: はず
     regexpMustEmpty: $1
