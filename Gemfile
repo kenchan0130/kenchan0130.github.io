@@ -1,12 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'html-proofer'
 gem 'jekyll'
 gem 'jekyll-minifier'
-gem 'rake-jekyll'
-
-gem 'rubocop'
-gem 'yamllint'
 
 group :jekyll_plugins do
   gem 'jekyll-archives'
@@ -19,5 +14,10 @@ group :jekyll_plugins do
 end
 
 group :development do
+  gem 'circleci-bundle-update-pr'
+  gem 'html-proofer'
   gem 'pry-byebug'
+  gem 'rake-jekyll'
+  gem 'rubocop'
+  gem 'yamllint'
 end
