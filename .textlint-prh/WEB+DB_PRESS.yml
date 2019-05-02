@@ -1069,14 +1069,14 @@ rules:
     expected: 先ほど
   - pattern: 本紙
     expected: 本誌
-  # - pattern: /基([いかきくけこ])|基ず([いかきくけこ])|もとず([いかきくけこ])|もとづ([いかきくけこ])/
-  #   expected: 基づ$1
+  - pattern: /基([いかきくけこ])|基ず([いかきくけこ])|もとず([いかきくけこ])/
+    expected: もとづ$1
+  - pattern: /基([^数準盤板底礎本])/
+    expected: もと$1
   - pattern:
       - 元々
       - 本々
     expected: もともと
-  # - pattern: /基([^数準盤板底礎本])/
-  #   expected: もと$1
   - pattern: /(追)?及び/
     expected: および
     regexpMustEmpty: $1
