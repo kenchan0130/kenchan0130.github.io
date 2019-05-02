@@ -5,12 +5,14 @@
   "author": "Tadayuki Onishi",
   "license": "MIT",
   "scripts": {
+    "ci-yarn-upgrade": "ci-yarn-upgrade --execute --verbose --latest",
     "lint": "textlint -f pretty-error *.{html} _posts/ _pages/",
-    "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/",
-    "lint:fix": "textlint --fix *.{html} _posts/ _pages/"
+    "lint:fix": "textlint --fix *.{html} _posts/ _pages/",
+    "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/"
   },
   "devDependencies": {
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
+    "ci-yarn-upgrade": "^0.7.6",
     "textlint": "^11.2.3",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-filter-rule-whitelist": "^2.0.0",
