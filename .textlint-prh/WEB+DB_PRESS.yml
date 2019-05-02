@@ -162,10 +162,14 @@ rules:
       - よっつ
       - 四つ
     expected: 4つ
-  - pattern:
-      - /[^\u4E00-\u9FFF]いつつ/
-      - 五つ
+  - pattern: /([\u4E00-\u9FFF])?いつつ/
     expected: 5つ
+    regexpMustEmpty: $1
+    specs:
+      - from: いつつ
+        to: 5つ
+      - from: 整いつつ
+        to: 整いつつ
   - pattern:
       - むっつ
       - 六つ
@@ -328,8 +332,14 @@ rules:
     expected: いちいち
   - pattern: /何時([^間])/
     expected: いつ$1
-  - pattern: /(?!一杯)一杯(?!一杯)/
+  - pattern: /(一杯)?一杯/
     expected: いっぱい
+    regexpMustEmpty: $1
+    specs:
+      - from: 一杯
+        to: いっぱい
+      - from: 一杯一杯
+        to: 一杯一杯
   - pattern: /厭([わいうえおっ])/
     expected: いと$1
   - pattern: おります
@@ -412,8 +422,9 @@ rules:
     expected: くく$1
   - pattern: 下さい
     expected: ください
-  - pattern: /([^解])決して|([^解])けして/
-    expected: $1けっして
+  - pattern: /(解)?(決|け)して/
+    expected: けっして
+    regexpMustEmpty: $1
   - pattern: /拘([らりるれろっ])/
     expected: こだわ$1
   - pattern: 諺
@@ -450,8 +461,9 @@ rules:
     expected: しかけ
   - pattern: 仕方
     expected: しかた
-  - pattern: /([^正率垂安素愚])直に/
-    expected: $1じかに
+  - pattern: /([正率垂安素愚])?直に/
+    expected: じかに
+    regexpMustEmpty: $1
   - pattern: /仕組([^み])/
     expected: しくみ$1
   - pattern: 仕組み
@@ -577,8 +589,9 @@ rules:
         to:   わかっていない
       - from: 消えてなくなる
         to:   消えてなくなる
-  - pattern: /([^捨当立])てる/
-    expected: $1ている
+  - pattern: /([捨当立])?てる/
+    expected: ている
+    regexpMustEmpty: $1
   - pattern: /出来([かがのをは過す損ずなまるたれてそ])/
     expected: でき$1
   - pattern:
@@ -635,8 +648,9 @@ rules:
       - 取り合えず
       - 取り敢えず
     expected: とりあえず
-  - pattern: /([^有])無([かくいけし])/
-    expected: $1な$2
+  - pattern: /(有)?無([かくいけし])/
+    expected: な$2
+    regexpMustEmpty: $1
   - pattern: /尚([^早徳])/
     expected: なお$1
   - pattern:
@@ -663,8 +677,16 @@ rules:
     expected: のよう$1
   - pattern: /育([まみむめもん])/
     expected: はぐく$1
-  - pattern: /([^手])筈/
-    expected: $1はず
+  - pattern: /(手)?筈/
+    expected: はず
+    regexpMustEmpty: $1
+    specs:
+      - from: る筈
+        to: るはず
+      - from: 筈
+        to: はず
+      - from: 手筈
+        to: 手筈
   - pattern: 甚だ
     expected: はなはだ
   - pattern: /孕([まみむめもんっ])/
@@ -800,6 +822,13 @@ rules:
     expected: 高め
   - pattern: /([のる])かわり/
     expected: $1代わり
+    specs:
+      - from: のかわり
+        to: の代わり
+      - from: るかわり
+        to: る代わり
+      - from: にかわり
+        to: にかわり
   - pattern: /代([らりるれろっ])/
     expected: 代わ$1
   - pattern: 全て
@@ -964,8 +993,9 @@ rules:
     expected: いまさら
   - pattern: 今頃
     expected: 今ごろ
-  - pattern: /([^な])いままで/
-    expected: $1今まで
+  - pattern: /(な)?いままで/
+    expected: 今まで
+    regexpMustEmpty: $1
   - pattern: 今時
     expected: 今どき
   - pattern: 今更
@@ -974,8 +1004,14 @@ rules:
     expected: なおさら
   - pattern: 更なる
     expected: さらなる
-  - pattern: /([^変])更に/
+  - pattern: /(変)?更に/
     expected: さらに
+    regexpMustEmpty: $1
+    specs:
+      - from: 変更に
+        to: 変更に
+      - from: 更に
+        to: さらに
   - pattern: やむをえ|止むを得
     expected: やむを得
   - pattern: すこし
@@ -1014,8 +1050,9 @@ rules:
     expected: 生まれ
   - pattern: それ故
     expected: それゆえ
-  - pattern: /([^事])故に/
-    expected: $1ゆえに
+  - pattern: /(事)?故に/
+    expected: ゆえに
+    regexpMustEmpty: $1
   - pattern: 程々
     expected: ほどほど
   - pattern: これ程
@@ -1040,8 +1077,14 @@ rules:
     expected: もともと
   # - pattern: /基([^数準盤板底礎本])/
   #   expected: もと$1
-  - pattern: /([^追])及び/
-    expected: $1および
+  - pattern: /(追)?及び/
+    expected: および
+    regexpMustEmpty: $1
+    specs:
+      - from: 及び
+        to: および
+      - from: 追及び
+        to: 追及び
   - pattern: した上
     expected: したうえ
   - pattern: その上
@@ -1076,8 +1119,16 @@ rules:
     expected: 汚$1
   - pattern: /果([さしすせそ])/
     expected: 果た$1
-  - pattern: /([^排人])他([^ァ-ヶ社者人方])/
-    expected: $1ほか$2
+  - pattern: /([排人])?他([^ァ-ヶ社者人方])/
+    expected: ほか$2
+    regexpMustEmpty: $1
+    specs:
+      - from: 排他
+        to: 排他
+      - from: 人他
+        to: 人他
+      - from: 他、
+        to: ほか、
   - pattern: 後ほど
     expected: のちほど
   - pattern: うしろ
@@ -1343,8 +1394,18 @@ rules:
     expected: 難しい
   - pattern: /まか([さしすせそ])/
     expected: 任$1
-  - pattern: /([^っ])伴な|([^っ])ともな/
-    expected: $1伴
+  - pattern: /(っ)?(伴な|ともな)/
+    expected: 伴な
+    regexpMustEmpty: $1
+    specs:
+      - from: ともなう
+        to: 伴なう
+      - from: 伴なう
+        to: 伴なう
+      - from: っ伴な
+        to: っ伴な
+      - from: っともな
+        to: っともな
   - pattern: /悲([まみむめも])/
     expected: 悲し$1
   - pattern:
@@ -1371,8 +1432,14 @@ rules:
     expected: 捕らえ$1
   - pattern: /暮([さしすせそ])/
     expected: 暮ら$1
-  - pattern: /([^鮮])明か/
-    expected: $1明らか
+  - pattern: /(鮮)?明か/
+    expected: 明らか
+    regexpMustEmpty: $1
+    specs:
+      - from: 鮮明か
+        to: 鮮明か
+      - from: 明か
+        to: 明らか
   - pattern: もどって
     expected: 戻って
   - pattern:
@@ -1395,8 +1462,8 @@ rules:
     expected: 挟$1
   - pattern: おそれ
     expected: 恐れ
-  - pattern: /([^っ])さきに/
-    expected: $1先に
+  - pattern: さきに
+    expected: 先に
   - pattern: 自分自信
     expected: 自分自身
   - pattern: /満([さしすせそっ])|みた([さしすせそっ])/
@@ -1639,16 +1706,13 @@ rules:
       - from: ハイパフォーマンス
         to:   ハイパフォーマンス
   - expected: Cookie
-    pattern:  クッキー
-  - expected: Cookie
+    pattern: /クッキ(ー)?/
   - expected: WebSocket
-    pattern:  /\bWeb Socket\b/
-  - expected: $1Web$2
-    pattern:  /(?:([^/])ウェブ)|(?:ウェブ([^/\+]))/
-  - expected: $1Web$2
-    pattern:  /(?:([^/])\bWEB)|(?:WEB\b([^/\+]))/
-  - expected: $1Web$2
-    pattern:  /(?:([^/])ウェッブ)|(?:ウェッブ([^/\+]))/
+    pattern:  /\bWeb Socket\b/i
+  - expected: Web
+    pattern:  /\bWEB\b/i
+  - expected: Web
+    pattern: /ウェ(ッ)?ブ/
   - expected: O/Rマッ
     pattern:  /ORマッ|O-Rマッ/
   - expected: O/Rマッパ
@@ -1670,9 +1734,10 @@ rules:
   - expected: アノテーション
     pattern:  /アノーテーション/
   - expected: アプレット
-    pattern:  /\bApplet\b/
-  - expected: アプリケーション
-    pattern: /^(?!Google)アプリ(?!ケ)/
+    pattern:  /\bApplet\b/i
+  - expected: $1アプリケーション
+    pattern: /(Google)?アプリ(?!ケ)/i
+    regexpMustEmpty: $1
     specs:
       - from: アプリケーション
         to:   アプリケーション
@@ -1703,9 +1768,9 @@ rules:
   - expected: インデックス
     pattern:  /インデクス/
   - expected: インテント
-    pattern:  /\bIntent\b/
+    pattern:  /\bIntent\b/i
   - expected: ウィジェット
-    pattern:  /\bWidget\b|\bwidget\b/
+    pattern:  /\bWidget\b/i
   - expected: ウィルス
     pattern:  /ウイルス/
   - expected: ウィンドウ
@@ -1753,9 +1818,7 @@ rules:
   - expected: キャラクタ
     pattern:  /キャラクター/
   - expected: キャッシュ
-    pattern:
-      - /cache(?![^a-zA-Z\-])/
-      - /Cache(?![^a-zA-Z\-])/
+    pattern: /cache(?![^a-zA-Z\-])/i
   - expected: クエリ文字列
     pattern:
       - QueryString
@@ -1769,13 +1832,7 @@ rules:
   - expected: クオリティ
     pattern:  /クオリティー|クォリティ|クォリティー/
   - expected: クライアント／サーバ
-    pattern:
-      - クライアント/サーバー
-      - クライアント/サーバ
-      - クライアント・サーバー
-      - クライアント・サーバ
-      - クライアントサーバー
-      - クライアントサーバ
+    pattern: /クライアント([/・])?サーバ(ー)?/
     specs:
       - from: クライアント/サーバー
         to:   クライアント／サーバ
@@ -1806,7 +1863,7 @@ rules:
   - expected: コンテキスト
     pattern:  /コンテクスト/
   - expected: コンテントプロバイダ
-    pattern:  /\bContent provider\b/
+    pattern:  /\bContent provider\b/i
   - expected: コンテナ
     pattern:  /コンテナー/
   - expected: コンピュータ
@@ -1818,16 +1875,14 @@ rules:
   - expected: サーバ
     pattern:  /サーバー/
   - expected: サーブレット
-    pattern:
-      - Servlet
-      - SERVLET
+    pattern: /Servlet/i
   - expected: サーブレット/JSP
-    pattern:
-      - サーブレット／JSP
-      - サーブレット＆JSP
-      - サーブレット&JSP
+    pattern: /サーブレット[／＆&]JSP/i
+    specs:
+      - from: サーブレット&JSP
+        to: サーブレット/JSP
   - expected: サンフランシスコ
-    pattern:  /\bSan Francisco\b/
+    pattern:  /\bSan Francisco\b/i
   - expected: シェア
     pattern:  /シェア率/
   - expected: ジェスチャ
@@ -1839,7 +1894,7 @@ rules:
   - expected: ジョブズ
     pattern:  /ジョブス/
   - expected: ジオタグ
-    pattern:  /\bGeotag\b|\bgeotag\b/
+    pattern:  /\bGeotag\b/i
   - expected: シグネチャ
     pattern:  /シグネチャー/
   - expected: シミュレー
@@ -1849,7 +1904,7 @@ rules:
   - expected: スカラ
     pattern:  /スカラー/
   - expected: スクラム
-    pattern:  /\bScrum\b/
+    pattern:  /\bScrum\b/i
   - expected: スタンドアローン
     pattern:  /スタンドアロン/
   - expected: ストアド
@@ -1863,7 +1918,7 @@ rules:
   - expected: セキュリティ
     pattern:  /セキュリティー/
   - expected: セッション
-    pattern:  /\bsession\b|\bSession\b/
+    pattern:  /\bsession\b/i
   - expected: セッタ
     pattern:  /セッター/
   - expected: セレクタ
@@ -1879,40 +1934,33 @@ rules:
       - from: 日経ソフトウエア
         to:   日経ソフトウエア
   - expected: ソフトバンク
-    pattern:  /\bSoftBank\b/
+    pattern:  /SoftBank|ソフバン/i
   - expected: ダイアグラム
     pattern:  /ダイヤグラム/
   - expected: タイムスタンプ
-    pattern:
-      - timestamp
-      - Timestamp
+    pattern: /timestamp/i
   - expected: ツイート
-    pattern:
-      - tweet
-      - Tweet
-      - ツィート
+    pattern: /tweet|ツイート/i
   - expected: ツリーオブジェクト
     pattern:  /ツリー・オブジェクト/
   - expected: ツリーエントリ
     pattern:  /ツリー・エントリ/
   - expected: テーブル
-    pattern:
-      - table
-      - Table
+    pattern: /table/i
   - expected: データサービス
-    pattern:  /\bData Services\b/
+    pattern:  /\bData Services\b/i
   - expected: データ
     pattern:  /データー/
   - expected: データセンター$1
     pattern:  /データセンタ([^ー])/
   - expected: データ同期
-    pattern:  /\bData Sync\b/
+    pattern:  /\bData Sync\b/i
   - expected: チェイン
     pattern:  /チェーン/
   - expected: ディザスタリカバリ
     pattern:  /ディザスタ・リカバリ/
   - expected: ディスク
-    pattern:  /\bDisk\b/
+    pattern:  /\bDisk\b/i
   - expected: ディスパッチャ
     pattern:  /ディスパッチャー/
   - expected: ディスプレイ
@@ -1936,7 +1984,7 @@ rules:
   - expected: ドキュメント
     pattern:  /ドキュメンテーション/
   - expected: ドコモ
-    pattern:  /\bdocomo\b|\bDocomo\b|\bDoCoMo\b/
+    pattern:  /(NTT)?(\s+)?docomo/i
   - expected: ドライバ
     pattern:  /ドライバー/
   - expected: ドラッグ&ドロップ
@@ -1944,7 +1992,7 @@ rules:
   - expected: トリガ
     pattern:  /トリガー/
   - expected: ニューヨーク
-    pattern:  /\bNew York\b/
+    pattern:  /\bNew York\b/i
   - expected: バイナリ
     pattern:  /バイナリー/
   - expected: ハイパーリンク
@@ -1954,15 +2002,15 @@ rules:
   - expected: パーサ
     pattern:  /パーサー|パーザー|パーザ/
   - expected: パーマリンク
-    pattern:  /\bPermalink\b|\bpermalink\b|\bpermanent link\b|パーマネントリンク/
+    pattern:  /\bperma(\s+)?link\b|パーマネントリンク/i
   - expected: バッファ
     pattern:  /バッファー/
   - expected: パス
-    pattern:  /\bpath\b|\bPath\b/
+    pattern:  /\bpath\b/i
   - expected: パターン
     pattern:  /パタン/
   - expected: ハッシュ
-    pattern:  /\bhash\b|\bHash\b/
+    pattern:  /\bhash\b/i
   - expected: バラ
     pattern:  /薔薇/
   - expected: バラエティ
@@ -1980,7 +2028,7 @@ rules:
   - expected: ビルトイン
     pattern:  /ビルドイン/
   - expected: ヒット率
-    pattern:  /hit率/
+    pattern:  /hit率/i
   - expected: ファイラ
     pattern:  /ファイラー/
   - expected: ファクトリ
@@ -1988,10 +2036,7 @@ rules:
   - expected: フィーチャーフォン
     pattern:  /フィーチャフォン/
   - expected: ブラウザ
-    pattern:
-      - /Webブラウザー?/
-      - /WEBブラウザー?/
-      - ブラウザ
+    pattern: /(Web)?ブラウザ(ー)?/i
   - expected: プライマリ
     pattern:  /プライマリー/
   - expected: プラットフォーム
@@ -2024,18 +2069,18 @@ rules:
   - expected: フッタ
     pattern:  /フッター|フッダ/
   - expected: プロキシ
-    pattern:  /プロクシ|プロクシー|プロキシー|\bProxy\b|\bproxy\b/
+    pattern:  /プロクシ|プロクシー|プロキシー|\bproxy\b/i
   - expected: ブログ
-    pattern: /(?![^/])(?:blog|Blog)(?![^/])/
+    pattern: /blog/i
     specs:
-      - from: http://blog.example.com/
-        to:   http://blog.example.com/
-      - from: http://example.com/foo-blog/
-        to:   http://example.com/foo-blog/
+      - from: blog
+        to: ブログ
+      - from: Blog
+        to: ブログ
   - expected: プロシージャ
     pattern:  /プロシージャー/
   - expected: ブロードキャストレシーバ
-    pattern:  /\bBroadcast receiver\b/
+    pattern:  /\bBroadcast receiver\b/i
   - expected: プロバイダ
     pattern:  /プロバイダー/
   - expected: ペアプログラミング$1
@@ -2051,7 +2096,7 @@ rules:
   - expected: ポインタ
     pattern:  /ポインター/
   - expected: ポッドキャスト
-    pattern:  /\bPodCast\b|\bpodcast\b|\bPodcast\b/
+    pattern:  /\bpodcast\b/i
   - expected: ポリモフィズム
     pattern:  /ポリモルフィズム|ポリモーフィズム|ポルモルフィズム/
   - expected: $1マイクロ秒
@@ -2069,7 +2114,7 @@ rules:
   - expected: メーカー
     pattern:  /メーカ(?!ー)/
   - expected: メーリングリスト
-    pattern:  /\bML\b(?!系)/
+    pattern:  /\bML\b(?!系)/i
     specs:
       - from: SML#
         to:   SML#
@@ -2092,7 +2137,7 @@ rules:
   - expected: レジューム
     pattern:  /リジューム/
   - expected: レスポンシブWebデザイン
-    pattern:  /\bResponsive Web Design\b/
+    pattern:  /\bResponsive Web Design\b/i
   - expected: ユーティリティ
     pattern:  /ユーティリティー/
   - expected: ユニットテスト
@@ -2116,7 +2161,7 @@ rules:
   - expected: リスナ
     pattern:  /リスナー/
   - expected: リバースプロキシ
-    pattern:  /\bReverse Proxy\b/
+    pattern:  /\bReverse Proxy\b/i
   - expected: リファラ
     pattern:  /リファラー/
   - expected: リポジトリ
@@ -2146,23 +2191,23 @@ rules:
   - expected: ロングテール
     pattern:  /ロングテイル/
   - expected: ワーカ
-    pattern:  /ワーカー|\bworker\b/
+    pattern:  /ワーカー|\bworker\b/i
   - expected: ワンタイムURL
-    pattern:  /\bOnetime URL\b/
+    pattern:  /\bOnetime URL\b/i
   - expected: クアッドコアCPU
-    pattern:  /\bQuad Core CPU\b/
+    pattern:  /\bQuad Core CPU\b/i
   - expected: クアッドコア
-    pattern:  /クァッドコア|\bQuad Core\b|クァッドCore|Quadコア/
+    pattern:  /クァッドコア|\bQuad Core\b|クァッドCore|Quadコア/i
   - expected: デュアルコアCPU
     pattern:  /\bDual Core CPU\b/
   - expected: デュアルコア
-    pattern:  /\bDual Core\b|デュアルCore|Dualコア/
+    pattern:  /\bDual Core\b|デュアルCore|Dualコア/i
   - expected: マスタ／スレーブ
     pattern:  /マスタ・スレーブ|マスタスレーブ/
   - expected: バックアップ$1
-    pattern:  /\bBackup\b([^.])/
+    pattern:  /\bBackup\b([^.])/i
   - expected: スレーブ$1
-    pattern:  /スレイブ([^.])|\bSlave\b([^.])/
+    pattern:  /スレイブ([^.])|\bSlave\b([^.])/i
   - expected: 記述子
     pattern:  /ディスクリプタ/
   - expected: 属性
@@ -2202,12 +2247,9 @@ rules:
     pattern:  /プロデューサ([^ー])/
   - expected: プランナー$1
     pattern:  /プランナ([^ー])/
-  - expected: $1マスター$2
-    pattern:  /(?:([^ム])マスター)|(?:マスター([^.]))/
-  - expected: $1マスター$2
-    pattern:  /(?:([^ム])\bMaster)|(?:Master\b([^.]))/
-  - expected: $1マスター$2
-    pattern:  /(?:([^ム])\bmaster)|(?:master\b([^.]))/
+  - expected: マスター
+    pattern:  /(ム)?master/i
+    regexpMustEmpty: $1
   - expected: マネージャー$1
     pattern:  /マネージャ([^ー])/
   - expected: メンテナー$1
@@ -2221,39 +2263,39 @@ rules:
   - expected: レビュアー$1
     pattern:  /レビュア([^ー])|レビュワー([^ー])|レビュワ([^ー])|レビューアー([^ー])|レビューア([^ー])|レビューワー([^ー])|レビューワ([^ー])/
   - expected: Action Cable
-    pattern:  /\bActionCable\b/
+    pattern:  /\bActionCable\b/i
   - expected: Action Controller
-    pattern:  /\bActionController\b/
+    pattern:  /\bActionController\b/i
   - expected: Action Mailer
-    pattern:  /\bActionMailer\b/
+    pattern:  /\bActionMailer\b/i
   - expected: Action Pack
-    pattern:  /\bActionPack\b/
+    pattern:  /\bActionPack\b/i
   - expected: ActionScript
     pattern:  /\bAction Script\b|アクションスクリプト/
   - expected: ActionScript $1
-    pattern:  /ActionScript([0-9])/
+    pattern:  /ActionScript([0-9])/i
   - expected: ActionScript Virtual Machine
-    pattern:  /\bActionScriptVirtualMachine\b|\bActionScript VirtualMachine\b/
+    pattern:  /\bActionScript(\s+)?VirtualMachine\b/i
   - expected: Action View
-    pattern:  /\bActionView\b/
+    pattern:  /\bActionView\b/i
   - expected: Active Job
-    pattern:  /\bActiveJob\b/
+    pattern:  /\bActiveJob\b/i
   - expected: Active Model
-    pattern:  /\bActiveModel\b/
+    pattern:  /\bActiveModel\b/i
   - expected: Active Record
-    pattern:  /\bActiveRecord\b/
+    pattern:  /\bActiveRecord\b/i
   - expected: Active Resource
-    pattern:  /\bActiveResource\b/
+    pattern:  /\bActiveResource\b/i
   - expected: Active Support
-    pattern:  /\bActiveSupport\b/
+    pattern:  /\bActiveSupport\b/i
   - expected: ApplicationRecord Application Record
     pattern:  /,,RE,/
   - expected: ApplicationController
-    pattern:  /\bApplication Controller\b/
+    pattern:  /\bApplication Controller\b/i
   - expected: ApplicationRecord
-    pattern:  /\bApplication Record\b/
+    pattern:  /\bApplication Record\b/i
   - expected: ApplicationJob
-    pattern:  /\bApplication Job\b/
+    pattern:  /\bApplication Job\b/i
   - expected: Adobe AIR
     pattern:  /\bAdobe AIR\b/i
   - expected: Akamai
@@ -2261,23 +2303,23 @@ rules:
   - expected: Alias
     pattern:  /\bAilias\b/
   - expected: Amazon Web Services$1
-    pattern:  /\bAmazon Web Service\b([^s])/
+    pattern:  /\bAmazon Web Service\b([^s])/i
   - expected: American Express（Amex）
     pattern:  /アメリカン・エキスプレス|アメックス|アメリカンエクスプレス/
   - expected: Android
-    pattern:  /アンドロイド|\bandroid\b/
+    pattern:  /アンドロイド|\bandroid\b/i
   - expected: Ant
     pattern:  /\bAnt\b/i
   - expected: Apache
     pattern:  /\bapache\b|\bApatch\b|\bapatch\b/
   - expected: Apache $1$2
-    pattern:  /Apache([0-9])|Apatch([0-9])/
+    pattern:  /Apache([0-9])|Apatch([0-9])/i
   - expected: ApiGen
     pattern:  /\bApiGen\b/i
   - expected: APNs
     pattern:  /\bAPNs\b/i
   - expected: App Store
-    pattern:  /\bAppStore\b/
+    pattern:  /\bAppStore\b/i
   - expected: Apple Watch
     pattern:  /\bApple Watch\b/i
   - expected: Apple
@@ -2287,17 +2329,17 @@ rules:
   - expected: APT
     pattern:  /\bAPT\b/i
   - expected: ASP.NET
-    pattern:  /ASP \.NET/
+    pattern:  /ASP \.NET/i
   - expected: Backbone.js
     pattern:  /\bBackbone.js\b/i
   - expected: Babel
     pattern:  /\bBabel\b/i
   - expected: bash
-    pattern:  /\bBash\b/
+    pattern:  /\bBash\b/i
   - expected: Bean
     pattern:  /ビーン/
   - expected: Bigtable
-    pattern:  /\bBigTable\b|\bBig Table\b|\bBig table\b/
+    pattern:  /\bBig(\s+)?table\b/i
   - expected: Bitbucket
     pattern:  /\bBitbucket\b/i
   - expected: Bitcoin
@@ -2308,10 +2350,16 @@ rules:
     pattern:  /\bBlu-ray\b/i
   - expected: Bonnie++
     pattern:  /\bBonnie\+\+\b/i
-  - expected: $1bot
-    pattern:  /([^ロ])ボット/
+  - expected: bot
+    pattern:  /(ロ)?ボット/
+    regexpMustEmpty: $1
+    specs:
+      - from: ロボット
+        to: ロボット
+      - from: クロールボット
+        to: クロールbot
   - expected: bstract
-    pattern:  /\bbsctract\b|\bbscract\b/
+    pattern:  /\bbsctract\b|\bbscract\b/i
   - expected: Bundler
     pattern:  /\bBundler\b/i
   - expected: CakePHP
@@ -2319,17 +2367,17 @@ rules:
   - expected: CakePHP $1
     pattern:  /CakePHP([0-9])/
   - expected: Capistrano
-    pattern:  /\bCapistorano\b|\bcapistrano\b/
+    pattern:  /\bCapistorano\b/i
   - expected: Capybara
     pattern:  /\bCapybara\b/i
   - expected: CarrierWave
     pattern:  /\bCarrierWave\b/i
   - expected: CentOS
-    pattern:  /\bCent OS\b/
+    pattern:  /\bCent OS\b/i
   - expected: Chef
     pattern:  /\bChef\b/i
   - expected: Chrome Web Store
-    pattern:  /Chromeウェブストア|Chrome Webストア/
+    pattern:  /Chromeウェブストア|Chrome Webストア/i
   - expected: Chromium
     pattern:  /\bChronium\b/
   - expected: CloudFlare
@@ -2343,23 +2391,21 @@ rules:
   - expected: CocoaPods
     pattern:  /\bCocoaPods\b/i
   - expected: Coca-Cola
-    pattern:  /\bCoca Cola\b/
+    pattern:  /\bCoca Cola\b/i
   - expected: Composer
     pattern:  /\bComposer\b/i
   - expected: Coveralls
     pattern:  /\bCoveralls\b/i
   - expected: CSSスプライト
-    pattern:  /CSS-Sprite|\bCSS Sprite\b/
+    pattern:  /CSS-Sprite|\bCSS Sprite\b/i
   - expected: DBFlute
     pattern:  /\bDBFlute\b/i
   - expected: Debian GNU/Linux
-    pattern:  /\bDebian\b|Debian\/GNU Linux/
-  - expected: $1DeNA$2
-    pattern:  /(?:([^/.])ディー・エヌ・エー)|(?:ディー・エヌ・エー([^/.]))/
-  - expected: $1DeNA$2
-    pattern:  /(?:([^/.])ディーエヌエー)|(?:ディーエヌエー([^/.]))/
-  - expected: $1DeNA$2
-    pattern:  /(?:([^/.])\bDENA)|(?:DENA\b([^/.]))/
+    pattern:  /\bDebian\b|Debian\/GNU Linux/i
+  - expected: DeNA
+    pattern:  /ディー(・)?エヌ(・)?エー/
+  - expected: DeNA
+    pattern:  /\bDeEA\b/i
   - expected: Diners Club
     pattern:  /ダイナースクラブ|ダイナース/
   - expected: Docker Hub
@@ -2379,11 +2425,11 @@ rules:
   - expected: Lisp
     pattern:  /\bLisp\b/i
   - expected: Elixir
-    pattern:  /\bElixr\b|\belixr\b/
+    pattern:  /\bElixr\b|\belixr\b/i
   - expected: Emacs
     pattern:  /\bEmacs\b/i
   - expected: Emacs $1
-    pattern:  /Emacs([0-9])/
+    pattern:  /Emacs([0-9])/i
   - expected: Emacs Lisp
     pattern:  /\bEmacs Lisp\b/i
   - expected: ERB
@@ -2395,33 +2441,33 @@ rules:
   - expected: Excel
     pattern:  /エクセル/
   - expected: Express
-    pattern:  /\bexpress\b/
+    pattern:  /\bexpress\b/i
   - expected: Fabric
-    pattern:  /\bFablic\b/
-  - expected: $1Facebook$2
-    pattern:  /(?:([^/.])\bfacebook)|(?:facebook\b([^/.]))/
+    pattern:  /\bFablic\b/i
+  - expected: Facebook
+    pattern:  /facebook/i
   - expected: Firebug
     pattern:  /\bFirebug\b/i
   - expected: Firefox
-    pattern:  /\bFireFox\b|\bFire Fox\b|ファイアーフォックス|ファイヤーフォックス/
+    pattern:  /\bFire(\s+)?Fox\b|ファイ(ア|ヤ)(ー)?フォックス/i
   - expected: Fitbit
     pattern:  /\bFitbit\b/i
   - expected: Flash
     pattern:  /フラッシュ/
   - expected: Flash Lite
-    pattern:  /\bFlashLite\b/
+    pattern:  /\bFlashLite\b/i
   - expected: Flash Player
-    pattern:  /Flashプレイヤー|Flash プレイヤー|Flashプレーヤ|Flash プレーヤ|Flashプレーヤー|Flash プレーヤー|\bFlashPlayer\b/
+    pattern:  /(Flash|フラッシュ)(\s+)?プレイヤ(ー)?|\bFlash(\s+)?Player\b/i
   - expected: Flashプラットフォーム
-    pattern:  /\bFlash Platform\b/
+    pattern:  /\bFlash Platform\b/i
   - expected: Flex Builder
-    pattern:  /\bFlexBuilder\b/
+    pattern:  /\bFlexBuilder\b/i
   - expected: Fluentd
     pattern:  /\bFluentd\b/i
   - expected: FORTRAN
     pattern:  /\bFORTRAN\b/i
   - expected: Gears
-    pattern:  /\bGoogleGears\b|\bGoogle Gears\b/
+    pattern:  /\bGoogle(\s+)Gears\b/i
   - expected: Gemnasium
     pattern:  /\bGemnasium\b/i
   - expected: GHCi
@@ -2430,22 +2476,30 @@ rules:
     pattern:  /\bGitHub Pages\b/i
   - expected: GitHub Enterprise
     pattern:  /GH:E|\bGHE\b|GitHub:E/
-  - expected: $1GitHub$2
-    pattern:  /(?:([^/.])\bgithub)|(?:github\b([^/.]))/
-  - expected: $1GitHub$2
-    pattern:  /(?:([^/.])\bGithub)|(?:Github\b([^/.]))/
+  - expected: GitHub
+    pattern:  /\bGithub\b/i
+    specs:
+      - from: Github
+        to: GitHub
+      - from: github
+        to: GitHub
+      - from: gitHub
+        to: GitHub
   - expected: Git
     pattern:  /\bGit\b/i
+    specs:
+      - from: git
+        to: Git
   - expected: Gmail
     pattern:  /\bGmail\b/i
   - expected: Google Gadget
-    pattern:  /Googleガジェット/
+    pattern:  /Googleガジェット/i
   - expected: Google Maps
-    pattern:  /\bGoogle Map\b|\bGoogleMaps\b|\bGoogleMap\b|Googleマップ/
+    pattern:  /\bGoogle(\s+)?Map(s)?\b|Google(\s+)?マップ/i
   - expected: Gradle Wrapper
     pattern:  /\bGradleWrapper\b/
   - expected: Greasemonkey
-    pattern:  /\bGreaseMonkey\b|\bGrease monkey\b|\bGrease Monkey\b/
+    pattern:  /\bGrease(\s+)?monkey\b/i
   - expected: Grunt
     pattern:  /\bGrunt\b/i
   - expected: gulp
@@ -2479,7 +2533,7 @@ rules:
   - expected: ImageProcessing
     pattern:  /\bImageProcessing\b/i
   - expected: Internet Explorer $1$2
-    pattern:  /Internet Explorer([0-9])|IE([0-9])/
+    pattern:  /Internet Explorer([0-9])|IE([0-9])/i
   - expected: Internet Explorer
     pattern:  /\bIE\b/
   - expected: inode
@@ -2487,11 +2541,11 @@ rules:
   - expected: iOS SDK
     pattern:  /\biOS SDK\b/i
   - expected: iOS $1
-    pattern:  /iOS([0-9])/
+    pattern:  /iOS([0-9])/i
   - expected: Iperf
     pattern:  /\bIperf\b/i
   - expected: iPhone
-    pattern:  /アイフォン|\biphone\b|\bIPHONE\b/
+    pattern:  /アイフォン|\biphone\b/i
   - expected: iPhone 5s
     pattern:  /\biPhone 5s\b/i
   - expected: iPhone 4S
@@ -2513,33 +2567,33 @@ rules:
   - expected: JARファイル
     pattern:  /\bJARファイル\b/i
   - expected: Java $1
-    pattern:  /Java([0-9])/
+    pattern:  /Java([0-9])/i
   - expected: Java 3D
-    pattern:  /Java3D/
+    pattern:  /Java3D/i
   - expected: Java EE
-    pattern:  /\bJavaEE\b/
+    pattern:  /\bJavaEE\b/i
   - expected: Java EE $1
-    pattern:  /JavaEE([0-9])/
+    pattern:  /JavaEE([0-9])/i
   - expected: Java EE $1
-    pattern:  /Java EE([0-9])/
+    pattern:  /Java EE([0-9])/i
   - expected: Java SE
-    pattern:  /\bJavaSE\b/
+    pattern:  /\bJavaSE\b/i
   - expected: Java SE $1
-    pattern:  /JavaSE([0-9])/
+    pattern:  /JavaSE([0-9])/i
   - expected: Java SE $1
-    pattern:  /Java SE([0-9])/
+    pattern:  /Java SE([0-9])/i
   - expected: JavaBeans
-    pattern:  /\bJavaBean\b|\bJava Bean\b|\bJava Beans\b/
+    pattern:  /\bJava(\s+)?Bean\b/i
   - expected: Javadoc
     pattern:  /\bJavadoc\b/i
   - expected: JavaScript
-    pattern:  /\bJava Script\b|\bJavascript\b|\bjavascript\b/
+    pattern:  /\bJava(\s+)?Script\b/i
   - expected: JavaScript $1
-    pattern:  /JavaScript([0-9])/
+    pattern:  /JavaScript([0-9])/i
   - expected: JavaServer Faces
-    pattern:  /\bJava Server Faces\b/
+    pattern:  /\bJava Server Faces\b/i
   - expected: JavaServer Pages
-    pattern:  /\bJava Server Pages\b/
+    pattern:  /\bJava Server Pages\b/i
   - expected: Jenkins
     pattern:  /\bJenkins\b/i
   - expected: JDBC-Redis
@@ -2555,11 +2609,11 @@ rules:
   - expected: JSP $1
     pattern:  /JSP([0-9])/
   - expected: JVM
-    pattern:  /\bJava VM\b|\bJavaVM\b/
+    pattern:  /\bJava VM\b|\bJavaVM\b/i
   - expected: Keepalived
     pattern:  /\bKeepalived\b/i
   - expected: key-value
-    pattern:  /Key-Value|Key\/Value|キーバリュー|キー・バリュー|キー／バリュー/
+    pattern:  /Key-Value|Key\/Value|キーバリュー|キー・バリュー|キー／バリュー/i
   - expected: Kickstarter
     pattern:  /\bKickstarter\b/i
   - expected: Kickstart
@@ -2569,13 +2623,13 @@ rules:
   - expected: knockout.js
     pattern:  /\bknockout.js\b/i
   - expected: Kotlin $1
-    pattern:  /Kotlin([0-9])/
+    pattern:  /Kotlin([0-9])/i
   - expected: Kotlin
-    pattern:  /\bKoltin\b/
+    pattern:  /\bKoltin\b/i
   - expected: Kyoto Cabinet
-    pattern:  /\bKyotoCabinet\b/
+    pattern:  /\bKyotoCabinet\b/i
   - expected: Kyoto Tycoon
-    pattern:  /\bKyotoTycoon\b|Tokyo *Tycoon/
+    pattern:  /\bKyotoTycoon\b|Tokyo *Tycoon/i
   - expected: LESS
     pattern:  /\bLESS\b/i
   - expected: LINE
@@ -2585,11 +2639,21 @@ rules:
   - expected: LL
     pattern:  /LL言語/
   - expected: macOS
-    pattern:  /\bMacOS\b|\bMac OS\b|\bmac OS\b|\bOS X\b|\bOSX\b|\bMac OS X\b|\bMacOSX\b/
+    pattern:  /\bmac(\s+)?OS\b/i
+    specs:
+      - from: Mac OS
+        to: macOS
+  - expected: OS X
+    pattern:  /\b(Mac(\s+)?)?OS(\s+)?X\b/i
+    specs:
+      - from: Mac OS X
+        to: OS X
+      - from: OSX
+        to: OS X
   - expected: OSS
     pattern:  /オープンソースソフトウェア/
   - expected: MacBook
-    pattern:  /\bMac Book\b/
+    pattern:  /\bMac Book\b/i
   - expected: MacPorts
     pattern:  /\bMacPorts\b/i
   - expected: Maglica
@@ -2606,10 +2670,16 @@ rules:
     pattern:  /\bMechanize\b/i
   - expected: memcached
     pattern:  /\bmemcached\b/i
-  - expected: $1Microsoft$2
-    pattern:  /(?:([^/.])マイクロソフト)|(?:マイクロソフト([^/.]))/
-  - expected: $1Microsoft$2
-    pattern:  /(?:([^/.])\bmicrosoft)|(?:microsoft\b([^/.]))/
+  - expected: Microsoft
+    pattern:  /(日本)?マイクロソフト/
+    regexpMustEmpty: $1
+    specs:
+      - from: マイクロソフト
+        to: Microsoft
+      - from: 日本マイクロソフト
+        to: 日本マイクロソフト
+  - expected: Microsoft
+    pattern:  /\bmicrosoft\b/i
   - expected: Migemo
     pattern:  /\bMigemo\b/i
   - expected: MiniMagick
@@ -2617,7 +2687,7 @@ rules:
   - expected: mixi
     pattern:  /\bmixi\b/i
   - expected: MongoDB
-    pattern:  /\bMongo DB\b/
+    pattern:  /\bMongo DB\b/i
   - expected: msysGit
     pattern:  /\bmsysGit\b/i
   - expected: Munin
@@ -2625,7 +2695,7 @@ rules:
   - expected: MySQL
     pattern:  /\bMySQL\b/i
   - expected: Nagios $1
-    pattern:  /Nagios([0-9])/
+    pattern:  /Nagios([0-9])/i
   - expected: Nagios
     pattern:  /\bNagios\b/i
   - expected: Nokia
@@ -2643,7 +2713,7 @@ rules:
   - expected: OmniAuth
     pattern:  /\bOmniAuth\b/i
   - expected: OpenGL
-    pattern:  /\bOpen GL\b/
+    pattern:  /\bOpen GL\b/i
   - expected: Opscode
     pattern:  /\bOpscode\b/i
   - expected: OS
@@ -2655,17 +2725,17 @@ rules:
   - expected: PayPal
     pattern:  /\bPayPal\b/i
   - expected: parallel
-    pattern:  /\bpararllel\b/
+    pattern:  /\bpararllel\b/i
   - expected: PC
     pattern:  /パソコン/
   - expected: PECL
     pattern:  /\bPECL\b/i
   - expected: Pentium 4
-    pattern:  /\bPentium IV\b/
+    pattern:  /\bPentium IV\b/i
   - expected: Pentium II
-    pattern:  /Pentium 2|Pentium2/
+    pattern:  /Pentium 2|Pentium2/i
   - expected: Pentium III
-    pattern:  /Pentium 3|Pentium3/
+    pattern:  /Pentium 3|Pentium3/i
   - expected: Perl $1
     pattern:  /Perl([0-9])/
   - expected: Perl
@@ -2675,7 +2745,7 @@ rules:
   - expected: PhantomJS
     pattern:  /\bPhantomJS\b/i
   - expected: Photoshop
-    pattern:  /\bPhotoShop\b|\bphotoshop\b|フォトショップ/
+    pattern:  /\bPhotoShop\b|フォトショップ/i
   - expected: PHP $1
     pattern:  /PHP([0-9])/
   - expected: PHPBrew
@@ -2695,7 +2765,7 @@ rules:
   - expected: pixiv
     pattern:  /\bpixiv\b/i
   - expected: Playground
-    pattern:  /\bPlaygroud\b/
+    pattern:  /\bPlaygroud\b/i
   - expected: Polyfill
     pattern:  /ポリフィル/
   - expected: POPFile
@@ -2703,15 +2773,15 @@ rules:
   - expected: PostScript
     pattern:  /\bPostScript\b/i
   - expected: PostgreSQL $1
-    pattern:  /PostgreSQL([0-9])/
+    pattern:  /PostgreSQL([0-9])/i
   - expected: PowerPoint
-    pattern:  /\bPower Point\b/
+    pattern:  /\bPower Point\b/i
   - expected: Pull Request
-    pattern:  /プルリクエスト|\bpull request\b|\bPull request\b/
+    pattern:  /プルリクエスト|\bPull(\s+)?Request\b\b/i
   - expected: Python
     pattern:  /\bPython\b/i
   - expected: Qiita:Team
-    pattern:  "/Qiita Team|Qiita: Team/"
+    pattern: /Qiita([:\s]+)?Team/i
     specs:
       - from: "Qiita Team"
         to:   "Qiita:Team"
@@ -2722,21 +2792,21 @@ rules:
   - expected: RADIUS
     pattern:  /\bRADIUS\b/i
   - expected: Rails $1
-    pattern:  /Rails([0-9])/
+    pattern:  /Rails([0-9])/i
   - expected: Rake
     pattern:  /\bRake\b/i
   - expected: Raspberry Pi
-    pattern:  /\bRasbpberry Pi\b|\bRaspiberry Pi\b|\bRaspberryPi\b/
+    pattern:  /\bRaspberry(\s+)?Pi\b/i
   - expected: Redmine
     pattern:  /\bRedmine\b/i
   - expected: Red Hat
-    pattern:  /\bRedHat\b|\bRedhat\b|\bredhat\b|\bRedHad\b|\bRedhad\b|\bredhad\b|レッドハット/
+    pattern:  /\b(Red|bread)(\s+)?(Hat|Had)\b|レッドハット/i
   - expected: Red Hat Enterprise Linux
-    pattern:  /\bRHEL\b/
+    pattern:  /\bRHEL\b/i
   - expected: Red Hat Linux
-    pattern:  /\bRedHatLinux\b|\bRedHat Linux\b/
+    pattern:  /\bRedHat(\s+)Linux\b/i
   - expected: Red Hat Linux $1
-    pattern:  /Red Hat Linux([0-9])|RedHatLinux([0-9])|RedHat Linux([0-9])/
+    pattern:  /Red Hat Linux([0-9])|RedHatLinux([0-9])|RedHat Linux([0-9])/i
   - expected: Redis
     pattern:  /\bRedis\b/i
   - expected: Redshift
@@ -2746,11 +2816,11 @@ rules:
   - expected: RELAX NG
     pattern:  /\bRELAX NG\b/i
   - expected: RFC $1
-    pattern:  /RFC([0-9])/
+    pattern:  /RFC([0-9])/i
   - expected: Roda
     pattern:  /\bRoda\b/i
   - expected: RPCサービス
-    pattern:  /\bRPC Services\b/
+    pattern:  /\bRPC Services\b/i
   - expected: RRDtool
     pattern:  /\bRRDtool\b/i
   - expected: RSpec
@@ -2760,13 +2830,11 @@ rules:
   - expected: Ruby $1
     pattern:  /Ruby([0-9])/
   - expected: Ruby on Rails
-    pattern:  /\bRuby On Rails\b|\bRoR\b/
+    pattern:  /\bRuby On Rails\b|\bRoR\b/i
   - expected: RubyGems
-    pattern:  /\bRubyGems\b/i
-  - expected: RubyGems
-    pattern:  /\bRuby Gems\b/
+    pattern:  /\bRuby(\s+)?Gems\b/i
   - expected: SAML $1
-    pattern:  /SAML([0-9])/
+    pattern:  /SAML([0-9])/i
   - expected: satis
     pattern:  /\bsatis\b/i
   - expected: SBクリエイティブ
@@ -2780,35 +2848,36 @@ rules:
   - expected: Sequel
     pattern:  /\bSequel\b/i
   - expected: Serverspec
-    pattern:  /\bServerspec\b/i
-  - expected: Serverspec
-    pattern:  /\bserver spec\b/
+    pattern:  /\bserver(\s+)?spec\b/i
   - expected: Servlet $1
-    pattern:  /Servlet([0-9])/
+    pattern:  /Servlet([0-9])/i
   - expected: Shift_JIS
-    pattern:  /Shift-JIS|SHIFT-JIS|SHIFT_JIS|\bShift JIS\b|Shift_JIS|シフトJIS/
+    pattern:  /Shift-JIS|SHIFT-JIS|SHIFT_JIS|\bShift JIS\b|Shift_JIS|シフトJIS/i
   - expected: Shrine
     pattern:  /\bShrine\b/i
   - expected: Shrpx
     pattern:  /\bShrpx\b/i
   - expected: shebang
-    pattern:  /シバン|シェバン|\bShebang\b/
+    pattern:  /シバン|シェバン|\bShebang\b/i
   - expected: Silverlight
-    pattern:  /\bSilverLight\b|\bSilver Light\b/
+    pattern:  /\bSilverLight\b|\bSilver Light\b/i
   - expected: SimpleTest
     pattern:  /\bSimpleTest\b/i
   - expected: Sinatra
     pattern:  /\bSinatra\b/i
   - expected: SkeedCast
     pattern:  /\bSkeedCast\b/i
-  - expected: $1Smalltalk$2
-    pattern:  /(?:([^/.])スモールトーク)|(?:スモールトーク([^/.]))/
   - expected: Smalltalk
-    pattern:  /\bSmalltalk\b/i
+    pattern:  /\bSmalltalk\b|スモールトーク/i
+    specs:
+      - from: スモールトーク
+        to: Smalltalk
+      - from: smalltalk
+        to: Smalltalk
   - expected: Socket.IO
     pattern:  /\bSocket.IO\b/i
-  - expected: $1SourceForge
-    pattern:  /([^/.])\bsourceforge\b/
+  - expected: SourceForge
+    pattern:  /\bsourceforge\b/i
   - expected: Sorryサーバ
     pattern:  /ソーリーサーバ/
   - expected: SPDY indicator
@@ -2822,9 +2891,7 @@ rules:
   - expected: StudioPress
     pattern:  /\bStudioPress\b/i
   - expected: SPDY/$1
-    pattern:  /SPDY([0-9])/
-  - expected: SPDY/$1
-    pattern:  /SPDY ([0-9])/
+    pattern:  /SPDY([0-9])/i
   - expected: SpiderMonkey
     pattern:  /\bSpiderMonkey\b/i
   - expected: SQL $1
@@ -2835,10 +2902,8 @@ rules:
     pattern:  /\bSquid\b/i
   - expected: StaticMock
     pattern:  /\bStaticMock\b/i
-  - expected: $1Subversion$2
-    pattern:  /(?:([^/.])\bSubVersion)|(?:SubVersion\b([^/.]))/
-  - expected: $1Subversion$2
-    pattern:  /(?:([^/.])\bsubversion)|(?:subversion\b([^/.]))/
+  - expected: Subversion
+    pattern:  /\bSubversion\b/i
   - expected: Sun
     pattern:  /\bSun\b/i
   - expected: SunRPC
@@ -2849,12 +2914,10 @@ rules:
     pattern:  /\bSWFファイル\b/i
   - expected: Swift
     pattern:  /\bSwift\b/i
-  - expected: Swift
-    pattern:  /\bSwfit\b/
   - expected: Symfony
-    pattern:  /\bSymphony\b|\bsymphony\b|\bSynphony\b|\bsynphony\b|\bsynfony\b|\bSynfony\b|\bsymfony\b/
+    pattern:  /\bSynphony\b|\bSymfony\b/i
   - expected: Symfony2
-    pattern:  /Symfony 2/
+    pattern:  /Symfony 2/i
   - expected: tDiary
     pattern:  /\btDiary\b/i
   - expected: test-unit
@@ -2862,7 +2925,7 @@ rules:
   - expected: Tips
     pattern:  /\bTips\b/i
   - expected: Tomcat $1
-    pattern:  /Tomcat([0-9])/
+    pattern:  /Tomcat([0-9])/i
   - expected: Twitter
     pattern:  /\bTwitter\b/i
   - expected: Twitter
@@ -2870,25 +2933,25 @@ rules:
   - expected: ToDo
     pattern:  /\bToDo\b/i
   - expected: Tokyo Cabinet
-    pattern:  /\bTokyoCabinet\b/
+    pattern:  /\bTokyoCabinet\b/i
   - expected: Tokyo Dystopia
-    pattern:  /\bTokyoDystopia\b|Kyoto *Dystopia/
+    pattern:  /\bTokyoDystopia\b|Kyoto *Dystopia/i
   - expected: Tokyo Promenade
-    pattern:  /\bTokyoPromenade\b|Kyoto *Promenade/
+    pattern:  /\bTokyoPromenade\b|Kyoto *Promenade/i
   - expected: Tokyo Tyrant
-    pattern:  /\bTokyoTyrant\b|Kyoto *Tyrant/
+    pattern:  /\bTokyoTyrant\b|Kyoto *Tyrant/i
   - expected: Travis CI
-    pattern:  /\bTravisCI\b|Travis-CI/
+    pattern:  /\bTravisCI\b|Travis-CI/i
   - expected: Treasure Data
     pattern:  /\bTreasure Data\b/i
   - expected: Triglav
     pattern:  /\bTriglav\b/i
   - expected: Tritonn
-    pattern:  /\bTriton\b|\btriton\b|\btritonn\b/
+    pattern:  /\bTriton\b|\btriton\b|\btritonn\b/i
   - expected: TypeScript
     pattern:  /\bTypeScript\b/i
   - expected: Ubuntu
-    pattern:  /\bubuntu\b|\bUbuntsu\b|\bubuntsu\b|\bUbuntu Linux\b/
+    pattern:  /\bubuntu\b|\bUbuntsu\b|\bubuntsu\b|\bUbuntu Linux\b/i
   - expected: Unicode
     pattern:  /\bunicode\b|ユニコード/
   - expected: UnixBench
@@ -2906,9 +2969,11 @@ rules:
   - expected: Vimスクリプト
     pattern:  /\bvim script\b/
   - expected: Visual Basic
-    pattern:  /\bVisualBasic\b|\bVB\b/
+    pattern:  /\bVisualBasic\b/i
+  - expected: Visual Basic
+    pattern:  /\bVB\b/
   - expected: Visual Studio .NET
-    pattern:  /Visual Studio\.NET/
+    pattern:  /Visual Studio\.NET/i
   - expected: VMware
     pattern:  /\bVMware\b/i
   - expected: WARファイル
@@ -2918,13 +2983,13 @@ rules:
       - ウェブ
       - ウェッブ
   - expected: Web API
-    pattern:  /\bWebAPI\b|\bWEBAPI\b|\bWEB API\b/
+    pattern:  /\bWeb(\s+)?API\b/i
   - expected: Web UI
-    pattern:  /\bWebUI\b/
+    pattern:  /\bWebUI\b/i
   - expected: Webhook
-    pattern:  /Webフック|\bWebHook\b/
+    pattern:  /Webフック|\bWebHook\b/i
   - expected: WebLogic
-    pattern:  /\bWeb Logic\b/
+    pattern:  /\bWeb Logic\b/i
   - expected: webpack
     pattern:  /\bwebpack\b/i
     specs:
@@ -2933,35 +2998,36 @@ rules:
   - expected: WebSphere
     pattern:  /\bWeb Sphere\b/
   - expected: Wi-Fi
-    pattern:  /\bWiFi\b|Wi-fi|wi-fi/
+    pattern:  /\bWiFi\b|Wi-Fi/i
   - expected: Windows 2000
-    pattern:  /Windows2000/
+    pattern:  /Windows2000/i
   - expected: Windows 2000 Server
-    pattern:  /Windows Server 2000/
+    pattern:  /Windows Server 2000/i
   - expected: Windows 3.
-    pattern:  /Windows3\./
+    pattern:  /Windows3\./i
   - expected: Windows 7
-    pattern:  /Windows7/
+    pattern:  /Windows7/i
   - expected: Windows 95
-    pattern:  /Windows95/
+    pattern:  /Windows95/i
   - expected: Windows 98
-    pattern:  /Windows98/
+    pattern:  /Windows98/i
   - expected: Windows Me
-    pattern:  /\bWindowsMe\b|\bWindowsME\b/
+    pattern:  /\bWindowsMe\b/i
   - expected: Windows NT
-    pattern:  /\bWindowsNT\b/
+    pattern:  /\bWindowsNT\b/i
   - expected: Windows Server 2003
-    pattern:  /Windows 2003 Server/
+    pattern:  /Windows 2003 Server/i
   - expected: Windows Server 2008
-    pattern:  /Windows 2008 Server/
+    pattern:  /Windows 2008 Server/i
   - expected: Windows Vista
     pattern:  /\bWindowsVista\b/
   - expected: Windows XP
-    pattern:  /\bWindowsXP\b/
+    pattern:  /\bWindowsXP\b/i
   - expected: WordPress
     pattern:  /\bWordPress\b/i
-  - expected: $1Word
-    pattern:  /([^ースォ])ワード/
+  - expected: Word
+    pattern:  /([ースォ])?ワード/
+    regexpMustEmpty: $1
   - expected: xAuth
     pattern:  /\bxAuth\b/i
   - expected: Xcode
@@ -2973,9 +3039,14 @@ rules:
   - expected: Yahoo!$1
     pattern:  /YAHOO!([^!.])|\bYahoo\b([^!.])|\bYAHOO\b([^!.])|ヤフー([^!.])/
   - expected: Yahoo!ウィジェット
-    pattern:  /\bYahooWidget\b|Yahoo!Widget|Yahoo! Widget|\bYahooGadget\b|Yahoo!Gadget|Yahoo! Gadget/
+    pattern:  /Yahoo([!！])?(\s+)?(Widget|Gadget|ウィジェット)/i
+    specs:
+      - from: yahoo! Widget
+        to: Yahoo!ウィジェット
+      - from: Yahoo!Gadget
+        to: Yahoo!ウィジェット
   - expected: YouTube
-    pattern:  /\bYoutube\b|\byoutube\b/
+    pattern:  /\bYoutube\b/i
   - expected: YSlow
     pattern:  /\bYSlow\b/i
   - expected: ZIPファイル
@@ -2997,7 +3068,13 @@ rules:
     regexpMustEmpty: $1
   - expected: で
     pattern:  /でで/
-  - expected: $1の
-    pattern:  /([^も])のの/
+  - expected: の
+    pattern:  /(も)?のの/
+    regexpMustEmpty: $1
+    specs:
+      - from: るものの
+        to: るものの
+      - from: そのの
+        to: その
   - expected: は
     pattern:  /はは/

@@ -5,9 +5,9 @@
   "author": "Tadayuki Onishi",
   "license": "MIT",
   "scripts": {
-    "lint": "textlint -f pretty-error *.{md,html} _posts/ _pages/",
-    "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{md,html} _posts/ _pages/",
-    "lint:fix": "textlint --fix *.{md,html} _posts/ _pages/"
+    "lint": "textlint -f pretty-error *.{html} _posts/ _pages/",
+    "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/",
+    "lint:fix": "textlint --fix *.{html} _posts/ _pages/"
   },
   "devDependencies": {
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
