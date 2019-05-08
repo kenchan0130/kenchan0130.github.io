@@ -121,17 +121,6 @@ jobs:
           name: Continuous bundle update
           command: bundle exec circleci-bundle-update-pr "${GIT_USERNAME}" "${GIT_EMAIL}"
 
-  node-dependencies-update:
-    executor:
-      name: jekyll
-    steps:
-      - checkout
-      - node-dependencies
-
-      - deploy:
-          name: Continuous yarn upgrade
-          command: yarn ci-yarn-upgrade
-
 workflows:
   version: 2
   commit-workflow:
@@ -148,4 +137,3 @@ workflows:
     jobs:
       - check-external-link
       - ruby-dependencies-update
-      - node-dependencies-update
