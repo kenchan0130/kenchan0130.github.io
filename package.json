@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
-    "textlint": "^11.2.3",
+    "textlint": "^11.2.5",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-filter-rule-whitelist": "^2.0.0",
     "textlint-rule-ja-no-abusage": "^1.2.2",
