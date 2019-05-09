@@ -1,6 +1,6 @@
-# kenchan0130.github.io [![CircleCI](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development.svg?style=svg)](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development) [![Greenkeeper badge](https://badges.greenkeeper.io/kenchan0130/kenchan0130.github.io.svg)](https://greenkeeper.io/)
+# kenchan0130.github.io [![CircleCI](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development.svg?style=svg)](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development)
 
-This is kenchan0130's web developer blog.
+This is kenchan0130's Web developer blog.
 
 ## Powered by
 
