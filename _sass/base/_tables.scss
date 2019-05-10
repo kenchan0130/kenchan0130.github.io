@@ -31,13 +31,15 @@ th {
     cursor: pointer;
     outline: none;
     position: relative;
+		padding-left: 20px;
+		padding-right: 20px;
 
     &.tablesorter-headerAsc {
       &:after {
         font-family: "Font Awesome 5 Free";
         content: "\f0de";
         position: absolute;
-        right: 5%;
+        right: 2%;
         top: 50%;
         margin-top: -7px;
         width: 14px;
@@ -52,7 +54,7 @@ th {
         font-family: "Font Awesome 5 Free";
         content: "\f0dd";
         position: absolute;
-        right: 5%;
+        right: 2%;
         top: 50%;
         margin-top: -7px;
         width: 14px;
@@ -67,7 +69,7 @@ th {
         font-family: "Font Awesome 5 Free";
         content: "\f0dc";
         position: absolute;
-        right: 5%;
+        right: 2%;
         top: 50%;
         margin-top: -7px;
         width: 14px;
