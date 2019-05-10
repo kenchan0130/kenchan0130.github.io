@@ -72,6 +72,9 @@
 <script src="//browser.sentry-cdn.com/{{ site.external_lib.sentry.version }}/bundle.min.js"
   {% if site.external_lib.sentry.async %}async{% endif %} onload="Sentry.init({ dsn: '{{ site.external_lib.sentry.dsn }}' });"></script>
 {% endif %}
+{% if site.external_lib.smallchat %}
+<script src="{{ site.external_lib.smallchat.url }}" {% if site.external_lib.smallchat.async %}async{% endif %}"></script>
+{% endif %}
 
 {% if site.custom_js && page.custom_js %}
 {% comment %}

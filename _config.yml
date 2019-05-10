@@ -49,6 +49,9 @@ external_lib:
     async: true
     version: "5.1.3"
     dsn: https://965e22e3acb4498186d88893f18c8e99@sentry.io/1454814
+  smallchat:
+    async: true
+    url: "//embed.small.chat/TAEV2JR5WGAS7P6N2V.js"
   pygments:
     theme: "manni"
 

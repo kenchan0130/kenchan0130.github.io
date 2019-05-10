@@ -1,38 +1,68 @@
 $(function() {
-	var smallchatScriptDomId = "kenchan0130-smallchat";
+	var showedSmallchatDataKey = "showed-smallchat";
 
-	var showSmallchat = function(smallchatScriptDomId, smallchatOnloadCallback) {
-		if (document.getElementById(smallchatScriptDomId) !== null) {
-			return;
-		}
-
-		var smallchatScript = document.createElement("script");
-		smallchatScript.id = smallchatScriptDomId;
-		smallchatScript.async = true;
-		document.body.appendChild(smallchatScript);
-		smallchatScript.onload = function() {
-			var styles = document.createElement("link");
-			styles.rel = "stylesheet";
-			styles.href = "//static.small.chat/messenger.css";
-			styles.async = true;
-			document.head.appendChild(styles);
-			var script = document.createElement("script");
-			script.src = "//static.small.chat/messenger.js";
-			if (typeof smallchatOnloadCallback === "function") {
-				script.onload = smallchatOnloadCallback;
+  var hideSmallchat = function() {
+		function hideSmallchatLoop(counter) {
+			var $smallchatDom = $('#Smallchat');
+			var upper = 10000000;
+			if ($smallchatDom.data(showedSmallchatDataKey) || counter > upper) {
+				return;
 			}
-			script.async = true;
-			document.body.appendChild(script);
-		};
-		smallchatScript.src = "//embed.small.chat/TAEV2JR5WGAS7P6N2V.js";
+
+			if ($smallchatDom.length > 0) {
+				$smallchatDom.hide();
+				return;
+			}
+
+			setTimeout(function() {
+				hideSmallchatLoop(counter + 1);
+			});
+		}
+		setTimeout(function() {
+			hideSmallchatLoop(0);
+		});
 	};
 
+	var showSmallchat = function(showedCallback) {
+		var $smallchatDom = $('#Smallchat');
+		var showedCallbackIsFunction = typeof showedCallback === 'function';
+		function showSmallchatLoop(counter) {
+			var $smallchatDom = $('#Smallchat');
+			var upper = 1000;
+			if ($smallchatDom.data(showedSmallchatDataKey) || counter > upper) {
+				if (showedCallbackIsFunction) {
+					showedCallback();
+				}
+				return;
+			}
+
+			if ($smallchatDom.length > 0) {
+				if (showedCallbackIsFunction) {
+					$smallchatDom.show('normal', showedCallback);
+				} else {
+					$smallchatDom.show('normal');
+				}
+				$smallchatDom.data(showedSmallchatDataKey, true);
+				return;
+			}
+
+			setTimeout(function() {
+				showSmallchatLoop(counter + 1);
+			});
+		}
+		setTimeout(function() {
+			showSmallchatLoop(0);
+		});
+	};
+
+  // When the user click DOM for opening chat, this script opens the chat.
 	$(".js-open-smallchat").on("click", function() {
 		var openSmallchat = function() {
 			function openSmallchatLoop(counter) {
 				var $smallchatIframContent = $("#Smallchat iframe").contents();
 				// Kill the openSmallchatLoop function recursive call.
-				if (counter > 10) {
+				var upper = 1000;
+				if (counter > upper) {
 					return;
 				}
 				// Retry opening the chat
@@ -42,19 +72,16 @@ $(function() {
 						.not(".Messenger_close")
 						.click();
 				} else {
-					openSmallchatLoop(counter + 1);
+					setTimeout(function() {
+						openSmallchatLoop(counter + 1);
+					});
 				}
 			}
 			setTimeout(function() {
 				openSmallchatLoop(0);
-			}, 100);
+			});
 		};
-
-		if (document.getElementById(smallchatScriptDomId) !== null) {
-			openSmallchat();
-		} else {
-			showSmallchat(smallchatScriptDomId, openSmallchat);
-		}
+		showSmallchat(openSmallchat);
 	});
 
 	var decideTofinishReadingPage = function(finishedReadingPageCallback) {
@@ -68,21 +95,13 @@ $(function() {
 		}
 	};
 
+  // Hide chat icon by befault
+  hideSmallchat();
 	// If the user reload the page and fullfill showing smallchat, it show the chat.
-	decideTofinishReadingPage(function() {
-		setTimeout(function() {
-			showSmallchat(smallchatScriptDomId);
-		}, 1000);
-	});
+	decideTofinishReadingPage(showSmallchat);
 
 	// Show the chat just before finishing reading with scroll event.
 	$(window).on("scroll", function() {
-		if (document.getElementById(smallchatScriptDomId) !== null) {
-			return;
-		}
-
-		decideTofinishReadingPage(function() {
-			showSmallchat(smallchatScriptDomId);
-		});
+		decideTofinishReadingPage(showSmallchat);
 	});
 });
