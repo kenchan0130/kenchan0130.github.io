@@ -14,7 +14,6 @@ group :jekyll_plugins do
 end
 
 group :development do
-  gem 'circleci-bundle-update-pr'
   gem 'html-proofer'
   gem 'pry-byebug'
   gem 'rake-jekyll'

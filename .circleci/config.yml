@@ -110,17 +110,6 @@ jobs:
           name: Check external links for generated HTML
           command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --check-img-http --assume-extension
 
-  ruby-dependencies-update:
-    executor:
-      name: jekyll
-    steps:
-      - checkout
-      - ruby-dependencies
-
-      - deploy:
-          name: Continuous bundle update
-          command: bundle exec circleci-bundle-update-pr "${GIT_USERNAME}" "${GIT_EMAIL}"
-
 workflows:
   version: 2
   commit-workflow:
@@ -136,4 +125,3 @@ workflows:
                 - development
     jobs:
       - check-external-link
-      - ruby-dependencies-update
