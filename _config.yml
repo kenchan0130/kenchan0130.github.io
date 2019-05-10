@@ -30,7 +30,7 @@ profile_images:
 # External library versions
 external_lib:
   scripts:
-    - src: "//ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"
+    - src: "//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
       name: jquery
       attributes:
         defer: true
@@ -38,11 +38,11 @@ external_lib:
       name: tablesorter
       attributes:
         defer: true
-    - src: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.10.0/js/lightbox.min.js"
+    - src: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.0/js/lightbox.min.js"
       name: lightbox2
       attributes:
         defer: true
-    - src: "//cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.5/lazysizes.min.js"
+    - src: "//cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.8/lazysizes.min.js"
       name: lazysizes
       attributes:
         async: true
@@ -60,13 +60,13 @@ external_lib:
       attributes:
         async: true
   styles:
-    - href: "//use.fontawesome.com/releases/v5.8.0/css/all.css"
+    - href: "//use.fontawesome.com/releases/v5.8.2/css/all.css"
       name: font-awesome
       preload: true
     - href: "//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/manni.css"
       name: pygments
       preload: true
-    - href: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.10.0/css/lightbox.min.css"
+    - href: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.0/css/lightbox.min.css"
       name: lightbox2
       preload: true
 
