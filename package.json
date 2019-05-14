@@ -8,8 +8,8 @@
     "lint": "textlint -f pretty-error *.{html} _posts/ _pages/",
     "lint:fix": "textlint --fix *.{html} _posts/ _pages/",
     "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/",
-    "start": "webpack --watch | bundle exec jekyll serve --livereload --incremental --future",
-    "build": "webpack"
+    "start": "webpack --mode development --watch | bundle exec jekyll serve --livereload --incremental --future",
+    "build": "webpack --mode production"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",

@@ -41,9 +41,6 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json']
   },
 
-	mode: 'development',
-	devtool: 'inline-source-map',
-
 	optimization: {
 		splitChunks: {
 			cacheGroups: {
