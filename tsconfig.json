@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "module": "es2015",
     "moduleResolution": "node",
     "target": "es5",
+    "lib": ["es6", "es2017", "dom"],
     "declaration": false,
     "strict": true,
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowJs": true,
+    "noEmit": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

@@ -1,3 +1,5 @@
+import '@babel/polyfill';
+
 import 'lightbox2';
 import 'lazysizes';
 import 'fg-loadcss';

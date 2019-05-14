@@ -7,21 +7,23 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.js$/,
+				test: /\.m?js$/,
 				loader: 'babel-loader',
 				options: {
-					plugins: ['syntax-dynamic-import'],
+					sourceType: 'unambiguous',
 					presets: [
 						[
 							'@babel/preset-env',
 							{
 								targets: {
-          				ie: 11
+          				ie: "11"
         				},
-								modules: false
+								useBuiltIns: 'entry',
+								modules: false,
+								corejs: 3
 							}
 						],
-						'@babel/preset-typescript'
+						'@babel/preset-typescript',
 					]
 				},
 			},

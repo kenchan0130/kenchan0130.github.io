@@ -8,7 +8,7 @@
     "lint": "textlint -f pretty-error *.{html} _posts/ _pages/",
     "lint:fix": "textlint --fix *.{html} _posts/ _pages/",
     "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/",
-    "start": "webpack --mode development --watch | bundle exec jekyll serve --livereload --incremental --future",
+    "start": "webpack --mode development --devtool source-map --watch | bundle exec jekyll serve --future",
     "build": "webpack --mode production"
   },
   "devDependencies": {
@@ -17,7 +17,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
     "babel-loader": "^8.0.6",
-    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "es-check": "^5.0.0",
     "textlint": "^11.2.5",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-filter-rule-whitelist": "^2.0.0",
@@ -40,7 +40,9 @@
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "@sentry/browser": "^5.2.1",
+    "core-js": "^3.0.1",
     "fg-loadcss": "^2.1.0",
     "jquery": "^3.4.1",
     "lazysizes": "^5.0.0",
