@@ -48,26 +48,7 @@
 
 </footer>
 
-{% if site.external_lib.scripts %}
-{% for script in site.external_lib.scripts %}
-<script src="{{ script.src }}" type="text/javascript" {{ script.attributes | object_to_html_attribute | join: ' ' }}></script>
-{% endfor %}
-{% endif %}
-
-{% if site.custom_js && page.custom_js %}
-{% assign everything_js = page.custom_js | concat: site.custom_js | uniq %}
-{% for js_file in everything_js %}
-<script src='/js/{{ js_file }}.js' type="text/javascript" defer></script>
-{% endfor %}
-{% elsif site.custom_js %}
-{% for js_file in site.custom_js %}
-<script src='/js/{{ js_file }}.js' type="text/javascript" defer></script>
-{% endfor %}
-{% elsif page.custom_js %}
-{% for js_file in page.custom_js %}
-<script src='/js/{{ js_file }}.js' type="text/javascript" defer></script>
-{% endfor %}
-{% endif %}
+<script src="/js/{{ site.data.manifest['app.js'] }}" async></script>
 
 {% if site.ga_tracking_id %}
 <script async src="//www.googletagmanager.com/gtag/js?id={{ site.ga_tracking_id }}"></script>

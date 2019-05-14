@@ -6,6 +6,11 @@ exclude:
   - Gemfile.lock
   - package.json
   - yarn.lock
+  - "/webpack/"
+  - tsconfig.json
+  - webpack.config.js
+  - LISENCE.md
+  - README.md
 
 # Development
 livereload: true
@@ -29,36 +34,6 @@ profile_images:
 
 # External library versions
 external_lib:
-  scripts:
-    - src: "//cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
-      name: jquery
-      attributes:
-        defer: true
-    - src: "//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.1/js/jquery.tablesorter.min.js"
-      name: tablesorter
-      attributes:
-        defer: true
-    - src: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.0/js/lightbox.min.js"
-      name: lightbox2
-      attributes:
-        defer: true
-    - src: "//cdnjs.cloudflare.com/ajax/libs/lazysizes/4.1.8/lazysizes.min.js"
-      name: lazysizes
-      attributes:
-        async: true
-    - src: "//cdnjs.cloudflare.com/ajax/libs/loadCSS/2.1.0/cssrelpreload.min.js"
-      name: loadCSS
-      attributes:
-        async: true
-    - src: "//browser.sentry-cdn.com/5.1.3/bundle.min.js"
-      name: Sentry
-      attributes:
-        async: true
-        onload: "Sentry.init({ dsn: 'https://965e22e3acb4498186d88893f18c8e99@sentry.io/1454814' });"
-    - src: "//embed.small.chat/TAEV2JR5WGAS7P6N2V.js"
-      name: smallchat
-      attributes:
-        async: true
   styles:
     - href: "//use.fontawesome.com/releases/v5.8.2/css/all.css"
       name: font-awesome
@@ -69,11 +44,6 @@ external_lib:
     - href: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.0/css/lightbox.min.css"
       name: lightbox2
       preload: true
-
-custom_js:
-  - navigation-menu
-  - smallchat
-  - tablesorter
 
 # Build settings
 markdown: kramdown
