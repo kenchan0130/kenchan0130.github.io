@@ -48,7 +48,7 @@
 
 </footer>
 
-<script src="/js/{{ site.data.manifest['app.js'] }}" async></script>
+<script src="{{ '/assets/bundle/' | append: site.data.manifest['app.js'] | prepend: site.baseurl }}" async></script>
 
 {% if site.ga_tracking_id %}
 <script async src="//www.googletagmanager.com/gtag/js?id={{ site.ga_tracking_id }}"></script>

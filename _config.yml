@@ -32,19 +32,6 @@ profile_images:
   - "/assets/profile_hi.png"
   - "/assets/profile_standard.png"
 
-# External library versions
-external_lib:
-  styles:
-    - href: "//use.fontawesome.com/releases/v5.8.2/css/all.css"
-      name: font-awesome
-      preload: true
-    - href: "//cdn.jsdelivr.net/gh/jwarby/pygments-css@master/manni.css"
-      name: pygments
-      preload: true
-    - href: "//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.0/css/lightbox.min.css"
-      name: lightbox2
-      preload: true
-
 # Build settings
 markdown: kramdown
 paginate: 5

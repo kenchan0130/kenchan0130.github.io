@@ -14,7 +14,6 @@ facebook_app_id: 376889769419405
 
 jekyll-minifier:
   remove_comments: false
-  compress_javascript: false # using webpack build
   exclude:
     - '*.xml'
     - 'assets/**/*'

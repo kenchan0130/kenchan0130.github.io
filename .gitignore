@@ -6,8 +6,8 @@ _site/
 # Sass garbage
 .sass-cache
 
-# Compiled js
-js/
+# Compiled assets
+assets/bundle
 
 # Compiled manifest
 _data/manifest.json

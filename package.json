@@ -20,6 +20,9 @@
     "@types/jquery": "^3.3.29",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^2.0.2",
+    "css-loader": "^2.1.1",
+    "file-loader": "^3.0.1",
+    "mini-css-extract-plugin": "^0.6.0",
     "textlint": "^11.2.5",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-filter-rule-whitelist": "^2.0.0",
@@ -43,6 +46,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
+    "@fortawesome/fontawesome-free": "^5.8.2",
     "@sentry/browser": "^5.2.1",
     "core-js": "^3.0.1",
     "fg-loadcss": "^2.1.0",

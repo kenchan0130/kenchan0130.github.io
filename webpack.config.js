@@ -3,6 +3,7 @@ const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const AssetsManifest = require('webpack-assets-manifest');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
 	module: {
@@ -31,6 +32,17 @@ module.exports = {
 				test: /\.tsx?$/,
 				loader: 'ts-loader',
 				exclude: /node_modules/
+			},
+			{
+				test: /\.css$/,
+				use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+			},
+			{
+				test: /\.(ttf|eot|woff|woff2|svg|png|jpg|gif|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+				loader: 'file-loader'
 			}
 		]
 	},
@@ -41,7 +53,7 @@ module.exports = {
 
 	output: {
 		filename: '[name].[chunkhash].js',
-		path: path.resolve(__dirname, './js')
+		path: path.resolve(__dirname, './assets/bundle')
 	},
 
 	resolve: {
@@ -70,6 +82,7 @@ module.exports = {
     }),
 		new CleanWebpackPlugin({
 			cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep']
-		})
+		}),
+		new MiniCssExtractPlugin({filename: '[name].[chunkhash].css'}),
 	]
 };
