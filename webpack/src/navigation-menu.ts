@@ -1,9 +1,9 @@
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export default $(() => {
   const menuToggle = $('#js-mobile-menu').unbind();
   $('#js-navigation-menu').removeClass("show");
-  menuToggle.on('click', (e) => {
+  menuToggle.on('click', (e: JQuery.Event) => {
     e.preventDefault();
     $('#js-navigation-menu').slideToggle(() => {
       if ($('#js-navigation-menu').is(':hidden')) {

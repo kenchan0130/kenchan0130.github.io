@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const AssetsManifest = require('webpack-assets-manifest');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
 	module: {
@@ -23,15 +24,19 @@ module.exports = {
 								corejs: 3
 							}
 						],
-						'@babel/preset-typescript',
 					]
 				},
 			},
+			{
+				test: /\.tsx?$/,
+				loader: 'ts-loader',
+				exclude: /node_modules/
+			}
 		]
 	},
 
 	entry: {
-		app: './webpack/index.ts'
+		app: './webpack/src/index.ts'
 	},
 
 	output: {
@@ -62,6 +67,9 @@ module.exports = {
 	plugins: [
 		new AssetsManifest({
       output: path.resolve(__dirname, '_data', 'manifest.json')
-    })
+    }),
+		new CleanWebpackPlugin({
+			cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep']
+		})
 	]
 };

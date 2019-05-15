@@ -1,9 +1,9 @@
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 export default $(() => {
 	const showedSmallchatDataKey = "showed-smallchat";
 
-	const setSmallchatScript = (callback) => {
+	const setSmallchatScript = (callback: () => void) => {
 		const script = document.createElement('script');
 		script.src = '//embed.small.chat/TAEV2JR5WGAS7P6N2V.js';
 		script.async = true;
@@ -12,7 +12,7 @@ export default $(() => {
 	};
 
   const hideSmallchat = () => {
-		function hideSmallchatLoop(counter) {
+		function hideSmallchatLoop(counter: number) {
 			const $smallchatDom = $('#Smallchat');
 			const upper = 10000000;
 			if ($smallchatDom.data(showedSmallchatDataKey) || counter > upper) {
@@ -33,24 +33,22 @@ export default $(() => {
 		});
 	};
 
-	const showSmallchat = (showedCallback) => {
-		const $smallchatDom = $('#Smallchat');
-		const showedCallbackIsFunction = typeof showedCallback === 'function';
-		function showSmallchatLoop(counter) {
+	const showSmallchat = (showedCallback?: () => void) => {
+		function showSmallchatLoop(counter: number) {
 			const $smallchatDom = $('#Smallchat');
 			const upper = 1000;
 			if ($smallchatDom.data(showedSmallchatDataKey) || counter > upper) {
-				if (showedCallbackIsFunction) {
+				if (typeof showedCallback === 'function') {
 					showedCallback();
 				}
 				return;
 			}
 
 			if ($smallchatDom.length > 0) {
-				if (showedCallbackIsFunction) {
-					$smallchatDom.show('normal', showedCallback);
+				if (typeof showedCallback === 'function') {
+					$smallchatDom.show(400, showedCallback);
 				} else {
-					$smallchatDom.show('normal');
+					$smallchatDom.show(400);
 				}
 				$smallchatDom.data(showedSmallchatDataKey, true);
 				return;
@@ -65,22 +63,28 @@ export default $(() => {
 		});
 	};
 
-	const decideTofinishReadingPage = (finishedReadingPageCallback) => {
+	const decideTofinishReadingPage = (finishedReadingPageCallback: (_?: any) => void) => {
 		const docHeight = $(document).innerHeight();
 		const windowHeight = $(window).innerHeight();
-		const pageBottom = docHeight - windowHeight;
-		const buffer = $("footer").innerHeight() * 2.75;
+		const footerHeight = $("footer").innerHeight();
+		const scrollTop = $(window).scrollTop();
+		if (!docHeight || !windowHeight || !footerHeight || !scrollTop) {
+			return;
+		}
 
-		if (pageBottom - buffer <= $(window).scrollTop()) {
+		const pageBottom = docHeight - windowHeight;
+		const buffer = footerHeight * 2.75;
+
+		if (pageBottom - buffer <= scrollTop) {
 			finishedReadingPageCallback();
 		}
 	};
 
 	setSmallchatScript(() => {
 		// When the user click DOM for opening chat, this script opens the chat.
-		$(".js-open-smallchat").on("click", function() {
+		$(".js-open-smallchat").on("click", () => {
 			const openSmallchat = () => {
-				function openSmallchatLoop(counter) {
+				function openSmallchatLoop(counter: number) {
 					const $smallchatIframContent = $("#Smallchat iframe").contents();
 					// Kill the openSmallchatLoop function recursive call.
 					const upper = 1000;
