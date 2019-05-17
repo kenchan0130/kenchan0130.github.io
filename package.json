@@ -5,8 +5,8 @@
   "author": "Tadayuki Onishi",
   "license": "MIT",
   "scripts": {
-    "lint:run:tslint": "tslint --format stylish webpack/src/**/*.ts{,x}",
-    "lint:fix:tslint": "tslint --fix webpack/src/**/*.ts{,x}",
+    "lint:run:tslint": "tslint --format stylish 'webpack/src/**/*.ts{,x}'",
+    "lint:fix:tslint": "tslint --fix 'webpack/src/**/*.ts{,x}'",
     "lint:run:textlint": "textlint -f pretty-error *.{html} _posts/ _pages/",
     "lint:fix:textlint": "textlint --fix *.{html} _posts/ _pages/",
     "lint:dryrun:textlint": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/",
