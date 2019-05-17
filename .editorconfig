@@ -3,14 +3,9 @@
 root = true
 
 [*]
-end_of_line = lf
-insert_final_newline = true
-
-[*.{html,js,scss}]
 charset = utf-8
-indent_style = tab
-indent_size = 2
-
-[*.{md,markdown,yml}]
+end_of_line = lf
 indent_style = spaces
 indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
