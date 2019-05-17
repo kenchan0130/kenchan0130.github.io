@@ -9,7 +9,7 @@
     "lint:fix": "textlint --fix *.{html} _posts/ _pages/",
     "lint:fix:dryrun": "textlint --fix --dry-run --format diff *.{html} _posts/ _pages/",
     "start": "webpack --mode development --devtool source-map --watch | bundle exec jekyll serve --future",
-    "build": "webpack --mode production"
+    "build": "NODE_ENV=production webpack --mode production"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",
