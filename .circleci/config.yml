@@ -76,15 +76,15 @@ jobs:
 
       - run:
           name: Text Style Check
-          command: yarn lint
+          command: yarn lint:run
 
       - run:
           name: Build Jekyll
-          command: yarn build && bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination $JEKYLL_BUILD_DESTINATION_PATH
+          command: yarn build && bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination ${JEKYLL_BUILD_DESTINATION_PATH}
 
       - run:
           name: Test for generated HTML
-          command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --disable-external --check-img-http --assume-extension
+          command: bundle exec htmlproofer ${JEKYLL_BUILD_DESTINATION_PATH} --check-html --disable-external --check-img-http --assume-extension
 
       - run:
           name: Deploy development branch to master
@@ -104,11 +104,11 @@ jobs:
 
       - run:
           name: Build Jekyll
-          command: bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination $JEKYLL_BUILD_DESTINATION_PATH
+          command: yarn build && bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination ${JEKYLL_BUILD_DESTINATION_PATH}
 
       - run:
           name: Check external links for generated HTML
-          command: bundle exec htmlproofer $JEKYLL_BUILD_DESTINATION_PATH --check-html --check-img-http --assume-extension
+          command: bundle exec htmlproofer ${JEKYLL_BUILD_DESTINATION_PATH} --check-html --check-img-http --assume-extension
 
 workflows:
   version: 2
