@@ -1,3 +1,3 @@
 interface JQuery {
-	tablesorter(): JQuery;
+  tablesorter(): JQuery;
 }
