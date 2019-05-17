@@ -88,18 +88,8 @@
   <meta property="os:src" content="{{ protocols.os_src }}" />
   {% endif %}
 
-	{% if site.external_lib.styles %}
-	{% for style in site.external_lib.styles %}
-	{% if style.preload %}
-  <link rel="preload" as="style"
-    href="{{ style.href }}"
-    onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="{{ style.href }}"></noscript>
-	{% else %}
-	<link rel="stylesheet" href="{{ style.href }}">
-	{% endif %}
-	{% endfor %}
-	{% endif %}
+  <link rel="preload" as="style" href="{{ '/assets/bundle/' | append: site.data.manifest['app.css'] | prepend: site.baseurl }}" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ '/assets/bundle/' | append: site.data.manifest['app.css'] | prepend: site.baseurl }}"></noscript>
 
   <link rel="stylesheet" href="{{ '/css/main.css' | prepend: site.baseurl }}">
 

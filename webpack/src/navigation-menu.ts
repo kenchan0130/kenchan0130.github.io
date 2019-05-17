@@ -1,9 +1,11 @@
-$(function() {
-  var menuToggle = $('#js-mobile-menu').unbind();
+import * as $ from 'jquery';
+
+export default $(() => {
+  const menuToggle = $('#js-mobile-menu').unbind();
   $('#js-navigation-menu').removeClass("show");
-  menuToggle.on('click', function(e) {
+  menuToggle.on('click', (e: JQuery.Event) => {
     e.preventDefault();
-    $('#js-navigation-menu').slideToggle(function(){
+    $('#js-navigation-menu').slideToggle(() => {
       if ($('#js-navigation-menu').is(':hidden')) {
         $('#js-navigation-menu').removeAttr('style');
       }
