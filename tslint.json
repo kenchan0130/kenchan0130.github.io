@@ -1,0 +1,10 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint-microsoft-contrib/recommended", "tslint-config-prettier"],
+  "jsRules": {},
+  "rules": {
+    "no-relative-imports": false,
+    "prettier": true
+  },
+  "rulesDirectory": ["tslint-plugin-prettier"]
+}
