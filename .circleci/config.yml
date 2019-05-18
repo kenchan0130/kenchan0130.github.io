@@ -101,6 +101,7 @@ jobs:
     steps:
       - checkout
       - ruby-dependencies
+      - node-dependencies
 
       - run:
           name: Build Jekyll
