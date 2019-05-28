@@ -1,6 +1,6 @@
 import * as $ from 'jquery'
 import 'tablesorter'
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(() => {
   $('.post table').tablesorter()
 })

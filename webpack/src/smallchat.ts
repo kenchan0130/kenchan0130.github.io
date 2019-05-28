@@ -81,7 +81,7 @@ const decideTofinishReadingPage = (
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(() => {
   setSmallchatScript(() => {
     // When the user click DOM for opening chat, this script opens the chat.
     $('.js-open-smallchat').on('click', () => {
