@@ -6331,13 +6331,14 @@ textlint-rule-prh@^3.1.1:
     textlint-rule-helper "^2.0.0"
     untildify "^3.0.2"
 
-textlint-rule-prh@^5.0.0, textlint-rule-prh@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/textlint-rule-prh/-/textlint-rule-prh-5.2.0.tgz#046453acf03b8e0e007f9c9ab9576ba56008ef99"
+textlint-rule-prh@^5.0.0, textlint-rule-prh@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/textlint-rule-prh/-/textlint-rule-prh-5.2.1.tgz#dcbb3ee674a9c63e7ba71f73b31d675571b874fc"
+  integrity sha512-RlVQRok7GnmuuCrNRSYbFqcpzJkH1g6OrVVrGE+S9drT1TzgsSSM8NkAQlP6kFnQ7fN4V7g4j6JBg0N3ArBpCg==
   dependencies:
     prh "^5.4.3"
-    textlint-rule-helper "^2.0.0"
-    untildify "^3.0.2"
+    textlint-rule-helper "^2.1.1"
+    untildify "^3.0.3"
 
 textlint-util-to-string@^1.2.0:
   version "1.2.1"
@@ -6725,7 +6726,7 @@ unset-value@^1.0.0:
     has-value "^0.3.1"
     isobject "^3.0.0"
 
-untildify@^3.0.2:
+untildify@^3.0.2, untildify@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/untildify/-/untildify-3.0.3.tgz#1e7b42b140bcfd922b22e70ca1265bfe3634c7c9"
 
