@@ -20,7 +20,7 @@
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-typescript": "^7.3.3",
-    "@sentry/types": "^5.2.0",
+    "@sentry/types": "^5.5.0",
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
     "@types/jquery": "^3.3.30",
     "babel-loader": "^8.0.6",
