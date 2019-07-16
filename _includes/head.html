@@ -59,20 +59,22 @@
     content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.og_image | prepend: site.baseurl | prepend: site.url }}{% endif %}" />
   <meta property="og:image:type" content="{{ site.protocols.og_image_type }}" />
 
-  {% if site.protocols.twitter_card_image %}
   {% comment %}
   <!-- Twitter: card tags -->
   {% endcomment %}
+  {% if page.cover %}
+  <meta name="twitter:card" content="summary_large_image">
+  {% else %}
   <meta name="twitter:card" content="summary">
+  {% endif %}
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}">
   <meta name="twitter:site" content="@{{ site.social | where: 'name', 'Twitter' | map: 'username' | first }}">
   <meta name="twitter:description"
     content="{% if page.outline %}{{ page.outline | strip_html | strip_newlines }}{% elsif page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
   <meta name="twitter:image"
-    content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.twitter_card_image | prepend: site.baseurl | prepend: site.url }}{% endif %}">
+    content="{% if page.cover %}{{ page.cover | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.protocols.og_image | prepend: site.baseurl | prepend: site.url }}{% endif %}">
   <meta name="twitter:url"
     content="{% if page.url %}{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}{% else %}{{ site.url }}{% endif %}">
-  {% endif %}
 
   {% if protocols.os_repo and protocols.os_rcs_type and protocols.os_src %}
   {% comment %}

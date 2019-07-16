@@ -138,8 +138,6 @@ protocols:
   og_image: "/assets/logo.png"
   og_image_type: "image/png"
 
-  twitter_card_image: "/assets/logo.png"
-
   os_repo: "https://github.com/kenchan0130/kenchan0130.github.io"
   os_rcs_type: "git"
   os_src: "git@github.com:kenchan0130/kenchan0130.github.io.git"
