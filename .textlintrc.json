@@ -20,7 +20,8 @@
     "@textlint-rule/no-invalid-control-character": true,
     "no-hankaku-kana": true,
     "ja-no-redundant-expression": true,
-    "prefer-tari-tari": true
+    "prefer-tari-tari": true,
+    "@textlint-rule/no-unmatched-pair": true
   },
   "filters": {
     "comments": true,
