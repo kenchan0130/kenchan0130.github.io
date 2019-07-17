@@ -84,7 +84,7 @@ jobs:
 
       - run:
           name: Test for generated HTML
-          command: bundle exec htmlproofer ${JEKYLL_BUILD_DESTINATION_PATH} --check-html --disable-external --check-img-http --assume-extension
+          command: bundle exec rake htmlproofer:without_external_link[${JEKYLL_BUILD_DESTINATION_PATH}]
 
       - run:
           name: Deploy development branch to master
@@ -109,7 +109,7 @@ jobs:
 
       - run:
           name: Check external links for generated HTML
-          command: bundle exec htmlproofer ${JEKYLL_BUILD_DESTINATION_PATH} --check-html --check-img-http --assume-extension
+          command: bundle exec rake htmlproofer:with_external_link[${JEKYLL_BUILD_DESTINATION_PATH}]
 
 workflows:
   version: 2
