@@ -21,7 +21,7 @@ bundle exec jekyll s --watch --future
 
 ```sh
 bundle exec jekyll build --config "_config.yml,_config_production.yml"
-bundle rake htmlproofer:with_external_link[_site]
+bundle exec rake htmlproofer:with_external_link[_site]
 ```
 
 ## Deployment
