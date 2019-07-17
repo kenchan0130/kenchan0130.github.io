@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'rake-jekyll'
 require 'yamllint/rake_task'
+require 'html-proofer'
 
 jekyll_configs_for_deply = [
   '_config.yml',
@@ -50,4 +51,26 @@ YamlLint::RakeTask.new do |t|
   t.exclude_paths = %w[
     vendor/bundle/**/*
   ]
+end
+
+namespace :htmlproofer do
+  html_proofer_options = {
+    typhoeus: {
+      headers: { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36' }
+    },
+    check_html: true,
+    check_img_http: true,
+    assume_extension: true,
+    check_opengraph: true
+  }
+
+  desc 'Run htmlproofer without external link'
+  task :without_external_link, ['directory'] do |_, args|
+    HTMLProofer.check_directory(args.directory, html_proofer_options.merge(disable_external: true)).run
+  end
+
+  desc 'Run htmlproofer with external link'
+  task :with_external_link, ['directory'] do |_, args|
+    HTMLProofer.check_directory(args.directory, html_proofer_options).run
+  end
 end
