@@ -56,10 +56,7 @@ end
 namespace :htmlproofer do
   html_proofer_options = {
     typhoeus: {
-      headers: {
-        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
-      },
-      verbose: true
+      headers: { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36' }
     },
     check_html: true,
     check_img_http: true,
