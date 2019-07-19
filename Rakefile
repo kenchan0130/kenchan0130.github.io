@@ -50,6 +50,7 @@ YamlLint::RakeTask.new do |t|
   ]
   t.exclude_paths = %w[
     vendor/bundle/**/*
+    node_modules/**/*
   ]
 end
 
