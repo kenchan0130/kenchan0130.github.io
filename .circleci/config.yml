@@ -29,6 +29,10 @@ commands:
             - vendor/bundle
 
       - run:
+          name: Update bundler
+          command: bundle update --bundler
+
+      - run:
           name: Install ruby dependencies
           command: bundle install
 
