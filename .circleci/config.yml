@@ -30,7 +30,7 @@ commands:
 
       - run:
           name: Update bundler
-          command: bundle update --bundler
+          command: gem update bundler
 
       - run:
           name: Install ruby dependencies
