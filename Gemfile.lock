@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/kenchan0130/jekyll-target-blank
+  revision: c13de6df2848d91f2ab82dcd7e98a66009fd7fbd
+  branch: master
+  specs:
+    jekyll-target-blank (1.1.1)
+      jekyll (~> 3.8)
+      nokogiri (~> 1.9)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -14,7 +23,6 @@ GEM
     byebug (11.0.1)
     coderay (1.1.2)
     colorator (1.1.0)
-    colorize (0.8.1)
     concurrent-ruby (1.1.5)
     cssminify2 (2.0.1)
     em-websocket (0.5.1)
@@ -27,13 +35,13 @@ GEM
     fastimage (2.1.5)
     ffi (1.11.1)
     forwardable-extended (2.6.0)
-    html-proofer (3.9.3)
+    html-proofer (3.11.1)
       activesupport (>= 4.2, < 6.0)
       addressable (~> 2.3)
-      colorize (~> 0.8)
       mercenary (~> 0.3.2)
-      nokogiri (~> 1.8.1)
+      nokogiri (~> 1.9)
       parallel (~> 1.3)
+      rainbow (~> 3.0)
       typhoeus (~> 1.3)
       yell (~> 2.0)
     htmlcompressor (0.4.0)
@@ -74,9 +82,6 @@ GEM
       sass (~> 3.4)
     jekyll-sitemap (1.3.1)
       jekyll (>= 3.7, < 5.0)
-    jekyll-target-blank (1.1.1)
-      jekyll (~> 3.0)
-      nokogiri (~> 1.8.2)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
     json (2.2.0)
@@ -90,10 +95,10 @@ GEM
       ruby_dep (~> 1.2)
     mercenary (0.3.6)
     method_source (0.9.2)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.11.3)
-    nokogiri (1.8.5)
-      mini_portile2 (~> 2.3.0)
+    nokogiri (1.10.3)
+      mini_portile2 (~> 2.4.0)
     parallel (1.17.0)
     parser (2.6.3.0)
       ast (~> 2.4.0)
@@ -156,7 +161,7 @@ DEPENDENCIES
   jekyll-paginate
   jekyll-redirect-from
   jekyll-sitemap
-  jekyll-target-blank
+  jekyll-target-blank!
   pry-byebug
   rake-jekyll
   rubocop

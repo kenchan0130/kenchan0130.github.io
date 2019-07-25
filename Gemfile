@@ -11,7 +11,7 @@ group :jekyll_plugins do
   gem 'jekyll-paginate'
   gem 'jekyll-redirect-from'
   gem 'jekyll-sitemap'
-  gem 'jekyll-target-blank'
+  gem 'jekyll-target-blank', git: 'https://github.com/kenchan0130/jekyll-target-blank', branch: 'master'
 end
 
 group :development do
