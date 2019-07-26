@@ -2,6 +2,7 @@ require 'fileutils'
 require 'rake-jekyll'
 require 'yamllint/rake_task'
 require 'html-proofer'
+require 'pry'
 
 jekyll_configs_for_deply = [
   '_config.yml',
@@ -56,9 +57,7 @@ end
 
 namespace :htmlproofer do
   html_proofer_options = {
-    typhoeus: {
-      headers: { 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36' }
-    },
+    typhoeus: {},
     check_html: true,
     check_img_http: true,
     assume_extension: true,
