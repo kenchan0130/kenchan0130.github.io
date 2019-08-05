@@ -65,7 +65,7 @@
     "core-js": "^3.1.4",
     "fg-loadcss": "^2.1.0",
     "jquery": "^3.4.1",
-    "lazysizes": "^5.1.0",
+    "lazysizes": "^5.1.1",
     "lightbox2": "^2.11.0",
     "tablesorter": "^2.31.1"
   }
