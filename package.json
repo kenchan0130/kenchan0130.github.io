@@ -60,7 +60,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.6.0",
-    "@fortawesome/fontawesome-free": "^5.10.2",
+    "@fortawesome/fontawesome-free": "^5.11.2",
     "@sentry/browser": "^5.6.3",
     "core-js": "^3.2.1",
     "fg-loadcss": "^2.1.0",
