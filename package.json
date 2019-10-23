@@ -45,7 +45,7 @@
     "textlint-rule-no-nfd": "^1.0.2",
     "textlint-rule-prefer-tari-tari": "^1.0.3",
     "textlint-rule-preset-ja-spacing": "^2.0.1",
-    "textlint-rule-preset-jtf-style": "^2.3.3",
+    "textlint-rule-preset-jtf-style": "^2.3.4",
     "textlint-rule-prh": "^5.2.1",
     "ts-loader": "^6.2.0",
     "tslint": "^5.20.0",
