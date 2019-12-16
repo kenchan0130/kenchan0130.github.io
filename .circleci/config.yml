@@ -21,25 +21,23 @@ executors:
 commands:
   ruby-dependencies:
     steps:
-      - restore_cache:
-          keys:
-            - v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
-            - v1-ruby-dependencies-
-          paths:
-            - vendor/bundle
-
       - run:
           name: Update bundler
           command: gem update bundler
 
+      - restore_cache:
+          keys:
+            - v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
+            - v1-ruby-dependencies-
+
       - run:
           name: Install ruby dependencies
-          command: bundle install
+          command: bundle check || bundle install
 
       - save_cache:
+          key: v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-          key: v1-ruby-dependencies-{{ checksum "Gemfile.lock" }}
 
   node-dependencies:
     steps:
@@ -47,13 +45,10 @@ commands:
           keys:
             - v1-node-dependencies-{{ checksum "yarn.lock" }}
             - v1-node-dependencies-
-          paths:
-            - node_modules/
-            - ~/.cache/yarn
 
       - run:
           name: Install node dependencies
-          command: yarn install
+          command: yarn install --cache-folder ~/.cache/yarn
 
       - save_cache:
           paths:
