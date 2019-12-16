@@ -1,15 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
 const AssetsManifest = require('webpack-assets-manifest');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {
+  CleanWebpackPlugin
+} = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.m?js$/,
         loader: 'babel-loader',
         options: {
@@ -43,11 +44,11 @@ module.exports = {
       },
       {
         test: /\.(ttf|eot|woff|woff2|svg|png|jpg|gif|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-				use: [
-					'file-loader', {
-						loader: 'image-webpack-loader'
-					}
-				]
+        use: [
+          'file-loader', {
+            loader: 'image-webpack-loader'
+          }
+        ]
       }
     ]
   },
@@ -59,7 +60,7 @@ module.exports = {
   output: {
     filename: '[name].[chunkhash].js',
     path: path.resolve(__dirname, './assets/bundle'),
-		publicPath: '/assets/bundle/'
+    publicPath: '/assets/bundle/'
   },
 
   resolve: {
@@ -80,7 +81,7 @@ module.exports = {
       minSize: 30000,
       name: true
     },
-		minimizer: [new UglifyJSPlugin(), new OptimizeCSSAssetsPlugin({})],
+    minimizer: [new UglifyJSPlugin(), new OptimizeCSSAssetsPlugin({})],
   },
 
   plugins: [
@@ -90,6 +91,13 @@ module.exports = {
     new CleanWebpackPlugin({
       cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep']
     }),
-    new MiniCssExtractPlugin({filename: '[name].[chunkhash].css'}),
+    new MiniCssExtractPlugin({
+      filename: '[name].[chunkhash].css'
+    }),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jQuery: 'jquery',
+      'window.jQuery': 'jquery'
+    }),
   ]
 };

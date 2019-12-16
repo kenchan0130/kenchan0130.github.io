@@ -714,6 +714,11 @@
     check-more-types "2.24.0"
     lazy-ass "1.6.0"
 
+"@fancyapps/fancybox@^3.5.7":
+  version "3.5.7"
+  resolved "https://registry.yarnpkg.com/@fancyapps/fancybox/-/fancybox-3.5.7.tgz#12f8734663ec6eae7f9236b92ca236e6e07fdfd5"
+  integrity sha512-rcEtu8t+WnmqIDV/Wfm1yvy/nDdwc7YV25j9HLxGC2/WOsUhk9rcWg2nB8g1BrjRt9zaoADdjHTU6ILYTJzBBg==
+
 "@fortawesome/fontawesome-free@^5.11.2":
   version "5.12.0"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.12.0.tgz#8ceb9f09edfb85ea18a6c7bf098f6f5dd5ffd62b"
@@ -4535,11 +4540,6 @@ levn@~0.3.0:
   dependencies:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
-
-lightbox2@^2.11.0:
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/lightbox2/-/lightbox2-2.11.1.tgz#26af900e308e3bed1a9e3b828d40bd7162bcd35d"
-  integrity sha512-24vsIspqtcnkVlh6XgGK+vHm9tUc2/x4tNpAQdEAbafIrTk4fzVgozcIX7ExUG0TAlhsE7VMtWc+WD5Sb7PiXA==
 
 lines-and-columns@^1.1.6:
   version "1.1.6"

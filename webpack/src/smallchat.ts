@@ -1,5 +1,3 @@
-import * as $ from 'jquery'
-
 const showedSmallchatDataKey = 'showed-smallchat'
 
 const setSmallchatScript = (callback: () => void) => {
