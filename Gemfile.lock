@@ -1,12 +1,3 @@
-GIT
-  remote: https://github.com/kenchan0130/jekyll-target-blank
-  revision: c13de6df2848d91f2ab82dcd7e98a66009fd7fbd
-  branch: master
-  specs:
-    jekyll-target-blank (1.1.1)
-      jekyll (~> 3.8)
-      nokogiri (~> 1.9)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -76,6 +67,9 @@ GEM
       sass (~> 3.4)
     jekyll-sitemap (1.4.0)
       jekyll (>= 3.7, < 5.0)
+    jekyll-target-blank (2.0.0)
+      jekyll (>= 3.0, < 5.0)
+      nokogiri (~> 1.10)
     jekyll-watch (2.2.1)
       listen (~> 3.0)
     json (2.2.0)
@@ -149,7 +143,7 @@ DEPENDENCIES
   jekyll-paginate
   jekyll-redirect-from
   jekyll-sitemap
-  jekyll-target-blank!
+  jekyll-target-blank
   pry-byebug
   rake-jekyll
   rubocop
