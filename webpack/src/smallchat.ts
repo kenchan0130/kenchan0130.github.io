@@ -1,6 +1,6 @@
 const showedSmallchatDataKey = 'showed-smallchat'
 
-const setSmallchatScript = (callback: () => void) => {
+const setSmallchatScript = (callback: () => void): void => {
   const script = document.createElement('script')
   script.src = '//embed.small.chat/TAEV2JR5WGAS7P6N2V.js'
   script.async = true
@@ -8,8 +8,8 @@ const setSmallchatScript = (callback: () => void) => {
   document.body.appendChild(script)
 }
 
-const hideSmallchat = () => {
-  function hideSmallchatLoop(counter: number) {
+const hideSmallchat = (): void => {
+  function hideSmallchatLoop(counter: number): void {
     const $smallchatDom = $('#Smallchat')
     const upper = 10000000
     if ($smallchatDom.data(showedSmallchatDataKey) || counter > upper) {
@@ -30,8 +30,8 @@ const hideSmallchat = () => {
   })
 }
 
-const showSmallchat = (showedCallback?: () => void) => {
-  function showSmallchatLoop(counter: number) {
+const showSmallchat = (showedCallback?: () => void): void => {
+  function showSmallchatLoop(counter: number): void {
     const $smallchatDom = $('#Smallchat')
     const upper = 1000
     if ($smallchatDom.data(showedSmallchatDataKey) || counter > upper) {
@@ -61,8 +61,9 @@ const showSmallchat = (showedCallback?: () => void) => {
 }
 
 const decideTofinishReadingPage = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   finishedReadingPageCallback: (_?: any) => void
-) => {
+): void => {
   const docHeight = $(document).innerHeight()
   const windowHeight = $(window).innerHeight()
   const footerHeight = $('footer').innerHeight()
@@ -82,9 +83,9 @@ const decideTofinishReadingPage = (
 $(document).ready(() => {
   setSmallchatScript(() => {
     // When the user click DOM for opening chat, this script opens the chat.
-    $('.js-open-smallchat').on('click', () => {
-      const openSmallchat = () => {
-        function openSmallchatLoop(counter: number) {
+    $('.js-open-smallchat').on('click', (): void => {
+      const openSmallchat = (): void => {
+        function openSmallchatLoop(counter: number): void {
           const $smallchatIframContent = $('#Smallchat iframe').contents()
           // Kill the openSmallchatLoop function recursive call.
           const upper = 1000

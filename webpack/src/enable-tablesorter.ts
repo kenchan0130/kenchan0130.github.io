@@ -1,4 +1,4 @@
-import 'tablesorter';
+import 'tablesorter'
 
 $(document).ready(() => {
   $('.post table').tablesorter()
