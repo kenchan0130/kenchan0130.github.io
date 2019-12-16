@@ -1,4 +1,4 @@
-require "nokogiri"
+require 'nokogiri'
 
 module JekyllFancybox
   class Translator
@@ -7,7 +7,7 @@ module JekyllFancybox
     end
 
     def translate
-      nokogiri_doc.css(".post img").each do |node|
+      nokogiri_doc.css('.post img').each do |node|
         apply_fancybox(node)
       end
       nokogiri_doc.to_html
@@ -16,14 +16,15 @@ module JekyllFancybox
     private
 
     def apply_fancybox(node)
-      src = node.attributes["data-src"] # Support jekyll-lazy-load-image
-      src = node.attributes["src"] if src.nil?
+      src = node.attributes['data-src'] # Support jekyll-lazy-load-image
+      src = node.attributes['src'] if src.nil?
       return if src.nil?
-      alt = node.attributes["alt"]
-      a_node = Nokogiri::XML::Node.new "a", nokogiri_doc
-      a_node["href"] = src.value
-      a_node["data-fancybox"] = "images"
-      a_node["data-caption"] = alt.value if alt
+
+      alt = node.attributes['alt']
+      a_node = Nokogiri::XML::Node.new 'a', nokogiri_doc
+      a_node['href'] = src.value
+      a_node['data-fancybox'] = 'images'
+      a_node['data-caption'] = alt.value if alt
       node.wrap(a_node.to_html)
     end
 
