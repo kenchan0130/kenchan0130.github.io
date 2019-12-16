@@ -1,0 +1,19 @@
+# See also: https://github.com/prh/rules
+version: 1
+
+rules:
+  - pattern: /(紐|ひも)[付づず]/
+    expected: 紐付
+    specs:
+      - from: 紐付く
+        to:   紐付く
+      - from: ひも付く
+        to:   紐付く
+      - from: 紐づく
+        to:   紐付く
+      - from: 紐ずく
+        to:   紐付く
+      - from: ひもづく
+        to:   紐付く
+      - from: ひもずく
+        to:   紐付く

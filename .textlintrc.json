@@ -1,7 +1,7 @@
 {
   "rules": {
     "prh": {
-      "rulePaths" :[".textlint-prh/WEB+DB_PRESS.yml"]
+      "rulePaths": [".textlint-prh/WEB+DB_PRESS.yml", ".textlint-prh/kenchan0130.yml"]
     },
     "preset-jtf-style": {
       "1.1.3.箇条書き": false
