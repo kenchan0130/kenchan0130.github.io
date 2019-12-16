@@ -1,5 +1,3 @@
-import * as $ from 'jquery'
-
 $(document).ready(() => {
   const menuToggle = $('#js-mobile-menu').unbind()
   $('#js-navigation-menu').removeClass('show')

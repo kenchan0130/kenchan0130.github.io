@@ -13,15 +13,16 @@ This is kenchan0130's Web developer blog.
 ## How to develop and write
 
 ```sh
-bundle install --path=vendor/bundle
-bundle exec jekyll s --watch --future
+$ bundle install --path=vendor/bundle
+$ yarn
+$ yarn start
 ```
 
 ## Test
 
 ```sh
-bundle exec jekyll build --config "_config.yml,_config_production.yml"
-bundle exec rake htmlproofer:with_external_link[_site]
+$ bundle exec jekyll build --config "_config.yml,_config_production.yml"
+$ bundle exec rake htmlproofer:with_external_link[_site]
 ```
 
 ## Deployment
