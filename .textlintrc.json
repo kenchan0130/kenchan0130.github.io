@@ -30,6 +30,8 @@
         "/「.+」/",
         "/\\{%.+%\\}/",
         "/([/.])?.+[/.]/",
+        "`.+`",
+        "\\*.+\\*",
         "/\\w+\\.(c|cpp|css|gif|html|java|jpeg|jpg|js|jsx|pl|png|r|rb|scss|ts|txt|xml|yml|yaml)/i"
       ]
     }
