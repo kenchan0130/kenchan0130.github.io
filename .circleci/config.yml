@@ -19,6 +19,16 @@ executors:
           GIT_EMAIL: "<>"
 
 commands:
+  setup-infra:
+    steps:
+      - run:
+          name: Update the list of installable packages
+          command: sudo apt-get update
+
+      - run:
+          name: Install libcurl4-openssl-dev
+          command: sudo apt-get install -y libcurl4-openssl-dev
+
   ruby-dependencies:
     steps:
       - run:
@@ -62,6 +72,7 @@ jobs:
       name: jekyll
     steps:
       - checkout
+      - setup-infra
       - ruby-dependencies
       - node-dependencies
 
@@ -99,6 +110,7 @@ jobs:
       name: jekyll
     steps:
       - checkout
+      - setup-infra
       - ruby-dependencies
       - node-dependencies
 
