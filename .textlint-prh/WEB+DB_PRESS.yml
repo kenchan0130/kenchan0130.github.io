@@ -1793,8 +1793,8 @@ rules:
     pattern:  /エミュレーター/
   - expected: エンティティ
     pattern:
-      - Entity
-      - entity
+      - /\bEntity\b/
+      - /\bentity\b/
       - エンティティー
   - expected: エントリ
     pattern:  /エントリー/
@@ -1822,8 +1822,8 @@ rules:
     pattern: /cache(?![^a-zA-Z\-])/i
   - expected: クエリ文字列
     pattern:
-      - QueryString
-      - Query String
+      - /\bQueryString\b/
+      - /\bQuery String\b/
       - クエリストリング
       - クエリーストリング
   - expected: クエリ
@@ -1939,7 +1939,7 @@ rules:
   - expected: ダイアグラム
     pattern:  /ダイヤグラム/
   - expected: タイムスタンプ
-    pattern: /timestamp/i
+    pattern: /\btimestamp\b/i
   - expected: ツイート
     pattern: /tweet|ツイート/i
   - expected: ツリーオブジェクト
