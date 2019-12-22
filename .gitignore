@@ -12,6 +12,9 @@ assets/bundle
 # Compiled manifest
 _data/manifest.json
 
+# Jekyll cache
+.jekyll-cache/
+
 
 # Created by https://www.gitignore.io/api/node,ruby,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=node,ruby,visualstudiocode
