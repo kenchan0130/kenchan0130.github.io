@@ -19,15 +19,15 @@ executors:
           GIT_EMAIL: "<>"
 
 commands:
-  setup-infra:
+  support-ssl-v1:
     steps:
       - run:
-          name: Update the list of installable packages
-          command: sudo apt-get update
+          name: Support SSL v1.0
+          command: sudo sed -i -e "s/^MinProtocol = TLSv1\.2$/MinProtocol = TLSv1.0/g" /etc/ssl/openssl.cnf
 
       - run:
-          name: Install libcurl4-openssl-dev
-          command: sudo apt-get install -y libcurl4-openssl-dev
+          name: Check OpenSSL config
+          command: tail /etc/ssl/openssl.cnf
 
   ruby-dependencies:
     steps:
@@ -72,7 +72,6 @@ jobs:
       name: jekyll
     steps:
       - checkout
-      - setup-infra
       - ruby-dependencies
       - node-dependencies
 
@@ -110,7 +109,7 @@ jobs:
       name: jekyll
     steps:
       - checkout
-      - setup-infra
+      - support-ssl-v1
       - ruby-dependencies
       - node-dependencies
 
