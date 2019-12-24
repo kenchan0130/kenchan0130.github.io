@@ -17,7 +17,7 @@
     "build": "NODE_ENV=production webpack --mode production"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.4",
+    "@babel/core": "^7.7.7",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-typescript": "^7.7.2",
     "@sentry/types": "^5.6.1",
