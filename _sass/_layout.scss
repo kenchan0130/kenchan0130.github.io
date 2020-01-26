@@ -414,6 +414,11 @@ pre.highlight {
     .post-header-container {
       .scrim {
         padding: 2em 1em 1em 1em;
+
+        .post-header {
+          max-width: 42em;
+          margin: 0 auto;
+        }
       }
     }
 
