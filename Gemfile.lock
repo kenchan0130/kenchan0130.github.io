@@ -21,7 +21,7 @@ GEM
     fastimage (2.1.7)
     ffi (1.12.2)
     forwardable-extended (2.6.0)
-    html-proofer (3.15.0)
+    html-proofer (3.15.1)
       addressable (~> 2.3)
       mercenary (~> 0.3)
       nokogumbo (~> 2.0)
@@ -132,7 +132,7 @@ GEM
     unicode-display_width (1.6.1)
     yamllint (0.0.9)
       trollop (~> 2)
-    yell (2.2.0)
+    yell (2.2.1)
 
 PLATFORMS
   ruby
