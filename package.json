@@ -64,7 +64,7 @@
     "@fancyapps/fancybox": "^3.5.7",
     "@fortawesome/fontawesome-free": "^5.11.2",
     "@sentry/browser": "^5.11.2",
-    "core-js": "^3.6.1",
+    "core-js": "^3.6.4",
     "fg-loadcss": "^2.1.0",
     "jquery": "^3.4.1",
     "lazysizes": "^5.1.2",
