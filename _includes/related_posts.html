@@ -1,0 +1,12 @@
+{% if site.related_posts.size > 0 %}
+<section class="sub-contents related-posts">
+  <div class="sub-contents-wrapper">
+    <div class="sub-contents-title">あわせて読みたい</div>
+    <div class="sub-contents-main">
+      {% for post in site.related_posts limit:5 %}
+      <li><a href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a></li>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

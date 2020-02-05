@@ -11,6 +11,8 @@ group :jekyll_plugins do
   gem 'jekyll-paginate'
   gem 'jekyll-redirect-from'
   gem 'jekyll-sitemap'
+  gem 'jekyll-tagging'
+  gem 'jekyll-tagging-related_posts'
   gem 'jekyll-target-blank'
 end
 
