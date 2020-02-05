@@ -22,14 +22,18 @@ module Jekyll
 
       iframe_attributes = {
         src: "//speakerdeck.com/player/#{slide_id}?slide=#{slide_number}",
-        class: 'speakerdeck-iframe',
-        frameborder: 0,
         allowfullscreen: true,
         mozallowfullscreen: true,
-        webkitallowfullscreen: true
+        webkitallowfullscreen: true,
+        scrolling: 'no',
+        allow: 'encrypted-media'
       }.map { |k, v| "#{k}='#{v}'" }.join("\u0020")
 
-      "<iframe #{iframe_attributes}></iframe>"
+      <<~HTML
+        <div class="iframe-wrapper">
+          <iframe #{iframe_attributes}></iframe>
+        </div>
+      HTML
     end
 
     private

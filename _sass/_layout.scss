@@ -329,16 +329,10 @@ pre.highlight {
   img {
     display: block;
     margin: 10px auto;
-    width: 55%;
+    width: 100%;
 
-    &.emoji {
-      font-family: 'Apple Color Emoji', 'Segoe UI', 'Segoe UI Emoji',
-        'Segoe UI Symbol';
-      font-weight: normal;
-      vertical-align: middle;
-      width: inherit;
-      margin: 0 0 5px;
-      display: inline;
+    @include media($tablet) {
+      width: 90%;
     }
   }
 
@@ -400,7 +394,7 @@ pre.highlight {
         margin-left: 20px;
         list-style-type: disc;
 
-        & > ul > li {
+        &>ul>li {
           list-style-type: circle;
         }
       }
@@ -460,7 +454,7 @@ pre.highlight {
         margin-top: 40px;
       }
 
-      h3 + h4 {
+      h3+h4 {
         margin-top: 0;
       }
 
@@ -475,12 +469,32 @@ pre.highlight {
       }
     }
 
-    .speakerdeck-iframe {
-      background: transparent;
-      margin: 0;
-      padding: 0;
+    .iframe-wrapper {
+      overflow: hidden;
+      position: relative;
+      padding-top: 56.25%;
+      flex-direction: column;
+      height: 100%;
       width: 100%;
-      height: 482px;
+      box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 15px;
+      border-radius: 6px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 20px;
+
+      @include media($tablet) {
+        width: 90%;
+      }
+
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0;
+        border: 0;
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .dummy-ad {
@@ -666,8 +680,7 @@ pre.highlight {
     @include outer-container;
   }
 
-  .footer-heading {
-  }
+  .footer-heading {}
 
   /*
 	*	Site Navigation (left)
