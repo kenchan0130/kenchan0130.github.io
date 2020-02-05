@@ -22,7 +22,10 @@
 # /assets/posts/2012-05-25/another-post-title/document with spaces in name.pdf
 #
 module Jekyll
+  # It is not supported now because the treatment of post_id has not been decided.
   class AssetPathTag < Liquid::Tag
+    TAG_NAME = 'asset_path'.freeze
+
     def initialize(tag_name, markup, tokens)
       # strip leading and trailing spaces
       @markup = markup.strip.tap do |m|
@@ -35,10 +38,10 @@ module Jekyll
       # render the markup
       parameters = Parameters.new(Liquid::Template.parse(@markup).render(context).strip)
 
-      page = context.environments.first['page']
-      path = "posts/#{page['url']}"
+      page = context.environments.first.page
+      path = File.join(page.collection, page.url)
 
-      # strip filename
+      # strip filename if path has a filename with file extension
       path = File.dirname(path) if path.match?(/\.\w+\z/)
 
       # fix double slashes
@@ -80,4 +83,4 @@ module Jekyll
   end
 end
 
-Liquid::Template.register_tag('asset_path', Jekyll::AssetPathTag)
+Liquid::Template.register_tag(Jekyll::AssetPathTag::TAG_NAME, Jekyll::AssetPathTag)
