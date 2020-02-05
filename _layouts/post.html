@@ -62,14 +62,16 @@ layout: default
       {% endfor %}
     </section>
 
-    {% include advertisement-post-footer.html %}
+    {% include advertisement_post_footer.html %}
+
+    {% include related_posts.html %}
 
     {% if site.jekyll-archives %}
     {% if page.tags.size > 0 %}
-    <section class="tags">
-      <div class="tags-container">
-        <div class="tags-title">Tags</div>
-        <div class="tags-contents">
+    <section class="sub-contents tags">
+      <div class="sub-contents-wrapper">
+        <div class="sub-contents-title">Tags</div>
+        <div class="sub-contents-main">
           {% for tag in page.tags %}
           <a href="{{ site.baseurl }}/tag/{{ tag | downcase | slugify }}">{{ tag }}</a>
           {% endfor %}
