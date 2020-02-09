@@ -1,41 +1,43 @@
 exclude:
-  - "/vendor/"
-  - "/node_modules/"
+  - '/vendor/'
+  - '/node_modules/'
   - Rakefile
   - Gemfile
   - Gemfile.lock
   - package.json
   - yarn.lock
-  - "/webpack/"
+  - '/webpack/'
   - tsconfig.json
   - webpack.config.js
   - LISENCE.md
   - README.md
+  - .jekyll-cache
+  - .sass-cache
 
 # Development
 livereload: true
 
 # Site settings
-title: "kenchan0130 blog"
+title: 'kenchan0130 blog'
 subtitle: "A web Developer's blog"
 email:
 name: Tadayuki Onishi
 description: >
   Web エンジニア。記録に残したいことを雑に備忘するブログ。
   投稿内容は個人の見解であり所属する組織の公式見解ではありません。
-baseurl: "" # the subpath of your site, e.g. /blog/
-url: "https://kenchan0130.github.io" # the base hostname & protocol for your site
-cover: "/assets/header_image.jpg"
-logo: "/assets/logo.png"
+baseurl: '' # the subpath of your site, e.g. /blog/
+url: 'https://kenchan0130.github.io' # the base hostname & protocol for your site
+cover: '/assets/header_image.jpg'
+logo: '/assets/logo.png'
 profile_images:
-  - "/assets/profile_critical_pass.png"
-  - "/assets/profile_hi.png"
-  - "/assets/profile_standard.png"
+  - '/assets/profile_critical_pass.png'
+  - '/assets/profile_hi.png'
+  - '/assets/profile_standard.png'
 
 # Build settings
 markdown: kramdown
 paginate: 5
-paginate_path: "/page:num/"
+paginate_path: '/page:num/'
 inter_post_navigation: false
 highlighter: rouge
 
@@ -48,10 +50,10 @@ jekyll-archives:
   enabled:
     - categories
     - tags
-  layout: "archive"
+  layout: 'archive'
   permalinks:
-    category: "/category/:name/"
-    tag: "/tag/:name/"
+    category: '/category/:name/'
+    tag: '/tag/:name/'
 
 collections:
   pages:
@@ -63,14 +65,14 @@ collections:
 
 defaults:
   - scope:
-      path: "_posts/post"
-      type: "posts"
+      path: '_posts/post'
+      type: 'posts'
     values:
       layout: post
       permalink: /:path
   - scope:
-      path: ""
-      type: "legacy"
+      path: ''
+      type: 'legacy'
     values:
       layout: redirect
       permalink: /:categories/:year/:month/:day/:title:output_ext
@@ -85,7 +87,7 @@ autoprefixer:
 # Category descriptions (for archive pages)
 descriptions:
   - cat: system-administration
-    desc: ""
+    desc: ''
 
 # Social icons and sharing options
 #
@@ -135,15 +137,15 @@ social:
 # These are for automatically generating sharing metadata for FB and Twitter
 # OS Protocol is for sharing the source of your site, if you're interested. For more, see osprotocol.com
 protocols:
-  og_image: "/assets/logo.png"
-  og_image_type: "image/png"
+  og_image: '/assets/logo.png'
+  og_image_type: 'image/png'
 
-  os_repo: "https://github.com/kenchan0130/kenchan0130.github.io"
-  os_rcs_type: "git"
-  os_src: "git@github.com:kenchan0130/kenchan0130.github.io.git"
+  os_repo: 'https://github.com/kenchan0130/kenchan0130.github.io'
+  os_rcs_type: 'git'
+  os_src: 'git@github.com:kenchan0130/kenchan0130.github.io.git'
 
 lazy_load_image:
   src_attr_name: data-src
-  preload_image: "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+  preload_image: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
   class_attr_values:
     - lazyload
