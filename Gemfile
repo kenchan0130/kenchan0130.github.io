@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'fastimage'
 gem 'jekyll'
 gem 'jekyll-minifier'
+gem 'liquid-c'
 
 group :jekyll_plugins do
   gem 'jekyll-archives'
