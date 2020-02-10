@@ -467,6 +467,17 @@ pre.highlight {
           margin-bottom: 8px;
         }
       }
+
+      .revision {
+        border-radius: 10px;
+        background-color: tint($turquoise, 80%);
+        padding: 12px 20px;
+        margin: 42px 0 48px;
+
+        .revision-date {
+          font-weight: bold;
+        }
+      }
     }
 
     .iframe-wrapper {
