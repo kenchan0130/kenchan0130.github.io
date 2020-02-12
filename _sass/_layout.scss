@@ -340,29 +340,45 @@ pre.highlight {
 	*	Posts
 	*/
   .post {
-    ul {
-      margin-bottom: 1em;
+    @mixin post_unordered_list_style() {
+      &>li {
+        &>ul>li {
+          list-style-type: circle;
 
-      ul {
-        margin-bottom: 1px;
+          &>ul>li {
+            list-style-type: square;
+          }
+        }
+      }
+    }
+
+    @mixin post_ordered_list_style() {
+      &>li {
+        &>ol>li {
+          list-style-type: lower-alpha;
+
+          &>ol>li {
+            list-style-type: lower-roman;
+          }
+        }
+      }
+    }
+
+    ul {
+      margin-bottom: 1px;
+      @include post_unordered_list_style();
+
+      ol {
+        @include post_ordered_list_style();
       }
     }
 
     ol {
-      li {
-        li {
-          list-style-type: lower-alpha;
+      margin-bottom: 1px;
+      @include post_ordered_list_style();
 
-          li {
-            list-style-type: lower-roman;
-          }
-        }
-
-        ul {
-          li {
-            list-style-type: disc;
-          }
-        }
+      ul {
+        @include post_unordered_list_style();
       }
     }
 
@@ -378,6 +394,7 @@ pre.highlight {
       background: $light-gray;
       border: $base-border;
       padding: 10px 15px 10px;
+      margin: 16px 0;
 
       &:before {
         font-weight: bold;
@@ -451,7 +468,7 @@ pre.highlight {
       }
 
       h4 {
-        margin-top: 40px;
+        margin-top: 20px;
       }
 
       h3+h4 {
