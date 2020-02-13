@@ -60,6 +60,7 @@ namespace :htmlproofer do
     typhoeus: {},
     check_html: true,
     check_img_http: true,
+    check_favicon: true,
     assume_extension: true,
     check_opengraph: true
   }
