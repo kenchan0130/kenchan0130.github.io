@@ -365,7 +365,21 @@ pre.highlight {
     }
 
     ul {
-      margin-bottom: 1px;
+
+      li {
+        margin-bottom: 3px;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      ul,
+      ol {
+        margin-top: 3px;
+        margin-bottom: 1px;
+      }
+
       @include post_unordered_list_style();
 
       ol {
@@ -374,7 +388,12 @@ pre.highlight {
     }
 
     ol {
-      margin-bottom: 1px;
+
+      ul,
+      ol {
+        margin-bottom: 1px;
+      }
+
       @include post_ordered_list_style();
 
       ul {
