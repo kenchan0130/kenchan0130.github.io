@@ -62,7 +62,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.8.3",
     "@fancyapps/fancybox": "^3.5.7",
-    "@fortawesome/fontawesome-free": "^5.12.1",
+    "@fortawesome/fontawesome-free": "^5.13.0",
     "@sentry/browser": "^5.13.0",
     "core-js": "^3.6.4",
     "fg-loadcss": "^2.1.0",
