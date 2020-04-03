@@ -24,7 +24,7 @@
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.7",
     "@types/jquery": "^3.3.33",
-    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.14.0",
     "babel-loader": "^8.1.0",
     "clean-webpack-plugin": "^3.0.0",
