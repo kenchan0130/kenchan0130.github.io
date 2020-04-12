@@ -1,10 +1,10 @@
 # 自動生成されるものはチェック対象から除外する
 AllCops:
   Exclude:
-    - 'vendor/**/*'
-    - 'db/schema.rb'
-    - 'db/migrate/*.rb'
-    - 'bin/**/*'
+    - "vendor/**/*"
+    - "db/schema.rb"
+    - "db/migrate/*.rb"
+    - "bin/**/*"
   DisplayCopNames: true
 
 ##################### Layout #####################
@@ -14,7 +14,7 @@ AllCops:
 Layout/LineLength:
   Max: 170
   Exclude:
-    - 'db/migrate/*.rb'
+    - "db/migrate/*.rb"
 
 # * migrate
 # * jbuilder
@@ -25,6 +25,14 @@ Layout/SpaceBeforeFirstArg:
   Enabled: false
 
 ##################### Lint #####################
+
+# ExceptionではなくStandardErrorを使用する
+Lint/RaiseException:
+  Enabled: true
+
+# 意図しないStructの上書きを防止
+Lint/StructNewOverride:
+  Enabled: true
 
 # * 同名のメソッドがある場合にローカル変数に `_` を付ける
 # * 一時変数として `_` を付ける
@@ -46,21 +54,17 @@ Style/AndOr:
 Style/AsciiComments:
   Enabled: false
 
-# option 等、明示的にハッシュにした方が分かりやすい場合もある
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 # rspec では `{ }` の複数行表記を許可する
 # `expect {}` はどうしても長くなってしまうため
 Style/BlockDelimiters:
   Enabled: true
   Exclude:
-    - 'spec/**/*_spec.rb'
+    - "spec/**/*_spec.rb"
 
 # rspec では `===` に依存してる matcher も多いため
 Style/CaseEquality:
   Exclude:
-    - 'spec/support/**/*'
+    - "spec/support/**/*"
 
 # ドキュメントの無い public class を許可する
 Style/Documentation:
@@ -82,10 +86,22 @@ Style/FrozenStringLiteralComment:
 Style/GuardClause:
   MinBodyLength: 5
 
+# each_keyとeach_valueメソッドを使うようにする
+Style/HashEachMethods:
+  Enabled: true
+
 # rake タスクの順序の hash は rocket を許可する
 Style/HashSyntax:
   Exclude:
-    - '**/*.rake'
+    - "**/*.rake"
+
+# transform_keysメソッドを使うようにする
+Style/HashTransformKeys:
+  Enabled: true
+
+# transform_valuesメソッドを使うようにする
+Style/HashTransformValues:
+  Enabled: true
 
 # scope 等は複数行でも lambda ではなく ->{} で揃えた方が見た目が綺麗
 Style/Lambda:
@@ -128,12 +144,12 @@ Metrics/CyclomaticComplexity:
 Metrics/BlockLength:
   Max: 100
   Exclude:
-    - 'spec/**/*.rb'
+    - "spec/**/*.rb"
 
 Metrics/MethodLength:
   Max: 25
   Exclude:
-    - 'db/migrate/*.rb'
+    - "db/migrate/*.rb"
 
 # 分岐の数。ガード句を多用しているとデフォルト 7 だと厳しい
 Metrics/PerceivedComplexity:
@@ -144,8 +160,8 @@ Metrics/PerceivedComplexity:
 # has_ から始まるメソッドは許可する
 Naming/PredicateName:
   ForbiddenPrefixes:
-    - 'is_'
-    - 'have_'
+    - "is_"
+    - "have_"
   NamePrefix:
-    - 'is_'
-    - 'have_'
+    - "is_"
+    - "have_"
