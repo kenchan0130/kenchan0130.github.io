@@ -19,7 +19,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.8.6",
-    "@babel/preset-typescript": "^7.8.3",
+    "@babel/preset-typescript": "^7.9.0",
     "@sentry/types": "^5.12.4",
     "@textlint-rule/textlint-rule-no-invalid-control-character": "^1.2.0",
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.7",
