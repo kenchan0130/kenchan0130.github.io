@@ -5,6 +5,7 @@
     "lib": ["es6", "es2017", "dom"],
     "declaration": false,
     "strict": true,
+    "strictNullChecks": true,
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -12,13 +13,8 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["webpack/types", "node_modules/@types"],
+    "typeRoots": ["webpack/types", "node_modules/@types"]
   },
-  "include": [
-    "webpack/src/**/*"
-  ],
-  "exclude": [
-    ".git",
-    "node_modules"
-  ]
+  "include": ["webpack/src/**/*"],
+  "exclude": [".git", "node_modules"]
 }
