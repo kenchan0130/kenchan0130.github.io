@@ -1,4 +1,4 @@
-# kenchan0130.github.io [![CircleCI](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development.svg?style=svg)](https://circleci.com/gh/kenchan0130/kenchan0130.github.io/tree/development)
+# kenchan0130.github.io ![CI](https://github.com/kenchan0130/kenchan0130.github.io/workflows/CI/badge.svg) ![Nigthly](https://github.com/kenchan0130/kenchan0130.github.io/workflows/Nigthly/badge.svg)
 
 This is kenchan0130's Web developer blog.
 
