@@ -1,0 +1,107 @@
+name: CI
+on:
+  pull_request:
+
+env:
+  BUNDLE_JOBS: 4
+  BUNDLE_RETRY: 3
+  BUNDLE_PATH: vendor/bundle
+  JEKYLL_BUILD_DESTINATION_PATH: _site
+  JEKYLL_ENV: production
+  TZ: '/usr/share/zoneinfo/Asia/Tokyo'
+  LANG: ja_JP.UTF-8
+  LC_ALL: C.UTF-8
+  LANGUAGE: ja_JP.UTF-8
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get a version of .ruby-version
+        run: echo "::set-output name=ruby-version::$(cat .ruby-version)"
+        id: rbenv
+      - name: Setup Ruby ${{ steps.rbenv.outputs.ruby-version }}
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
+      - name: Save Ruby gems cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.BUNDLE_PATH }}
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install ruby gems
+        run: |
+          bundle check || bundle install
+      - name: Use Node.js v14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn modules
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.OS }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-yarn-
+      - name: Install Node.js packages
+        run: |
+          yarn install --pure-lockfile
+      - name: Run linters
+        run: |
+          bundle exec rake yamllint
+          bundle exec rubocop
+          yarn lint:run
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get a version of .ruby-version
+        run: echo "::set-output name=ruby-version::$(cat .ruby-version)"
+        id: rbenv
+      - name: Setup Ruby ${{ steps.rbenv.outputs.ruby-version }}
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
+      - name: Save Ruby gems cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.BUNDLE_PATH }}
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+      - name: Install ruby gems
+        run: |
+          bundle check || bundle install
+      - name: Use Node.js v14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Cache yarn modules
+        uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.OS }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-yarn-
+      - name: Install Node.js packages
+        run: |
+          yarn install --pure-lockfile
+      - name: Build Jekyll
+        run: |
+          yarn build
+          bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination ${JEKYLL_BUILD_DESTINATION_PATH}
+      - name: Check generated HTML files
+        run: |
+          bundle exec rake htmlproofer:without_external_link[${JEKYLL_BUILD_DESTINATION_PATH}]
