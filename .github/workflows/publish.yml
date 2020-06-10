@@ -28,7 +28,7 @@ jobs:
       - name: Setup Ruby ${{ steps.rbenv.outputs.ruby-version }}
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: ${{ steps.rbenv.outputs.RUBY_VERSION }}
+          ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
       - name: Save Ruby gems cache
         uses: actions/cache@v2
         with:
