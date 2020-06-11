@@ -8,7 +8,7 @@ exclude:
   - yarn.lock
   - '/webpack/'
   - tsconfig.json
-  - webpack.config.js
+  - '*.config.js'
   - LISENCE.md
   - README.md
   - .jekyll-cache

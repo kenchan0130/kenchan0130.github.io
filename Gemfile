@@ -20,7 +20,7 @@ end
 group :development do
   gem 'html-proofer'
   gem 'pry-byebug'
-  gem 'rake-jekyll'
+  gem 'rake'
   gem 'rubocop'
   gem 'yamllint'
 end
