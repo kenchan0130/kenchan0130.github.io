@@ -1,6 +1,7 @@
 exclude:
   - '/vendor/'
   - '/node_modules/'
+  - '/scripts/'
   - Rakefile
   - Gemfile
   - Gemfile.lock
