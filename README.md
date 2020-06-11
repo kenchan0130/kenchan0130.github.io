@@ -25,9 +25,7 @@ $ bundle exec rake htmlproofer:with_external_link[_site]
 
 ## Deployment
 
-I use [rake-jekyll](https://github.com/jirutka/rake-jekyll) with CircleCI.
-
-Please check `Rakefile` and `.circleci/config.yml` for more detail.
+If sources are changed at `development` branch, GitHub Actions deploys `master` branch as GitHub Pages.
 
 ## Licence
 
