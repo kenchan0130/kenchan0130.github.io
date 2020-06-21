@@ -590,6 +590,60 @@ pre.highlight {
       @include span-columns(12);
     }
 
+    .post-donation {
+      clear: both;
+      margin: 0 auto 10px auto;
+
+      .post-donation-panel {
+        text-align: center;
+        padding: 24px 20px 28px 20px;
+        background: tint($light-gray, 50%);
+      }
+
+      .post-donation-description {
+        font-weight: 600;
+        font-size: 80%;
+      }
+
+      .post-donation-button {
+        display: block;
+        margin: 0 auto;
+        max-width: 200px;
+        background: $action-color;
+        color: $white;
+        font-weight: bold;
+        border-radius: 5px;
+        box-shadow: 0 0 5px $medium-gray;
+
+        &:hover {
+          background-color: lighten($action-color, 5%);
+          box-shadow: 0 0 5px lighten($medium-gray, 5%);
+        }
+
+        .post-donation-button-body {
+          padding: 12px 0 10px 0;
+          margin: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .icon {
+            width: 30px;
+            height: 30px;
+            padding-bottom: 2px;
+            margin: 0;
+            display: inline-block;
+          }
+
+          .label {
+            display: inline-block;
+            font-size: 0.9em;
+            padding-left: 4px;
+          }
+        }
+      }
+    }
+
     .related-posts {
       li {
         list-style: none;
