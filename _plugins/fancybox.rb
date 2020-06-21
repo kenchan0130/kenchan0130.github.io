@@ -7,7 +7,7 @@ module JekyllFancybox
     end
 
     def translate
-      nokogiri_doc.css('.post img').each do |node|
+      nokogiri_doc.css('.post .post-content img').each do |node|
         apply_fancybox(node)
       end
       nokogiri_doc.to_html
