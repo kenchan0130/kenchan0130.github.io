@@ -38,6 +38,22 @@ layout: default
       {{ content }}
     </article>
 
+    <section class="post-donation">
+      <div class="post-donation-panel">
+        <p class="post-donation-description">
+          参考になった・面白かったと感じていただけましたら、サポートいただけると励みになります。
+        </p>
+        <a class="post-donation-button" href="https://www.buymeacoffee.com/kenchan0130"
+          {% if site.ga_tracking_id %}onclick="ga('send', 'event', 'buymeacoffee', 'click', 'www.buymeacoffee.com/kenchan0130');"
+          {% endif %}>
+          <p class="post-donation-button-body">
+            <img class="icon" alt="buymeacoffee" src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg">
+            <span class="label">サポートする</span>
+          </p>
+        </a>
+      </div>
+    </section>
+
     <section class="share">
       {% for social in site.social %}
       {% capture full_url %}{{ site.url }}{{ site.baseurl }}{{ page.url }}{% endcapture %}
@@ -60,22 +76,6 @@ layout: default
       </a>
       {% endif %}
       {% endfor %}
-    </section>
-
-    <section class="post-donation">
-      <div class="post-donation-panel">
-        <p class="post-donation-description">
-          参考になった・面白かったと感じていただけましたら、サポートいただけると励みになります。
-        </p>
-        <a class="post-donation-button" href="https://www.buymeacoffee.com/kenchan0130"
-          {% if site.ga_tracking_id %}onclick="ga('send', 'event', 'buymeacoffee', 'click', 'www.buymeacoffee.com/kenchan0130');"
-          {% endif %}>
-          <p class="post-donation-button-body">
-            <img class="icon" alt="buymeacoffee" src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg">
-            <span class="label">サポートする</span>
-          </p>
-        </a>
-      </div>
     </section>
 
     {% include advertisement_post_footer.html %}
