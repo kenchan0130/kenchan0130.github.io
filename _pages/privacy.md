@@ -8,12 +8,15 @@ nav: "only-footer"
 プライバシーポリシーを以下のように定め、個人情報の適切な保護に努めます。
 
 ## 定義
+
 「個人情報」とは個人情報の保護に関する法律（平成十五年五月三十日法律第五十七号）第二条に定める個人情報を指します。
 
 ## 個人情報の収集
+
 「[{{ site.title }}]({{ site.url }})」（以下「当サイト」という）は、当サイトが行う各種サービスの利用者、および当サイトの事業に関わる審査・選考の関係者から任意に提供される情報を必要な範囲で収集します。個人情報を収集する際は、その目的を明示するとともに、提供者の意思にもとづくことを原則とします。
 
 ## 個人情報の利用
+
 当サイトは、提供いただいた個人情報を次の目的の範囲内で利用します。
 また、提供いただいた個人情報は特段の事情がある場合を除き、本人の同意なく第三者へ開示提供することはありません。
 
@@ -23,8 +26,7 @@ nav: "only-footer"
 外部サービスにおける個人情報の取扱いについては、それぞれの外部サービスのプライバシーポリシーをご確認ください。
 
 1. [Google Analytics](https://www.google.com/analytics)
-  - Google Analyticsから提供されるCookieを使用して匿名のトラフィックデータを収集することがあります
-2. [Smallchat](https://small.chat)
+    * Google Analyticsから提供されるCookieを使用して匿名のトラフィックデータを収集することがあります
 
 また、次のいずれかの場合には上記の収集目的以外に個人情報を利用し、または開示提供することがあります。
 
@@ -33,12 +35,15 @@ nav: "only-footer"
 3. 当サイトの目的の達成のために必要な範囲内において個人情報の取扱いの全部または一部を委託する場合
 
 ## 個人情報の管理
+
 当サイトは、収集した個人情報を適切な管理するように努めます。
 
 ## 個人情報の開示および訂正等
+
 当サイトは、個人情報の提供者から自己に関する個人情報の開示の請求があったときは、原則として遅滞なく開示します。また、自己に関する個人情報の訂正等の申し出があったときは、原則として遅滞なく訂正等を行います。
 
 ## 広告の配信について
+
 当サイトは第三者配信の広告サービス [Google Adsense](https://www.google.co.jp/adsense) を利用しています。
 広告配信事業者は、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。
 
@@ -48,11 +53,12 @@ nav: "only-footer"
 外部サービスにおけるポリシー・規約については、それぞれの外部サービスのポリシー・規約をご確認ください。
 
 1. [Google Adsense](https://www.google.co.jp/adsense)
-  - [ポリシーと規約](https://policies.google.com/technologies/ads)をご覧ください
+      * [ポリシーと規約](https://policies.google.com/technologies/ads)をご覧ください
 2. [Amazon アソシエイト・プログラム](https://affiliate.amazon.co.jp)
-  - [Amazon アソシエイト・プログラム運営規約](https://affiliate.amazon.co.jp/help/operating/agreement)をご覧ください
+      * [Amazon アソシエイト・プログラム運営規約](https://affiliate.amazon.co.jp/help/operating/agreement)をご覧ください
 
 ## 免責事項
+
 当サイトからリンクやバナーなどによって外部のサイトに移動された場合、移動先サイトで提供される情報、サービス等について一切の責任を負いません。
 
 当サイトのコンテンツ・情報につきまして、可能な限り正確な情報を掲載するよう努めていますが、誤情報が入り込む等、情報が古くなっていることもございます。
@@ -60,8 +66,10 @@ nav: "only-footer"
 当サイトに掲載された内容によって生じた損害等の一切の責任を負いかねますのでご了承ください。
 
 ## プライバシーポリシーの変更について
+
 当サイトは、予告なくプライバシーポリシーを改定することがあります。
 プライバシーポリシーの改定があったときは、当サイトまたは当サイト管理者の[Twitterアカウント（@{{ site.social | where: "name", "Twitter" | first | map: "username" }})]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) またはその両方にて遅滞なく掲載します。
 
 ## 個人情報の取り扱いに関する問い合わせ先
-当サイトにおける個人情報保護に関してご質問などがある場合は、 <a href="javascript:void(0);" class="js-open-smallchat">チャット</a>または [@{{ site.social | where: "name", "Twitter" | first | map: "username" }}]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) までご連絡ください。
+
+当サイトにおける個人情報保護に関してご質問などがある場合は、Twitterの [@{{ site.social | where: "name", "Twitter" | first | map: "username" }}]({{ site.social | where: "name", "Twitter" | first | map: "url" }}) までご連絡ください。
