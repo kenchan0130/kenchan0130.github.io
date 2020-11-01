@@ -39,7 +39,7 @@
     "npm-run-all": "latest",
     "optimize-css-assets-webpack-plugin": "latest",
     "prettier": "latest",
-    "textlint": "latest",
+    "textlint": "*",
     "textlint-filter-rule-comments": "latest",
     "textlint-filter-rule-whitelist": "latest",
     "textlint-rule-ja-no-abusage": "latest",
