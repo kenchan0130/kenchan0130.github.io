@@ -6,6 +6,7 @@ AllCops:
     - "db/migrate/*.rb"
     - "bin/**/*"
   DisplayCopNames: true
+  NewCops: enable
 
 ##################### Layout #####################
 

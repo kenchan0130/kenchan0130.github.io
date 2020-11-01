@@ -12,7 +12,7 @@ module Jekyll
                            raise ArgumentError, "#{size_attribute} is not valid attribute name."
                          end
 
-      uri = if path.match?(%r{\A(?:http(s)?://)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\\]@!\$&'\(\)\*\+,;=.]+\z})
+      uri = if path.match?(%r{\A(?:http(s)?://)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#\\@!$&'()*+,;=]+\z})
               path
             else
               File.join(Dir.pwd, path)

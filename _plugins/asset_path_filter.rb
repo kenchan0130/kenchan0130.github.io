@@ -9,7 +9,7 @@ module Jekyll
       path = File.dirname(path) if path.match?(/\.\w+\z/)
 
       # fix double slashes
-      "/assets/#{path}/#{asset_name}".gsub(%r{\/{2,}}, '/')
+      "/assets/#{path}/#{asset_name}".gsub(%r{/{2,}}, '/')
     end
   end
 end
