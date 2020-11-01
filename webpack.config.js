@@ -6,7 +6,7 @@ const {
 } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   module: {
@@ -70,14 +70,9 @@ module.exports = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        defaultVendors: {
+        vendors: {
+          priority: -10,
           test: /[\\/]node_modules[\\/]/,
-          priority: -10
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
         }
       },
 
@@ -86,7 +81,7 @@ module.exports = {
       minSize: 30000
     },
     minimizer: [
-      new UglifyJSPlugin(),
+      new TerserPlugin(),
       new OptimizeCSSAssetsPlugin({})
     ],
   },

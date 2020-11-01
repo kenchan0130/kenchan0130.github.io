@@ -39,6 +39,7 @@
     "npm-run-all": "latest",
     "optimize-css-assets-webpack-plugin": "latest",
     "prettier": "latest",
+    "terser-webpack-plugin": "latest",
     "textlint": "*",
     "textlint-filter-rule-comments": "latest",
     "textlint-filter-rule-whitelist": "latest",
@@ -55,7 +56,6 @@
     "textlint-rule-prh": "latest",
     "ts-loader": "latest",
     "typescript": "latest",
-    "uglifyjs-webpack-plugin": "latest",
     "webpack": "latest",
     "webpack-assets-manifest": "latest",
     "webpack-cli": "latest"
