@@ -1,4 +1,4 @@
-# kenchan0130.github.io ![CI](https://github.com/kenchan0130/kenchan0130.github.io/workflows/CI/badge.svg) ![Nigthly](https://github.com/kenchan0130/kenchan0130.github.io/workflows/Nigthly/badge.svg)
+# kenchan0130.github.io [![CI](https://github.com/kenchan0130/kenchan0130.github.io/workflows/CI/badge.svg)](https://github.com/kenchan0130/kenchan0130.github.io/actions?query=workflow%3ACI) [![Nigthly](https://github.com/kenchan0130/kenchan0130.github.io/workflows/Nigthly/badge.svg)](https://github.com/kenchan0130/kenchan0130.github.io/actions?query=workflow%3ANigthly)
 
 This is kenchan0130's Web developer blog.
 
