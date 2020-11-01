@@ -45,7 +45,7 @@ module Jekyll
       path = File.dirname(path) if path.match?(/\.\w+\z/)
 
       # fix double slashes
-      "#{context.registers[:site].config['baseurl']}/assets/#{path}/#{parameters.filename}".gsub(%r{\/{2,}}, '/')
+      "#{context.registers[:site].config['baseurl']}/assets/#{path}/#{parameters.filename}".gsub(%r{/{2,}}, '/')
     end
 
     class Parameters
@@ -64,7 +64,7 @@ module Jekyll
 
       def post_id
         if quoted?
-          @parameters[(last_quote_index + 1)..-1].strip
+          @parameters[(last_quote_index + 1)..].strip
         else
           @post_id.to_s
         end

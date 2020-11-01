@@ -39,7 +39,7 @@ module Jekyll
     private
 
     def determine_arguments
-      matched = @markup.match(%r{\A([\S]+|.*(?=\/).+)\s?(\S*)\Z})
+      matched = @markup.match(%r{\A(\S+|.*(?=/).+)\s?(\S*)\Z})
       [matched[1], matched[2]].map(&:strip) if matched && matched.length >= 3
     end
   end
