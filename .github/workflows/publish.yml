@@ -24,7 +24,7 @@ jobs:
         run: echo "::set-output name=ruby-version::$(cat .ruby-version)"
         id: rbenv
       - name: Setup Ruby ${{ steps.rbenv.outputs.ruby-version }}
-        uses: actions/setup-ruby@v1
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
       - name: Save Ruby gems cache
