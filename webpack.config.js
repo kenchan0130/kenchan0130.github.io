@@ -70,18 +70,25 @@ module.exports = {
   optimization: {
     splitChunks: {
       cacheGroups: {
-        vendors: {
-          priority: -10,
+        defaultVendors: {
           test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        },
+        default: {
+          minChunks: 2,
+          priority: -20,
+          reuseExistingChunk: true
         }
       },
 
       chunks: 'async',
       minChunks: 1,
-      minSize: 30000,
-      name: true
+      minSize: 30000
     },
-    minimizer: [new UglifyJSPlugin(), new OptimizeCSSAssetsPlugin({})],
+    minimizer: [
+      new UglifyJSPlugin(),
+      new OptimizeCSSAssetsPlugin({})
+    ],
   },
 
   plugins: [
