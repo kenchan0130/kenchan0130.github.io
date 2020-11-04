@@ -13,6 +13,7 @@ env:
   LANG: ja_JP.UTF-8
   LC_ALL: C.UTF-8
   LANGUAGE: ja_JP.UTF-8
+  cache-version: v1
 
 jobs:
   build:
@@ -32,9 +33,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.BUNDLE_PATH }}
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          key: ${{ env.cache-version }}-${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
           restore-keys: |
-            ${{ runner.os }}-gems-
+            ${{ env.cache-version }}-${{ runner.os }}-gems-
       - name: Install ruby gems
         run: |
           bundle check || bundle install
@@ -50,9 +51,9 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.OS }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ env.cache-version }}-${{ runner.OS }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.OS }}-yarn-
+            ${{ env.cache-version }}-${{ runner.OS }}-yarn-
       - name: Install Node.js packages
         run: |
           yarn install --pure-lockfile
