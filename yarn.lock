@@ -962,7 +962,7 @@
     "@sentry/types" "5.27.2"
     tslib "^1.9.3"
 
-"@sentry/types@5.27.2", "@sentry/types@latest":
+"@sentry/types@*", "@sentry/types@5.27.2":
   version "5.27.2"
   resolved "https://registry.yarnpkg.com/@sentry/types/-/types-5.27.2.tgz#606e973cee865e83e75491e33e9b2732a0f79c94"
   integrity sha512-oszEOlWJuySvGc2HJ2KLTgtYwRFnHWDu8YIZ99UhmO2PcGQ5HlZJpV2oC8n3x0g1YSSlAaThjKbliJEAT7fmPg==
@@ -6868,7 +6868,7 @@ textlint-rule-preset-jtf-style@latest:
     textlint-rule-helper "^2.0.0"
     textlint-rule-prh "^5.2.1"
 
-textlint-rule-prh@^5.2.1, textlint-rule-prh@latest:
+textlint-rule-prh@*, textlint-rule-prh@^5.2.1:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/textlint-rule-prh/-/textlint-rule-prh-5.3.0.tgz#c3a002e3e1b59751eb6b93dff81810caeb764a9f"
   integrity sha512-gdod+lL1SWUDyXs1ICEwvQawaSshT3mvPGufBIjF2R5WFPdKQDMsiuzsjkLm+aF+9d97dA6pFsiyC8gSW7mSgg==
