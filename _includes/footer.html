@@ -47,8 +47,9 @@
 
 <script src="{{ '/assets/bundle/' | append: site.data.manifest['app.js'] | prepend: site.baseurl }}" async></script>
 
-{% if site.ga_tracking_id %}
-<script async src="//www.googletagmanager.com/gtag/js?id={{ site.ga_tracking_id }}"></script>
+{% if site.ga_tracking_ids %}
+{% for ga_tracking_id in site.ga_tracking_ids %}
+<script async src="//www.googletagmanager.com/gtag/js?id={{ ga_tracking_id }}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
 
@@ -56,7 +57,7 @@
     dataLayer.push(arguments);
   }
   gtag('js', new Date());
-  gtag('config', '{{ site.ga_tracking_id }}');
-
+  gtag('config', '{{ ga_tracking_id }}');
 </script>
+{% endfor %}
 {% endif %}

@@ -4,7 +4,9 @@ plugins:
   - jekyll-minifier
 
 # Google analytics
-ga_tracking_id: "G-B7RX34Q5PL"
+ga_tracking_ids:
+  - "G-B7RX34Q5PL"
+  - "UA-79827366-2"
 
 # Google AdSense
 google_ad_client: "ca-pub-2444060431947599"
