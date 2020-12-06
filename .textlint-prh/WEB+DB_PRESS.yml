@@ -1832,11 +1832,11 @@ rules:
     pattern: /クォート|クオーテーション|クォーテーション/
   - expected: クオリティ
     pattern: /クオリティー|クォリティ|クォリティー/
-  - expected: クライアント／サーバ
+  - expected: クライアント／サーバー
     pattern: /クライアント([/・])?サーバ(ー)?/
     specs:
-      - from: クライアント/サーバー
-        to: クライアント／サーバ
+      - from: クライアント/サーバ
+        to: クライアント／サーバー
   - expected: クラスタ
     pattern: /クラスター/
   - expected: グラウンド
@@ -1873,8 +1873,8 @@ rules:
     pattern: /コンポネント/
   - expected: コントローラ
     pattern: /コントローラー/
-  - expected: サーバ
-    pattern: /サーバー/
+  - expected: サーバー
+    pattern: /サーバ(ー)?/
   - expected: サーブレット
     pattern: /Servlet/i
   - expected: サーブレット/JSP
@@ -2879,8 +2879,8 @@ rules:
     pattern: /\bSocket.IO\b/i
   - expected: SourceForge
     pattern: /\bsourceforge\b/i
-  - expected: Sorryサーバ
-    pattern: /ソーリーサーバ/
+  - expected: Sorryサーバー
+    pattern: /ソーリーサーバ(ー)?/
   - expected: SPDY indicator
     pattern: /\bSPDY indicator\b/i
   - expected: Spdycat
