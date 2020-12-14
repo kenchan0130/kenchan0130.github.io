@@ -1990,8 +1990,8 @@ rules:
     pattern: /ドライバー/
   - expected: ドラッグ&ドロップ
     pattern: /ドラッグ・アンド・ドロップ|ドラッグアンドドロップ|ドラッグ＆ドロップ|ドラッグ & ドロップ/
-  - expected: トリガ
-    pattern: /トリガー/
+  - expected: トリガー
+    pattern: /トリガ(ー)?
   - expected: ニューヨーク
     pattern: /\bNew York\b/i
   - expected: バイナリ
