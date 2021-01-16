@@ -1072,7 +1072,7 @@ rules:
     expected: 本誌
   - pattern: /基([いかきくけこ])|基ず([いかきくけこ])|もとず([いかきくけこ])/
     expected: もとづ$1
-  - pattern: /基([^数準盤板底礎本])/
+  - pattern: /基([^幹数準盤板底礎本])/
     expected: もと$1
   - pattern:
       - 元々
