@@ -57,6 +57,23 @@ jekyll-archives:
     category: '/category/:name/'
     tag: '/tag/:name/'
 
+# algolia
+algolia:
+  application_id: 'DEFR5IK9E2'
+  index_name: kenchan0130_blog
+  search_only_api_key: e46cd2115fe449f4b27a68bf16eaacb7
+  files_to_exclude:
+    - "*.html"
+    - "*.md"
+    - "_drafts/*"
+    - "_includes/*"
+    - "_layout/*"
+    - "_pages/*"
+    - "_legacy/*"
+    - "assets/**/*"
+    - "vender/bundle/**/*"
+    - "_site/*"
+
 collections:
   pages:
     output: true

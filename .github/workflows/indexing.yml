@@ -1,0 +1,44 @@
+name: Indexing
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - development
+
+env:
+  BUNDLE_JOBS: 4
+  BUNDLE_RETRY: 3
+  BUNDLE_PATH: vendor/bundle
+  JEKYLL_BUILD_DESTINATION_PATH: _site
+  JEKYLL_ENV: production
+  TZ: '/usr/share/zoneinfo/Asia/Tokyo'
+  LANG: ja_JP.UTF-8
+  LC_ALL: C.UTF-8
+  LANGUAGE: ja_JP.UTF-8
+  cache-version: v1
+
+jobs:
+  indexing:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get a version of .ruby-version
+        run: echo "::set-output name=ruby-version::$(cat .ruby-version)"
+        id: rbenv
+      - name: Setup Ruby ${{ steps.rbenv.outputs.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
+      - name: Save Ruby gems cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.BUNDLE_PATH }}
+          key: ${{ env.cache-version }}-${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: |
+            ${{ env.cache-version }}-${{ runner.os }}-gems-
+      - name: Install ruby gems
+        run: |
+          bundle check || bundle install
+      - name: Create algolia indexing
+        run: |
+          ./scripts/indexing.sh
