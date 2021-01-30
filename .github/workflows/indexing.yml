@@ -27,7 +27,7 @@ jobs:
       - name: Set is_skip
         id: set_is_skip
         run: |
-          IS_SKIP=$(git diff --name-only ${GITHUB_SHA} $(curl "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/commits?sha=development" | jq -r .[1].sha) | grep -E "^_posts/.*$" && echo false || echo true)
+          IS_SKIP=$(git diff --name-only ${GITHUB_SHA} $(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/commits?sha=development" | jq -r .[1].sha) | grep -E "^_posts/.*$" && echo false || echo true)
           echo "::set-output name=is_skip::${IS_SKIP}"
       - run: echo "[skip] ${{ steps.set_is_skip.outputs.is_skip }}"
 
