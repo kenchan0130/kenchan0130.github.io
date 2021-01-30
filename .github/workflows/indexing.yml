@@ -42,3 +42,6 @@ jobs:
       - name: Create algolia indexing
         run: |
           ./scripts/indexing.sh
+        env:
+          ALGOLIA_ADMIN_API_KEY: ${{ secrets.ALGOLIA_ADMIN_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
