@@ -18,8 +18,23 @@ env:
   cache-version: v1
 
 jobs:
+  skip-indexing:
+    runs-on: ubuntu-latest
+    outputs:
+      is_skip: ${{ steps.set_is_skip.outputs.is_skip }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set is_skip
+        id: set_is_skip
+        run: |
+          IS_SKIP=$(git diff --name-only ${GITHUB_SHA} $(curl "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/commits?sha=development" | jq -r .[1].sha) | grep -E "^_posts/.*$" && echo false || echo true)
+          echo "::set-output name=is_skip::${IS_SKIP}"
+      - run: echo "[skip] ${{ steps.set_is_skip.outputs.is_skip }}"
+
   indexing:
     runs-on: ubuntu-latest
+    needs: skip-indexing
+    if: ${{ ! needs.skip-indexing.outputs.is_skip }}
     steps:
       - uses: actions/checkout@v2
       - name: Get a version of .ruby-version
@@ -44,4 +59,3 @@ jobs:
           ./scripts/indexing.sh
         env:
           ALGOLIA_ADMIN_API_KEY: ${{ secrets.ALGOLIA_ADMIN_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
