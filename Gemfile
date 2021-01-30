@@ -8,6 +8,7 @@ gem 'liquid-c'
 gem 'rouge', '~> 3.26.0'
 
 group :jekyll_plugins do
+  gem 'jekyll-algolia'
   gem 'jekyll-archives'
   gem 'jekyll-autoprefixer'
   gem 'jekyll-lazy-load-image', require: 'jekyll-lazy-load-image/auto-execution'
