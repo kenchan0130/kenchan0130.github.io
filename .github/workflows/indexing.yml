@@ -1,9 +1,9 @@
 name: Indexing
 on:
-  workflow_dispatch:
   push:
     tags:
       - "release-*"
+  workflow_dispatch:
 
 env:
   BUNDLE_JOBS: 4
