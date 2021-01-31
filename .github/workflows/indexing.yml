@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - development
+      - master
 
 env:
   BUNDLE_JOBS: 4
@@ -24,11 +24,13 @@ jobs:
       is_skip: ${{ steps.set_is_skip.outputs.is_skip }}
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Set is_skip
         id: set_is_skip
         run: |
-          API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/commits?sha=development")
-          IS_SKIP=$(git diff --name-only $(echo "${API_RESPONSE}" | jq -r .[0].sha) $(echo "${API_RESPONSE}" | jq -r .[1].sha) | grep -E "^_posts/.*$" && echo false || echo true)
+          API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/tags")
+          IS_SKIP=$(git diff --name-only --diff-filter=AMCRD $(echo "${API_RESPONSE}" | jq -r .[0].name) $(echo "${API_RESPONSE}" | jq -r .[1].name) | grep -E "^_posts/.*$" && echo false || echo true)
           echo "::set-output name=is_skip::${IS_SKIP}"
       - run: echo "[skip] ${{ steps.set_is_skip.outputs.is_skip }}"
 
