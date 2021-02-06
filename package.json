@@ -65,6 +65,8 @@
     "@fancyapps/fancybox": "latest",
     "@fortawesome/fontawesome-free": "latest",
     "@sentry/browser": "latest",
+    "algoliasearch": "latest",
+    "autocomplete.js": "latest",
     "core-js": "latest",
     "fg-loadcss": "latest",
     "jquery": "latest",
