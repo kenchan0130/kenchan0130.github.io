@@ -1,5 +1,5 @@
 $(() => {
-  const menuToggle = $('#js-mobile-menu').unbind()
+  const menuToggle = $('#js-mobile-menu').off()
   $('#js-navigation-menu').removeClass('show')
   menuToggle.on('click', (e: JQuery.Event) => {
     e.preventDefault()
