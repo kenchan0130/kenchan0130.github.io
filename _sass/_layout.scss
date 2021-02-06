@@ -183,6 +183,9 @@ pre.highlight {
   nav {
     float: none;
     padding: 1.25em 0;
+    @include media ($tablet) {
+      padding: 1.00em 0;
+    }
 
     @include media($tablet) {
       float: right;
@@ -210,32 +213,87 @@ pre.highlight {
   }
 
   // Nav items
-  ul li.nav-link {
-    display: block;
-    text-align: right;
-    width: 100%;
-    padding: 0.25em 0;
+  ul li {
+    &.nav-search-box {
+      display: none;
 
-    @include media($tablet) {
-      background: transparent;
-      display: inline;
-      text-decoration: none;
-      width: auto;
-    }
-  }
+      @include media ($tablet) {
+        background: transparent;
+        display: inline-block;
+        text-decoration: none;
+        margin: 0 24px 0
+      }
 
-  li.nav-link {
-    a {
-      display: inline-block;
+      .search-input-container {
+        display: inline-block;
+        position: relative;
+        margin: 0;
 
-      @include media($tablet) {
-        padding-right: 1.5em;
+        .search-input {
+          margin: 0;
+          width: 250px;
+          border-radius: 10px;
+          vertical-align: baseline;
+          padding: 6px 9.6px 6px 34px;
+          margin: 0;
+          box-sizing: border-box;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          font-size: 14px;
+          box-shadow: none;
+
+          &:focus {
+            border: $base-border;
+            box-shadow: none;
+
+            &::-webkit-input-placeholder, &::-moz-placeholder, &::-ms-input-placeholder, &::placeholder {
+              color: transparent;
+            }
+          }
+
+          &::-webkit-search-decoration, &::-webkit-search-cancel-button, &::-webkit-search-results-button, &::-webkit-search-results-decoration {
+            display: none;
+          }
+        }
+
+        .search-input-icon {
+          height: 16px;
+          width: 16px;
+          position: absolute;
+          left: 12px;
+          top: 17px;
+          -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+        }
       }
     }
 
-    &:last-child a {
+    &.nav-link {
+      display: block;
+      text-align: right;
+      width: 100%;
+      padding: 0.25em 0;
+
       @include media($tablet) {
-        padding-right: 1em;
+        background: transparent;
+        display: inline;
+        text-decoration: none;
+        width: auto;
+      }
+
+      a {
+        display: inline-block;
+
+        @include media($tablet) {
+          padding-right: 1.5em;
+        }
+      }
+
+      &:last-child a {
+        @include media($tablet) {
+          padding-right: 1em;
+        }
       }
     }
   }

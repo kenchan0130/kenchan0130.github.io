@@ -12,6 +12,13 @@
     </a>
     <nav role="navigation">
       <ul id="js-navigation-menu" class="navigation-menu">
+        <li class="nav-search-box">
+          <div class="search-input-container">
+            <input type="search" class="search-input" id="js-search-input" placeholder="Search" autocomplete="off"{% if site.ga_tracking_ids %} onfocus="gtag('event', 'search', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: '{{ page.url }}' });"{% endif %}/>
+            <i class="fa fa-search search-input-icon"></i>
+            {% include suggestion_template.html %}
+          </div>
+        </li>
         {% for page in site.pages %}
           {% if page.title and (page.nav == true or page.nav == "only-header") %}
           <li class="nav-link"><a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
