@@ -4526,9 +4526,9 @@ lazy-ass@1.6.0:
   integrity sha1-eZllXoZGwX8In90YfRUNMyTVRRM=
 
 lazysizes@latest:
-  version "5.3.0-beta1"
-  resolved "https://registry.yarnpkg.com/lazysizes/-/lazysizes-5.3.0-beta1.tgz#a2fa48145b28f8cf54df5d20aa8a47b63fa35641"
-  integrity sha512-4ZEoV4UXvz5L96XBuaFphGlq8BVi78kIA4kL3ls2qSYMEgGBdXMgsh8u+bTVjbdwbXfzXtWc71OH4EfEEPVZoA==
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/lazysizes/-/lazysizes-5.3.0.tgz#e31b40bc2500b45483251681c898bbb3ded744ac"
+  integrity sha512-h5i4WPc2FdeTOUHBcU7eyNnOULPCC90wVho+SQTZRh9Q8lev6P0yFwKq8rvfMdBvsKsCyDQBdqoBng9FYbcR/g==
 
 levn@^0.4.1:
   version "0.4.1"
