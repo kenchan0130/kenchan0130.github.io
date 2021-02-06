@@ -2,7 +2,7 @@ name: Indexing
 on:
   push:
     tags:
-      - "release-*"
+      - "*"
   workflow_dispatch:
 
 env:
