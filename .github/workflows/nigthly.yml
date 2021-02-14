@@ -18,7 +18,8 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # See also: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962596
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
         with:
@@ -62,10 +63,6 @@ jobs:
         run: |
           yarn build
           bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination ${JEKYLL_BUILD_DESTINATION_PATH}
-      # For debug
-      - uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
       - name: Check external links for generated HTML
         run: |
           bundle exec rake htmlproofer:with_external_link[${JEKYLL_BUILD_DESTINATION_PATH}]
