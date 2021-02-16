@@ -19,7 +19,7 @@ env:
 jobs:
   build:
     # See also: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=962596
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
