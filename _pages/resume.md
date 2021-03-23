@@ -27,6 +27,7 @@ YouTube|[https://www.youtube.com/channel/UCJAx2EAohTGjRGqG0wWkoNQ](https://www.y
 合わせて、マルチテナントかつ証券システムであるがゆえの要件の整理などを行いました。
 
 * AWS（Amazon Web Services）を用いたインフラ構築
+  * 特にセキュリティを考慮したインフラ構築  
 * Terraformを用いたリソースの管理
   * AWS
   * Azure AD
@@ -36,9 +37,9 @@ YouTube|[https://www.youtube.com/channel/UCJAx2EAohTGjRGqG0wWkoNQ](https://www.y
   * EKSでの構築、運用
   * Helmによるデプロイの運用
 * Argo CDによるGitOpsの実現
-* Argoによるバッチ基盤の実現
+* Argo Workflowによるバッチ基盤の実現
 * 監査ログの設計および開発
-  * Golang
+  * Go
 
 #### Webアプリケーションエンジニア業務
 
@@ -248,7 +249,7 @@ Webアプリケーションエンジニアとして、遺伝子検査サービ�
 
 ## プログラミングスキル
 
-* Golang
+* Go
   * AWSのFaaSであるLambda Functionで動作する、ミニマムなアプリケーションの開発
   * AWSでSAMLでSSOしている場合でもCLIのためのクレデンシャルを作成できるツールにコントリビュート経験有
     * [https://github.com/Versent/saml2aws/pull/509](https://github.com/Versent/saml2aws/pull/509)
