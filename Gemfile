@@ -25,6 +25,6 @@ group :development do
   gem 'pry-byebug'
   gem 'rake'
   gem 'rubocop'
-  gem "webrick"
+  gem 'webrick'
   gem 'yamllint'
 end
