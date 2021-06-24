@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kenchan0130 blog</title>
+    <description>Web エンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。
+</description>
+    <link>https://kenchan0130.github.io/</link>
+    <atom:link href="https://kenchan0130.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 24 Jun 2021 21:20:49 +0900</pubDate>
+    <lastBuildDate>Thu, 24 Jun 2021 21:20:49 +0900</lastBuildDate>
+    <generator>Jekyll v4.2.0</generator>
+    
+      <item>
+        <title>WWDC 2021で発表されたエンタープライズ関連の新機能</title>
+        <description>
+            
+                日本時間2021年6月8日〜6月12日にかけて、Apple社が主催するWWDC（世界開発者会議）2021が開催されました。 その中で、今年もエンタープライズ機能のアップデートが紹介されました。 今回は、WWDC 2021で紹介されたいくつかの機能をまとめてみました。
+
+            
+        </description>
+        <pubDate>Thu, 24 Jun 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-06-24-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-06-24-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Education</category>
+        
+        <category>Enterprise</category>
+        
+        <category>iOS</category>
+        
+        <category>iPadOS</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Jamf</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>GitHub ActionsのRunner OSの情報を取得できるアクションを作った</title>
+        <description>
+            
+                GitHub Actionsのubuntu-latestが18.04から20.04にアップグレードされる旨が、2020年の10月に告知され、徐々に展開されてきました。 このRunnerのOSの差異によりWorkflowが失敗するようになったため、その問題を解決に役立つGitHub Actionsのアクションを作成しました。 今回はこの備忘も兼ねてアクションの作り方を紹介します。
+
+            
+        </description>
+        <pubDate>Wed, 24 Feb 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-02-24-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-02-24-1</guid>
+        
+        <category>GitHub</category>
+        
+        <category>GitHub Actions</category>
+        
+        <category>JavaScript</category>
+        
+        <category>Linux</category>
+        
+        <category>macOS</category>
+        
+        <category>TypeScript</category>
+        
+        <category>Windows</category>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>macOS Big SurでSelf Serviceアプリケーションがクラッシュしてしまう問題の暫定対応の自動化</title>
+        <description>
+            
+                macOS Big Sur、および執筆時点のSelf Serviceの最新バージョンである10.26.0において、Self Serviceアプリケーションがクラッシュして起動できない事象が発生しています。 Self Serviceアプリケーションがクラッシュしたら特定のファイルを都度消すことで動作します。 しかし、都度消すのは面倒ですので、今回はこの作業から解放されるべく対応を自動化する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Wed, 27 Jan 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-01-27-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-01-27-1</guid>
+        
+        <category>Big Sur</category>
+        
+        <category>launchd</category>
+        
+        <category>Jamf</category>
+        
+        <category>macOS</category>
+        
+        <category>Shell</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>KeynoteのテンプレートをUIを介さずにテーマとして登録する</title>
+        <description>
+            
+                Keynoteにはテーマの共有や再配布が可能となるテンプレート機能があります。 通常、テンプレートはUIを介してテーマとして登録しますが、「複数個テンプレートをテーマとして登録したい」、「管理化に置かれているデバイスに配布したい」などの要件があった場合は、公式にはツールなどが提供されていません。 今回は、KeynoteのテンプレートをUIを介さずに登録するツールを作成したので、その使い方を紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 18 Jan 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-01-18-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-01-18-1</guid>
+        
+        <category>Jamf</category>
+        
+        <category>Keynote</category>
+        
+        <category>Mac</category>
+        
+        <category>macOS</category>
+        
+        <category>Shell</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Appleシリコンを搭載したMacデバイスのロックの挙動について</title>
+        <description>
+            
+                Appleシリコンは、Apple社がMac向けにARMアーキテクチャを使用して設計されたシステムオンチップおよびシステム・イン・パッケージプロセッサです。 日本時間2020年11月11日にApple M1プロセッサを搭載したMacデバイスが発売され、徐々にIntel版のMacデバイスのラインナップがなくなっていく予定です。 今回は、そのAppleシリコンを搭載したMacデバイスのロックの挙動がIntel版とは異なっていたため、その記録を残そうと思います。
+
+            
+        </description>
+        <pubDate>Mon, 28 Dec 2020 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2020-12-28-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2020-12-28-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Apple Silicon</category>
+        
+        <category>Jamf</category>
+        
+        <category>Mac</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>YouTubeとZoomを使用してオンライン勉強会を開催する</title>
+        <description>
+            
+                COVID-19の影響もあり、IT勉強会が軒並みオンライン開催されることが多くなってきました。 そんな中、私も2020年8月に、IdPについて数人のゲストを交えて語り合う「IdP よもやま会 -2020 夏-」をオンラインで開催しました。 今回は、その方法を備忘を兼ねてオンライン配信の方法を紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 21 Dec 2020 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2020-12-21-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2020-12-21-1</guid>
+        
+        <category>Loopback</category>
+        
+        <category>OBS Studio</category>
+        
+        <category>Streaming</category>
+        
+        <category>YouTube</category>
+        
+        <category>Zoom</category>
+        
+        
+        <category>operation</category>
+        
+      </item>
+    
+      <item>
+        <title>erase-installを使ってmacOSの初期化、OS再インストール、OSアップグレードを行う</title>
+        <description>
+            
+                macOSのデバイスを組織の従業員に貸与する場合、デバイスのトラブルや退職などのタイミングでデバイスを管理者で受け入れ、そのデバイスの購入時期が一定期間以内の場合、廃棄せずに初期化を行い、新たな従業員へデバイスを貸与することがあります。 その際デバイスの管理者は、なるべく組織で許容しているOSおよびバーションにアップグレードしたいことがあります。 また、COVID-19の影響によりリモートで対応することも多い中、何か問題が起きた際にOSの再インストールや、OSのアップデートをエンドユーザーに行ってもらう必要があるかもしれません。 今回はこれら課題を解決する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Tue, 15 Dec 2020 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2020-12-15-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2020-12-15-1</guid>
+        
+        <category>Jamf Pro</category>
+        
+        <category>macOS</category>
+        
+        <category>macOSUpgrade</category>
+        
+        <category>erase-install</category>
+        
+        <category>Script</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築</title>
+        <description>
+            
+                AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。 今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Thu, 10 Dec 2020 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2020-12-10-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2020-12-10-1</guid>
+        
+        <category>AWS</category>
+        
+        <category>Bastion</category>
+        
+        <category>Docker</category>
+        
+        <category>ECS</category>
+        
+        <category>Serverless</category>
+        
+        <category>Session Manager</category>
+        
+        <category>System Manager</category>
+        
+        <category>Terraform</category>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>PPPCで付与できないmacOSのプライバシー保護機能にアクセス権を付与する</title>
+        <description>
+            
+                COVID-19の影響により、テレワーク/リモートワーク化が加速し、Web会議サービスを使用することが増えてきました。 エンドユーザーが意図せずにこれらのアクセスを拒否してしまい、目当てのアプリケーションを使用するのに混乱したり、手間どったりすることがあります。
+組織において管理下にあるデバイスであれば、プロファイルやスクリプトなどで強制的にアクセス権を付与したいと考えますが、システムの制約上、エンドユーザーのみが操作可能です。
+今回は、Jamf Proを使用してこの制約の中で対応する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Thu, 03 Dec 2020 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2020-12-03-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2020-12-03-1</guid>
+        
+        <category>Jamf Pro</category>
+        
+        <category>macOS</category>
+        
+        <category>PPPC</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>macOSアプリケーションのアイコンを取得する</title>
+        <description>
+            
+                Jamf ProのポリシーのSelf Serviceアイコン設定など、macOSのアプリケーションのアイコンを使用したいケースがあります。 今回はmacOSアプリケーションのアイコンを取り出す方法を紹介します。
+
+            
+        </description>
+        <pubDate>Wed, 04 Nov 2020 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2020-11-04-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2020-11-04-1</guid>
+        
+        <category>icns</category>
+        
+        <category>Icons</category>
+        
+        <category>Jamf Pro</category>
+        
+        <category>macOS</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+  </channel>
+</rss>
