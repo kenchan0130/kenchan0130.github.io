@@ -24,7 +24,7 @@ env:
 
 jobs:
   publish:
-    if: ${{ github.event.inputs.createIndexForce != 'true' }}
+    if: ${{ ! github.event.inputs.createIndexForce }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -101,7 +101,7 @@ jobs:
       - name: Set is_skip
         id: set_is_skip
         run: |
-          if [[ "${{ github.event.inputs.createIndexForce }}" = "true" ]];then
+          if [[ "${{ github.event.inputs.createIndexForce }}" != "" ]];then
             IS_SKIP=false
           else
             API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/tags")
