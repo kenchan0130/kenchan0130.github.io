@@ -24,7 +24,6 @@ env:
 
 jobs:
   publish:
-    if: ${{ ! github.event.inputs.createIndexForce }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -101,9 +100,8 @@ jobs:
       - name: Set is_skip
         id: set_is_skip
         run: |
-          if [[ "${{ github.event.inputs.createIndexForce }}" != "" ]];then
-            IS_SKIP=false
-          else
+          IS_SKIP=false
+          if [[ ! "${{ github.event.inputs.createIndexForce }}" ]];then
             API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/tags")
             IS_SKIP=$(git diff --name-only --diff-filter=AMCRD "$(echo "${API_RESPONSE}" | jq -r .[0].name)" "$(echo "${API_RESPONSE}" | jq -r .[1].name)" | grep -E "^_posts/.*$" &> /dev/null && echo false || echo true)
           fi
