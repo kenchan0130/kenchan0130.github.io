@@ -106,7 +106,7 @@ jobs:
       - name: Build Jekyll
         run: |
           yarn build
-          bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination ${JEKYLL_BUILD_DESTINATION_PATH}
+          bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination "${JEKYLL_BUILD_DESTINATION_PATH}"
       - name: Check generated HTML files
         run: |
-          bundle exec rake htmlproofer:without_external_link[${JEKYLL_BUILD_DESTINATION_PATH}]
+          bundle exec rake htmlproofer:without_external_link["${JEKYLL_BUILD_DESTINATION_PATH}"]
