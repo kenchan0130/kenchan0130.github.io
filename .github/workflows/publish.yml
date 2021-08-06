@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - development
+  workflow_dispatch:
+    inputs:
+      createIndexForce:
+        description: 'Force create algolia index'
+        required: true
+        default: 'true'
 
 env:
   BUNDLE_JOBS: 4
@@ -18,6 +24,7 @@ env:
 
 jobs:
   publish:
+    if: ${{ github.event.inputs.createIndexForce != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -94,8 +101,12 @@ jobs:
       - name: Set is_skip
         id: set_is_skip
         run: |
-          API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/tags")
-          IS_SKIP=$(git diff --name-only --diff-filter=AMCRD "$(echo "${API_RESPONSE}" | jq -r .[0].name)" "$(echo "${API_RESPONSE}" | jq -r .[1].name)" | grep -E "^_posts/.*$" &> /dev/null && echo false || echo true)
+          if [[ "${{ github.event.inputs.createIndexForce }}" = "true" ]];then
+            IS_SKIP=false
+          else
+            API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/tags")
+            IS_SKIP=$(git diff --name-only --diff-filter=AMCRD "$(echo "${API_RESPONSE}" | jq -r .[0].name)" "$(echo "${API_RESPONSE}" | jq -r .[1].name)" | grep -E "^_posts/.*$" &> /dev/null && echo false || echo true)
+          fi
           echo "::set-output name=is_skip::${IS_SKIP}"
       - run: echo "[skip] ${{ steps.set_is_skip.outputs.is_skip }}"
 
