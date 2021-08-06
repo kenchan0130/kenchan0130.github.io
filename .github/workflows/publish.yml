@@ -66,10 +66,10 @@ jobs:
       - name: Build Jekyll
         run: |
           yarn build
-          bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination ${JEKYLL_BUILD_DESTINATION_PATH}
+          bundle exec jekyll build --verbose --trace --config "_config.yml,_config_production.yml" --destination "${JEKYLL_BUILD_DESTINATION_PATH}"
       - name: Check generated HTML files
         run: |
-          bundle exec rake htmlproofer:without_external_link[${JEKYLL_BUILD_DESTINATION_PATH}]
+          bundle exec rake htmlproofer:without_external_link["${JEKYLL_BUILD_DESTINATION_PATH}"]
       - name: Publish tag
         run: |
           NEW_TAG="release-$(date "+%Y%m%d%H%M%S")"
@@ -95,7 +95,7 @@ jobs:
         id: set_is_skip
         run: |
           API_RESPONSE=$(curl -sfL "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/tags")
-          IS_SKIP=$(git diff --name-only --diff-filter=AMCRD $(echo "${API_RESPONSE}" | jq -r .[0].name) $(echo "${API_RESPONSE}" | jq -r .[1].name) | grep -E "^_posts/.*$" && echo false || echo true)
+          IS_SKIP=$(git diff --name-only --diff-filter=AMCRD "$(echo "${API_RESPONSE}" | jq -r .[0].name)" "$(echo "${API_RESPONSE}" | jq -r .[1].name)" | grep -E "^_posts/.*$" &> /dev/null && echo false || echo true)
           echo "::set-output name=is_skip::${IS_SKIP}"
       - run: echo "[skip] ${{ steps.set_is_skip.outputs.is_skip }}"
 
