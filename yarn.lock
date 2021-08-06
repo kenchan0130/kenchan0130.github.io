@@ -7094,12 +7094,12 @@ textlint-rule-ja-no-abusage@latest:
     textlint-rule-prh "^5.3.0"
 
 textlint-rule-ja-no-redundant-expression@latest:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/textlint-rule-ja-no-redundant-expression/-/textlint-rule-ja-no-redundant-expression-3.0.2.tgz#2a280a3c3d617aa7a00f6fe4a01c7e88e7cb2fc7"
-  integrity sha512-fs5zqSY7qcCd/x7ow0Ymdq2PiQGfGI4sANIBmKbTFTPuHdmflaecFbBp2yYrVnDroj+PDq0trTHLr5iZr5xAWQ==
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/textlint-rule-ja-no-redundant-expression/-/textlint-rule-ja-no-redundant-expression-4.0.0.tgz#5385a58424dc4b8ec48edc0f5eb0864c9f2bcf4d"
+  integrity sha512-Wb6g/uwd7fL3v+BCvOMuiQONdL1JSvrDVnM4k5X7guQQggmA8R0lWCFZZuMUO5Mb0VuDX9bYptJL5AblzR1YVg==
   dependencies:
     "@textlint/regexp-string-matcher" "^1.1.0"
-    kuromojin "^2.0.0"
+    kuromojin "^3.0.0"
     morpheme-match "^2.0.4"
     morpheme-match-all "^2.0.5"
     textlint-rule-helper "^2.1.1"
