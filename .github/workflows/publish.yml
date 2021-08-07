@@ -79,6 +79,8 @@ jobs:
       - name: Publish GitHub Pages
         run: |
           ./scripts/deploy.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   skip-indexing:
     runs-on: ubuntu-latest
