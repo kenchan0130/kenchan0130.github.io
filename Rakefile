@@ -17,14 +17,21 @@ namespace :htmlproofer do
     typhoeus: {
       headers: {
         # macOS Gooogle Chrome Latest
-        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36'
-      }
+        'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.3'
+      },
+    },
+    hydra: {
+      # default max_concurrency is 50, but github.com often returns too many request status...
+      max_concurrency: 5
     },
     check_html: true,
     check_img_http: true,
     check_favicon: true,
     assume_extension: true,
-    check_opengraph: true
+    check_opengraph: true,
+    http_status_ignore: [
+      401
+    ]
   }
 
   desc 'Run htmlproofer without external link'
