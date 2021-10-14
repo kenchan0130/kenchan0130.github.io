@@ -138,7 +138,7 @@ GEM
       ffi (~> 1.0)
     regexp_parser (2.1.1)
     rexml (3.2.5)
-    rouge (3.26.0)
+    rouge (3.26.1)
     rubocop (1.22.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
@@ -189,7 +189,7 @@ DEPENDENCIES
   liquid-c
   pry-byebug
   rake
-  rouge (~> 3.26.0)
+  rouge (~> 3.26.1)
   rubocop
   webrick
   yamllint
