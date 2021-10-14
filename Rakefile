@@ -20,10 +20,6 @@ namespace :htmlproofer do
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.3'
       }
     },
-    hydra: {
-      # default max_concurrency is 50, but github.com often returns too many request status...
-      max_concurrency: 5
-    },
     check_html: true,
     check_img_http: true,
     check_favicon: true,
@@ -41,6 +37,11 @@ namespace :htmlproofer do
 
   desc 'Run htmlproofer with external link'
   task :with_external_link, ['directory'] do |_, args|
-    HTMLProofer.check_directory(args.directory, html_proofer_options).run
+    HTMLProofer.check_directory(
+      args.directory, html_proofer_options.merge(hydra: {
+                                                   # default max_concurrency is 50, but github.com often returns too many request status...
+                                                   max_concurrency: 5
+                                                 })
+    ).run
   end
 end
