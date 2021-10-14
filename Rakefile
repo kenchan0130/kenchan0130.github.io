@@ -18,7 +18,7 @@ namespace :htmlproofer do
       headers: {
         # macOS Gooogle Chrome Latest
         'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.3'
-      },
+      }
     },
     hydra: {
       # default max_concurrency is 50, but github.com often returns too many request status...
