@@ -1,16 +1,14 @@
-const webpack = require('webpack');
-const path = require('path');
-const AssetsManifest = require('webpack-assets-manifest');
-const {
-  CleanWebpackPlugin
-} = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const AssetsManifest = require('webpack-assets-manifest')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
 module.exports = {
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.m?js$/,
         loader: 'babel-loader',
         options: {
@@ -20,51 +18,52 @@ module.exports = {
               '@babel/preset-env',
               {
                 targets: {
-                  ie: "11"
+                  ie: '11',
                 },
                 useBuiltIns: 'entry',
                 modules: false,
-                corejs: 3
-              }
+                corejs: 3,
+              },
             ],
-          ]
+          ],
         },
       },
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
       },
       {
         test: /\.css$/,
         use: [
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              esModule: true,
+            },
+          },
           'css-loader',
         ],
       },
       {
         test: /\.(ttf|eot|woff|woff2|svg|png|jpg|gif|ico)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        use: [
-          'file-loader', {
-            loader: 'image-webpack-loader'
-          }
-        ]
-      }
-    ]
+        type: 'asset/resource',
+      },
+    ],
   },
 
   entry: {
-    app: './webpack/src/index.ts'
+    app: './webpack/src/index.ts',
   },
 
   output: {
     filename: '[name].[chunkhash].js',
     path: path.resolve(__dirname, './assets/bundle'),
-    publicPath: '/assets/bundle/'
+    publicPath: '/assets/bundle/',
   },
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.json']
+    extensions: ['.ts', '.tsx', '.js', '.json'],
   },
 
   optimization: {
@@ -73,33 +72,29 @@ module.exports = {
         vendors: {
           priority: -10,
           test: /[\\/]node_modules[\\/]/,
-        }
+        },
       },
-
       chunks: 'async',
       minChunks: 1,
-      minSize: 30000
+      minSize: 30000,
     },
-    minimizer: [
-      new TerserPlugin(),
-      new OptimizeCSSAssetsPlugin({})
-    ],
+    minimizer: ['...', new CssMinimizerPlugin()],
   },
 
   plugins: [
     new AssetsManifest({
-      output: path.resolve(__dirname, '_data', 'manifest.json')
+      output: path.resolve(__dirname, '_data', 'manifest.json'),
     }),
     new CleanWebpackPlugin({
-      cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep']
+      cleanOnceBeforeBuildPatterns: ['**/*', '!.gitkeep'],
     }),
     new MiniCssExtractPlugin({
-      filename: '[name].[chunkhash].css'
+      filename: '[name].[chunkhash].css',
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
-      'window.jQuery': 'jquery'
+      'window.jQuery': 'jquery',
     }),
-  ]
-};
+  ],
+}
