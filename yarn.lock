@@ -5906,9 +5906,9 @@ textlint-rule-preset-ja-spacing@latest:
     textlint-rule-ja-space-between-half-and-full-width "^2.2.0"
 
 textlint-rule-preset-jtf-style@latest:
-  version "2.3.6"
-  resolved "https://registry.yarnpkg.com/textlint-rule-preset-jtf-style/-/textlint-rule-preset-jtf-style-2.3.6.tgz#57f54100388d64f878e1dd4dca9515c9359ff219"
-  integrity sha512-hun0dMmGM7WWQxu0XlndswNnXS6WqW5TEHeu7NLadZEwZQHYoaClFx0IPgpsmF64rnSLgJ7aq/5L56RkWYp2Ug==
+  version "2.3.12"
+  resolved "https://registry.yarnpkg.com/textlint-rule-preset-jtf-style/-/textlint-rule-preset-jtf-style-2.3.12.tgz#17a114c24eb83c093ecb7c352eb4447441581e40"
+  integrity sha512-Te2pQWku6hpLknWh8rpFjAiOZpSZa3yMaBEbmdstFf8C9ejX6+LXI0gn7vlb7nBbDWnLV+pgVoYXWtqk2W5Jig==
   dependencies:
     analyze-desumasu-dearu "^2.1.2"
     japanese-numerals-to-number "^1.0.2"
@@ -5917,7 +5917,7 @@ textlint-rule-preset-jtf-style@latest:
     regexp.prototype.flags "^1.1.1"
     regx "^1.0.4"
     sorted-joyo-kanji "^0.2.0"
-    textlint-rule-helper "^2.0.0"
+    textlint-rule-helper "^2.2.0"
     textlint-rule-prh "^5.2.1"
 
 textlint-rule-prh@*, textlint-rule-prh@^5.2.1, textlint-rule-prh@^5.3.0:
