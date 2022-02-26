@@ -1,3 +1,4 @@
+require: rubocop-rake
 # 自動生成されるものはチェック対象から除外する
 AllCops:
   Exclude:
