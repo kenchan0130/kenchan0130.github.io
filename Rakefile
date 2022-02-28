@@ -15,7 +15,7 @@ end
 namespace :htmlproofer do
   html_proofer_options = {
     ignore_urls: [
-      /azure.microsoft.com/ # Excluded from inspection because it would be 'failed: 403 No error' in GitHub Actions.
+      %r{//azure\.microsoft\.com} # Excluded from inspection because it would be 'failed: 403 No error' in GitHub Actions.
     ],
     typhoeus: {
       headers: {
