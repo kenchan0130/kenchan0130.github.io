@@ -20,7 +20,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: kenchan0130/actions-system-info@v1.0.0
         id: system-info
       - name: Get a version of .ruby-version
@@ -88,7 +88,7 @@ jobs:
     outputs:
       is_skip: ${{ steps.set_is_skip.outputs.is_skip }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - uses: kenchan0130/actions-system-info@v1.0.0
@@ -106,7 +106,7 @@ jobs:
     needs: skip-indexing
     if: ${{ ! needs.skip-indexing.outputs.is_skip }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: kenchan0130/actions-system-info@v1.0.0
         id: system-info
       - name: Get a version of .ruby-version
