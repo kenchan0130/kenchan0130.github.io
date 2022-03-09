@@ -41,7 +41,7 @@ jobs:
         run: |
           bundle check || bundle install
       - name: Use Node.js v14.x
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3
         with:
           node-version: '14'
       - name: Get yarn cache directory path
