@@ -21,11 +21,11 @@ livereload: true
 
 # Site settings
 title: 'kenchan0130 blog'
-subtitle: "A web Developer's blog"
+subtitle: "A software engineer's blog"
 email:
 name: Tadayuki Onishi
 description: >
-  Web エンジニア。記録に残したいことを雑に備忘するブログ。
+  ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。
   投稿内容は個人の見解であり所属する組織の公式見解ではありません。
 baseurl: '' # the subpath of your site, e.g. /blog/
 url: 'https://kenchan0130.github.io' # the base hostname & protocol for your site
