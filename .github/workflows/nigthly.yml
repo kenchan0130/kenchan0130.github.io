@@ -33,7 +33,7 @@ jobs:
         with:
           ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
       - name: Save Ruby gems cache
-        uses: actions/cache@v3.0.8
+        uses: actions/cache@v3.0.11
         with:
           path: ${{ env.BUNDLE_PATH }}
           key: ${{ env.cache-version }}-${{ runner.os }}-${{ steps.system-info.outputs.release }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -50,7 +50,7 @@ jobs:
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
       - name: Cache yarn modules
-        uses: actions/cache@v3.0.8
+        uses: actions/cache@v3.0.11
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
