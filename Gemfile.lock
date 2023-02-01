@@ -164,7 +164,7 @@ GEM
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.3.0)
     verbal_expressions (0.1.5)
-    webrick (1.7.0)
+    webrick (1.8.1)
     yamllint (0.0.9)
       trollop (~> 2)
     yell (2.2.2)
