@@ -29,7 +29,7 @@ jobs:
         with:
           ruby-version: ${{ steps.rbenv.outputs.ruby-version }}
       - name: Save Ruby gems cache
-        uses: actions/cache@v3.2.2
+        uses: actions/cache@v3.3.1
         with:
           path: ${{ env.BUNDLE_PATH }}
           key: ${{ env.cache-version }}-${{ runner.os }}-${{ steps.system-info.outputs.release }}-gems-${{ hashFiles('**/Gemfile.lock') }}
