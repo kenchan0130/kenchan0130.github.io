@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: development
-      - uses: kenchan0130/actions-system-info@v1.1.0
+      - uses: kenchan0130/actions-system-info@1.2.0
         id: system-info
       - name: Get a version of .ruby-version
         run: echo "::set-output name=ruby-version::$(cat .ruby-version)"
