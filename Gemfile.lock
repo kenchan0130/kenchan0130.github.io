@@ -24,7 +24,7 @@ GEM
       ffi (>= 1.15.0)
     eventmachine (1.2.7)
     execjs (2.7.0)
-    fastimage (2.2.6)
+    fastimage (2.2.7)
     ffi (1.15.5)
     filesize (0.2.0)
     forwardable-extended (2.6.0)
