@@ -11,5 +11,5 @@
   @if not unitless($base) {
     $base: strip-units($base);
   }
-  @return ($pxval / $base) * 1rem;
+  @return calc($pxval / $base) * 1rem;
 }
