@@ -1,0 +1,94 @@
+Application Domain,Key Name,Key Type,Value,Description,Note
+com.apple.Safari,AlwaysRestoreSessionAtLaunch,boolean,,起動時に全てのウィンドウで前回のセッションを開始する,
+com.apple.Safari,AlwaysShowFavoritesBarInFullScreen,boolean,,フルスクリーン表示でお気に入りバーの表示する,設定しても特に変化なし
+com.apple.Safari,AutoFillCreditCardData,boolean,,クレジットカード情報を自動入力する,
+com.apple.Safari,AutoFillFromAddressBook,boolean,,連絡先アプリの情報を自動入力する,
+com.apple.Safari,AutoFillMiscellaneousForms,boolean,,過去の入力を元にフォームに自動入力をする,
+com.apple.Safari,AutoFillPasswords,boolean,,ユーザ名とパスワードを自動入力する,
+com.apple.Safari,AutoOpenSafeDownloads,boolean,,ダウンロードしたファイルを自動的に開かないようにする,
+com.apple.Safari,BlockStoragePolicy,boolean,,Cookie と LocalStorage を常にブロックする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2AllowsInlineMediaPlayback,boolean,,ビデオの自動再生を有効にする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2BackspaceKeyNavigationEnabled,boolean,,直前見ていたページへ移動はバックスペースキーによる操作を有効にする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled,boolean,,開発メニューと Web インスペクターを有効にする,"IncludeDevelopMenu
+も同様に設定"
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaEnabled,boolean,,Java プラグインを有効にする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically,boolean,,ポップアップウィンドウを有効にする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptEnabled,boolean,,JavaScript を有効にする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2PluginsEnabled,boolean,,インターネットプラグインを有効にする,https://support.apple.com/ja-jp/HT202819
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2TabsToLinks,boolean,,Tab キーを押して、書く項目のハイライトを有効にする,
+com.apple.Safari,com.apple.Safari.ContentPageGroupIdentifier.WebKit2WebGLEnabled,boolean,,WebGL プラグインを有効にする,
+com.apple.Safari,DebugSnapshotsUpdatePolicy,integer,"0: 画像生成を停止
+1: 自動更新を停止
+2: 画像生成および自動生成を停止",履歴やトップサイトで使用するページのサムネイル画像生成/自動生成の設定,
+com.apple.Safari,DownloadsClearingPolicy,integer,"0: 手動
+1: Safari を閉じた際
+2: ダウンロード成功時",ダウンロードのクリアタイミング,
+com.apple.Safari,ExtensionsEnabled,boolean,,拡張機能を有効にする,
+com.apple.Safari,FindOnPageMatchesWordStartsOnly,boolean,,ページ内検索を、部分一致ではなく開始文字の一致のみにする,
+com.apple.Safari,HomePage,string,,ホームページとして登録する文字列,about:blank などURLでなくても検索窓に入力できるものであれば機能する
+com.apple.Safari,IncludeDevelopMenu,boolean,,開発メニューと Web インスペクターを有効にする,"com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled
+も同様に設定"
+com.apple.Safari,IncludeInternalDebugMenu,boolean,,メニューバーに「デバッグ」メニューを表示,
+com.apple.Safari,InstallExtensionUpdatesAutomatically,boolean,,インストールされている拡張機能の自動アップデートを有効にする,
+com.apple.Safari,ManagedPlugInPolicies,dictionary,,"管理対象の各プラグインの情報は、この辞書に保存される
+キーはプラグインのバンドル ID、値はプラグイン情報が保存された辞書を表す",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,NewTabBehavior,integer,"0: ホームページ
+1: 空のページ
+2: 同じページ
+3: お気に入り
+4: トップサイト",新しいタブを開いた時に表示する内容,4 がトップサイトだが、手元では確認できず
+com.apple.Safari,NewWindowBehavior,integer,"0: ホームページ
+1: 空のページ
+2: 同じページ
+3: お気に入り
+4: トップサイト",新しいウィンドウを開いた時に表示する内容,4 がトップサイトだが、手元では確認できず
+com.apple.Safari,OpenPrivateWindowWhenNotRestoringSessionAtLaunch,boolean,,プライベートウィンドウを開いた際に前回のセッションを開始しない,
+com.apple.Safari,PlugInFirstVisitPolicy,string,"PlugInPolicyAsk: 確認する
+PlugInPolicyBlock: ブロックする
+PlugInPolicyAllowWithSecurityRestrictions: 許可する
+PlugInPolicyAllowNoSecurityRestrictions: 常に許可する","ManagedPlugInPolicies における設定値
+プラグインを使用する Web サイトへの初回訪問時のプラグインポリシーを設定する",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PlugInHostname,string,,"PlugInHostnamePolicies における設定値
+Web サイトのホスト名",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PlugInHostnamePolicies,array of dictionary,,"ManagedPlugInPolicies における設定値
+個々の Web サイトの設定を表す",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PlugInPolicy,string,"PlugInPolicyAsk: 確認する
+PlugInPolicyBlock: ブロックする
+PlugInPolicyAllowWithSecurityRestrictions: 許可する
+PlugInPolicyAllowNoSecurityRestrictions: 常に許可する","PlugInHostnamePolicies における設定値
+Web サイトへの訪問時に使用されるプラグインポリシー",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PlugInPreventPerSitePolicyChange,boolean,,"ManagedPlugInPolicies における設定値
+PlugInHostnamePolicies にて定義された Web サイトのプラグイン設定をユーザによる変更を無効化",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PlugInRunUnsandboxed,boolean,,"PlugInHostnamePolicies における設定値
+Web サイトへの初回訪問時に、プラグインを安全でないモードでの実行を有効にする",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PlugInRunUnsandboxedOnFirstVisit,boolean,,"ManagedPlugInPolicies における設定値
+Web サイトへの初回訪問時に、プラグインを安全でないモードでの実行を有効にする",https://support.apple.com/ja-jp/HT202947
+com.apple.Safari,PreloadTopHit,boolean,,バックグラウンドでトップヒットを事前に読み込むを有効にする,
+com.apple.Safari,ProxiesInBookmarksBar,array of string,,ブックマークバーの左側に表示されるツールバーにトップサイトやリーディングリスト等のアイコンを表示,"デフォルトで Top Sites
+空配列だと非表示
+編集 > ツールバーをカスタマイズ
+から追加できる内容が追加可能"
+com.apple.Safari,SendDoNotTrackHTTPHeader,boolean,,Web サイトにトラッキングの停止を求めるを有効にする,"一部の Web サイトは、コンテンツを提供する際にユーザの閲覧動作をトラッキングして、表示するものをユーザに合わせて調整
+サイトおよびそのサイトの第三者コンテンツプロバイダ（広告プログラムを含む）に対してトラッキングの停止を求めることが可能
+
+Web サイトからコンテンツを取得するたびに、トラッキング停止の要求を追加
+ただし、その要求に応じるかどうかは Web サイト側の判断による"
+com.apple.Safari,ShowFavoritesBar,boolean,,ブックマークバーを表示する,
+com.apple.Safari,ShowFavoritesUnderSmartSearchField,boolean,,スマート検索フィールドの下にお気に入りを表示する,
+com.apple.Safari,ShowFullURLInSmartSearchField,boolean,,アドレスバーに完全な URL を表示する,
+com.apple.Safari,ShowSidebarInTopSites,boolean,,サイドバーの「トップサイト」を表示する,
+com.apple.Safari,SuppressSearchSuggestions,boolean,,検索時に検索エンジンの検索候補を含めるを有効にする,
+com.apple.Safari,TreatSHA1CertificatesAsInsecure,boolean,,SHA-1 証明書を安全でないものとして扱う,
+com.apple.Safari,UniversalSearchEnabled,boolean,,検索時に Spotlight のサジェストを有効にする,
+com.apple.Safari,WarnAboutFraudulentWebsites,boolean,,既知の不正な Web サイト（詐欺サイト）にアクセスした際の警告を有効にする,
+com.apple.Safari,WebKitDeveloperExtras,boolean,,コンテキストメニューにウェブ・インスペクター表示のアイテムを表示,
+com.apple.Safari,WebKitDeveloperExtrasEnabledPreferenceKey,boolean,,開発メニューと Web インスペクターを有効にする（レガシーなブラウザバージョン用）,
+com.apple.Safari,WebKitJavaEnabled,boolean,,Java プラグインを有効にする（レガシーなブラウザバージョン用）,
+com.apple.Safari,WebKitJavaScriptCanOpenWindowsAutomatically,boolean,,ポップアップウィンドウを有効にする（レガシーなブラウザバージョン用）,
+com.apple.Safari,WebKitJavaScriptEnabled,boolean,,JavaScript を有効にする（レガシーなブラウザバージョン用）,
+com.apple.Safari,WebKitMediaPlaybackAllowsInline,boolean,,ビデオの自動再生を有効にする（レガシーなブラウザバージョン用）,
+com.apple.Safari,WebKitOmitPDFSupport,boolean,,ブラウザ上での PDF 表示を無効にして PDF をダウンロードする,
+com.apple.Safari,WebKitPluginsEnabled,boolean,,インターネットプラグインを有効にする（レガシーなブラウザバージョン用）,https://support.apple.com/ja-jp/HT202819
+com.apple.Safari,WebKitTabToLinksPreferenceKey,boolean,,Tab キーを押して、書く項目のハイライトを有効にする（レガシーなブラウザバージョン用）,
+com.apple.Safari,WebsiteSpecificSearchEnabled,boolean,,クイック Web サイト検索を有効にする,
+com.apple.Safari,DownloadsPath,string,,ダウンロードフォルダの指定,

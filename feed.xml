@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kenchan0130 blog</title>
+    <description>ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。
+</description>
+    <link>https://kenchan0130.github.io/</link>
+    <atom:link href="https://kenchan0130.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Tue, 12 Dec 2023 06:42:00 +0900</pubDate>
+    <lastBuildDate>Tue, 12 Dec 2023 06:42:00 +0900</lastBuildDate>
+    <generator>Jekyll v4.3.2</generator>
+    
+      <item>
+        <title>Microsoft Intune管理下のWindowsデバイスの同期サイクルを変更する</title>
+        <description>
+            
+                Microsoft Intuneでエンロールされているデバイスは、デフォルトで8時間ごとにサーバーと同期を行います。 この同期時間をワークロードによっては変更したい場合があります。 今回は、Microsoft Intune管理下のWindowsデバイスの同期サイクルを変更する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Tue, 12 Dec 2023 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2023-12-12-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2023-12-12-1</guid>
+        
+        <category>Microsoft Intune</category>
+        
+        <category>PowerShell</category>
+        
+        <category>Windows</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Azure Active DirectoryのアプリケーションをTerraformで管理する</title>
+        <description>
+            
+                Azure Active Directory（Azure AD）には「エンタープライズアプリケーション」と「アプリ登録」と呼ばれる管理項目があります。 特に、SAMLやOIDCを利用するアプリケーションを登録するなど、運用する際に使用されることが多いでしょう。 今回はこれらをInfrastructure as Code（IaC）のデファクトスタンダードとなりつつあるTerraformで管理する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 26 Dec 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-12-26-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-12-26-1</guid>
+        
+        <category>Azure Active Directory</category>
+        
+        <category>Azure CLI</category>
+        
+        <category>IaC</category>
+        
+        <category>Microsoft Graph API</category>
+        
+        <category>Terraform</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>IdPを介してMacにログインできるXCredsを検証してみた</title>
+        <description>
+            
+                IdPを介してMacにログインできるツールとしては、Jamf社が開発しているJamf Connectが有名です。 しかし、Jamf Connectは有償であり、追加でJamf Connect用のJumpStartの費用がかかり、最小スロットが25ライセンスからであるため、導入のハードルが高い場合があります。 今回は、IdPを介してMacにログインできるXCredsを検証してみました。
+
+            
+        </description>
+        <pubDate>Thu, 15 Sep 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-09-15-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-09-15-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Azure Active Directory</category>
+        
+        <category>Jamf</category>
+        
+        <category>Jamf Connect</category>
+        
+        <category>IdP</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>SSO</category>
+        
+        <category>XCreds</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>WWDC 2022で発表されたエンタープライズ関連の新機能</title>
+        <description>
+            
+                日本時間2022年6月7日〜6月11日にかけて、Apple社が主催するWWDC（世界開発者会議）2022が開催されました。 今回は、WWDC 2022で紹介されたいくつかのエンタープライズ関連な機能をまとめてみました。
+
+            
+        </description>
+        <pubDate>Thu, 18 Aug 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-08-18-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-08-18-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Education</category>
+        
+        <category>Enterprise</category>
+        
+        <category>iOS</category>
+        
+        <category>iPadOS</category>
+        
+        <category>macOS</category>
+        
+        <category>tvOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Jamf</category>
+        
+        <category>Microsoft Endpoint Manager</category>
+        
+        <category>WWDC</category>
+        
+        <category>SSO</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>macOSのソフトウェアアップデートをユーザーに通知する「S.U.P.E.R.M.A.N.」の紹介</title>
+        <description>
+            
+                組織によっては、macOSのソフトウェアアップデートをエンドユーザーにお知らせしてアップデートを行っているかもしれません。 また、独自にスクリプトを作成する場合、画面共有中など画面がビジーな状態などのハンドリングなどを考えたいという要望を実現する場合、高度な知識が必要となります。 今回はこのような課題を解決できるかもしれない、S.U.P.E.R.M.A.N.を紹介します。
+
+            
+        </description>
+        <pubDate>Wed, 06 Apr 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-04-06-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-04-06-1</guid>
+        
+        <category>S.U.P.E.R.M.A.N.</category>
+        
+        <category>Jamf</category>
+        
+        <category>macOS</category>
+        
+        <category>Shell</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>管理視点におけるmacOSのSystem Extensionについて</title>
+        <description>
+            
+                macOSにSystem Extensionが登場してから、管理されているmacOSにおけるSystem Extensionの知見があまり見受けられなかったため、備忘を兼ねて記載していこうと思います。
+
+            
+        </description>
+        <pubDate>Sat, 26 Feb 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-02-26-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-02-26-1</guid>
+        
+        <category>Jamf Pro</category>
+        
+        <category>Kernel Extension</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>System Extension</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Next.jsでStatic GenerationしたサイトをAWSでホスティングする</title>
+        <description>
+            
+                Next.jsでStatic GenerationしたWebサイトをVercelにデプロイすると、スムーズにホスティングできます。 AWS上にホスティングする際は、いくつか方法がありますが、比較検討したかったため、Next.jsでSGしたWebサイトをホスティングする方法の考慮すべき点と実現方法をまとめました。
+
+            
+        </description>
+        <pubDate>Thu, 09 Dec 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-12-09-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-12-09-1</guid>
+        
+        <category>Advent Calendar</category>
+        
+        <category>AWS</category>
+        
+        <category>CloudFront</category>
+        
+        <category>Next.js</category>
+        
+        <category>S3</category>
+        
+        <category>Terraform</category>
+        
+        <category>TypeScript</category>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>Designship 2021のライブ配信サイトの開発周りについて</title>
+        <description>
+            
+                2021年10月23日、24日にデザインカンファレンスである、Designship 2021が開催されました。 今回はこのライブ配信サイトを開発する際に技術的に工夫した内容などを紹介します。
+
+            
+        </description>
+        <pubDate>Fri, 29 Oct 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-10-29-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-10-29-1</guid>
+        
+        <category>Firebase</category>
+        
+        <category>GCP</category>
+        
+        <category>GitHub</category>
+        
+        <category>Node.js</category>
+        
+        <category>TypeScript</category>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+      <item>
+        <title>WWDC 2021で発表されたエンタープライズ関連の新機能</title>
+        <description>
+            
+                日本時間2021年6月8日〜6月12日にかけて、Apple社が主催するWWDC（世界開発者会議）2021が開催されました。 その中で、今年もエンタープライズ機能のアップデートが紹介されました。 今回は、WWDC 2021で紹介されたいくつかの機能をまとめてみました。
+
+            
+        </description>
+        <pubDate>Thu, 24 Jun 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-06-24-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-06-24-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Education</category>
+        
+        <category>Enterprise</category>
+        
+        <category>iOS</category>
+        
+        <category>iPadOS</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Jamf</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>GitHub ActionsのRunner OSの情報を取得できるアクションを作った</title>
+        <description>
+            
+                GitHub Actionsのubuntu-latestが18.04から20.04にアップグレードされる旨が、2020年の10月に告知され、徐々に展開されてきました。 このRunnerのOSの差異によりWorkflowが失敗するようになったため、その問題を解決に役立つGitHub Actionsのアクションを作成しました。 今回はこの備忘も兼ねてアクションの作り方を紹介します。
+
+            
+        </description>
+        <pubDate>Wed, 24 Feb 2021 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2021-02-24-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2021-02-24-1</guid>
+        
+        <category>GitHub</category>
+        
+        <category>GitHub Actions</category>
+        
+        <category>JavaScript</category>
+        
+        <category>Linux</category>
+        
+        <category>macOS</category>
+        
+        <category>TypeScript</category>
+        
+        <category>Windows</category>
+        
+        
+        <category>development</category>
+        
+      </item>
+    
+  </channel>
+</rss>
