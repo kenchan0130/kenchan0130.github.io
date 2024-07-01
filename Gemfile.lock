@@ -139,7 +139,7 @@ GEM
       ffi (~> 1.0)
     regexp_parser (2.9.0)
     rexml (3.2.6)
-    rouge (4.2.0)
+    rouge (4.3.0)
     rubocop (1.61.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -195,7 +195,7 @@ DEPENDENCIES
   liquid-c
   pry-byebug
   rake
-  rouge (~> 4.2.0)
+  rouge (~> 4.3.0)
   rubocop
   rubocop-rake
   webrick
