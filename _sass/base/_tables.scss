@@ -2,7 +2,7 @@ table {
   @include font-feature-settings("kern", "liga", "tnum");
   border-collapse: collapse;
   margin: $small-spacing 0;
-  table-layout: fixed;
+  table-layout: auto;
   width: 100%;
 }
 
@@ -11,6 +11,7 @@ th {
   font-weight: 600;
   padding: $small-spacing 5px;
   text-align: left;
+  white-space: nowrap;
 }
 
 td {
