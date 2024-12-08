@@ -138,7 +138,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     regexp_parser (2.9.0)
-    rexml (3.2.6)
+    rexml (3.3.9)
     rouge (4.3.0)
     rubocop (1.61.0)
       json (~> 2.3)
