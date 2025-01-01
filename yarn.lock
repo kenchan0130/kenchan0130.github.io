@@ -6121,13 +6121,12 @@ textlint-rule-no-mix-dearu-desumasu@latest:
     unist-util-visit "^3.0.0"
 
 textlint-rule-no-nfd@latest:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/textlint-rule-no-nfd/-/textlint-rule-no-nfd-2.0.1.tgz#f13c74796dcfe06b8bd6e8c0e2560d041b384ee7"
-  integrity sha512-d0SSK64qliPzan+xuRo7F2N4cfgDxBSwzZSwOMclwtPN+ag4Ir0M5SVfBEX1uOAgfPFnjssziDm6kp6WSwzJxg==
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/textlint-rule-no-nfd/-/textlint-rule-no-nfd-2.0.2.tgz#61bba87031773349c13dffbf77c1184eab1cbac9"
+  integrity sha512-lIUvcQ+wqtConpPQU2YwEJl2dRcRyyrxPYZ3V76UwnkVg++XPLIrE5mLDgyNE/UIQ34e/KitJfMLqKWvnkFbNQ==
   dependencies:
     match-index "^1.0.3"
     textlint-rule-helper "^2.3.0"
-    unorm "^1.4.1"
 
 textlint-rule-prefer-tari-tari@latest:
   version "1.0.3"
@@ -6500,11 +6499,6 @@ unist-util-visit@^3.0.0:
     "@types/unist" "^2.0.0"
     unist-util-is "^5.0.0"
     unist-util-visit-parents "^4.0.0"
-
-unorm@^1.4.1:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/unorm/-/unorm-1.6.0.tgz#029b289661fba714f1a9af439eb51d9b16c205af"
-  integrity sha512-b2/KCUlYZUeA7JFUuRJZPUtr4gZvBh7tavtv4fvk4+KV9pfGiR6CQAQAWl49ZpR3ts2dk4FYkP7EIgDJoiOLDA==
 
 untildify@^3.0.3:
   version "3.0.3"
