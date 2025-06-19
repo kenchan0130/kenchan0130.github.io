@@ -1,0 +1,527 @@
+{
+  "title": "XCreds (com.twocanoes.xcreds)",
+  "description": "XCreds Settings",
+  "properties": {
+    "clientID": {
+      "description": "The OIDC client id public identifier for the app.",
+      "type": "string",
+      "minLength": 1,
+      "title": "Client ID",
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#clientid"
+        }
+      ]
+    },
+    "clientSecret": {
+      "description": "Client Secret sometimes required by identity provider.",
+      "type": "string",
+      "minLength": 1,
+      "title": "Client Secret",
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#clientSecret"
+        }
+      ]
+    },
+    "discoveryURL": {
+      "description": "The discovery URL provided by your OIDC / Cloud provider.",
+      "type": "string",
+      "minLength": 1,
+      "title": "Discovery URL",
+      "default": "https://login.microsoftonline.com/common/.well-known/openid-configuration",
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#discoveryURL"
+        }
+      ]
+    },
+    "redirectURI": {
+      "description": "URI to redirect to when authentication is complete. Default is xcreds://auth/.",
+      "title": "Redirect URI",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#redirecturi"
+        }
+      ]
+    },
+    "scopes": {
+      "description": "Scopes tell the identify provider what information to return. Note that the values are provided with a single space between then.",
+      "type": "string",
+      "title": "Scopes",
+      "default": "profile openid offline_access",
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#scopes"
+        }
+      ]
+    },
+    "refreshRateHours": {
+      "description": "Number of hours for checking for password changes. Default is 3 hours. Minimum is 1 hour.",
+      "title": "Password Change Check Rate",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 168
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#refreshratehours"
+        }
+      ]
+    },
+    "showDebug": {
+      "description": "Show debug local notifications. Default is false.",
+      "title": "Show Debug Message",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#showdebug"
+        }
+      ]
+    },
+    "verifyPassword": {
+      "description": "Show prompt to verify cloud password before setting keychain and login. Default is true.",
+      "title": "Verify Cloud Password",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/AdminGuide#verifypassword"
+        }
+      ]
+    },
+    "shouldShowQuitMenu": {
+      "description": "Show Quit Menu Item in the menu. Default is true.",
+      "title": "Show Quit Menu Item",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowquitmenu"
+        }
+      ]
+    },
+    "shouldShowPreferencesOnStart": {
+      "description": "If no settings are specified, preferences will not be shown on startup. Default false.",
+      "title": "Show Preferences on Startup",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowpreferencesonstart"
+        }
+      ]
+    },
+    "shouldSetGoogleAccessTypeToOffline": {
+      "description": "When using Google IdP, a refresh token may need be requested in a non-standard way. Default is false.",
+      "title": "Request Google Refresh Token",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldsetgoogleaccesstypetooffline"
+        }
+      ]
+    },
+    "passwordChangeURL": {
+      "description": "Add a menu item for changing the password that will open this URL when the menu item is selected.",
+      "title": "Password Change URL for Menu",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#passwordchangeurl"
+        }
+      ]
+    },
+    "shouldShowAboutMenu": {
+      "description": "Show the about menu. Default is true.",
+      "title": "Show About Menu",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowaboutmenu"
+        }
+      ]
+    },
+    "username": {
+      "description": "When a user uses cloud login, XCreds will try and figure out the local username based on the email or other data returned for the IdP. Use this value to force the local username for any cloud login. Provide only the shortname.",
+      "title": "Local Username",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#username"
+        }
+      ]
+    },
+    "idpHostName": {
+      "description": "Hostname of the page that has the password field.",
+      "title": "IdP Host Name",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#idphostname"
+        }
+      ]
+    },
+    "passwordElementID": {
+      "description": "Password element id of the html element that has the password.",
+      "title": "Custom Password Element ID",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#passwordelementid"
+        }
+      ]
+    },
+    "shouldShowVersionInfo": {
+      "description": "Show the version number and build number in the lower left corner of XCreds Login. Default is true.",
+      "title": "Show Version and Build Number",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowversioninfo"
+        }
+      ]
+    },
+    "shouldShowSupportStatus": {
+      "description": "Show message in XCreds Login reminding people to buy support. Default is true.",
+      "title": "Show Support Status Message",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowsupportstatus"
+        }
+      ]
+    },
+    "shouldShowConfigureWifiButton": {
+      "description": "Show Configure WiFi button in XCreds Login. Default is true.",
+      "title": "Show Configure WiFi",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowconfigurewifibutton"
+        }
+      ]
+    },
+    "shouldShowMacLoginButton": {
+      "description": "Show the Mac Login Window button in XCreds Login. Default is true.",
+      "title": "Show Mac Login Window button",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#shouldshowmacloginbutton"
+        }
+      ]
+    },
+    "loginWindowBackgroundImageURL": {
+      "description": "Url to an image to show in the background while logging in. Default is file:///System/Library/Desktop Pictures/Monterey Graphic.heic.",
+      "title": "Login Window Background Image URL",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#loginwindowbackgroundimageurl"
+        }
+      ]
+    },
+    "LogFileName": {
+      "description": "Name of log file. Normally saved to /Library/Logs, ~/Library/Logs or /tmp. Default is xcreds.log.",
+      "title": "Log File Name",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ]
+    },
+    "KeychainCreate": {
+      "description": "Create a keychain in /Library/Keychains/login.keychain-db. Default is true.",
+      "title": "Keychain Create",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ]
+    },
+    "EnableFDE": {
+      "description": "Enabled FDE enabled at first login on APFS disks. Default is false.",
+      "title": "Enable Full Disk Encryption (FDE)",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#enablefde"
+        }
+      ]
+    },
+    "EnableFDERecoveryKey": {
+      "description": "Save the Personal Recovery Key (PRK) to disk for the MDM Escrow Service to collect. Default is false.",
+      "title": "Save PRK",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#enablefderecoverykey"
+        }
+      ]
+    },
+    "EnableFDERecoveryKeyPath": {
+      "description": "Specify a custom path for the recovery key. Default /var/db/FDE. Default is /var/db/FDE.",
+      "title": "FDE Recovery Key Path",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "string",
+          "minLength": 1
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#enablefderecoverykey"
+        }
+      ]
+    },
+    "EnableFDERekey": {
+      "description": "Rotate the Personal Recovery Key (PRK). Default is false.",
+      "title": "Enable FDE Rekey",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ],
+      "links": [
+        {
+          "rel": "More information",
+          "href": "https://github.com/twocanoes/xcreds/wiki/adminguide#enablefderekey"
+        }
+      ]
+    },
+    "CreateAdminUser": {
+      "description": "Create a user with administrative privileges. Default is false.",
+      "title": "Create Admin User",
+      "anyOf": [
+        {
+          "title": "Not Configured",
+          "type": "null"
+        },
+        {
+          "title": "Configured",
+          "type": "boolean"
+        }
+      ]
+    }
+  }
+}
