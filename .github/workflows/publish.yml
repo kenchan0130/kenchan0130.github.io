@@ -20,7 +20,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -66,7 +66,7 @@ jobs:
     outputs:
       is_skip: ${{ steps.set_is_skip.outputs.is_skip }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Set is_skip
@@ -82,7 +82,7 @@ jobs:
     needs: skip-indexing
     if: ${{ ! needs.skip-indexing.outputs.is_skip }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
