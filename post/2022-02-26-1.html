@@ -1,0 +1,177 @@
+<!DOCTYPE html> <html> <!-- This page is used centrarium Jekyll theme Copyright (c) 2015 Ben Centra Released under the MIT license https://github.com/bencentra/centrarium/blob/daa0d16ba9156ad43f9980e2075023a0d48859a5/LICENSE.md --> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"> <title>管理視点におけるmacOSのSystem Extensionについて</title> <meta name="description" content="macOSにSystem Extensionが登場してから、管理されているmacOSにおけるSystem Extensionの知見があまり見受けられなかったため、備忘を兼ねて記載していこうと思います。"> <meta name="author" content="Tadayuki Onishi"> <meta name="copyright" content="© Tadayuki Onishi 2025"> <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png"> <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png"> <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png"> <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png"> <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png"> <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png"> <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png"> <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png"> <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png"> <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/android-icon-192x192.png"> <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png"> <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png"> <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png"> <link rel="manifest" href="/assets/icons/manifest.json"> <meta name="msapplication-TileColor" content="#ffffff"> <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png"> <meta name="theme-color" content="#ffffff"> <meta property="fb:app_id" content="376889769419405"> <meta property="og:description" content="macOSにSystem Extensionが登場してから、管理されているmacOSにおけるSystem Extensionの知見があまり見受けられなかったため、備忘を兼ねて記載していこうと思います。"> <meta property="og:url" content="https://kenchan0130.github.io/post/2022-02-26-1"> <meta property="og:site_name" content="kenchan0130 blog"> <meta property="og:title" content="管理視点におけるmacOSのSystem Extensionについて"> <meta property="og:type" content="website"> <meta property="og:author" content="Tadayuki Onishi"> <meta property="og:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta property="og:image:width" content="760"> <meta property="og:image:height" content="760"> <meta property="og:image:type" content="image/png"> <meta name="twitter:card" content="summary"> <meta name="twitter:title" content="管理視点におけるmacOSのSystem Extensionについて"> <meta name="twitter:site" content="@kenchan0130"> <meta name="twitter:description" content="macOSにSystem Extensionが登場してから、管理されているmacOSにおけるSystem Extensionの知見があまり見受けられなかったため、備忘を兼ねて記載していこうと思います。"> <meta name="twitter:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta name="twitter:url" content="https://kenchan0130.github.io/post/2022-02-26-1"> <link rel="preload" as="style" href="/assets/bundle/app.55445db2fff8ddfed8c5.css" onload="this.onload=null;this.rel='stylesheet'"> <noscript> <link rel="stylesheet" href="/assets/bundle/app.55445db2fff8ddfed8c5.css"> </noscript> <link rel="stylesheet" href="/css/main.css"> <link rel="canonical" href="https://kenchan0130.github.io/post/2022-02-26-1"> <link rel="alternate" type="application/atom+xml" title="kenchan0130 blog" href="https://kenchan0130.github.io/feed.xml"> <meta name="google-site-verification" content="ZxlKORgZZwZ4TTmaQJFFEXLF3jmd6P_NVU9TEVW1bSg"> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> </head> <body> <header class="navigation" role="banner"> <div class="navigation-wrapper"> <a href="/" class="logo"> <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="kenchan0130 blog" data-src="/assets/logo.png" class="lazyload"> </a> <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu"> <i class="fas fa-bars"></i> </a> <nav role="navigation"> <ul id="js-navigation-menu" class="navigation-menu"> <li class="nav-search-box"> <div class="search-input-container"> <input type="search" class="search-input" id="js-search-input" placeholder="Search" autocomplete="off" onfocus="gtag('event', 'search', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: '/post/2022-02-26-1' });"> <i class="fa fa-search search-input-icon"></i> <template id="suggestion-template"> <a href="" onclick="gtag('event', 'click', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: this.href });"> <p class="suggestion-title js-suggestion-title"></p> <p class="suggestion-content js-suggestion-content"></p> </a> </template> </div> </li> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> </ul> </nav> </div> </header> <div class="page-content"> <div class="post"> <div class="post-header-container "> <div class="scrim "> <header class="post-header"> <h1 class="title">管理視点におけるmacOSのSystem Extensionについて</h1> </header> </div> </div> <div class="wrapper"> <span class="page-divider"> <span class="one"></span> <span class="two"></span> </span> <section class="post-meta"> <div class="post-date">2022-02-26</div> <div class="post-categories"> <i class="fas fa-fw fa-book"></i> <a href="/category/system-administration">system-administration </a> </div> </section> <article class="post-content"> <p>macOSにSystem Extensionが登場してから、管理されているmacOSにおけるSystem Extensionの知見があまり見受けられなかったため、備忘を兼ねて記載していこうと思います。</p> <ul id="markdown-toc"> <li><a href="#system-extension%E3%81%A8%E3%81%AF" id="markdown-toc-system-extensionとは">System Extensionとは</a></li> <li> <a href="#os%E4%B8%8A%E3%81%AEsystem-extension%E3%81%AE%E6%83%85%E5%A0%B1%E5%8F%8E%E9%9B%86" id="markdown-toc-os上のsystem-extensionの情報収集">OS上のSystem Extensionの情報収集</a> <ul> <li><a href="#systemextensionsctl%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89" id="markdown-toc-systemextensionsctlコマンド"><code class="language-plaintext highlighter-rouge">systemextensionsctl</code>コマンド</a></li> <li><a href="#librarysystemextensionsdbplist%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB" id="markdown-toc-librarysystemextensionsdbplistファイル"><code class="language-plaintext highlighter-rouge">/Library/SystemExtensions/db.plist</code>ファイル</a></li> <li><a href="#%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%AE%E7%9B%B4%E6%8E%A5%E5%8F%82%E7%85%A7" id="markdown-toc-アプリケーションの直接参照">アプリケーションの直接参照</a></li> </ul> </li> <li> <a href="#system-extension%E3%81%AE%E3%82%A2%E3%83%B3%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-system-extensionのアンインストールについて">System Extensionのアンインストールについて</a> <ul> <li><a href="#macos-big-sur%E3%81%BE%E3%81%A7%E3%81%AE%E4%BB%A3%E6%9B%BF%E6%A1%88" id="markdown-toc-macos-big-surまでの代替案">macOS Big Surまでの代替案</a></li> </ul> </li> <li> <a href="#mdm%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8Bsystem-extension%E3%81%AE%E5%88%B6%E5%BE%A1" id="markdown-toc-mdmにおけるsystem-extensionの制御">MDMにおけるSystem Extensionの制御</a> <ul> <li><a href="#jamf-pro%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8Bsystem-extension%E3%81%AE%E8%A8%B1%E5%8F%AF%E6%96%B9%E6%B3%95" id="markdown-toc-jamf-proにおけるsystem-extensionの許可方法">Jamf ProにおけるSystem Extensionの許可方法</a></li> </ul> </li> <li><a href="#%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%AB" id="markdown-toc-終わりに">終わりに</a></li> </ul> <h2 id="system-extensionとは">System Extensionとは</h2> <p>macOS Catalina (10.15)より、Kernel Extensionは非推奨となり、新たにSystem Extensionが導入されました。 Big Sur (11.0)より徐々に機能使えなくなり、将来的にはすべてのKernel Extensionが使えなくなる予定です。</p> <p>System Extensionを使用することで、アプリケーションはカーネルレベルのアクセスを必要とすることなく、macOSの機能を拡張できるようになりました。</p> <p>エンドユーザーはKernel Extensionの時と同じく、<strong>[システム環境設定] &gt; [セキュリティとプライバシー] &gt; [一般]</strong>から対象のExtensionを許可することで、System Extensionを利用するアプリケーションが使用できます。</p> <h2 id="os上のsystem-extensionの情報収集">OS上のSystem Extensionの情報収集</h2> <h3 id="systemextensionsctlコマンド"> <code class="language-plaintext highlighter-rouge">systemextensionsctl</code>コマンド</h3> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>systemextensionsctl
+systemextensionsctl: usage:
+  systemextensionsctl developer <span class="o">[</span>on|off]
+  systemextensionsctl list <span class="o">[</span>category]
+  systemextensionsctl reset  - reset all System Extensions state
+  systemextensionsctl uninstall &lt;teamId&gt; &lt;bundleId&gt;<span class="p">;</span> can also accept <span class="s1">'-'</span> <span class="k">for </span>teamID
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">systemextensionsctl</code>コマンドには<code class="language-plaintext highlighter-rouge">list</code>サブコマンドがあります。 これにより、どのSystem Extensionをどのアプリケーションが使用しているかや、System Extensionを使用しているアプリケーションの情報が確認できます。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>systemextensionsctl list
+2 extension<span class="o">(</span>s<span class="o">)</span>
+<span class="nt">---</span> com.apple.system_extension.network_extension
+enabled  active  teamID  bundleID <span class="o">(</span>version<span class="o">)</span>  name  <span class="o">[</span>state]
+<span class="k">*</span>  <span class="k">*</span>  UBF8T346G9  com.microsoft.wdav.netext <span class="o">(</span>101.49.25/101.49.25<span class="o">)</span>  Microsoft Defender ATP Network Extension  <span class="o">[</span>activated enabled]
+<span class="nt">---</span> com.apple.system_extension.endpoint_security
+enabled  active  teamID  bundleID <span class="o">(</span>version<span class="o">)</span>  name  <span class="o">[</span>state]
+<span class="k">*</span>  <span class="k">*</span>  UBF8T346G9  com.microsoft.wdav.epsext <span class="o">(</span>101.49.25/101.49.25<span class="o">)</span>  Microsoft Defender ATP Endpoint Security Extension  <span class="o">[</span>activated enabled]
+</code></pre></div></div> <h3 id="librarysystemextensionsdbplistファイル"> <code class="language-plaintext highlighter-rouge">/Library/SystemExtensions/db.plist</code>ファイル</h3> <p><code class="language-plaintext highlighter-rouge">systemextensionsctl</code>の<code class="language-plaintext highlighter-rouge">list</code>サブコマンドでSystem Extensionの状態を確認できました。 より詳細の情報を確認したい場合は、<code class="language-plaintext highlighter-rouge">/Library/SystemExtensions/db.plist</code> を参照することで確認できます。</p> <p>このファイルには、</p> <ul> <li>ポリシーによって、どのSystem Extensionが有効化されているか <ul> <li> <code class="language-plaintext highlighter-rouge">developerMode</code>キーが該当</li> </ul> </li> <li>デベロッパーモードかどうか <ul> <li> <code class="language-plaintext highlighter-rouge">extensionPolicies</code>キーが該当</li> </ul> </li> <li>OSが認識しているSystem Extensionの詳細情報 <ul> <li> <code class="language-plaintext highlighter-rouge">extensions</code>キーが該当</li> </ul> </li> </ul> <p>の情報が保存されています。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>plutil <span class="nt">-convert</span> xml1 <span class="nt">-o</span> - /Library/SystemExtensions/db.plist
+&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">"UTF-8"</span>?&gt;
+&lt;<span class="o">!</span>DOCTYPE plist PUBLIC <span class="s2">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="s2">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span><span class="o">&gt;</span>
+&lt;plist <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span><span class="o">&gt;</span>
+&lt;dict&gt;
+  &lt;key&gt;bootUUID&lt;/key&gt;
+  &lt;string&gt;6109BDDC-E257-4CDC-97F5-52B06A9061F5&lt;/string&gt;
+  &lt;key&gt;developerMode&lt;/key&gt;
+  &lt;<span class="nb">false</span>/&gt;
+  &lt;key&gt;extensionPolicies&lt;/key&gt;
+  &lt;array&gt;
+    &lt;dict&gt;
+      &lt;key&gt;allowUserOverrides&lt;/key&gt;
+      &lt;<span class="nb">true</span>/&gt;
+      &lt;key&gt;allowedExtensionTypes&lt;/key&gt;
+      &lt;dict/&gt;
+      &lt;key&gt;allowedExtensions&lt;/key&gt;
+      &lt;dict&gt;
+        &lt;key&gt;UBF8T346G9&lt;/key&gt;
+        &lt;array&gt;
+          &lt;string&gt;com.microsoft.wdav.netext&lt;/string&gt;
+          &lt;string&gt;com.microsoft.wdav.epsext&lt;/string&gt;
+        &lt;/array&gt;
+      &lt;/dict&gt;
+      &lt;key&gt;allowedTeamIDs&lt;/key&gt;
+      &lt;array/&gt;
+      &lt;key&gt;uniqueID&lt;/key&gt;
+      &lt;string&gt;57E74064-648C-42CE-BD97-14B06326A3FA&lt;/string&gt;
+    &lt;/dict&gt;
+  &lt;/array&gt;
+  &lt;key&gt;extensions&lt;/key&gt;
+  &lt;array&gt;
+    &lt;dict&gt;
+      &lt;key&gt;additionalLaunchdPlistEntries&lt;/key&gt;
+      &lt;data&gt;
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+      &lt;/data&gt;
+      &lt;key&gt;bundleVersion&lt;/key&gt;
+      &lt;dict&gt;
+        &lt;key&gt;CFBundleShortVersionString&lt;/key&gt;
+        &lt;string&gt;101.49.25&lt;/string&gt;
+        &lt;key&gt;CFBundleVersion&lt;/key&gt;
+        &lt;string&gt;101.49.25&lt;/string&gt;
+      &lt;/dict&gt;
+      &lt;key&gt;categories&lt;/key&gt;
+      &lt;array&gt;
+        &lt;string&gt;com.apple.system_extension.endpoint_security&lt;/string&gt;
+      &lt;/array&gt;
+      &lt;key&gt;container&lt;/key&gt;
+      &lt;dict&gt;
+        &lt;key&gt;bundlePath&lt;/key&gt;
+        &lt;string&gt;/Applications/Microsoft Defender ATP.app&lt;/string&gt;
+      &lt;/dict&gt;
+      &lt;key&gt;identifier&lt;/key&gt;
+      &lt;string&gt;com.microsoft.wdav.epsext&lt;/string&gt;
+      &lt;key&gt;originPath&lt;/key&gt;
+      &lt;string&gt;/Applications/Microsoft Defender ATP.app/Contents/Library/SystemExtensions/com.microsoft.wdav.epsext.systemextension&lt;/string&gt;
+      &lt;key&gt;references&lt;/key&gt;
+      &lt;array&gt;
+        &lt;dict&gt;
+          &lt;key&gt;appIdentifier&lt;/key&gt;
+          &lt;string&gt;com.microsoft.wdav&lt;/string&gt;
+          &lt;key&gt;appRef&lt;/key&gt;
+          &lt;string&gt;file:///.file/id<span class="o">=</span>6571367.12966214250/&lt;/string&gt;
+          &lt;key&gt;teamID&lt;/key&gt;
+          &lt;string&gt;UBF8T346G9&lt;/string&gt;
+        &lt;/dict&gt;
+      &lt;/array&gt;
+      &lt;key&gt;stagedBundleURL&lt;/key&gt;
+      &lt;dict&gt;
+        &lt;key&gt;relative&lt;/key&gt;
+        &lt;string&gt;file:///Library/SystemExtensions/FE13FAA3-3E65-48E1-B422-DCA47F56DF6E/com.microsoft.wdav.epsext.systemextension/&lt;/string&gt;
+      &lt;/dict&gt;
+      &lt;key&gt;stagedCdhashes&lt;/key&gt;
+      &lt;dict&gt;
+        &lt;key&gt;42dcc7c4b5269f6a539c7766640e04263abc201d&lt;/key&gt;
+        &lt;dict&gt;
+          &lt;key&gt;cpusubtype&lt;/key&gt;
+          &lt;integer&gt;0&lt;/integer&gt;
+          &lt;key&gt;cputype&lt;/key&gt;
+          &lt;integer&gt;16777228&lt;/integer&gt;
+        &lt;/dict&gt;
+        &lt;key&gt;af3e8c0fd64cec8340081360171504b1994b656b&lt;/key&gt;
+        &lt;dict&gt;
+          &lt;key&gt;cpusubtype&lt;/key&gt;
+          &lt;integer&gt;3&lt;/integer&gt;
+          &lt;key&gt;cputype&lt;/key&gt;
+          &lt;integer&gt;16777223&lt;/integer&gt;
+        &lt;/dict&gt;
+      &lt;/dict&gt;
+      &lt;key&gt;state&lt;/key&gt;
+      &lt;string&gt;activated_enabled&lt;/string&gt;
+      &lt;key&gt;teamID&lt;/key&gt;
+      &lt;string&gt;UBF8T346G9&lt;/string&gt;
+      &lt;key&gt;uniqueID&lt;/key&gt;
+      &lt;string&gt;FE13FAA3-3E65-48E1-B422-DCA47F56DF6E&lt;/string&gt;
+    &lt;/dict&gt;
+    &lt;dict&gt;
+    （略）
+    &lt;/dict&gt;
+  &lt;/array&gt;
+  &lt;key&gt;version&lt;/key&gt;
+  &lt;integer&gt;1&lt;/integer&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+</code></pre></div></div> <h3 id="アプリケーションの直接参照">アプリケーションの直接参照</h3> <p><code class="language-plaintext highlighter-rouge">systemextensionsctl</code>コマンドや<code class="language-plaintext highlighter-rouge">/Library/SystemExtensions/db.plist</code>ファイルからは、あくまでアプリケーションが一度起動しないと情報が取得できません。 しかし、一度もアプリケーションを起動せずにSystem Extensionの情報を取得したい場合もあります。</p> <p>その際は、アプリケーションの中身を直接確認することで、System Extensionの情報を取得できます。</p> <p>System Extensionを有するアプリケーション（ここでは<code class="language-plaintext highlighter-rouge">Sample.app</code>とします）には<code class="language-plaintext highlighter-rouge">Sample.app/Contents/Library/SystemExtensions</code>ディレクトリが存在し、その中にbundleIDごとのディレクトリが存在します。</p> <p>たとえば、System Extensionを有するMicrosoft Defender for Endpointのアプリケーションであれば、以下のようにSystem Extensionが用意されていることがわかります。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> <span class="s2">"/Applications/Microsoft Defender ATP.app/Contents/Library/SystemExtensions/"</span>
+total 0
+drwxr-xr-x  3 root  wheel  96 11  4 02:24 com.microsoft.wdav.epsext.systemextension
+drwxr-xr-x  3 root  wheel  96 11  4 02:24 com.microsoft.wdav.netext.systemextension
+</code></pre></div></div> <h4 id="アプリケーションの直接参照におけるteamidとbundleidの特定方法">アプリケーションの直接参照におけるteamIDとbundleIDの特定方法</h4> <p>System Extensionを一意に特定するには、<strong>teamID</strong>と<strong>bundleID</strong>が必要です。 <code class="language-plaintext highlighter-rouge">systemextensionsctl</code>コマンドや<code class="language-plaintext highlighter-rouge">/Library/SystemExtensions/db.plist</code>ファイルでは、これらの情報を参照できました。</p> <p>アプリケーションを直接参照する場合は、<code class="language-plaintext highlighter-rouge">codesign</code>コマンドでこれらの情報が取得できます。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>codesign <span class="nt">-dvvv</span> <span class="s2">"/Applications/Microsoft Defender ATP.app/Contents/Library/SystemExtensions/com.microsoft.wdav.epsext.systemextension"</span> 2&gt;&amp;1 | <span class="nb">awk</span> <span class="nt">-F</span><span class="o">=</span> <span class="s1">'/^TeamIdentifier/ {print $NF}'</span>
+UBF8T346G9
+</code></pre></div></div> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>codesign <span class="nt">-dvvv</span> <span class="s2">"/Applications/Microsoft Defender ATP.app/Contents/Library/SystemExtensions/com.microsoft.wdav.epsext.systemextension"</span> 2&gt;&amp;1 | <span class="nb">awk</span> <span class="nt">-F</span><span class="o">=</span> <span class="s1">'/^Identifier/ {print $NF}'</span>
+com.microsoft.wdav.epsext
+</code></pre></div></div> <h2 id="system-extensionのアンインストールについて">System Extensionのアンインストールについて</h2> <p>前述した<code class="language-plaintext highlighter-rouge">systemextensionsctl</code>コマンドの使用例を見てみると、<code class="language-plaintext highlighter-rouge">list</code>以外にも<code class="language-plaintext highlighter-rouge">reset</code>や<code class="language-plaintext highlighter-rouge">uninstall</code>が存在します。 しかし、これらのコマンドはSIP（System Integrity Protection）を無効化しなければ機能しません。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>systemextensionsctl uninstall
+At this <span class="nb">time</span>, this tool cannot be used <span class="k">if </span>System Integrity Protection is enabled.
+This limitation will be removed <span class="k">in </span>the near future.
+Please remember to re-enable System Integrity Protection!
+</code></pre></div></div> <p>macOS MontereyからはSystem Extensionを管理するペイロードに<strong>RemovableSystemExtensions</strong>が追加<sup id="fnref:apple-developer-documentation-system-extensions"><a href="#fn:apple-developer-documentation-system-extensions" class="footnote" rel="footnote" role="doc-noteref">1</a></sup>され、System Extensionの削除が可能となりました。</p> <p>macOS Big Sur以下の場合、SIPを無効化する方法はセキュリティのリスク高める可能性があるため、あまりお勧めできません。</p> <p>しかし、System Extensionをアンインストールしたい場合もあるため、代替案を紹介します。</p> <h3 id="macos-big-surまでの代替案">macOS Big Surまでの代替案</h3> <h4 id="ゴミ箱を介したsystem-extensionのアンインストール">ゴミ箱を介したSystem Extensionのアンインストール</h4> <p><strong>GUI</strong>を用いて、System Extensionを含んだアプリケーションをゴミ箱アイコンにドラックアンドドロップすることでSystem Extensionの削除に関するダイアログが表示されます。 ダイアログに従い削除すると、管理者権限を求められます。 その後、OSを再起動することでSystem Extensionが削除されます。</p> <h4 id="deactivationrequestのapiを介したアンインストール">deactivationRequestのAPIを介したアンインストール</h4> <p>ゴミ箱を介した方法は管理権限が必要でした。 しかし、管理されているmacOSでは管理者権限を用いずにSystem Extensionを削除したい場合があります。</p> <p>対象のアプリケーションが<a href="https://developer.apple.com/documentation/systemextensions/ossystemextensionrequest/3295273-deactivationrequest" target="_blank" rel="noopener noreferrer">deactivationRequest</a>の呼び出しをサポートしている場合は、OSの設定を変更することで管理者権限をバイパスすることできます。</p> <p>たとえば、Micorosft Defender for Endpointの場合は以下のコマンドでdeactivationRequestを発行できます。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s2">"/Applications/Microsoft Defender ATP.app/Contents/MacOS/wdavdaemon"</span> uninstall-system-extension ここにbundleID
+</code></pre></div></div> <p>通常ではdeactivationRequestのAPIを呼び出した場合は、管理者権限が要求されます。 しかし、認証データベースの<code class="language-plaintext highlighter-rouge">com.apple.system-extensions.admin</code>を書き換えることで、管理者権限を求められないようになります。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>security authorizationdb <span class="nb">read </span>com.apple.system-extensions.admin
+&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">"UTF-8"</span>?&gt;
+&lt;<span class="o">!</span>DOCTYPE plist PUBLIC <span class="s2">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="s2">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span><span class="o">&gt;</span>
+&lt;plist <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span><span class="o">&gt;</span>
+&lt;dict&gt;
+  &lt;key&gt;class&lt;/key&gt;
+  &lt;string&gt;rule&lt;/string&gt;
+  &lt;key&gt;comment&lt;/key&gt;
+  &lt;string&gt;Authorize a 3rd party application which wants to manipulate system extensions.&lt;/string&gt;
+  &lt;key&gt;created&lt;/key&gt;
+  &lt;real&gt;611474119.72543597&lt;/real&gt;
+  &lt;key&gt;modified&lt;/key&gt;
+  &lt;real&gt;611474119.72543597&lt;/real&gt;
+  &lt;key&gt;rule&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;authenticate-admin-nonshared&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;version&lt;/key&gt;
+  &lt;integer&gt;0&lt;/integer&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+YES <span class="o">(</span>0<span class="o">)</span>
+</code></pre></div></div> <p>デフォルトでは<strong>authenticate-admin-nonshared</strong>、つまり管理者権限を要求するように設定されています。 このルールを<code class="language-plaintext highlighter-rouge">allow</code>に変更することで管理者権限を要求しないように変更できます。</p> <p>認証データベースのルールは以下のように変更します。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>security authorizationdb write com.apple.system-extensions.admin allow
+YES <span class="o">(</span>0<span class="o">)</span>
+</code></pre></div></div> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>security authorizationdb <span class="nb">read </span>com.apple.system-extensions.admin
+&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">"UTF-8"</span>?&gt;
+&lt;<span class="o">!</span>DOCTYPE plist PUBLIC <span class="s2">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="s2">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span><span class="o">&gt;</span>
+&lt;plist <span class="nv">version</span><span class="o">=</span><span class="s2">"1.0"</span><span class="o">&gt;</span>
+&lt;dict&gt;
+  &lt;key&gt;class&lt;/key&gt;
+  &lt;string&gt;rule&lt;/string&gt;
+  &lt;key&gt;created&lt;/key&gt;
+  &lt;real&gt;611474119.72543597&lt;/real&gt;
+  &lt;key&gt;modified&lt;/key&gt;
+  &lt;real&gt;667494210.52982104&lt;/real&gt;
+  &lt;key&gt;rule&lt;/key&gt;
+  &lt;array&gt;
+    &lt;string&gt;allow&lt;/string&gt;
+  &lt;/array&gt;
+  &lt;key&gt;version&lt;/key&gt;
+  &lt;integer&gt;0&lt;/integer&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+YES <span class="o">(</span>0<span class="o">)</span>
+</code></pre></div></div> <h2 id="mdmにおけるsystem-extensionの制御">MDMにおけるSystem Extensionの制御</h2> <p>System Extnsionは通常、管理者権限を用いて <strong>[システム環境設定] &gt; [セキュリティとプライバシー] &gt; [一般]</strong> から個別に許可する必要があります。</p> <p>しかし、管理されているmacOSの場合は<a href="https://developer.apple.com/documentation/devicemanagement/systemextensions" target="_blank" rel="noopener noreferrer">MDMのAPI</a>（プロファイル）を使用してSystem Extensionを許可できます。</p> <h3 id="jamf-proにおけるsystem-extensionの許可方法">Jamf ProにおけるSystem Extensionの許可方法</h3> <p>Jamf Proでは構成プロファイルを用いて、System Extensionの統制ができます。</p> <p><strong>[コンピュータ] &gt; [構成プロファイル] &gt; [新規] &gt; [システム拡張機能]</strong> から設定をします。</p> <p><a href="/assets/posts/post/2022-02-26-1/jamf_pro_configuration_profile_system_exntensions.png" data-fancybox="images" data-caption="Jamf Proにおける構成プロファイルのSystem Extension設定"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Jamf Proにおける構成プロファイルのSystem Extension設定" data-src="/assets/posts/post/2022-02-26-1/jamf_pro_configuration_profile_system_exntensions.png" class="lazyload"></a></p> <p>System Extensionの許可に関しては以下の3つの方法が用意されています。</p> <ol> <li>teamIDとbundleIDを指定 <ul> <li> <strong>Allowed System Exntesion</strong>が該当</li> </ul> </li> <li>teamIDを指定 <ul> <li> <strong>Allowed Team Identifers</strong>が該当</li> </ul> </li> <li>Extensionの種類を指定 <ul> <li> <strong>Allowed System Exntesion Types</strong>が該当</li> </ul> </li> </ol> <p>執筆現在、期待通りに動作するのは「teamIDとbundleIDを指定」の方法のみであったため、注意が必要です。 ちなみに「teamIDを指定」する方法は<a href="https://community.jamf.com/t5/jamf-pro/system-extension-activated-waiting-for-user/td-p/229168#responseChild203204" target="_blank" rel="noopener noreferrer">System Extension [activated waiting for user] - Jamf Nation Community - 229168</a>にてバグのため機能しないことが言及されています。Jamf社側もこの問題を認識しており、<strong>PI-007713</strong>というチケット番号でIssueが管理されています。</p> <p>例のごとく、Microsoft Defender for Endpointの場合は以下のように設定します。</p> <p><a href="/assets/posts/post/2022-02-26-1/jamf_configration_profile_system_extension_mdatp_sample.png" data-fancybox="images" data-caption="Jamf Proにおける構成プロファイルのSystem Extensionの設定 - Microsoft Defender for Endpointのケース"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Jamf Proにおける構成プロファイルのSystem Extensionの設定 - Microsoft Defender for Endpointのケース" data-src="/assets/posts/post/2022-02-26-1/jamf_configration_profile_system_extension_mdatp_sample.png" class="lazyload"></a></p> <h2 id="終わりに">終わりに</h2> <p>管理されているmacOSでは、EDRやAVといったソフトウェアが導入されることが多いと思います。 そのほとんどがSystem Extensionを使用しているため、それをきっかけにSystem Extensionを管理したいと考える方もいると思います。</p> <p>私も最初はバグにも悩まされ、どのようにしたら期待通りに機能するかがわかりませんでした。 System Extensionに関してはJamfのサポートに問い合わせても、なかなか良い回答が得られなかった経験があるため、困っている方の一助になれば幸いです。</p> <p>ちなみに、EDRやAVといったソフトウェアはSystem Extension以外にも、ファイルスキャンのためすべてのファイルのアクセスを行うため、合わせてPPPCの設定をする場合があります。 System ExtensionとPPPCを混同しがちなのでご注意ください。</p> <div class="footnotes" role="doc-endnotes"> <ol> <li id="fn:apple-developer-documentation-system-extensions"> <p><a href="https://developer.apple.com/documentation/devicemanagement/systemextensions" target="_blank" rel="noopener noreferrer">SystemExtensions | Apple Developer Documentation</a> <a href="#fnref:apple-developer-documentation-system-extensions" class="reversefootnote" role="doc-backlink">↩</a></p> </li> </ol> </div> </article> <section class="share"> <a href="//twitter.com/share?text=%E7%AE%A1%E7%90%86%E8%A6%96%E7%82%B9%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8BmacOS%E3%81%AESystem+Extension%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2022-02-26-1%3Futm_source%3Dtwitter%26utm_medium%3Dsocial&amp;via=kenchan0130" onclick="window.open(this.href, 'twitter-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-twitter fa-lg"></i> </a> <a href="//www.facebook.com/sharer.php?t=%E7%AE%A1%E7%90%86%E8%A6%96%E7%82%B9%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8BmacOS%E3%81%AESystem+Extension%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&amp;u=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2022-02-26-1%3Futm_source%3Dfacebook%26utm_medium%3Dsocial" onclick="window.open(this.href, 'facebook-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-facebook fa-lg"></i> </a> <a href="//b.hatena.ne.jp/entry/panel/?btitle=%E7%AE%A1%E7%90%86%E8%A6%96%E7%82%B9%E3%81%AB%E3%81%8A%E3%81%91%E3%82%8BmacOS%E3%81%AESystem+Extension%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2022-02-26-1" onclick="window.open(this.href, 'hatena-share', 'width=550,height=600,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-hatena fa-lg"></i> </a> </section> <section class="post-donation"> <div class="post-donation-panel"> <p class="post-donation-description"> 参考になった・面白かったと感じていただけましたら、サポートいただけると励みになります。 </p> <a class="post-donation-button" href="https://www.buymeacoffee.com/kenchan0130" onclick="gtag('event', 'click-buymeacoffee', { event_category: 'www.buymeacoffee.com/kenchan0130', event_label: '/post/2022-02-26-1' });" target="_blank" rel="noopener noreferrer"> <p class="post-donation-button-body"> <img class="icon lazyload" alt="buymeacoffee" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg"> <span class="label">サポートする</span> </p> </a> </div> </section> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2444060431947599" data-ad-slot="7319689305" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> <section class="sub-contents related-posts"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">あわせて読みたい</div> <div class="sub-contents-main"> <li> <a href="/post/2024-12-16-1">Installomatorでアプリケーションのインストールの進捗を表示する</a> <span class="post-date">- December 16, 2024</span> </li> <li> <a href="/post/2024-12-09-2">Installomatorでサポートされていないアプリケーションをインストールする</a> <span class="post-date">- December 9, 2024</span> </li> <li> <a href="/post/2020-10-12-1">Jamf ProとInstallomatorで常に最新のアプリケーションを配布する</a> <span class="post-date">- October 12, 2020</span> </li> <li> <a href="/post/2020-02-13-1">Jamf Pro ServerにSSOを設定</a> <span class="post-date">- February 13, 2020</span> </li> <li> <a href="/post/2020-02-05-1">Jamf Pro Serverの初期設定</a> <span class="post-date">- February 5, 2020</span> </li> </div> </div> </section> <section class="sub-contents tags"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">Tags</div> <div class="sub-contents-main"> <a href="/tag/jamf-pro">Jamf Pro</a> <a href="/tag/kernel-extension">Kernel Extension</a> <a href="/tag/macos">macOS</a> <a href="/tag/mdm">MDM</a> <a href="/tag/system-extension">System Extension</a> </div> </div> </section> </div> </div> </div> <footer class="site-footer"> <div class="wrapper"> <h3 class="footer-heading">kenchan0130 blog</h3> <div class="site-navigation"> <p><strong>Site Map</strong></p> <ul class="pages"> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/privacy">Privacy Policy</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> <li class="nav-link"> <a href="/profile/resume">Resume</a> </li> </ul> </div> <div class="site-contact"> <p><strong>Contact</strong></p> <ul class="social-media-list"> <li> <a href="https://twitter.com/kenchan0130" title="Follow me on Twitter" target="_blank" rel="noopener noreferrer"> <i class="fab fa-twitter"></i> <span class="username">kenchan0130</span> </a> </li> <li> <a href="https://github.com/kenchan0130" title="Fork me on GitHub" target="_blank" rel="noopener noreferrer"> <i class="fab fa-github"></i> <span class="username">kenchan0130</span> </a> </li> </ul> </div> <div class="site-signature"> <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p> <p class="text">ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。 </p> </div> </div> <div class="licence">このサイトのコンテンツは<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC-BY-4.0) License</a>の下でライセンスされています。</div> <div class="copyright">Copyright © 2017-2025 Tadayuki Onishi All Rights Reserved.</div> </footer> <script src="/assets/bundle/app.55445db2fff8ddfed8c5.js" async></script> <script async src="//www.googletagmanager.com/gtag/js?id=G-B7RX34Q5PL"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-B7RX34Q5PL");</script> <script async src="//www.googletagmanager.com/gtag/js?id=UA-79827366-2"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-79827366-2");</script> </body> </html>

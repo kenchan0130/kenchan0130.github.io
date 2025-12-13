@@ -1,0 +1,421 @@
+<!DOCTYPE html> <html> <!-- This page is used centrarium Jekyll theme Copyright (c) 2015 Ben Centra Released under the MIT license https://github.com/bencentra/centrarium/blob/daa0d16ba9156ad43f9980e2075023a0d48859a5/LICENSE.md --> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"> <title>Azure Active DirectoryのアプリケーションをTerraformで管理する</title> <meta name="description" content="Azure Active Directory（Azure AD）には「エンタープライズアプリケーション」と「アプリ登録」と呼ばれる管理項目があります。 特に、SAMLやOIDCを利用するアプリケーションを登録するなど、運用する際に使用されることが多いでしょう。 今回はこれらをInfrastructure as Code（IaC）のデファクトスタンダードとなりつつあるTerraformで管理する方法を紹介します。"> <meta name="author" content="Tadayuki Onishi"> <meta name="copyright" content="© Tadayuki Onishi 2025"> <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png"> <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png"> <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png"> <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png"> <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png"> <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png"> <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png"> <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png"> <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png"> <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/android-icon-192x192.png"> <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png"> <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png"> <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png"> <link rel="manifest" href="/assets/icons/manifest.json"> <meta name="msapplication-TileColor" content="#ffffff"> <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png"> <meta name="theme-color" content="#ffffff"> <meta property="fb:app_id" content="376889769419405"> <meta property="og:description" content="Azure Active Directory（Azure AD）には「エンタープライズアプリケーション」と「アプリ登録」と呼ばれる管理項目があります。 特に、SAMLやOIDCを利用するアプリケーションを登録するなど、運用する際に使用されることが多いでしょう。 今回はこれらをInfrastructure as Code（IaC）のデファクトスタンダードとなりつつあるTerraformで管理する方法を紹介します。"> <meta property="og:url" content="https://kenchan0130.github.io/post/2022-12-26-1"> <meta property="og:site_name" content="kenchan0130 blog"> <meta property="og:title" content="Azure Active DirectoryのアプリケーションをTerraformで管理する"> <meta property="og:type" content="website"> <meta property="og:author" content="Tadayuki Onishi"> <meta property="og:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta property="og:image:width" content="760"> <meta property="og:image:height" content="760"> <meta property="og:image:type" content="image/png"> <meta name="twitter:card" content="summary"> <meta name="twitter:title" content="Azure Active DirectoryのアプリケーションをTerraformで管理する"> <meta name="twitter:site" content="@kenchan0130"> <meta name="twitter:description" content="Azure Active Directory（Azure AD）には「エンタープライズアプリケーション」と「アプリ登録」と呼ばれる管理項目があります。 特に、SAMLやOIDCを利用するアプリケーションを登録するなど、運用する際に使用されることが多いでしょう。 今回はこれらをInfrastructure as Code（IaC）のデファクトスタンダードとなりつつあるTerraformで管理する方法を紹介します。"> <meta name="twitter:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta name="twitter:url" content="https://kenchan0130.github.io/post/2022-12-26-1"> <link rel="preload" as="style" href="/assets/bundle/app.55445db2fff8ddfed8c5.css" onload="this.onload=null;this.rel='stylesheet'"> <noscript> <link rel="stylesheet" href="/assets/bundle/app.55445db2fff8ddfed8c5.css"> </noscript> <link rel="stylesheet" href="/css/main.css"> <link rel="canonical" href="https://kenchan0130.github.io/post/2022-12-26-1"> <link rel="alternate" type="application/atom+xml" title="kenchan0130 blog" href="https://kenchan0130.github.io/feed.xml"> <meta name="google-site-verification" content="ZxlKORgZZwZ4TTmaQJFFEXLF3jmd6P_NVU9TEVW1bSg"> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> </head> <body> <header class="navigation" role="banner"> <div class="navigation-wrapper"> <a href="/" class="logo"> <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="kenchan0130 blog" data-src="/assets/logo.png" class="lazyload"> </a> <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu"> <i class="fas fa-bars"></i> </a> <nav role="navigation"> <ul id="js-navigation-menu" class="navigation-menu"> <li class="nav-search-box"> <div class="search-input-container"> <input type="search" class="search-input" id="js-search-input" placeholder="Search" autocomplete="off" onfocus="gtag('event', 'search', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: '/post/2022-12-26-1' });"> <i class="fa fa-search search-input-icon"></i> <template id="suggestion-template"> <a href="" onclick="gtag('event', 'click', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: this.href });"> <p class="suggestion-title js-suggestion-title"></p> <p class="suggestion-content js-suggestion-content"></p> </a> </template> </div> </li> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> </ul> </nav> </div> </header> <div class="page-content"> <div class="post"> <div class="post-header-container "> <div class="scrim "> <header class="post-header"> <h1 class="title">Azure Active DirectoryのアプリケーションをTerraformで管理する</h1> </header> </div> </div> <div class="wrapper"> <span class="page-divider"> <span class="one"></span> <span class="two"></span> </span> <section class="post-meta"> <div class="post-date">2022-12-26</div> <div class="post-categories"> <i class="fas fa-fw fa-book"></i> <a href="/category/system-administration">system-administration </a> </div> </section> <article class="post-content"> <p>この記事は<a href="https://adventar.org/calendars/7813" target="_blank" rel="noopener noreferrer">FOLIO Advent Calendar 2022</a>の12/6分の記事です。かなり遅れてサンタクロースがやってきてしまいました。</p> <p>Azure Active Directory（Azure AD）には「エンタープライズアプリケーション」と「アプリ登録」と呼ばれる管理項目があります。 特に、SAMLやOIDCを利用するアプリケーションを登録するなど、運用する際に使用されることが多いでしょう。</p> <p>今回はこれらをInfrastructure as Code（IaC）のデファクトスタンダードとなりつつあるTerraformで管理する方法を紹介します。</p> <div class="revision"> <p class="revision-date">2023-01-22 追記</p> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest" target="_blank" rel="noopener noreferrer">azuread terraform provider</a>の<a href="https://github.com/hashicorp/terraform-provider-azuread/releases/tag/v2.33.0" target="_blank" rel="noopener noreferrer">v2.33.0</a>にて、新たに<a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_token_signing_certificate" target="_blank" rel="noopener noreferrer">service_principal_token_signing_certificate</a>リソースが追加されました。 そのため、「サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証」する際の署名証明書の登録方法を、このリソースを使用する方法に変更しました。</p> </div> <ul id="markdown-toc"> <li><a href="#azure-ad%E3%81%AE%E6%A7%8B%E6%88%90%E3%82%92%E3%82%B3%E3%83%BC%E3%83%89%E7%AE%A1%E7%90%86" id="markdown-toc-azure-adの構成をコード管理">Azure ADの構成をコード管理</a></li> <li><a href="#%E3%82%A8%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%97%E3%83%A9%E3%82%A4%E3%82%BA%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AE%E7%99%BB%E9%8C%B2%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-エンタープライズアプリケーションとアプリの登録について">エンタープライズアプリケーションとアプリの登録について</a></li> <li><a href="#terraform%E3%81%A7%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E7%AE%A1%E7%90%86" id="markdown-toc-terraformでアプリケーションを管理">Terraformでアプリケーションを管理</a></li> <li> <a href="#%E3%83%A6%E3%83%BC%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%B91-%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%83%97%E3%83%AD%E3%83%90%E3%82%A4%E3%83%80%E3%81%8Cazure-ad%E3%82%92idp%E3%81%A8%E3%81%97%E3%81%A6saml%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E8%AA%8D%E8%A8%BC" id="markdown-toc-ユースケース1-サービスプロバイダがazure-adをidpとしてsamlを使用して認証">ユースケース1. サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証</a> <ul> <li><a href="#saml%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_application%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-samlの構成に伴うazuread_applicationリソース">SAMLの構成に伴うazuread_applicationリソース</a></li> <li><a href="#saml%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_service_principal%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-samlの構成に伴うazuread_service_principalリソース">SAMLの構成に伴うazuread_service_principalリソース</a></li> <li><a href="#saml%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_app_role_assignment%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-samlの構成に伴うazuread_app_role_assignmentリソース">SAMLの構成に伴うazuread_app_role_assignmentリソース</a></li> <li><a href="#saml%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_service_principal_token_signing_certificate%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-samlの構成に伴うazuread_service_principal_token_signing_certificateリソース">SAMLの構成に伴うazuread_service_principal_token_signing_certificateリソース</a></li> </ul> </li> <li> <a href="#%E3%83%A6%E3%83%BC%E3%82%B9%E3%82%B1%E3%83%BC%E3%82%B92-%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E3%83%97%E3%83%AD%E3%83%90%E3%82%A4%E3%83%80%E3%81%8Cazure-ad%E3%82%92idp%E3%81%A8%E3%81%97%E3%81%A6oidc%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E8%AA%8D%E8%A8%BC" id="markdown-toc-ユースケース2-サービスプロバイダがazure-adをidpとしてoidcを使用して認証">ユースケース2. サービスプロバイダがAzure ADをIdPとしてOIDCを使用して認証</a> <ul> <li><a href="#oidc%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_application%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-oidcの構成に伴うazuread_applicationリソース">OIDCの構成に伴うazuread_applicationリソース</a></li> <li><a href="#oidc%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_application_password%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-oidcの構成に伴うazuread_application_passwordリソース">OIDCの構成に伴うazuread_application_passwordリソース</a></li> <li><a href="#oidc%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_service_principal%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-oidcの構成に伴うazuread_service_principalリソース">OIDCの構成に伴うazuread_service_principalリソース</a></li> <li><a href="#oidc%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_app_role_assignment%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-oidcの構成に伴うazuread_app_role_assignmentリソース">OIDCの構成に伴うazuread_app_role_assignmentリソース</a></li> <li><a href="#oidc%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_service_principal_delegated_permission_grant%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9" id="markdown-toc-oidcの構成に伴うazuread_service_principal_delegated_permission_grantリソース">OIDCの構成に伴うazuread_service_principal_delegated_permission_grantリソース</a></li> </ul> </li> <li><a href="#%E3%82%AF%E3%83%AC%E3%83%BC%E3%83%A0%E3%83%9E%E3%83%83%E3%83%94%E3%83%B3%E3%82%B0%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-クレームマッピングについて">クレームマッピングについて</a></li> <li><a href="#%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%AB" id="markdown-toc-終わりに">終わりに</a></li> </ul> <h2 id="azure-adの構成をコード管理">Azure ADの構成をコード管理</h2> <p>Azure ADでアプリケーションを管理する場合、通常、<a href="https://portal.azure.com" target="_blank" rel="noopener noreferrer">Microsoft Azure Portal</a>（Azure Portal）と呼ばれるポータルサイト上で作業します。 GUIの操作であるため、直感的でわかりやすく、ほとんどの方がこちらで作業をしていることでしょう。</p> <p>しかし、なぜその変更を加えたのかの記録が残らず、複数人で変更する場合、その操作が適切なものなのかどうかを確認することが難しいです。</p> <p>インフラ構成をコード管理することで、これらの課題を解決または解消できます。</p> <p>今回紹介するTerraformでは、Terraformの開発元であるHashiCorp社が管理する<a href="https://registry.terraform.io/providers/hashicorp/azuread" target="_blank" rel="noopener noreferrer">Azure AD用のプロバイダ</a>を使用します。 このプロバイダは内部で<a href="https://learn.microsoft.com/ja-jp/graph/api/resources/azure-ad-overview" target="_blank" rel="noopener noreferrer">Microsoft Graph API</a>を使用しているため、Microsoft Graph APIで操作できるAzure ADの項目は一通り操作できます。</p> <h2 id="エンタープライズアプリケーションとアプリの登録について">エンタープライズアプリケーションとアプリの登録について</h2> <p>アプリケーションをコード管理するにあたって、Azure Portalにおける管理項目でよく目にする「エンタープライズアプリケーション」と「アプリの登録」について理解しておく必要があります。</p> <p>「アプリの登録」は、Azure ADに登録するSaaSなどのサービスプロバイダがMicrosoft Graph APIで要求するリソースへのアクセス管理や、サービスプロバイダがアプリケーションにアクセスするためのトークンを発行する方法などを定義します。 Azure ADでは<strong>アプリケーションオブジェクト</strong>と呼ばれ、後述のサービスプリンシパルオブジェクトのひな型となります。</p> <p>「エンタープライズアプリケーション」は、SaaSアプリケーションのSAMLによるSSOやユーザーやグループのプロビジョニング、Azure ADのユーザーやグループのアサインなどが設定できます。 エンタープライズアプリケーションで一覧化されているオブジェクトは、Azure ADでは<strong>サービスプリンシパルオブジェクト</strong>と呼ばれます。</p> <p>アプリケーションオブジェクトだけでは何も機能せず、実際にサービスプロバイダと認証情報のやりとりをするのがサービスプリンシパルオブジェクトです。</p> <p>また、アプリケーションオブジェクトとサービスプリンシパルオブジェクトは、<strong>1対多</strong>の関係です。</p> <p>詳しくは「<a href="https://learn.microsoft.com/ja-jp/azure/active-directory/develop/app-objects-and-service-principals" target="_blank" rel="noopener noreferrer">Azure Active Directory のアプリケーション オブジェクトとサービス プリンシパル オブジェクト</a>」を参照してください。</p> <h2 id="terraformでアプリケーションを管理">Terraformでアプリケーションを管理</h2> <p>今回は、アプリケーション管理で特に多く使用される、</p> <ul> <li>サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証</li> <li>サービスプロバイダがAzure ADをIdPとしてOIDCを使用して認証</li> </ul> <p>の2つのユースケースをTerraformでコード管理してみます。</p> <p>どちらのケースでも以下のように、Azure ADのプロバイダの設定をする必要があります。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">terraform</span> <span class="p">{</span>
+  <span class="nx">required_providers</span> <span class="p">{</span>
+    <span class="nx">azuread</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">source</span>  <span class="o">=</span> <span class="s2">"hashicorp/azuread"</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="s2">"2.33.0"</span> <span class="c1"># 執筆時点の最新バーション</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">provider</span> <span class="s2">"azuread"</span> <span class="p">{</span>
+  <span class="nx">tenant_id</span> <span class="o">=</span> <span class="s2">"ここにAzure ADのテナントIDをいれる"</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>また、今回はすでにAzure AD上に存在する<code class="language-plaintext highlighter-rouge">kenchan0130</code>ユーザーのみがサービスプロバイダにログインできることとします。</p> <h2 id="ユースケース1-サービスプロバイダがazure-adをidpとしてsamlを使用して認証">ユースケース1. サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証</h2> <p>今回は、手元にJamf Proのテナントを持っていたので、こちらのサービスプロバイダにログインできるように、Azure ADの構成をTerraform化します。</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── main.tf
+└── provider.tf
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">provider.tf</code> に前述したプロバイダーの設定、<code class="language-plaintext highlighter-rouge">main.tf</code> に今回のユースケースを構成します。 以下が最低限動作するコードです。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># main.tf</span>
+<span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">jamf_pro_certificate_buffer_hour</span> <span class="o">=</span> <span class="s2">"8760h"</span> <span class="c1"># 1年</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Jamf Pro by terraform"</span>
+  <span class="nx">identifier_uris</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"api://example-jamf-pro"</span><span class="p">]</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"https://exmaple.jamfcloud.com/saml/SSO"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">application_id</span>                <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">application_id</span>
+  <span class="nx">app_role_assignment_required</span>  <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">preferred_single_sign_on_mode</span> <span class="o">=</span> <span class="s2">"saml"</span>
+
+  <span class="nx">feature_tags</span> <span class="p">{</span>
+    <span class="nx">enterprise</span>            <span class="o">=</span> <span class="kc">true</span>
+    <span class="nx">custom_single_sign_on</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">data</span> <span class="s2">"azuread_user"</span> <span class="s2">"kenchan0130"</span> <span class="p">{</span>
+  <span class="nx">user_principal_name</span> <span class="o">=</span> <span class="s2">"kenchan0130@exmaple.com"</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_app_role_assignment"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">for_each</span> <span class="o">=</span> <span class="nx">toset</span><span class="p">([</span>
+    <span class="nx">for</span> <span class="nx">user</span> <span class="nx">in</span> <span class="p">[</span>
+      <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_user</span><span class="p">.</span><span class="nx">kenchan0130</span>
+    <span class="p">]</span> <span class="o">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="p">])</span>
+
+  <span class="nx">app_role_id</span>         <span class="o">=</span> <span class="s2">"00000000-0000-0000-0000-000000000000"</span> <span class="c1"># default role ID</span>
+  <span class="nx">resource_object_id</span>  <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">principal_object_id</span> <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"time_rotating"</span> <span class="s2">"jamf_pro_certificate"</span> <span class="p">{</span>
+  <span class="nx">rotation_years</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal_token_signing_certificate"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">service_principal_id</span> <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">end_date</span>             <span class="o">=</span> <span class="nx">timeadd</span><span class="p">(</span><span class="nx">time_rotating</span><span class="p">.</span><span class="nx">jamf_pro_certificate</span><span class="p">.</span><span class="nx">rotation_rfc3339</span><span class="p">,</span> <span class="nx">local</span><span class="p">.</span><span class="nx">jamf_pro_certificate_buffer_hour</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"null_resource"</span> <span class="s2">"jamf_pro_signing_certificate_activation"</span> <span class="p">{</span>
+  <span class="nx">triggers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">service_principal_id</span> <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+    <span class="nx">thumbprint</span>           <span class="o">=</span> <span class="nx">azuread_service_principal_token_signing_certificate</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">thumbprint</span>
+  <span class="p">}</span>
+
+  <span class="nx">provisioner</span> <span class="s2">"local-exec"</span> <span class="p">{</span>
+    <span class="nx">command</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="nx">SHELL</span>
+      <span class="nx">az</span> <span class="nx">ad</span> <span class="nx">sp</span> <span class="nx">update</span> <span class="err">\</span>
+        <span class="o">--</span><span class="nx">id</span> <span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">service_principal_id</span><span class="p">}</span> <span class="p">\</span>
+        <span class="o">--</span><span class="nx">set</span> <span class="nx">preferredTokenSigningKeyThumbprint</span><span class="o">=</span><span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">thumbprint</span><span class="p">}</span>
+<span class="nx">SHELL</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>それぞれのリソースについて、行っている内容や注意点などを見ていきます。</p> <h3 id="samlの構成に伴うazuread_applicationリソース">SAMLの構成に伴うazuread_applicationリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application" target="_blank" rel="noopener noreferrer">azuread_application</a>は、Azure ADのアプリケーションオブジェクトを作成します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Jamf Pro by terraform"</span>
+  <span class="nx">identifier_uris</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"api://example-jamf-pro"</span><span class="p">]</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"https://exmaple.jamfcloud.com/saml/SSO"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">web</code>ブロックの<code class="language-plaintext highlighter-rouge">redirect_uris</code>は、SAMLのAssertion Consumer Service（ACS）に該当します。</p> <p><code class="language-plaintext highlighter-rouge">identifier_uris</code>はSAMLのエンティティIDに該当します。エンティティIDは<a href="https://www.rfc-editor.org/rfc/rfc7522" target="_blank" rel="noopener noreferrer">RFC7522</a>でURIであるであることが定められています。 また、エンティティIDはAzure ADのテナント内で一意、つまり重複しないように設定する必要があります。</p> <h4 id="identifier_urisを設定するとアプリケーションオブジェクトが作成できない問題">identifier_urisを設定するとアプリケーションオブジェクトが作成できない問題</h4> <p><code class="language-plaintext highlighter-rouge">azuread_application</code>の<code class="language-plaintext highlighter-rouge">identifier_uris</code>に<code class="language-plaintext highlighter-rouge">https://exmaple.jamfcloud.com/saml/metadata</code> を設定しようとすると<code class="language-plaintext highlighter-rouge">terraform apply</code>時に以下のようなエラーが発生しました。</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>╷
+│ Error: Could not create application
+│
+│   with azuread_application.jamf_pro,
+│   on main.tf line 1, in resource "azuread_application" "jamf_pro":
+│    1: resource "azuread_application" "jamf_pro" {
+│
+│ ApplicationsClient.BaseClient.Post(): unexpected status 400 with OData error: HostNameNotOnVerifiedDomain: Values of identifierUris property must use a
+│ verified domain of the organization or its subdomain: 'https://example.jamfcloud.com/saml/metadata'
+╵
+</code></pre></div></div> <p>原因は、「<a href="https://learn.microsoft.com/ja-jp/azure/active-directory/develop/reference-breaking-changes#appid-uri-in-single-tenant-applications-will-require-use-of-default-scheme-or-verified-domains" target="_blank" rel="noopener noreferrer">シングル テナント アプリケーションの AppId URI には、既定のスキームまたは検証済みドメインを使用する必要があります</a>」です。 つまり、設定できるのは、検証済みのドメインのURIと<code class="language-plaintext highlighter-rouge">api://</code>で始まるデフォルトスキームのURIのみです。 Azure Portalでアプリケーションオブジェクトを作成するとこの制約に引っかからないため、API経由のみの制約であると思われます。</p> <p>そのため今回の例では、<code class="language-plaintext highlighter-rouge">api://example-jamf-pro</code>というデフォルトスキームURIを採用しました。</p> <p>もし、どうしても検証済みではないURIをエンティティIDとして使用したい場合は、2つの解決方法があります。</p> <p>1つ目は、2回<code class="language-plaintext highlighter-rouge">terraform apply</code>を実行する方法です。</p> <p>1回目は、<code class="language-plaintext highlighter-rouge">identifier_uris</code>は設定せずに<code class="language-plaintext highlighter-rouge">terraform apply</code>を実行します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Jamf Pro by terraform"</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"https://exmaple.jamfcloud.com/saml/SSO"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>アプリケーションオブジェクトが作成されたら、<code class="language-plaintext highlighter-rouge">identifier_uris</code>に検証されていないドメインを含むURIを設定し、<code class="language-plaintext highlighter-rouge">terraform apply</code>を実行します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Jamf Pro by terraform"</span>
+  <span class="nx">identifier_uris</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"https://example.jamfcloud.com/saml/metadata"</span><span class="p">]</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"https://exmaple.jamfcloud.com/saml/SSO"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>この方法は、どこインフラでも同じ構成を実現するというIaCの目的から若干外れてしまいますが、特別なハックをしなくても良いというのがメリットではあります。</p> <p>2つ目は、<code class="language-plaintext highlighter-rouge">azuread_application</code>リソースでは<code class="language-plaintext highlighter-rouge">identifier_uris</code>を設定せずに、別のリソースで<code class="language-plaintext highlighter-rouge">identifier_uris</code>を設定する方法です。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Jamf Pro by terraform"</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"https://onishidev.jamfcloud.com/saml/SSO"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="nx">lifecycle</span> <span class="p">{</span>
+    <span class="nx">ignore_changes</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="nx">identifier_uris</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"null_resource"</span> <span class="s2">"application_jamf_pro_identifier_uris"</span> <span class="p">{</span>
+  <span class="c1"># triggersに設定されているされている値が変更された場合、再度local-execが実行される</span>
+  <span class="nx">triggers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">application_id</span>  <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">application_id</span>
+    <span class="c1"># triggersはobject(string)の型を要求するため、スペース文字でjoinしている</span>
+    <span class="nx">identifier_uris</span> <span class="o">=</span> <span class="nx">join</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="p">[</span>
+      <span class="s2">"https://exmaple.jamfcloud.com/saml/metadata"</span>
+    <span class="p">])</span>
+  <span class="p">}</span>
+
+  <span class="nx">provisioner</span> <span class="s2">"local-exec"</span> <span class="p">{</span>
+    <span class="nx">command</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="nx">SHELL</span>
+      <span class="nx">az</span> <span class="nx">ad</span> <span class="nx">app</span> <span class="nx">update</span> <span class="o">--</span><span class="nx">id</span> <span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">application_id</span><span class="p">}</span> <span class="o">--</span><span class="nx">identifier-uris</span> <span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">identifier_uris</span><span class="p">}</span>
+<span class="nx">SHELL</span>
+  <span class="err">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">azuread_application</code>リソースでは、<code class="language-plaintext highlighter-rouge">identifier_uris</code>は設定しません。 合わせて別のリソースで更新されるため、<code class="language-plaintext highlighter-rouge">lifecycle</code>ブロックの<code class="language-plaintext highlighter-rouge">ignore_changes</code>で<code class="language-plaintext highlighter-rouge">identifier_uris</code>を指定しておきます。</p> <p><code class="language-plaintext highlighter-rouge">null_resource</code>リソースの<code class="language-plaintext highlighter-rouge">local-exec</code>の<code class="language-plaintext highlighter-rouge">provisioner</code>を使うことで、ローカルの実行ファイルを呼び出せます。 これを使って、Azureのリソースを操作できるCLIである<a href="https://learn.microsoft.com/ja-jp/cli/azure/reference-index" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">az</code></a>コマンドを介してアプリケーションオブジェクトの<code class="language-plaintext highlighter-rouge">identifier_uris</code>を更新しています。<sup id="fnref:az-command-alternative"><a href="#fn:az-command-alternative" class="footnote" rel="footnote" role="doc-noteref">1</a></sup></p> <p>実行環境に依存してしまう点がデメリットですが、何が起こるのかがtfファイルから読み取れるメリットがあります。</p> <p>アプリケーションオブジェクトの更新で検証されていないドメインを含むURIを設定できるなら<sup id="fnref:update-default-scheme-validation-via-api"><a href="#fn:update-default-scheme-validation-via-api" class="footnote" rel="footnote" role="doc-noteref">2</a></sup>、作成時にも設定させてほしいです。どうしてこんな変更入れてしまったの、Microsoftさん。</p> <h3 id="samlの構成に伴うazuread_service_principalリソース">SAMLの構成に伴うazuread_service_principalリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal" target="_blank" rel="noopener noreferrer">azuread_service_principal</a>は、Azure ADのサービスプリンシパルオブジェクトを作成します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">application_id</span>                <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">application_id</span>
+  <span class="nx">app_role_assignment_required</span>  <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">preferred_single_sign_on_mode</span> <span class="o">=</span> <span class="s2">"saml"</span>
+
+  <span class="nx">feature_tags</span> <span class="p">{</span>
+    <span class="nx">enterprise</span>            <span class="o">=</span> <span class="kc">true</span>
+    <span class="nx">custom_single_sign_on</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">app_role_assignment_required</code>が無効の場合（デフォルトでは無効）はテナントに存在するすべてのアカウントでログインできます。 今回のユースケースのようにサービスプロバイダにログインできる人を制限したい場合は、<code class="language-plaintext highlighter-rouge">app_role_assignment_required</code>を有効にする必要があります。</p> <p>また、<code class="language-plaintext highlighter-rouge">preferred_single_sign_on_mode</code>を<code class="language-plaintext highlighter-rouge">saml</code>にするだけでは、SAML認証ができません。 <code class="language-plaintext highlighter-rouge">feature_tags</code>ブロックの<code class="language-plaintext highlighter-rouge">custom_single_sign_on</code>も合わせて有効にする必要があります。</p> <p>合わせて、<code class="language-plaintext highlighter-rouge">feature_tags</code>ブロックの<code class="language-plaintext highlighter-rouge">enterprise</code>を有効にすることで、Azure Portal上でエンタープライズアプリケーションとして検索できるため、特段理由がない限りは有効にしておくと良いでしょう。</p> <h3 id="samlの構成に伴うazuread_app_role_assignmentリソース">SAMLの構成に伴うazuread_app_role_assignmentリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/app_role_assignment" target="_blank" rel="noopener noreferrer">azuread_app_role_assignment</a>は、リソースアプリケーションで定義されているアプリケーションのロールを、プリンシパル（ユーザー、グループ、またはサービスプリンシパル）に紐付けるためのリソースです。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">data</span> <span class="s2">"azuread_user"</span> <span class="s2">"kenchan0130"</span> <span class="p">{</span>
+  <span class="nx">user_principal_name</span> <span class="o">=</span> <span class="s2">"kenchan0130@exmaple.com"</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_app_role_assignment"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">for_each</span> <span class="o">=</span> <span class="nx">toset</span><span class="p">([</span>
+    <span class="nx">for</span> <span class="nx">user</span> <span class="nx">in</span> <span class="p">[</span>
+      <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_user</span><span class="p">.</span><span class="nx">kenchan0130</span>
+    <span class="p">]</span> <span class="o">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="p">])</span>
+
+  <span class="nx">app_role_id</span>         <span class="o">=</span> <span class="s2">"00000000-0000-0000-0000-000000000000"</span> <span class="c1"># default role ID</span>
+  <span class="nx">resource_object_id</span>  <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">principal_object_id</span> <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">azuread_application</code>の<code class="language-plaintext highlighter-rouge">app_role</code>ブロックでアプリケーションのロールを定義できます。 たとえは、ロールによってサービスプロバイダに渡す値を動的に変更することで、権限管理を柔軟に行えます。</p> <p>今回特にロールは定義しておらず、サービスプロバイダにログインできる人を制限したいだけですので、デフォルトロールを使用してサービスプリンシパルオブジェクトとユーザーオブジェクトの紐付けを行っています。</p> <p>往々にして、サービスプリンシパルオブジェクトには複数のユーザーおよびグループオブジェクトを紐付けたくなります。そのため、今回は<code class="language-plaintext highlighter-rouge">for_each</code>を使用して複数のユーザーおよびグループオブジェクトを紐付けれるようにしてみました。</p> <h3 id="samlの構成に伴うazuread_service_principal_token_signing_certificateリソース">SAMLの構成に伴うazuread_service_principal_token_signing_certificateリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/azuread_service_principal_token_signing_certificate" target="_blank" rel="noopener noreferrer">azuread_service_principal_token_signing_certificate</a>は、Azure ADのサービスプリンシパルオブジェクトに紐付ける署名証明書を発行します。</p> <p>似たようなものに<a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_certificate" target="_blank" rel="noopener noreferrer">azuread_service_principal_certificate</a>リソースがありますが、これはローカルやterraform上で署名証明書がある場合に使用するリソースです。<sup id="fnref:azuread-service-principal-certificate-example"><a href="#fn:azuread-service-principal-certificate-example" class="footnote" rel="footnote" role="doc-noteref">3</a></sup></p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">jamf_pro_certificate_buffer_hour</span> <span class="o">=</span> <span class="s2">"8760h"</span> <span class="c1"># 1年</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"time_rotating"</span> <span class="s2">"jamf_pro_certificate"</span> <span class="p">{</span>
+  <span class="nx">rotation_years</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal_token_signing_certificate"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">service_principal_id</span> <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">end_date</span>             <span class="o">=</span> <span class="nx">timeadd</span><span class="p">(</span><span class="nx">time_rotating</span><span class="p">.</span><span class="nx">jamf_pro_certificate</span><span class="p">.</span><span class="nx">rotation_rfc3339</span><span class="p">,</span> <span class="nx">local</span><span class="p">.</span><span class="nx">jamf_pro_certificate_buffer_hour</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"null_resource"</span> <span class="s2">"jamf_pro_signing_certificate_activation"</span> <span class="p">{</span>
+  <span class="nx">triggers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">service_principal_id</span> <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+    <span class="nx">thumbprint</span>           <span class="o">=</span> <span class="nx">azuread_service_principal_token_signing_certificate</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">thumbprint</span>
+  <span class="p">}</span>
+
+  <span class="nx">provisioner</span> <span class="s2">"local-exec"</span> <span class="p">{</span>
+    <span class="nx">command</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="nx">SHELL</span>
+      <span class="nx">az</span> <span class="nx">ad</span> <span class="nx">sp</span> <span class="nx">update</span> <span class="err">\</span>
+        <span class="o">--</span><span class="nx">id</span> <span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">service_principal_id</span><span class="p">}</span> <span class="p">\</span>
+        <span class="o">--</span><span class="nx">set</span> <span class="nx">preferredTokenSigningKeyThumbprint</span><span class="o">=</span><span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">thumbprint</span><span class="p">}</span>
+<span class="nx">SHELL</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><a href="https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/rotating" target="_blank" rel="noopener noreferrer">time_rotating</a>リソースと<a href="https://developer.hashicorp.com/terraform/language/functions/timeadd" target="_blank" rel="noopener noreferrer">timeadd</a>関数を使用することで、<code class="language-plaintext highlighter-rouge">azuread_service_principal_token_signing_certificate</code>リソースの<code class="language-plaintext highlighter-rouge">end_time</code>を<strong>3年</strong>として登録し、terraformをapplyして<strong>2年</strong>以降に再度terraformをapplyすると証明書の更新が自動で実行されるようにしています。</p> <p>署名証明書が自動で更新されたくない場合は、<code class="language-plaintext highlighter-rouge">time_rotating</code>リソースは使わずに、<code class="language-plaintext highlighter-rouge">end_date</code>をベタ書きで指定、または何も指定しない（デフォルトでは3年）ことで対応可能です。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_service_principal_token_signing_certificate"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">service_principal_id</span> <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">end_date</span>             <span class="o">=</span> <span class="s2">"2023-05-01T01:02:03+09:00"</span> <span class="c1"># この値を変更すると、署名証明書が再発行される</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="azuread_service_principal_token_signing_certificateで署名証明書を設定してもアクティブにならない問題">azuread_service_principal_token_signing_certificateで署名証明書を設定してもアクティブにならない問題</h4> <p><code class="language-plaintext highlighter-rouge">azuread_service_principal_token_signing_certificate</code>リソースでサービスプリンシパルオブジェクトに署名証明書を紐付けたとしても、証明書が有効になっておらず<strong>非アクティブ</strong>の状態です。</p> <p>残念ながら、署名証明書をアクティブにするTerraformリソースは存在しません。 執筆現在、サービスプリンシパルオブジェクトにPATCHリクエストを投げることでしか署名証明書をアクティブにできないためです。端的に言うと、Microsoft Graph APIの作りがイマイチなのです。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"null_resource"</span> <span class="s2">"jamf_pro_signing_certificate_activation"</span> <span class="p">{</span>
+  <span class="nx">triggers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">service_principal_id</span> <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+    <span class="nx">thumbprint</span>           <span class="o">=</span> <span class="nx">azuread_service_principal_token_signing_certificate</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">thumbprint</span>
+  <span class="p">}</span>
+
+  <span class="nx">provisioner</span> <span class="s2">"local-exec"</span> <span class="p">{</span>
+    <span class="nx">command</span> <span class="o">=</span> <span class="o">&lt;&lt;-</span><span class="nx">SHELL</span>
+      <span class="nx">az</span> <span class="nx">ad</span> <span class="nx">sp</span> <span class="nx">update</span> <span class="err">\</span>
+        <span class="o">--</span><span class="nx">id</span> <span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">service_principal_id</span><span class="p">}</span> <span class="p">\</span>
+        <span class="o">--</span><span class="nx">set</span> <span class="nx">preferredTokenSigningKeyThumbprint</span><span class="o">=</span><span class="nx">$</span><span class="p">{</span><span class="nx">self</span><span class="p">.</span><span class="nx">triggers</span><span class="p">.</span><span class="nx">thumbprint</span><span class="p">}</span>
+<span class="nx">SHELL</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">null_resource</code>以外にも、<code class="language-plaintext highlighter-rouge">azuread_service_principal_token_signing_certificate</code>リソース内でも<code class="language-plaintext highlighter-rouge">provisioner</code>ブロックを使用できます。しかし運用上、差分検知の文脈から<code class="language-plaintext highlighter-rouge">null_resource</code>で設定することをお勧めします。</p> <p><code class="language-plaintext highlighter-rouge">provisioner</code>ブロック内では、Azureのリソースを操作できるCLIである<a href="https://learn.microsoft.com/ja-jp/cli/azure/reference-index" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">az</code></a>コマンドを介してサービスプリンシパルオブジェクトの<code class="language-plaintext highlighter-rouge">preferredTokenSigningKeyThumbprint</code>を更新します。<sup id="fnref:az-command-alternative:1"><a href="#fn:az-command-alternative" class="footnote" rel="footnote" role="doc-noteref">1</a></sup></p> <p><code class="language-plaintext highlighter-rouge">preferredTokenSigningKeyThumbprint</code>に証明書のThumbprintが設定されると、サービスプリンシパルオブジェクトに紐付いている署名証明書がアクティブになります。</p> <h2 id="ユースケース2-サービスプロバイダがazure-adをidpとしてoidcを使用して認証">ユースケース2. サービスプロバイダがAzure ADをIdPとしてOIDCを使用して認証</h2> <p>今回は、Microsoft社がチュートリアルとして出している<a href="https://github.com/AzureADQuickStarts/AppModelv2-WebApp-OpenIDConnect-nodejs" target="_blank" rel="noopener noreferrer">OIDCを使用したNode.jsのWebアプリケーション</a>のサービスプロバイダにログインできるように、Azure ADの構成をTerraform化します。</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── main.tf
+└── provider.tf
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">provider.tf</code> に前述したプロバイダーの設定、<code class="language-plaintext highlighter-rouge">main.tf</code> に今回のユースケースを構成します。 以下が最低限動作するコードです。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># main.tf</span>
+<span class="nx">data</span> <span class="s2">"azuread_application_published_app_ids"</span> <span class="s2">"well_known"</span> <span class="p">{}</span>
+
+<span class="nx">data</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"msgraph"</span> <span class="p">{</span>
+  <span class="nx">application_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_application_published_app_ids</span><span class="p">.</span><span class="nx">well_known</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">MicrosoftGraph</span>
+<span class="p">}</span>
+
+<span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">oidc_app_msgraph_api_scopes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"openid"</span><span class="p">,</span>
+    <span class="s2">"profile"</span><span class="p">,</span>
+    <span class="s2">"offline_access"</span><span class="p">,</span>
+    <span class="s2">"Mail.Read"</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Azure Active Directory OIDC Node.js web app sample by terraform"</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"http://localhost:3000/auth/openid/return"</span>
+    <span class="p">]</span>
+
+    <span class="nx">implicit_grant</span> <span class="p">{</span>
+      <span class="nx">id_token_issuance_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">required_resource_access</span> <span class="p">{</span>
+    <span class="nx">resource_app_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">application_id</span>
+
+    <span class="nx">dynamic</span> <span class="s2">"resource_access"</span> <span class="p">{</span>
+      <span class="nx">for_each</span> <span class="o">=</span> <span class="nx">local</span><span class="p">.</span><span class="nx">oidc_app_msgraph_api_scopes</span>
+      <span class="nx">content</span> <span class="p">{</span>
+        <span class="nx">id</span>   <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">oauth2_permission_scope_ids</span><span class="p">[</span><span class="nx">resource_access</span><span class="p">.</span><span class="nx">value</span><span class="p">]</span>
+        <span class="nx">type</span> <span class="o">=</span> <span class="s2">"Scope"</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">application_object_id</span> <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">display_name</span>          <span class="o">=</span> <span class="s2">"Webアプリケーションで使用するシークレット"</span>
+  <span class="nx">end_date_relative</span>     <span class="o">=</span> <span class="s2">"2400h30m"</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">application_id</span>                <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">application_id</span>
+  <span class="nx">app_role_assignment_required</span>  <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">preferred_single_sign_on_mode</span> <span class="o">=</span> <span class="s2">"oidc"</span>
+
+  <span class="nx">feature_tags</span> <span class="p">{</span>
+    <span class="nx">enterprise</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nx">data</span> <span class="s2">"azuread_user"</span> <span class="s2">"kenchan0130"</span> <span class="p">{</span>
+  <span class="nx">user_principal_name</span> <span class="o">=</span> <span class="s2">"kenchan0130@example.com"</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_app_role_assignment"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">for_each</span> <span class="o">=</span> <span class="nx">toset</span><span class="p">([</span>
+    <span class="nx">for</span> <span class="nx">user</span> <span class="nx">in</span> <span class="p">[</span>
+      <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_user</span><span class="p">.</span><span class="nx">kenchan0130</span>
+    <span class="p">]</span> <span class="o">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="p">])</span>
+
+  <span class="nx">app_role_id</span>         <span class="o">=</span> <span class="s2">"00000000-0000-0000-0000-000000000000"</span> <span class="c1"># default role ID</span>
+  <span class="nx">resource_object_id</span>  <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">principal_object_id</span> <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal_delegated_permission_grant"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">service_principal_object_id</span>          <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">resource_service_principal_object_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">claim_values</span>                         <span class="o">=</span> <span class="nx">local</span><span class="p">.</span><span class="nx">oidc_app_msgraph_api_scopes</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>それぞれのリソースについて、行っている内容やハマった内容などを見ていきます。</p> <h3 id="oidcの構成に伴うazuread_applicationリソース">OIDCの構成に伴うazuread_applicationリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application" target="_blank" rel="noopener noreferrer">azuread_application</a>は、Azure ADのアプリケーションオブジェクトを作成します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">data</span> <span class="s2">"azuread_application_published_app_ids"</span> <span class="s2">"well_known"</span> <span class="p">{}</span>
+
+<span class="nx">data</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"msgraph"</span> <span class="p">{</span>
+  <span class="nx">application_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_application_published_app_ids</span><span class="p">.</span><span class="nx">well_known</span><span class="p">.</span><span class="nx">result</span><span class="p">.</span><span class="nx">MicrosoftGraph</span>
+<span class="p">}</span>
+
+<span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">oidc_app_msgraph_api_scopes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"openid"</span><span class="p">,</span>
+    <span class="s2">"profile"</span><span class="p">,</span>
+    <span class="s2">"offline_access"</span><span class="p">,</span>
+    <span class="s2">"Mail.Read"</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_application"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Azure Active Directory OIDC Node.js web app sample by terraform"</span>
+
+  <span class="nx">web</span> <span class="p">{</span>
+    <span class="nx">redirect_uris</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"http://localhost:3000/auth/openid/return"</span>
+    <span class="p">]</span>
+
+    <span class="nx">implicit_grant</span> <span class="p">{</span>
+      <span class="nx">id_token_issuance_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">required_resource_access</span> <span class="p">{</span>
+    <span class="nx">resource_app_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">application_id</span>
+
+    <span class="nx">dynamic</span> <span class="s2">"resource_access"</span> <span class="p">{</span>
+      <span class="nx">for_each</span> <span class="o">=</span> <span class="nx">local</span><span class="p">.</span><span class="nx">oidc_app_msgraph_api_scopes</span>
+      <span class="nx">content</span> <span class="p">{</span>
+        <span class="nx">id</span>   <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">oauth2_permission_scope_ids</span><span class="p">[</span><span class="nx">resource_access</span><span class="p">.</span><span class="nx">value</span><span class="p">]</span>
+        <span class="nx">type</span> <span class="o">=</span> <span class="s2">"Scope"</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">web</code>ブロックの<code class="language-plaintext highlighter-rouge">redirect_uris</code>は、OIDCのリダイレクトURIに該当します。</p> <p>今回のサービスプロバイダはOIDCのハイブリッド フローを有効化するように求められているため、<code class="language-plaintext highlighter-rouge">implicit_grant</code>ブロックの<code class="language-plaintext highlighter-rouge">id_token_issuance_enabled</code>を有効にしています。</p> <p>また、サービスプロバイダはスコープとして、</p> <ul> <li><code class="language-plaintext highlighter-rouge">openid</code></li> <li><code class="language-plaintext highlighter-rouge">profile</code></li> <li><code class="language-plaintext highlighter-rouge">offline_access</code></li> <li><code class="language-plaintext highlighter-rouge">https://graph.microsoft.com/mail.read</code></li> </ul> <p>を要求しています。 これらのアクセス許可を定義するため、<code class="language-plaintext highlighter-rouge">required_resource_access</code>ブロックでMicrosoft Graph APIで定義されているスコープを許可しています。</p> <p>Microsoft Graph APIではUUIDでスコープを定義しますが、UUIDが扱いづらいため、Azure ADのTerraformプロバイダにはこれらをうまく参照するためのデータソースが用意されています。</p> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/application_published_app_ids" target="_blank" rel="noopener noreferrer">azuread_application_published_app_ids</a>は、Azure ADのTerraformプロバイダが非公式に用意している<sup id="fnref:unofficial-published-apps"><a href="#fn:unofficial-published-apps" class="footnote" rel="footnote" role="doc-noteref">4</a></sup>、Microsoft社がAzure ADにすでに用意しているアプリケーションのUUID一覧です。</p> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal" target="_blank" rel="noopener noreferrer">azuread_service_principal</a>は、すでにAzure ADに存在するサービスプリンシパルオブジェクトを参照するためデータソースです。</p> <p>これらのデータソースにより、比較的簡単に許可するスコープを定義できます。</p> <p>ちなみに、スコープが複数あったため、<code class="language-plaintext highlighter-rouge">resource_access</code>ブロックを<code class="language-plaintext highlighter-rouge">dynamic</code>ブロックで記載していますが、以下と同義です。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">required_resource_access</span> <span class="p">{</span>
+  <span class="nx">resource_app_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">application_id</span>
+
+  <span class="nx">resource_access</span> <span class="p">{</span>
+    <span class="nx">id</span>   <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">oauth2_permission_scope_ids</span><span class="p">.</span><span class="nx">openid</span>
+    <span class="nx">type</span> <span class="o">=</span> <span class="s2">"Scope"</span>
+  <span class="p">}</span>
+
+  <span class="nx">resource_access</span> <span class="p">{</span>
+    <span class="nx">id</span>   <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">oauth2_permission_scope_ids</span><span class="p">.</span><span class="nx">profile</span>
+    <span class="nx">type</span> <span class="o">=</span> <span class="s2">"Scope"</span>
+  <span class="p">}</span>
+
+  <span class="nx">resource_access</span> <span class="p">{</span>
+    <span class="nx">id</span>   <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">oauth2_permission_scope_ids</span><span class="p">.</span><span class="nx">offline_access</span>
+    <span class="nx">type</span> <span class="o">=</span> <span class="s2">"Scope"</span>
+  <span class="p">}</span>
+
+  <span class="nx">resource_access</span> <span class="p">{</span>
+    <span class="nx">id</span>   <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">oauth2_permission_scope_ids</span><span class="p">[</span><span class="s2">"Mail.Read"</span><span class="p">]</span>
+    <span class="nx">type</span> <span class="o">=</span> <span class="s2">"Scope"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="oidcの構成に伴うazuread_application_passwordリソース">OIDCの構成に伴うazuread_application_passwordリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/application_password" target="_blank" rel="noopener noreferrer">azuread_application_password</a>は、Azure ADのアプリケーションオブジェクトに紐付く、クライアントクレデンシャルフローで使用する、クライアントシークレットを作成します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_application_password"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">application_object_id</span> <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">display_name</span>          <span class="o">=</span> <span class="s2">"Webアプリケーションで使用するシークレット"</span>
+  <span class="nx">end_date_relative</span>     <span class="o">=</span> <span class="s2">"2400h30m"</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">azuread_application_password</code>リソースを使用すると、tfstateファイルにクライアントシークレットの情報が残ってしまいます。 そのため、tfstateファイルを安全に取り扱うなどの対応が必要です。</p> <p>tfstateに秘密情報を残したくない場合は、Terraformを経由せずにAzure PortalやMicrosoft Graph APIを利用してクライアントシークレットを発行すると良いでしょう。</p> <h3 id="oidcの構成に伴うazuread_service_principalリソース">OIDCの構成に伴うazuread_service_principalリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal" target="_blank" rel="noopener noreferrer">azuread_service_principal</a>は、Azure ADのサービスプリンシパルオブジェクトを作成します。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_service_principal"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">application_id</span>                <span class="o">=</span> <span class="nx">azuread_application</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">application_id</span>
+  <span class="nx">app_role_assignment_required</span>  <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">preferred_single_sign_on_mode</span> <span class="o">=</span> <span class="s2">"oidc"</span>
+
+  <span class="nx">feature_tags</span> <span class="p">{</span>
+    <span class="nx">enterprise</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">app_role_assignment_required</code>が無効の場合（デフォルトでは無効）はテナントに存在するすべてのアカウントでログインできます。 今回のユースケースのようにサービスプロバイダにログインできる人を制限したい場合は、<code class="language-plaintext highlighter-rouge">app_role_assignment_required</code>を有効にする必要があります。</p> <p><code class="language-plaintext highlighter-rouge">preferred_single_sign_on_mode</code>を<code class="language-plaintext highlighter-rouge">oidc</code>にすると、Azure Portal上のエンタープライズアプリケーションの「シングル サインオン」項目に、「アプリ登録」ページへのリンクとJWTのクレームマッピングのカスタム構成ページへのリンクが表示されます。</p> <p><code class="language-plaintext highlighter-rouge">feature_tags</code>ブロックの<code class="language-plaintext highlighter-rouge">enterprise</code>を有効にすることで、Azure Portal上でエンタープライズアプリケーションとして検索できるため、特段理由がない限りは有効にしておくと良いでしょう。</p> <h3 id="oidcの構成に伴うazuread_app_role_assignmentリソース">OIDCの構成に伴うazuread_app_role_assignmentリソース</h3> <p>こちらについては<a href="#saml%E3%81%AE%E6%A7%8B%E6%88%90%E3%81%AB%E4%BC%B4%E3%81%86azuread_app_role_assignment%E3%83%AA%E3%82%BD%E3%83%BC%E3%82%B9">SAMLの構成に伴うazuread_app_role_assignmentリソース</a>と同様のため省略します。</p> <h3 id="oidcの構成に伴うazuread_service_principal_delegated_permission_grantリソース">OIDCの構成に伴うazuread_service_principal_delegated_permission_grantリソース</h3> <p><a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal_delegated_permission_grant" target="_blank" rel="noopener noreferrer">azuread_service_principal_delegated_permission_grant</a>は、Azure ADのサービスプリンシパルオブジェクトのAPIアクセス許可の権限委譲が設定できます。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">oidc_app_msgraph_api_scopes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"openid"</span><span class="p">,</span>
+    <span class="s2">"profile"</span><span class="p">,</span>
+    <span class="s2">"offline_access"</span><span class="p">,</span>
+    <span class="s2">"Mail.Read"</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal_delegated_permission_grant"</span> <span class="s2">"oidc_app"</span> <span class="p">{</span>
+  <span class="nx">service_principal_object_id</span>          <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">oidc_app</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">resource_service_principal_object_id</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">msgraph</span><span class="p">.</span><span class="nx">object_id</span>
+  <span class="nx">claim_values</span>                         <span class="o">=</span> <span class="nx">local</span><span class="p">.</span><span class="nx">oidc_app_msgraph_api_scopes</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>今回のサービスプロバイダはスコープとして、</p> <ul> <li><code class="language-plaintext highlighter-rouge">openid</code></li> <li><code class="language-plaintext highlighter-rouge">profile</code></li> <li><code class="language-plaintext highlighter-rouge">offline_access</code></li> <li><code class="language-plaintext highlighter-rouge">https://graph.microsoft.com/mail.read</code></li> </ul> <p>を要求しており、<code class="language-plaintext highlighter-rouge">azuread_application</code>リソースの<code class="language-plaintext highlighter-rouge">required_resource_access</code>でAPIアクセスの許可を定義していました。</p> <p>しかし、実際にこのスコープにアクセスするには、アプリケーションオブジェクトではなく、サービスプリンシパルオブジェクトごとに管理者の同意が必要です。</p> <p><a href="/assets/posts/post/2022-12-26-1/oidc_admin_privilege_delegation_dialog.png" data-fancybox="images" data-caption="OIDCでログインする際に管理者権限でAPIアクセスの許可を委任してない場合に表示されるダイアログ"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="OIDCでログインする際に管理者権限でAPIアクセスの許可を委任してない場合に表示されるダイアログ" data-src="/assets/posts/post/2022-12-26-1/oidc_admin_privilege_delegation_dialog.png" class="lazyload"></a></p> <p><code class="language-plaintext highlighter-rouge">azuread_service_principal_delegated_permission_grant</code>リソースでは、この管理者の同意を設定できます。</p> <p><code class="language-plaintext highlighter-rouge">claim_values</code>は、<code class="language-plaintext highlighter-rouge">required_resource_access</code>のようにUUIDではなく、クレームのキーを指定します。 Microsoft Graph APIの一貫性がなくて使いづらい点がにじみ出てきてしまっているのが残念ですが、今回の例ように<code class="language-plaintext highlighter-rouge">locals</code>ブロックなどで、変数としてスコープを定義すると扱いやすくなります。</p> <h2 id="クレームマッピングについて">クレームマッピングについて</h2> <p>SAMLではアサーション、OIDCではJWTクレームを介して、サービスプロバイダに値を渡したい場合があります。 その際は、クレームマッピングが使用できます。</p> <p>以下は、SAMLの構成でクレームマッピングを使い、NameIDにディスプレイ名を割り当てた例です。</p> <div class="language-hcl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">resource</span> <span class="s2">"azuread_claims_mapping_policy"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">display_name</span> <span class="o">=</span> <span class="s2">"Jamf Pro Custom Claim Policy"</span>
+  <span class="nx">definition</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nx">jsonencode</span><span class="p">(</span>
+      <span class="p">{</span>
+        <span class="nx">ClaimsMappingPolicy</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="nx">ClaimsSchema</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="nx">ID</span>            <span class="o">=</span> <span class="s2">"displayname"</span>
+              <span class="nx">SamlClaimType</span> <span class="o">=</span> <span class="s2">"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"</span>
+              <span class="nx">Source</span>        <span class="o">=</span> <span class="s2">"user"</span>
+            <span class="p">}</span>
+          <span class="p">]</span>
+          <span class="nx">IncludeBasicClaimSet</span> <span class="o">=</span> <span class="s2">"true"</span>
+          <span class="nx">Version</span>              <span class="o">=</span> <span class="mi">1</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">)</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="nx">resource</span> <span class="s2">"azuread_service_principal_claims_mapping_policy_assignment"</span> <span class="s2">"jamf_pro"</span> <span class="p">{</span>
+  <span class="nx">claims_mapping_policy_id</span> <span class="o">=</span> <span class="nx">azuread_claims_mapping_policy</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_principal_id</span>     <span class="o">=</span> <span class="nx">azuread_service_principal</span><span class="p">.</span><span class="nx">jamf_pro</span><span class="p">.</span><span class="nx">id</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>しかし、このAPIを使用すると、Azure Portal上で現在のクレームマッピングの情報が表示されず、クレームの変更もできなくなってしまいます。</p> <p><a href="/assets/posts/post/2022-12-26-1/saml_attributes_and_claims_at_azure_portal.png" data-fancybox="images" data-caption="Azure PortalにおけるSAMLの属性とクレームの変更画面"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Azure PortalにおけるSAMLの属性とクレームの変更画面" data-src="/assets/posts/post/2022-12-26-1/saml_attributes_and_claims_at_azure_portal.png" class="lazyload"></a></p> <p><a href="https://learn.microsoft.com/ja-jp/azure/active-directory/develop/active-directory-claims-mapping" target="_blank" rel="noopener noreferrer">公式ドキュメント</a>にも、</p> <blockquote> <p>これは、Azure portal で提供しているクレームのカスタマイズの後継機能です。 同一のアプリケーションに対し、このドキュメントで詳述する Microsoft Graph または Powershell を利用した方法に加えて、Azure portal でもクレームをカスタマイズした場合、そのアプリケーションのトークンでは、Azure portal での構成は無視されます。 このドキュメントで詳しく説明した方法で行った構成は、ポータルには反映されません。</p> </blockquote> <p>と記載されており、仕様のようです。</p> <p>この仕様は場合によっては運用上支障が出る可能性があるため、注意が必要です。</p> <h2 id="終わりに">終わりに</h2> <p>今回はTerraformを使用して、</p> <ul> <li>サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証</li> <li>サービスプロバイダがAzure ADをIdPとしてOIDCを使用して認証</li> </ul> <p>の構築例を紹介しました。</p> <p>これは最低限の設定であったため、その他にも設定したい項目がある場合は<a href="https://registry.terraform.io/providers/hashicorp/azuread/latest/docs" target="_blank" rel="noopener noreferrer">Terraformのプロバイダの公式ドキュメント</a>や<a href="https://learn.microsoft.com/ja-jp/graph/api/resources/azure-ad-overview" target="_blank" rel="noopener noreferrer">Microsoft Graphの公式ドキュメント</a>を参考に対応してみると良いと思います。</p> <div class="footnotes" role="doc-endnotes"> <ol> <li id="fn:az-command-alternative"> <p>なるべく依存を少なくするために<a href="https://learn.microsoft.com/ja-jp/cli/azure/reference-index" target="_blank" rel="noopener noreferrer"><code class="language-plaintext highlighter-rouge">az</code></a>コマンドを使わずに、Microsoft Graph APIを直接呼び出しても問題ありません。 <a href="#fnref:az-command-alternative" class="reversefootnote" role="doc-backlink">↩</a> <a href="#fnref:az-command-alternative:1" class="reversefootnote" role="doc-backlink">↩<sup>2</sup></a></p> </li> <li id="fn:update-default-scheme-validation-via-api"> <p>更新APIを経由して、<code class="language-plaintext highlighter-rouge">api://example.jamfcloud.com</code>のように検証されていないドメインを含むデフォルトスキームを設定するとエラーになる <a href="#fnref:update-default-scheme-validation-via-api" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:azuread-service-principal-certificate-example"> <p><code class="language-plaintext highlighter-rouge">azuread_service_principal_certificate</code>リソースを使用してterraform内で完結させる例は「<a href="https://blog.xmi.fr/posts/tls-terraform-azure-self-signed" target="_blank" rel="noopener noreferrer">TLS with Terraform and Azure: generate self-signed certificates</a>」にまとめられている <a href="#fnref:azuread-service-principal-certificate-example" class="reversefootnote" role="doc-backlink">↩</a></p> </li> <li id="fn:unofficial-published-apps"> <p>Azure ADのTerraformのプロバイダが使用している<a href="https://github.com/manicminer/hamilton" target="_blank" rel="noopener noreferrer">hamilton</a>ライブラリで<a href="https://github.com/manicminer/hamilton/blob/main/environments/published.go" target="_blank" rel="noopener noreferrer">定義</a>されている <a href="#fnref:unofficial-published-apps" class="reversefootnote" role="doc-backlink">↩</a></p> </li> </ol> </div> </article> <section class="share"> <a href="//twitter.com/share?text=Azure+Active+Directory%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92Terraform%E3%81%A7%E7%AE%A1%E7%90%86%E3%81%99%E3%82%8B&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2022-12-26-1%3Futm_source%3Dtwitter%26utm_medium%3Dsocial&amp;via=kenchan0130" onclick="window.open(this.href, 'twitter-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-twitter fa-lg"></i> </a> <a href="//www.facebook.com/sharer.php?t=Azure+Active+Directory%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92Terraform%E3%81%A7%E7%AE%A1%E7%90%86%E3%81%99%E3%82%8B&amp;u=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2022-12-26-1%3Futm_source%3Dfacebook%26utm_medium%3Dsocial" onclick="window.open(this.href, 'facebook-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-facebook fa-lg"></i> </a> <a href="//b.hatena.ne.jp/entry/panel/?btitle=Azure+Active+Directory%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92Terraform%E3%81%A7%E7%AE%A1%E7%90%86%E3%81%99%E3%82%8B&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2022-12-26-1" onclick="window.open(this.href, 'hatena-share', 'width=550,height=600,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-hatena fa-lg"></i> </a> </section> <section class="post-donation"> <div class="post-donation-panel"> <p class="post-donation-description"> 参考になった・面白かったと感じていただけましたら、サポートいただけると励みになります。 </p> <a class="post-donation-button" href="https://www.buymeacoffee.com/kenchan0130" onclick="gtag('event', 'click-buymeacoffee', { event_category: 'www.buymeacoffee.com/kenchan0130', event_label: '/post/2022-12-26-1' });" target="_blank" rel="noopener noreferrer"> <p class="post-donation-button-body"> <img class="icon lazyload" alt="buymeacoffee" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg"> <span class="label">サポートする</span> </p> </a> </div> </section> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2444060431947599" data-ad-slot="7319689305" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> <section class="sub-contents related-posts"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">あわせて読みたい</div> <div class="sub-contents-main"> <li> <a href="/post/2022-09-15-1">IdPを介してMacにログインできるXCredsを検証してみた</a> <span class="post-date">- September 15, 2022</span> </li> <li> <a href="/post/2021-12-09-1">Next.jsでStatic GenerationしたサイトをAWSでホスティングする</a> <span class="post-date">- December 9, 2021</span> </li> <li> <a href="/post/2020-12-10-1">Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築</a> <span class="post-date">- December 10, 2020</span> </li> </div> </div> </section> <section class="sub-contents tags"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">Tags</div> <div class="sub-contents-main"> <a href="/tag/azure-active-directory">Azure Active Directory</a> <a href="/tag/azure-cli">Azure CLI</a> <a href="/tag/iac">IaC</a> <a href="/tag/microsoft-graph-api">Microsoft Graph API</a> <a href="/tag/terraform">Terraform</a> </div> </div> </section> </div> </div> </div> <footer class="site-footer"> <div class="wrapper"> <h3 class="footer-heading">kenchan0130 blog</h3> <div class="site-navigation"> <p><strong>Site Map</strong></p> <ul class="pages"> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/privacy">Privacy Policy</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> <li class="nav-link"> <a href="/profile/resume">Resume</a> </li> </ul> </div> <div class="site-contact"> <p><strong>Contact</strong></p> <ul class="social-media-list"> <li> <a href="https://twitter.com/kenchan0130" title="Follow me on Twitter" target="_blank" rel="noopener noreferrer"> <i class="fab fa-twitter"></i> <span class="username">kenchan0130</span> </a> </li> <li> <a href="https://github.com/kenchan0130" title="Fork me on GitHub" target="_blank" rel="noopener noreferrer"> <i class="fab fa-github"></i> <span class="username">kenchan0130</span> </a> </li> </ul> </div> <div class="site-signature"> <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p> <p class="text">ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。 </p> </div> </div> <div class="licence">このサイトのコンテンツは<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC-BY-4.0) License</a>の下でライセンスされています。</div> <div class="copyright">Copyright © 2017-2025 Tadayuki Onishi All Rights Reserved.</div> </footer> <script src="/assets/bundle/app.55445db2fff8ddfed8c5.js" async></script> <script async src="//www.googletagmanager.com/gtag/js?id=G-B7RX34Q5PL"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-B7RX34Q5PL");</script> <script async src="//www.googletagmanager.com/gtag/js?id=UA-79827366-2"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-79827366-2");</script> </body> </html>
