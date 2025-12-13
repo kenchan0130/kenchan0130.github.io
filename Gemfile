@@ -5,7 +5,7 @@ gem 'jekyll'
 gem 'jekyll-minifier'
 gem 'liquid-c'
 # I want to use docker syntax
-gem 'rouge', '~> 4.5.2'
+gem 'rouge', '~> 4.6.1'
 
 group :jekyll_plugins do
   gem 'jekyll-algolia'
