@@ -1,0 +1,188 @@
+<!DOCTYPE html> <html> <!-- This page is used centrarium Jekyll theme Copyright (c) 2015 Ben Centra Released under the MIT license https://github.com/bencentra/centrarium/blob/daa0d16ba9156ad43f9980e2075023a0d48859a5/LICENSE.md --> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"> <title>Next.jsでStatic GenerationしたサイトをAWSでホスティングする</title> <meta name="description" content="Next.jsでStatic GenerationしたWebサイトをVercelにデプロイすると、スムーズにホスティングできます。 AWS上にホスティングする際は、いくつか方法がありますが、比較検討したかったため、Next.jsでSGしたWebサイトをホスティングする方法の考慮すべき点と実現方法をまとめました。"> <meta name="author" content="Tadayuki Onishi"> <meta name="copyright" content="© Tadayuki Onishi 2025"> <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png"> <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png"> <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png"> <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png"> <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png"> <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png"> <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png"> <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png"> <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png"> <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/android-icon-192x192.png"> <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png"> <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png"> <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png"> <link rel="manifest" href="/assets/icons/manifest.json"> <meta name="msapplication-TileColor" content="#ffffff"> <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png"> <meta name="theme-color" content="#ffffff"> <meta property="fb:app_id" content="376889769419405"> <meta property="og:description" content="Next.jsでStatic GenerationしたWebサイトをVercelにデプロイすると、スムーズにホスティングできます。 AWS上にホスティングする際は、いくつか方法がありますが、比較検討したかったため、Next.jsでSGしたWebサイトをホスティングする方法の考慮すべき点と実現方法をまとめました。"> <meta property="og:url" content="https://kenchan0130.github.io/post/2021-12-09-1"> <meta property="og:site_name" content="kenchan0130 blog"> <meta property="og:title" content="Next.jsでStatic GenerationしたサイトをAWSでホスティングする"> <meta property="og:type" content="website"> <meta property="og:author" content="Tadayuki Onishi"> <meta property="og:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta property="og:image:width" content="760"> <meta property="og:image:height" content="760"> <meta property="og:image:type" content="image/png"> <meta name="twitter:card" content="summary"> <meta name="twitter:title" content="Next.jsでStatic GenerationしたサイトをAWSでホスティングする"> <meta name="twitter:site" content="@kenchan0130"> <meta name="twitter:description" content="Next.jsでStatic GenerationしたWebサイトをVercelにデプロイすると、スムーズにホスティングできます。 AWS上にホスティングする際は、いくつか方法がありますが、比較検討したかったため、Next.jsでSGしたWebサイトをホスティングする方法の考慮すべき点と実現方法をまとめました。"> <meta name="twitter:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta name="twitter:url" content="https://kenchan0130.github.io/post/2021-12-09-1"> <link rel="preload" as="style" href="/assets/bundle/app.55445db2fff8ddfed8c5.css" onload="this.onload=null;this.rel='stylesheet'"> <noscript> <link rel="stylesheet" href="/assets/bundle/app.55445db2fff8ddfed8c5.css"> </noscript> <link rel="stylesheet" href="/css/main.css"> <link rel="canonical" href="https://kenchan0130.github.io/post/2021-12-09-1"> <link rel="alternate" type="application/atom+xml" title="kenchan0130 blog" href="https://kenchan0130.github.io/feed.xml"> <meta name="google-site-verification" content="ZxlKORgZZwZ4TTmaQJFFEXLF3jmd6P_NVU9TEVW1bSg"> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> </head> <body> <header class="navigation" role="banner"> <div class="navigation-wrapper"> <a href="/" class="logo"> <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="kenchan0130 blog" data-src="/assets/logo.png" class="lazyload"> </a> <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu"> <i class="fas fa-bars"></i> </a> <nav role="navigation"> <ul id="js-navigation-menu" class="navigation-menu"> <li class="nav-search-box"> <div class="search-input-container"> <input type="search" class="search-input" id="js-search-input" placeholder="Search" autocomplete="off" onfocus="gtag('event', 'search', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: '/post/2021-12-09-1' });"> <i class="fa fa-search search-input-icon"></i> <template id="suggestion-template"> <a href="" onclick="gtag('event', 'click', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: this.href });"> <p class="suggestion-title js-suggestion-title"></p> <p class="suggestion-content js-suggestion-content"></p> </a> </template> </div> </li> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> </ul> </nav> </div> </header> <div class="page-content"> <div class="post"> <div class="post-header-container "> <div class="scrim "> <header class="post-header"> <h1 class="title">Next.jsでStatic GenerationしたサイトをAWSでホスティングする</h1> </header> </div> </div> <div class="wrapper"> <span class="page-divider"> <span class="one"></span> <span class="two"></span> </span> <section class="post-meta"> <div class="post-date">2021-12-09</div> <div class="post-categories"> <i class="fas fa-fw fa-book"></i> <a href="/category/development">development </a> </div> </section> <article class="post-content"> <p><a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">Next.js</a>でStatic Generation（SG）したWebサイトを<a href="https://vercel.com/" target="_blank" rel="noopener noreferrer">Vercel</a>にデプロイすると、スムーズにホスティングできます。</p> <p>AWS上にホスティングする際は、いくつか方法がありますが、比較検討したかったため、Next.jsでSGしたWebサイトをホスティングする方法の考慮すべき点と実現方法をまとめました。</p> <p>また、これは<a href="https://corp.folio-sec.com/" target="_blank" rel="noopener noreferrer">株式会社FOLIO</a>の<a href="https://adventar.org/calendars/6253" target="_blank" rel="noopener noreferrer">2021年アドベントカレンダー</a>の9日目の投稿でもあります。</p> <ul id="markdown-toc"> <li> <a href="#aws%E3%81%A7%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E5%80%99%E8%A3%9C" id="markdown-toc-awsでホスティングする方法の候補">AWSでホスティングする方法の候補</a> <ul> <li><a href="#cloudfront%E3%81%AEdefault-root-object%E3%81%A8%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%B3%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%82%A2%E3%82%A4%E3%83%87%E3%83%B3%E3%83%86%E3%82%A3%E3%83%86%E3%82%A3oai%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6s3%E3%83%90%E3%82%B1%E3%83%83%E3%83%88%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-cloudfrontのdefault-root-objectとオリジンアクセスアイデンティティoaiを使用してs3バケットにアクセスについて">「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」について</a></li> <li><a href="#s3%E3%83%90%E3%82%B1%E3%83%83%E3%83%88%E3%81%AE%E9%9D%99%E7%9A%84web%E3%82%B5%E3%82%A4%E3%83%88%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%92%E4%BD%BF%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-s3バケットの静的webサイトホスティングを使用について">「S3バケットの静的Webサイトホスティングを使用」について</a></li> </ul> </li> <li><a href="#%E5%90%84%E8%A7%A3%E6%B1%BA%E7%AD%96%E3%81%AE%E6%87%B8%E5%BF%B5%E7%82%B9%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-各解決策の懸念点について">各解決策の懸念点について</a></li> <li><a href="#%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%AB" id="markdown-toc-終わりに">終わりに</a></li> </ul> <h2 id="awsでホスティングする方法の候補">AWSでホスティングする方法の候補</h2> <p>今回はNext.jsでSGしたWebサイトには独自ドメインでアクセスすることを想定しています。 これを実現するには大きく以下の2つの方法が考えられます。</p> <ul> <li> <strong>方法1:</strong> CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス</li> <li> <strong>方法2:</strong> S3バケットの静的Webサイトホスティングを使用</li> </ul> <h3 id="cloudfrontのdefault-root-objectとオリジンアクセスアイデンティティoaiを使用してs3バケットにアクセスについて">「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」について</h3> <p>この方法は一般的な静的Webサイトのホスティングで使われています。 Default Root ObjectとOAIを作成することで、S3バケットをプライベートモードにしつつWebサイトをホスティングできます。</p> <p>また、CloudFrontを経由することで、コンテンツをキャッシュできます。</p> <h4 id="cloudfrontのdefault-root-objectとオリジンアクセスアイデンティティoaiを使用してs3バケットにアクセスの問題点">「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」の問題点</h4> <p>Next.jsでSGしたWebサイトをこの方法でホスティングすると、サイト内でページ遷移した後、ページをリロードしすると404になります。 具体的には、</p> <ol> <li> <code class="language-plaintext highlighter-rouge">https://example.com</code>にアクセス</li> <li>ページ内のリンクから<code class="language-plaintext highlighter-rouge">https://example.com/about</code>に遷移</li> <li>ブラウザのページリロードを実行</li> </ol> <p>のようなことをすると、404となってしまいます。</p> <p>これは、<code class="language-plaintext highlighter-rouge">/about</code>というパスでアクセスされると、<code class="language-plaintext highlighter-rouge">text/html</code>な<code class="language-plaintext highlighter-rouge">/about</code>ファイルを表示しようとするためです。</p> <p>Next.jsのデフォルトの設定の場合、<code class="language-plaintext highlighter-rouge">next export</code>すると</p> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── _next
+├── about.html
+└── index.html
+</code></pre></div></div> <p>のようなファイルが生成されます。そのため、404となってしまいます。</p> <p><code class="language-plaintext highlighter-rouge">/about/index.html</code>を作成することも検討しましたが、Default Root Objectの仕様上、サブディレクトリの<code class="language-plaintext highlighter-rouge">index.html</code>が表示できません。</p> <h4 id="cloudfrontのdefault-root-objectとオリジンアクセスアイデンティティoaiを使用してs3バケットにアクセスの解決策---デプロイ時にhtml拡張子を削除する方法">「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」の解決策 - デプロイ時に.html拡張子を削除する方法</h4> <p>S3バケットへのデプロイ時に、<code class="language-plaintext highlighter-rouge">index.html</code>以外のHTMLファイル名から拡張子を削除し、対象のファイルのメタデータを<code class="language-plaintext highlighter-rouge">text/html</code>に変更することでこの問題を解決できます。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">uploading_directory</span><span class="o">=</span><span class="s2">"アップロードするルートディレクトリパス"</span>
+find <span class="s2">"</span><span class="k">${</span><span class="nv">uploading_directory</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-type</span> f | <span class="k">while </span><span class="nb">read </span>file_path<span class="p">;</span><span class="k">do
+  </span><span class="nv">key</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">file_path</span><span class="p">#</span><span class="k">${</span><span class="nv">uploading_directory</span><span class="k">}}</span><span class="s2">"</span>
+  <span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">file_path</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span>~ <span class="se">\.</span>html<span class="nv">$ </span><span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">file_path</span><span class="k">}</span><span class="s2">"</span> <span class="o">!=</span> <span class="s2">"index.html"</span> <span class="o">]]</span> <span class="o">&amp;&amp;</span> <span class="o">[[</span> <span class="o">!</span> <span class="s2">"</span><span class="k">${</span><span class="nv">file_path</span><span class="k">}</span><span class="s2">"</span> <span class="o">=</span>~ /index<span class="se">\.</span>html<span class="nv">$ </span><span class="o">]]</span><span class="p">;</span><span class="k">then
+    </span><span class="nv">key</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">key</span><span class="p">%.html</span><span class="k">}</span><span class="s2">"</span>
+    aws s3api put-object <span class="se">\</span>
+      <span class="nt">--bucket</span> <span class="s2">"バケット名"</span> <span class="se">\</span>
+      <span class="nt">--key</span> <span class="s2">"</span><span class="k">${</span><span class="nv">key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+      <span class="nt">--body</span> <span class="s2">"</span><span class="k">${</span><span class="nv">file_path</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+      <span class="nt">--content-type</span> <span class="s2">"text/html"</span>
+  <span class="k">else
+    </span>aws s3api put-object <span class="se">\</span>
+      <span class="nt">--bucket</span> <span class="s2">"バケット名"</span> <span class="se">\</span>
+      <span class="nt">--key</span> <span class="s2">"</span><span class="k">${</span><span class="nv">key</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+      <span class="nt">--body</span> <span class="s2">"</span><span class="k">${</span><span class="nv">file_path</span><span class="k">}</span><span class="s2">"</span>
+  <span class="k">fi
+done</span>
+</code></pre></div></div> <p>このスクリプトは<code class="language-plaintext highlighter-rouge">index.html</code>以外のHTMLファイルの拡張子を取り除いて、メタデータを<code class="language-plaintext highlighter-rouge">text/html</code>にしてアップロードしています。 アップロードが直列に実行されてしまっている部分は改善が必要ですが、要件は達成できます。</p> <p>ただ、この方法は必要のないファイルが残り続けてしまうため、本来なら</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aws s3 <span class="nb">sync</span> <span class="nt">--exact-timestamps</span> <span class="nt">--delete</span> <span class="s2">"アップロードするルートディレクトリ名"</span> <span class="s2">"s3://バケット名/"</span>
+</code></pre></div></div> <p>のように必要ないファイルは削除したいです。</p> <p>しかし、一般的なOS上では「<code class="language-plaintext highlighter-rouge">about</code>ファイル」と「<code class="language-plaintext highlighter-rouge">about</code>ディレクトリ」は区別できません。 そのため、<code class="language-plaintext highlighter-rouge">aws s3 sync</code>コマンド以外の方法を検討する必要があり、このようなスクリプト例を提示しました。</p> <h4 id="cloudfrontのdefault-root-objectとオリジンアクセスアイデンティティoaiを使用してs3バケットにアクセスの解決策---lambdaedgeを使用する方法">「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」の解決策 - Lambda@Edgeを使用する方法</h4> <p><a href="https://aws.amazon.com/jp/lambda/edge/" target="_blank" rel="noopener noreferrer">Lambda@Edge</a>を使用し、<code class="language-plaintext highlighter-rouge">/about</code>にアクセスしてきたら、<code class="language-plaintext highlighter-rouge">.html</code>を付与して<code class="language-plaintext highlighter-rouge">about.html</code>にアクセスするように変更します。</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">Handler</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">aws-lambda</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">type</span> <span class="nx">Event</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">Records</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">cf</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">request</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">uri</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">}[];</span>
+<span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">EdgeHander</span> <span class="o">=</span> <span class="nx">Handler</span><span class="o">&lt;</span><span class="nx">Event</span><span class="p">,</span> <span class="kr">any</span><span class="o">&gt;</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">handler</span><span class="p">:</span> <span class="nx">EdgeHander</span> <span class="o">=</span> <span class="k">async </span><span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="p">{</span> <span class="nx">request</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">Records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">cf</span><span class="p">;</span>
+
+  <span class="c1">// トップページのリクエストは加工せずにそのままリクエストを通す</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="dl">"</span><span class="s2">/</span><span class="dl">"</span> <span class="o">||</span> <span class="nx">request</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="dl">""</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">request</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kd">const</span> <span class="nx">page</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">uri</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">/</span><span class="dl">"</span><span class="p">).</span><span class="nf">pop</span><span class="p">();</span>
+
+  <span class="k">if </span><span class="p">(</span><span class="nx">page</span> <span class="o">===</span> <span class="dl">""</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 末尾がスラッシュの場合は、スラッシュなしのページにリダイレクト</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">status</span><span class="p">:</span> <span class="dl">"</span><span class="s2">302</span><span class="dl">"</span><span class="p">,</span>
+      <span class="na">statusDescription</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Found</span><span class="dl">"</span><span class="p">,</span>
+      <span class="na">headers</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">location</span><span class="p">:</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="na">key</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Location</span><span class="dl">"</span><span class="p">,</span>
+            <span class="na">value</span><span class="p">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">uri</span><span class="p">.</span><span class="nf">replace</span><span class="p">(</span><span class="sr">/</span><span class="se">\/</span><span class="sr">+$/</span><span class="p">,</span> <span class="dl">""</span><span class="p">),</span>
+          <span class="p">},</span>
+        <span class="p">],</span>
+      <span class="p">},</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+
+  <span class="k">if </span><span class="p">(</span><span class="o">!</span><span class="nx">page</span><span class="p">.</span><span class="nf">match</span><span class="p">(</span><span class="sr">/</span><span class="se">\.</span><span class="sr">html$/</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// .html拡張子がついてなければ.html拡張子をつける</span>
+    <span class="nx">request</span><span class="p">.</span><span class="nx">uri</span> <span class="o">=</span> <span class="s2">`</span><span class="p">${</span><span class="nx">request</span><span class="p">.</span><span class="nx">uri</span><span class="p">}</span><span class="s2">.html`</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">request</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>上記のようなLambdaを動かすことで、問題を解決できます。</p> <h3 id="s3バケットの静的webサイトホスティングを使用について">「S3バケットの静的Webサイトホスティングを使用」について</h3> <p>Next.jsには<code class="language-plaintext highlighter-rouge">trailingSlash</code>オプションがあり、これを有効にして<code class="language-plaintext highlighter-rouge">next export</code>することで、</p> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── _next
+├── about
+│   └── index.html
+└── index.html
+</code></pre></div></div> <p>のようなファイルが生成されます。 S3バケットの静的Webサイトホスティングは、サブディレクトリにアクセスすると<code class="language-plaintext highlighter-rouge">index.html</code>を表示する挙動をするため、<code class="language-plaintext highlighter-rouge">/about</code>にアクセスすると404にはなりません。</p> <h4 id="s3バケットの静的webサイトホスティングを使用の問題点">「S3バケットの静的Webサイトホスティングを使用」の問題点</h4> <p>S3バケットに直接アクセスしてしまうと、Webサイトのキャッシュが効きません。 そのため、一般的にはCloudFrontなどのCDNを挟みます。</p> <p>また、静的Webサイトホスティングを有効化している場合、S3バケットはパブリック公開されているため、CDNを経由しないアクセスも可能です。 しかしその場合、想定外の費用が発生することになります。</p> <h5 id="s3バケットの静的webサイトホスティングを使用の解決策---バケットポリシーでrefererの値を参照する方法">「S3バケットの静的Webサイトホスティングを使用」の解決策 - バケットポリシーでRefererの値を参照する方法</h5> <p>S3バケットのバケットポリシーを利用すると、アクセス元の<code class="language-plaintext highlighter-rouge">Referer</code>によってアクセスを制限できます。 CloudFrontにはオリジンへのリクエスト時に独自の<code class="language-plaintext highlighter-rouge">Referer</code>を設定できるため、お互いにしか知り得ない値を設定しておくことで、余計なアクセスをなくすことができます。</p> <p>以下はterraformで設定する場合の例です。</p> <div class="language-terraform highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">resource</span> <span class="s2">"aws_s3_bucket"</span> <span class="s2">"web"</span> <span class="p">{</span>
+  <span class="nx">bucket</span> <span class="o">=</span> <span class="s2">"nextjs-web"</span>
+  <span class="nx">acl</span> <span class="o">=</span> <span class="s2">"public-read"</span>
+
+  <span class="nx">versioning</span> <span class="p">{</span>
+    <span class="nx">enabled</span> <span class="o">=</span> <span class="kc">false</span>
+  <span class="p">}</span>
+
+  <span class="nx">server_side_encryption_configuration</span> <span class="p">{</span>
+    <span class="nx">rule</span> <span class="p">{</span>
+      <span class="nx">apply_server_side_encryption_by_default</span> <span class="p">{</span>
+        <span class="nx">sse_algorithm</span> <span class="o">=</span> <span class="s2">"AES256"</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">website</span> <span class="p">{</span>
+    <span class="nx">index_document</span> <span class="o">=</span> <span class="s2">"index.html"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"random_id"</span> <span class="s2">"restriction_header_value"</span> <span class="p">{</span>
+  <span class="c1"># 推測不可能な値にしたかったため、ある程度長い値にしている</span>
+  <span class="nx">byte_length</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="p">}</span>
+
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"web_bucket"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"s3:GetObject"</span>
+    <span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"AWS"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"</span><span class="p">${</span><span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">arn</span><span class="p">}</span><span class="s2">/*"</span>
+    <span class="p">]</span>
+
+    <span class="c1"># Refererに特定の値がないとアクセスできないように制限</span>
+    <span class="nx">condition</span> <span class="p">{</span>
+      <span class="nx">test</span>     <span class="o">=</span> <span class="s2">"StringLike"</span>
+      <span class="nx">values</span>   <span class="o">=</span> <span class="p">[</span><span class="nx">random_id</span><span class="p">.</span><span class="nx">restriction_header_value</span><span class="p">.</span><span class="nx">b64_url</span><span class="p">]</span>
+      <span class="k">variable</span> <span class="o">=</span> <span class="s2">"aws:Referer"</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_s3_bucket_public_access_block"</span> <span class="s2">"web_bucket"</span> <span class="p">{</span>
+  <span class="nx">bucket</span>                  <span class="o">=</span> <span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">block_public_acls</span>       <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">block_public_policy</span>     <span class="o">=</span> <span class="kc">false</span>
+  <span class="nx">ignore_public_acls</span>      <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">restrict_public_buckets</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_s3_bucket_policy"</span> <span class="s2">"web_bucket"</span> <span class="p">{</span>
+  <span class="cm">/**
+   * 「aws_s3_bucket_public_access_block」と「aws_s3_bucket_policy」を同時に作成または削除すると
+   * 'A conflicting conditional operation is currently in progress against this resource'
+   * と言われるため、同時には作成しないようにしている
+   */</span>
+  <span class="nx">depends_on</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="nx">aws_s3_bucket_public_access_block</span><span class="p">.</span><span class="nx">web_bucket</span>
+  <span class="p">]</span>
+  <span class="nx">bucket</span> <span class="o">=</span> <span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">web_bucket</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_cloudfront_distribution"</span> <span class="s2">"web"</span> <span class="p">{</span>
+  <span class="nx">aliases</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"&lt;ドメイン名&gt;"</span>
+  <span class="p">]</span>
+  <span class="nx">enabled</span>         <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">is_ipv6_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">price_class</span> <span class="o">=</span> <span class="s2">"PriceClass_100"</span>
+  <span class="nx">default_root_object</span> <span class="o">=</span> <span class="s2">"index.html"</span>
+
+  <span class="nx">origin</span> <span class="p">{</span>
+    <span class="nx">domain_name</span> <span class="o">=</span> <span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">website_endpoint</span>
+    <span class="nx">origin_id</span>   <span class="o">=</span> <span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">web</span><span class="p">.</span><span class="nx">id</span>
+
+    <span class="nx">custom_origin_config</span> <span class="p">{</span>
+      <span class="nx">http_port</span>              <span class="o">=</span> <span class="mi">80</span>
+      <span class="nx">https_port</span>             <span class="o">=</span> <span class="mi">443</span>
+      <span class="nx">origin_protocol_policy</span> <span class="o">=</span> <span class="s2">"http-only"</span>
+      <span class="nx">origin_ssl_protocols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"TLSv1.2"</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="c1"># バケットポリシーのRefererの制限を突破するためにカスタムヘッダーを設定</span>
+    <span class="nx">custom_header</span> <span class="p">{</span>
+      <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"Referer"</span>
+      <span class="nx">value</span> <span class="o">=</span> <span class="nx">random_id</span><span class="p">.</span><span class="nx">restriction_header_value</span><span class="p">.</span><span class="nx">b64_url</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">restrictions</span> <span class="p">{</span>
+    <span class="nx">geo_restriction</span> <span class="p">{</span>
+      <span class="nx">restriction_type</span> <span class="o">=</span> <span class="s2">"none"</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">default_cache_behavior</span> <span class="p">{</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+
+  <span class="nx">viewer_certificate</span> <span class="p">{</span>
+    <span class="p">...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="各解決策の懸念点について">各解決策の懸念点について</h2> <p>各解決策にはそれぞれ以下のような懸念点がありました。</p> <ul> <li> <strong>「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」の解決策 - デプロイ時に.html拡張子を削除する方法</strong> <ul> <li>デプロイスクリプトを作り込まなければいけない</li> </ul> </li> <li> <strong>「CloudFrontのDefault Root Objectとオリジンアクセスアイデンティティ（OAI）を使用してS3バケットにアクセス」の解決策 - Lambda@Edgeを使用する方法</strong> <ul> <li>管理するリソースが増える</li> <li>呼び出し回数の無料の上限を超えると、Lambdaの費用が発生する</li> </ul> </li> <li> <strong>「S3バケットの静的Webサイトホスティングを使用」の解決策 - バケットポリシーでRefererの値を参照する方法</strong> <ul> <li> <code class="language-plaintext highlighter-rouge">Referer</code>に設定した値が分かれば、直接S3バケットの静的Webサイトホスティングにアクセスできる</li> </ul> </li> </ul> <h2 id="終わりに">終わりに</h2> <p>今回挙げた解決策の中で、コスト増加リスク、およびメンテナンスコストが低いと個人的に考えているのは、<strong>「S3バケットの静的Webサイトホスティングを使用」の解決策 - バケットポリシーでRefererの値を参照する方法</strong>です。</p> <p>どの選択肢も、若干の懸念点はある状態にはなってしまったため、もしより良い方法をご存じの方はご教示ください。</p> <p>また、今回挙げた方法以外にも、<a href="https://aws.amazon.com/jp/amplify/" target="_blank" rel="noopener noreferrer">AWS Amplify</a>を使用する方法があります。 しかし、AmplifyはAWSリソースをコード管理（Terraform管理）ができないため、選択肢から外しました。</p> </article> <section class="share"> <a href="//twitter.com/share?text=Next.js%E3%81%A7Static+Generation%E3%81%97%E3%81%9F%E3%82%B5%E3%82%A4%E3%83%88%E3%82%92AWS%E3%81%A7%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2021-12-09-1%3Futm_source%3Dtwitter%26utm_medium%3Dsocial&amp;via=kenchan0130" onclick="window.open(this.href, 'twitter-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-twitter fa-lg"></i> </a> <a href="//www.facebook.com/sharer.php?t=Next.js%E3%81%A7Static+Generation%E3%81%97%E3%81%9F%E3%82%B5%E3%82%A4%E3%83%88%E3%82%92AWS%E3%81%A7%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B&amp;u=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2021-12-09-1%3Futm_source%3Dfacebook%26utm_medium%3Dsocial" onclick="window.open(this.href, 'facebook-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-facebook fa-lg"></i> </a> <a href="//b.hatena.ne.jp/entry/panel/?btitle=Next.js%E3%81%A7Static+Generation%E3%81%97%E3%81%9F%E3%82%B5%E3%82%A4%E3%83%88%E3%82%92AWS%E3%81%A7%E3%83%9B%E3%82%B9%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%99%E3%82%8B&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2021-12-09-1" onclick="window.open(this.href, 'hatena-share', 'width=550,height=600,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-hatena fa-lg"></i> </a> </section> <section class="post-donation"> <div class="post-donation-panel"> <p class="post-donation-description"> 参考になった・面白かったと感じていただけましたら、サポートいただけると励みになります。 </p> <a class="post-donation-button" href="https://www.buymeacoffee.com/kenchan0130" onclick="gtag('event', 'click-buymeacoffee', { event_category: 'www.buymeacoffee.com/kenchan0130', event_label: '/post/2021-12-09-1' });" target="_blank" rel="noopener noreferrer"> <p class="post-donation-button-body"> <img class="icon lazyload" alt="buymeacoffee" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg"> <span class="label">サポートする</span> </p> </a> </div> </section> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2444060431947599" data-ad-slot="7319689305" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> <section class="sub-contents related-posts"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">あわせて読みたい</div> <div class="sub-contents-main"> <li> <a href="/post/2020-12-10-1">Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築</a> <span class="post-date">- December 10, 2020</span> </li> <li> <a href="/post/2022-12-26-1">Azure Active DirectoryのアプリケーションをTerraformで管理する</a> <span class="post-date">- December 26, 2022</span> </li> <li> <a href="/post/2021-10-29-1">Designship 2021のライブ配信サイトの開発周りについて</a> <span class="post-date">- October 29, 2021</span> </li> <li> <a href="/post/2021-02-24-1">GitHub ActionsのRunner OSの情報を取得できるアクションを作った</a> <span class="post-date">- February 24, 2021</span> </li> <li> <a href="/post/2019-12-25-1">Google Apps Scriptのモダンな開発環境は理想だった</a> <span class="post-date">- December 25, 2019</span> </li> </div> </div> </section> <section class="sub-contents tags"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">Tags</div> <div class="sub-contents-main"> <a href="/tag/advent-calendar">Advent Calendar</a> <a href="/tag/aws">AWS</a> <a href="/tag/cloudfront">CloudFront</a> <a href="/tag/next-js">Next.js</a> <a href="/tag/s3">S3</a> <a href="/tag/terraform">Terraform</a> <a href="/tag/typescript">TypeScript</a> </div> </div> </section> </div> </div> </div> <footer class="site-footer"> <div class="wrapper"> <h3 class="footer-heading">kenchan0130 blog</h3> <div class="site-navigation"> <p><strong>Site Map</strong></p> <ul class="pages"> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/privacy">Privacy Policy</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> <li class="nav-link"> <a href="/profile/resume">Resume</a> </li> </ul> </div> <div class="site-contact"> <p><strong>Contact</strong></p> <ul class="social-media-list"> <li> <a href="https://twitter.com/kenchan0130" title="Follow me on Twitter" target="_blank" rel="noopener noreferrer"> <i class="fab fa-twitter"></i> <span class="username">kenchan0130</span> </a> </li> <li> <a href="https://github.com/kenchan0130" title="Fork me on GitHub" target="_blank" rel="noopener noreferrer"> <i class="fab fa-github"></i> <span class="username">kenchan0130</span> </a> </li> </ul> </div> <div class="site-signature"> <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p> <p class="text">ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。 </p> </div> </div> <div class="licence">このサイトのコンテンツは<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC-BY-4.0) License</a>の下でライセンスされています。</div> <div class="copyright">Copyright © 2017-2025 Tadayuki Onishi All Rights Reserved.</div> </footer> <script src="/assets/bundle/app.55445db2fff8ddfed8c5.js" async></script> <script async src="//www.googletagmanager.com/gtag/js?id=G-B7RX34Q5PL"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-B7RX34Q5PL");</script> <script async src="//www.googletagmanager.com/gtag/js?id=UA-79827366-2"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-79827366-2");</script> </body> </html>

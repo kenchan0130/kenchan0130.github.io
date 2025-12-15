@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kenchan0130 blog</title>
+    <description>ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。
+</description>
+    <link>https://kenchan0130.github.io/</link>
+    <atom:link href="https://kenchan0130.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 15 Dec 2025 09:44:08 +0900</pubDate>
+    <lastBuildDate>Mon, 15 Dec 2025 09:44:08 +0900</lastBuildDate>
+    <generator>Jekyll v4.4.1</generator>
+    
+      <item>
+        <title>クロスプラットフォームで動作するintunewinファイルの作成・解凍ツールを作った</title>
+        <description>
+            
+                Microsoft Intuneでアプリケーションを配布する際に必要な.intunewinファイルですが、これまでMicrosoft公式ツールはWindows専用で、中身を確認する手段もありませんでした。 今回、Go言語でクロスプラットフォーム対応のintunewinファイル作成・解凍ツールを開発しましたので、その経緯と実装の詳細を紹介します。
+
+            
+        </description>
+        <pubDate>Sun, 14 Dec 2025 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2025-12-14-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2025-12-14-1</guid>
+        
+        <category>Go</category>
+        
+        <category>Linux</category>
+        
+        <category>Microsoft Intune</category>
+        
+        <category>macOS</category>
+        
+        <category>Windows</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Microsoft Entra Global Secure Accessを試してみたので仕組みをまとめてみる</title>
+        <description>
+            
+                Microsoft Entra Global Secure Accessは、インターネットへのアクセスを保護するMicrosoft Entra Internet Accessと、社内リソースへの安全なアクセスを提供するMicrosoft Entra Private Accessを統合したSSEソリューションです。 この記事では、Microsoft Entra Internet AccessとMicrosoft Entra Private Accessがどのような仕組みで動作し、何ができるのかについて紹介します。
+
+            
+        </description>
+        <pubDate>Sun, 07 Dec 2025 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2025-12-07-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2025-12-07-1</guid>
+        
+        <category>Microsoft Entra</category>
+        
+        <category>Global Secure Access</category>
+        
+        <category>Microsoft Internet Access</category>
+        
+        <category>Microsoft Private Access</category>
+        
+        <category>SWG</category>
+        
+        <category>Microsoft Entra Suite</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>WWDC 2025で発表されたエンタープライズ関連の新機能</title>
+        <description>
+            
+                日本時間2025年6月10日〜6月14日にかけて、Apple社が主催するWWDC（世界開発者会議）2025が開催されました。 今回は、WWDC 2025で紹介されたいくつかのエンタープライズ関連な機能をまとめてみました。
+
+            
+        </description>
+        <pubDate>Thu, 19 Jun 2025 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2025-06-19-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2025-06-19-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Education</category>
+        
+        <category>Enterprise</category>
+        
+        <category>iOS</category>
+        
+        <category>iPadOS</category>
+        
+        <category>macOS</category>
+        
+        <category>tvOS</category>
+        
+        <category>visionOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Jamf</category>
+        
+        <category>WWDC</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Installomatorでアプリケーションのインストールの進捗を表示する</title>
+        <description>
+            
+                主に管理下にあるmacOSに最新バーションのアプリケーションをインストールするスクリプトであるInstallomatorは、実はswiftDialogを用いてアプリケーションのインストール状況を表示する機能をサポートしています。 今回はこの方法をJamf Proで実現する場合を例に紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 16 Dec 2024 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2024-12-16-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2024-12-16-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Installomator</category>
+        
+        <category>Jamf Pro</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Zsh</category>
+        
+        <category>swiftDialog</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Installomatorでサポートされていないアプリケーションをインストールする</title>
+        <description>
+            
+                これまで、管理下にあるmacOSに最新バーションのアプリケーションをインストールするスクリプトである、Installomatorに関していくつか記事を投稿してきました。 今回はいままで紹介してきた内容を応用して、Installomatorでサポートされていないアプリケーションをインストールする方法を紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 09 Dec 2024 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2024-12-09-2?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2024-12-09-2</guid>
+        
+        <category>Apple</category>
+        
+        <category>Installomator</category>
+        
+        <category>Jamf Pro</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Zsh</category>
+        
+        <category>swiftDialog</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Installomatorのパラメータの紹介</title>
+        <description>
+            
+                主に管理されているmacOSデバイスに、最新バーションのアプリケーションを配布する方法として、Installomatorというスクリプトがあります。 今回はInstallomatorをより深く理解するために、Installomatorで使用できるパラメータたちを紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 09 Dec 2024 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2024-12-09-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2024-12-09-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Installomator</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Zsh</category>
+        
+        <category>swiftDialog</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>WWDC 2024で発表されたエンタープライズ関連の新機能</title>
+        <description>
+            
+                日本時間2022年6月10日〜6月14日にかけて、Apple社が主催するWWDC（世界開発者会議）2024が開催されました。 今回は、WWDC 2024で紹介されたいくつかのエンタープライズ関連な機能をまとめてみました。
+
+            
+        </description>
+        <pubDate>Wed, 19 Jun 2024 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2024-06-19-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2024-06-19-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Education</category>
+        
+        <category>Enterprise</category>
+        
+        <category>iOS</category>
+        
+        <category>iPadOS</category>
+        
+        <category>macOS</category>
+        
+        <category>tvOS</category>
+        
+        <category>visionOS</category>
+        
+        <category>MDM</category>
+        
+        <category>Jamf</category>
+        
+        <category>Microsoft Endpoint Manager</category>
+        
+        <category>WWDC</category>
+        
+        <category>SSO</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Microsoft Intune管理下のWindowsデバイスの同期サイクルを変更する</title>
+        <description>
+            
+                Microsoft Intuneでエンロールされているデバイスは、デフォルトで8時間ごとにサーバーと同期を行います。 この同期時間をワークロードによっては変更したい場合があります。 今回は、Microsoft Intune管理下のWindowsデバイスの同期サイクルを変更する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Tue, 12 Dec 2023 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2023-12-12-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2023-12-12-1</guid>
+        
+        <category>Microsoft Intune</category>
+        
+        <category>PowerShell</category>
+        
+        <category>Windows</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>Azure Active DirectoryのアプリケーションをTerraformで管理する</title>
+        <description>
+            
+                Azure Active Directory（Azure AD）には「エンタープライズアプリケーション」と「アプリ登録」と呼ばれる管理項目があります。 特に、SAMLやOIDCを利用するアプリケーションを登録するなど、運用する際に使用されることが多いでしょう。 今回はこれらをInfrastructure as Code（IaC）のデファクトスタンダードとなりつつあるTerraformで管理する方法を紹介します。
+
+            
+        </description>
+        <pubDate>Mon, 26 Dec 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-12-26-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-12-26-1</guid>
+        
+        <category>Azure Active Directory</category>
+        
+        <category>Azure CLI</category>
+        
+        <category>IaC</category>
+        
+        <category>Microsoft Graph API</category>
+        
+        <category>Terraform</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+      <item>
+        <title>IdPを介してMacにログインできるXCredsを検証してみた</title>
+        <description>
+            
+                IdPを介してMacにログインできるツールとしては、Jamf社が開発しているJamf Connectが有名です。 しかし、Jamf Connectは有償であり、追加でJamf Connect用のJumpStartの費用がかかり、最小スロットが25ライセンスからであるため、導入のハードルが高い場合があります。 今回は、IdPを介してMacにログインできるXCredsを検証してみました。
+
+            
+        </description>
+        <pubDate>Thu, 15 Sep 2022 00:00:00 +0900</pubDate>
+        <link>https://kenchan0130.github.io/post/2022-09-15-1?utm_medium=feed</link>
+        <guid isPermaLink="true">https://kenchan0130.github.io/post/2022-09-15-1</guid>
+        
+        <category>Apple</category>
+        
+        <category>Azure Active Directory</category>
+        
+        <category>Jamf</category>
+        
+        <category>Jamf Connect</category>
+        
+        <category>IdP</category>
+        
+        <category>macOS</category>
+        
+        <category>MDM</category>
+        
+        <category>SSO</category>
+        
+        <category>XCreds</category>
+        
+        
+        <category>system-administration</category>
+        
+      </item>
+    
+  </channel>
+</rss>

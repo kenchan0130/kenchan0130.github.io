@@ -1,0 +1,724 @@
+<!DOCTYPE html> <html> <!-- This page is used centrarium Jekyll theme Copyright (c) 2015 Ben Centra Released under the MIT license https://github.com/bencentra/centrarium/blob/daa0d16ba9156ad43f9980e2075023a0d48859a5/LICENSE.md --> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"> <title>Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築</title> <meta name="description" content="AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。 今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。"> <meta name="author" content="Tadayuki Onishi"> <meta name="copyright" content="© Tadayuki Onishi 2025"> <link rel="shortcut icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon"> <link rel="apple-touch-icon" sizes="57x57" href="/assets/icons/apple-icon-57x57.png"> <link rel="apple-touch-icon" sizes="60x60" href="/assets/icons/apple-icon-60x60.png"> <link rel="apple-touch-icon" sizes="72x72" href="/assets/icons/apple-icon-72x72.png"> <link rel="apple-touch-icon" sizes="76x76" href="/assets/icons/apple-icon-76x76.png"> <link rel="apple-touch-icon" sizes="114x114" href="/assets/icons/apple-icon-114x114.png"> <link rel="apple-touch-icon" sizes="120x120" href="/assets/icons/apple-icon-120x120.png"> <link rel="apple-touch-icon" sizes="144x144" href="/assets/icons/apple-icon-144x144.png"> <link rel="apple-touch-icon" sizes="152x152" href="/assets/icons/apple-icon-152x152.png"> <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-icon-180x180.png"> <link rel="icon" type="image/png" sizes="192x192" href="/assets/icons/android-icon-192x192.png"> <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png"> <link rel="icon" type="image/png" sizes="96x96" href="/assets/icons/favicon-96x96.png"> <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png"> <link rel="manifest" href="/assets/icons/manifest.json"> <meta name="msapplication-TileColor" content="#ffffff"> <meta name="msapplication-TileImage" content="/assets/icons/ms-icon-144x144.png"> <meta name="theme-color" content="#ffffff"> <meta property="fb:app_id" content="376889769419405"> <meta property="og:description" content="AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。 今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。"> <meta property="og:url" content="https://kenchan0130.github.io/post/2020-12-10-1"> <meta property="og:site_name" content="kenchan0130 blog"> <meta property="og:title" content="Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築"> <meta property="og:type" content="website"> <meta property="og:author" content="Tadayuki Onishi"> <meta property="og:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta property="og:image:width" content="760"> <meta property="og:image:height" content="760"> <meta property="og:image:type" content="image/png"> <meta name="twitter:card" content="summary"> <meta name="twitter:title" content="Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築"> <meta name="twitter:site" content="@kenchan0130"> <meta name="twitter:description" content="AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。 今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。"> <meta name="twitter:image" content="https://kenchan0130.github.io/assets/logo.png"> <meta name="twitter:url" content="https://kenchan0130.github.io/post/2020-12-10-1"> <link rel="preload" as="style" href="/assets/bundle/app.55445db2fff8ddfed8c5.css" onload="this.onload=null;this.rel='stylesheet'"> <noscript> <link rel="stylesheet" href="/assets/bundle/app.55445db2fff8ddfed8c5.css"> </noscript> <link rel="stylesheet" href="/css/main.css"> <link rel="canonical" href="https://kenchan0130.github.io/post/2020-12-10-1"> <link rel="alternate" type="application/atom+xml" title="kenchan0130 blog" href="https://kenchan0130.github.io/feed.xml"> <meta name="google-site-verification" content="ZxlKORgZZwZ4TTmaQJFFEXLF3jmd6P_NVU9TEVW1bSg"> <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script> </head> <body> <header class="navigation" role="banner"> <div class="navigation-wrapper"> <a href="/" class="logo"> <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="kenchan0130 blog" data-src="/assets/logo.png" class="lazyload"> </a> <a href="javascript:void(0)" class="navigation-menu-button" id="js-mobile-menu"> <i class="fas fa-bars"></i> </a> <nav role="navigation"> <ul id="js-navigation-menu" class="navigation-menu"> <li class="nav-search-box"> <div class="search-input-container"> <input type="search" class="search-input" id="js-search-input" placeholder="Search" autocomplete="off" onfocus="gtag('event', 'search', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: '/post/2020-12-10-1' });"> <i class="fa fa-search search-input-icon"></i> <template id="suggestion-template"> <a href="" onclick="gtag('event', 'click', { event_category: 'www.algolia.com/apps/DEFR5IK9E2/explorer/browse/kenchan0130_blog', event_label: this.href });"> <p class="suggestion-title js-suggestion-title"></p> <p class="suggestion-content js-suggestion-content"></p> </a> </template> </div> </li> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> </ul> </nav> </div> </header> <div class="page-content"> <div class="post"> <div class="post-header-container "> <div class="scrim "> <header class="post-header"> <h1 class="title">Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築</h1> </header> </div> </div> <div class="wrapper"> <span class="page-divider"> <span class="one"></span> <span class="two"></span> </span> <section class="post-meta"> <div class="post-date">2020-12-10</div> <div class="post-categories"> <i class="fas fa-fw fa-book"></i> <a href="/category/development">development </a> </div> </section> <article class="post-content"> <p>AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。</p> <p>また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。</p> <p>今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。</p> <p>また、この記事は<a href="https://adventar.org/calendars/5553" target="_blank" rel="noopener noreferrer">FOLIO Advent calendar 2020</a>の7日目の記事でもあります。（3日遅れの投稿です…）</p> <ul id="markdown-toc"> <li><a href="#%E4%BB%8A%E5%9B%9E%E3%81%AE%E3%82%B4%E3%83%BC%E3%83%AB%E3%81%A8%E6%A7%8B%E6%88%90" id="markdown-toc-今回のゴールと構成">今回のゴールと構成</a></li> <li> <a href="#%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89" id="markdown-toc-環境構築">環境構築</a> <ul> <li><a href="#docker%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8%E3%81%AE%E6%BA%96%E5%82%99" id="markdown-toc-dockerイメージの準備">Dockerイメージの準備</a></li> <li><a href="#aws%E3%81%AE%E3%82%A4%E3%83%B3%E3%83%95%E3%83%A9%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89" id="markdown-toc-awsのインフラ環境構築">AWSのインフラ環境構築</a></li> </ul> </li> <li><a href="#ssm%E3%82%A8%E3%83%BC%E3%82%B8%E3%82%A7%E3%83%B3%E3%83%88%E3%81%AE%E8%B5%B7%E5%8B%95" id="markdown-toc-ssmエージェントの起動">SSMエージェントの起動</a></li> <li> <a href="#%E6%B3%A8%E6%84%8F%E7%82%B9" id="markdown-toc-注意点">注意点</a> <ul> <li><a href="#%E3%82%A2%E3%83%89%E3%83%90%E3%83%B3%E3%82%B9%E3%83%89%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%83%86%E3%82%A3%E3%82%A2%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6" id="markdown-toc-アドバンスドインスタンスティアについて">アドバンスドインスタンスティアについて</a></li> </ul> </li> <li><a href="#%E7%B5%82%E3%82%8F%E3%82%8A%E3%81%AB" id="markdown-toc-終わりに">終わりに</a></li> <li><a href="#%E5%8F%82%E8%80%83%E8%A8%98%E4%BA%8B" id="markdown-toc-参考記事">参考記事</a></li> </ul> <h2 id="今回のゴールと構成">今回のゴールと構成</h2> <p>今回は、プライベートネットワークにあるAmazon AuroraのMySQLデータベースに接続することをゴールとします。 作成する構成は以下の図のとおりです。</p> <p><a href="/assets/posts/post/2020-12-10-1/infra_diagram.png" data-fancybox="images" data-caption="今回構築するインフラ構成図"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="今回構築するインフラ構成図" data-src="/assets/posts/post/2020-12-10-1/infra_diagram.png" class="lazyload"></a></p> <p>SSMエージェントを動作させているサーバー、つまり、踏み台の役目をするサーバーをECS on Fargeteにすることで、サーバーレスな構成にしています。</p> <h2 id="環境構築">環境構築</h2> <p>上記の図の構成を実現するために大きく分けて、</p> <ul> <li>Dockerイメージの準備</li> <li>AWSの設定</li> </ul> <p>が必要となります。</p> <p>それぞれを構築方法を順に紹介します。</p> <h3 id="dockerイメージの準備">Dockerイメージの準備</h3> <p>まずは、踏み台の役目となるSSMエージェントを動作させるためのDockerコンテナのイメージを作成します。 用意するファイルは以下の3つです。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── Dockerfile
+├── run.sh
+└── seelog.xml.mustache
+</code></pre></div></div> <ul> <li> <code class="language-plaintext highlighter-rouge">seelog.xml.mustache</code> <ul> <li>SSMエージェントがログ出力のために使用している<a href="https://github.com/cihub/seelog" target="_blank" rel="noopener noreferrer">seelog</a>ロギングライブラリ</li> <li>コンテナ起動時に動的にファイルを生成したいため、テンプレートエンジンとして<a href="https://mustache.github.io/" target="_blank" rel="noopener noreferrer">mustache</a>として用意 <ul> <li>環境変数を埋め込めればよいのですが、機能が提供されていないため、このようなことをしている</li> <li>環境変数サポートは開発要望としてすでに挙げており、<a href="https://github.com/aws/amazon-ssm-agent/issues/313" target="_blank" rel="noopener noreferrer">AWSのバックログに積まれている</a> </li> </ul> </li> </ul> </li> </ul> <h4 id="dockerfile">Dockerfile</h4> <p>Dockerイメージを作成するためのファイルです。 必要なツールをインストールして、SSMエージェントを起動するための処理を実行するスクリプトを実行するようにしています。</p> <p>SSMエージェントはrootユーザーで実行しなければいけないため、non-rootユーザーに切り替えていません。</p> <div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> amazonlinux:2</span>
+
+<span class="k">ENV</span><span class="s"> AWS_REGION ${AWS_REGION}</span>
+<span class="k">ENV</span><span class="s"> INSTANCE_NAME ${INSTANCE_NAME}</span>
+<span class="k">ENV</span><span class="s"> INSTANCE_IAM_ROLE ${INSTANCE_IAM_ROLE}</span>
+<span class="k">ENV</span><span class="s"> CLOUDWATCH_RECEIVER_LOG_GROUP ${CLOUDWATCH_RECEIVER_LOG_GROUP}</span>
+
+<span class="k">RUN </span>yum localinstall <span class="nt">-y</span> https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm <span class="o">&amp;&amp;</span> <span class="se">\
+</span>    yum <span class="nb">install</span> <span class="nt">-y</span> <span class="se">\
+</span>    <span class="c"># mysql CLIのメジャーバーションを指定するためにyum-config-managerが必要なのでインストール</span>
+    yum-utils \
+    # run.sh内で使用しているのでインストール
+    jq \
+    # aws CLIをインストールする際に必要なのでインストール
+    unzip \
+    # SSMエージェントをインストール
+    amazon-ssm-agent \
+    # セッションログを取得する際に必要になるのでインストール
+    screen \
+    # aws CLIはhelpコマンドなどでlessを要求してくるのでインストール
+    less \
+    # Amazon Linux 2に入っているmysql CLIはバーションを指定できないのでアンインストール
+    &amp;&amp; yum remove mariadb-libs \
+    # mysql 5.7系のCLIをインストール
+    &amp;&amp; yum-config-manager --disable mysql80-community \
+    &amp;&amp; yum-config-manager --enable mysql57-community \
+    &amp;&amp; yum install -y mysql-community-client \
+    # yum関連で必要なくなったリソースを削り、少しでもDockerイメージを軽くする
+    &amp;&amp; rm -rf /var/cache/yum/* \
+    &amp;&amp; yum clean all
+
+<span class="c"># run.sh内で使用するmustache CLIをインストール</span>
+<span class="k">RUN </span>curl <span class="nt">-sfL</span> <span class="nt">-o</span> /usr/local/bin/mo https://git.io/get-mo <span class="o">&amp;&amp;</span> <span class="se">\
+</span>    <span class="nb">chmod</span> +x /usr/local/bin/mo
+
+<span class="k">WORKDIR</span><span class="s"> /tmp</span>
+
+<span class="c"># run.sh内で使用するaws CLIをインストール</span>
+<span class="k">RUN </span>curl <span class="nt">-sfL</span> <span class="nt">-o</span> <span class="s2">"awscliv2.zip"</span> https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip <span class="o">&amp;&amp;</span> <span class="se">\
+</span>    unzip awscliv2.zip <span class="o">&amp;&amp;</span> <span class="se">\
+</span>    ./aws/install
+
+<span class="k">WORKDIR</span><span class="s"> /</span>
+
+<span class="c"># /tmpディレクトリはいくつかのツールのインストールが終わったあと必要なくなったファイルが存在するため、少しでもDockerイメージを軽くする</span>
+<span class="k">RUN </span><span class="nb">rm</span> <span class="nt">-rf</span> /tmp/<span class="k">*</span>
+
+<span class="k">COPY</span><span class="s"> seelog.xml.mustache .</span>
+<span class="k">COPY</span><span class="s"> run.sh .</span>
+
+<span class="k">CMD</span><span class="s"> ["./run.sh"]</span>
+</code></pre></div></div> <h4 id="seelogxmlmustache">seelog.xml.mustache</h4> <p>SSMエージェントがログ出力のために使用している<a href="https://github.com/cihub/seelog" target="_blank" rel="noopener noreferrer">seelog</a>ロギングライブラリをコンテナ起動時に動的にファイルを生成したいため、テンプレートエンジンとして<a href="https://mustache.github.io/" target="_blank" rel="noopener noreferrer">mustache</a>のファイルとして用意しています。</p> <p>本来、環境変数を埋め込めればよいのですが、機能が提供されていないため、このようなことをしています。<sup id="fnref:amazon-ssm-agent-issues-313"><a href="#fn:amazon-ssm-agent-issues-313" class="footnote" rel="footnote" role="doc-noteref">1</a></sup></p> <p>また、seelogの形式や設定方法については、<a href="https://github.com/cihub/seelog-examples" target="_blank" rel="noopener noreferrer">Examples of Seelog usage</a>を参照してください。</p> <p>今回はコンテナ起動時に、CloudWatch Logsのロググループ名が入っている<code class="language-plaintext highlighter-rouge">CLOUDWATCH_RECEIVER_LOG_GROUP</code>環境変数が存在した場合、指定された値で<code class="language-plaintext highlighter-rouge">cloudwatch_receiver</code>を設定するようにしています。</p> <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;seelog</span> <span class="na">type=</span><span class="s">"adaptive"</span> <span class="na">mininterval=</span><span class="s">"2000000"</span> <span class="na">maxinterval=</span><span class="s">"100000000"</span> <span class="na">critmsgcount=</span><span class="s">"500"</span> <span class="na">minlevel=</span><span class="s">"info"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;exceptions&gt;</span>
+        <span class="nt">&lt;exception</span> <span class="na">filepattern=</span><span class="s">"test*"</span> <span class="na">minlevel=</span><span class="s">"error"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/exceptions&gt;</span>
+    <span class="nt">&lt;outputs</span> <span class="na">formatid=</span><span class="s">"fmtinfo"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;console</span> <span class="na">formatid=</span><span class="s">"fmtinfo"</span><span class="nt">/&gt;</span>
+        {{#CLOUDWATCH_RECEIVER_LOG_GROUP}}
+        <span class="nt">&lt;custom</span> <span class="na">name=</span><span class="s">"cloudwatch_receiver"</span> <span class="na">formatid=</span><span class="s">"fmtinfo"</span> <span class="na">data-log-group=</span><span class="s">"{{CLOUDWATCH_RECEIVER_LOG_GROUP}}"</span><span class="nt">/&gt;</span>
+        {{/CLOUDWATCH_RECEIVER_LOG_GROUP}}
+        <span class="nt">&lt;filter</span> <span class="na">levels=</span><span class="s">"error,critical"</span> <span class="na">formatid=</span><span class="s">"fmterror"</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;console</span> <span class="na">formatid=</span><span class="s">"fmterror"</span><span class="nt">/&gt;</span>
+            {{#CLOUDWATCH_RECEIVER_LOG_GROUP}}
+            <span class="nt">&lt;custom</span> <span class="na">name=</span><span class="s">"cloudwatch_receiver"</span> <span class="na">formatid=</span><span class="s">"fmterror"</span> <span class="na">data-log-group=</span><span class="s">"{{CLOUDWATCH_RECEIVER_LOG_GROUP}}"</span><span class="nt">/&gt;</span>
+            {{/CLOUDWATCH_RECEIVER_LOG_GROUP}}
+        <span class="nt">&lt;/filter&gt;</span>
+    <span class="nt">&lt;/outputs&gt;</span>
+    <span class="nt">&lt;formats&gt;</span>
+        <span class="nt">&lt;format</span> <span class="na">id=</span><span class="s">"fmterror"</span> <span class="na">format=</span><span class="s">"%Date %Time %LEVEL [%FuncShort @ %File.%Line] %Msg%n"</span><span class="nt">/&gt;</span>
+        <span class="nt">&lt;format</span> <span class="na">id=</span><span class="s">"fmtinfo"</span> <span class="na">format=</span><span class="s">"%Date %Time %LEVEL %Msg%n"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;/formats&gt;</span>
+<span class="nt">&lt;/seelog&gt;</span>
+</code></pre></div></div> <h4 id="runsh">run.sh</h4> <p>Dockerfile内で呼び出すShell Scriptをまとめたものです。</p> <p>ECSでコンテナを起動する場合、EC2と異なり、自動でSession Managerのインスタンスとして登録されません。 そのため、Session Managerのハイブリッドアクティベーションを使用してコンテナをマネージドインスタンスとしてSession Managerに登録するようにします。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c"># CLOUDWATCH_RECEIVER_LOG_GROUPを動的に設定したいため、テンプレートエンジンを使用してseelog.xmlを配置</span>
+mo seelog.xml.mustache <span class="o">&gt;</span> /etc/amazon/ssm/seelog.xml
+
+<span class="c"># aws ssm create-activationコマンドの実行時に動的に設定する</span>
+<span class="c"># 必須の値なのでバリデーションを行っている</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="nt">-z</span> <span class="s2">"</span><span class="k">${</span><span class="nv">INSTANCE_IAM_ROLE</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span><span class="p">;</span><span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"INSTANCE_IAM_ROLE was not specified. Please set this variable."</span>
+    <span class="nb">exit </span>1
+<span class="k">fi</span>
+
+<span class="c"># aws ssm create-activationコマンドの実行時に動的に設定する</span>
+<span class="c"># 必須の値なのでバリデーションを行っている</span>
+<span class="k">if</span> <span class="o">[[</span> <span class="nt">-z</span> <span class="s2">"</span><span class="k">${</span><span class="nv">INSTANCE_NAME</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span><span class="p">;</span><span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"INSTANCE_NAME was not specified. Please set this variable."</span>
+    <span class="nb">exit </span>1
+<span class="k">fi</span>
+
+<span class="c"># ハイブリッドアクティベーションのIDとコードを発行</span>
+<span class="nv">ACTIVATE_PARAMETERS</span><span class="o">=</span><span class="si">$(</span>aws ssm create-activation <span class="se">\</span>
+<span class="nt">--default-instance-name</span> <span class="s2">"</span><span class="k">${</span><span class="nv">INSTANCE_NAME</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<span class="nt">--iam-role</span> <span class="s2">"</span><span class="k">${</span><span class="nv">INSTANCE_IAM_ROLE</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<span class="nt">--region</span> <span class="s2">"</span><span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<span class="nt">--registration-limit</span> 1<span class="si">)</span>
+<span class="nv">SSM_AGENT_CODE</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="k">${</span><span class="nv">ACTIVATE_PARAMETERS</span><span class="k">}</span><span class="s2">"</span> | jq <span class="nt">-r</span> .ActivationCode<span class="si">)</span>
+<span class="nv">SSM_AGENT_ID</span><span class="o">=</span><span class="si">$(</span><span class="nb">echo</span> <span class="s2">"</span><span class="k">${</span><span class="nv">ACTIVATE_PARAMETERS</span><span class="k">}</span><span class="s2">"</span> | jq <span class="nt">-r</span> .ActivationId<span class="si">)</span>
+
+<span class="c"># このコンテナをSession Managerのマネージドインスタンスとして登録する</span>
+amazon-ssm-agent <span class="nt">-register</span> <span class="nt">-code</span> <span class="s2">"</span><span class="k">${</span><span class="nv">SSM_AGENT_CODE</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-id</span> <span class="s2">"</span><span class="k">${</span><span class="nv">SSM_AGENT_ID</span><span class="k">}</span><span class="s2">"</span> <span class="nt">-region</span> <span class="s2">"</span><span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="c"># ハイブリッドアクティベーションのコードはもう必要ないため、削除する</span>
+aws ssm delete-activation <span class="nt">--activation-id</span> <span class="s2">"</span><span class="k">${</span><span class="nv">SSM_AGENT_ID</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="nb">export </span><span class="nv">REGISTRATION_FILE</span><span class="o">=</span><span class="s2">"/var/lib/amazon/ssm/registration"</span>
+
+cleanup<span class="o">()</span> <span class="o">{</span>
+    <span class="c"># このコンテナのSession Managerのマネージドインスタンス登録を解除する</span>
+    aws ssm deregister-managed-instance <span class="nt">--instance-id</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> <span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRATION_FILE</span><span class="k">}</span><span class="s2">"</span> | jq <span class="nt">-r</span> .ManagedInstanceID<span class="si">)</span><span class="s2">"</span> <span class="o">||</span> <span class="nb">true
+    exit </span>0
+<span class="o">}</span>
+
+<span class="c"># コンテナが終了する際にcleanup関数が動作するようにTRAPを仕込む</span>
+<span class="nb">trap</span> <span class="s1">'cleanup'</span> EXIT
+
+<span class="c"># SSMエージェントを起動して、Session Managerとコネクションを構築する</span>
+amazon-ssm-agent start &amp;
+<span class="nv">SSM_AGENT_PID</span><span class="o">=</span><span class="s2">"</span><span class="nv">$!</span><span class="s2">"</span>
+
+<span class="c"># Session Managerとのコネクション登録が環境するのを待つ</span>
+<span class="k">while</span> :<span class="p">;</span><span class="k">do
+    </span><span class="nb">sleep </span>1
+    <span class="k">if</span> <span class="o">[</span> <span class="nt">-e</span> <span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRATION_FILE</span><span class="k">}</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span><span class="k">then
+        </span><span class="nb">break
+    </span><span class="k">fi
+done</span>
+<span class="c"># registrationファイルは600で作成されるため、全ユーザーに読み込み権限を与えている</span>
+<span class="c"># 入っているデータは、マネージドインスタンスのIDとリージョン名だけであるため、権限を付与しても問題ない</span>
+<span class="nb">chmod</span> +r <span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRATION_FILE</span><span class="k">}</span><span class="s2">"</span>
+
+<span class="c"># SSMエージェントが終了するまで、つまり永久的にSSMエージェントを起動する</span>
+<span class="nb">wait</span> <span class="s2">"</span><span class="k">${</span><span class="nv">SSM_AGENT_PID</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div> <h5 id="runshについていくつかのポイント">run.shについていくつかのポイント</h5> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aws ssm create-activation <span class="se">\</span>
+<span class="nt">--default-instance-name</span> <span class="s2">"</span><span class="k">${</span><span class="nv">INSTANCE_NAME</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<span class="nt">--iam-role</span> <span class="s2">"</span><span class="k">${</span><span class="nv">INSTANCE_IAM_ROLE</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<span class="nt">--region</span> <span class="s2">"</span><span class="k">${</span><span class="nv">AWS_REGION</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+<span class="nt">--registration-limit</span> 1
+</code></pre></div></div> <p><code class="language-plaintext highlighter-rouge">default-instance-name</code>オプションはマネージドインスタンスの名前になるので、引数で渡して判別しやすいようにしています。</p> <p><a href="/assets/posts/post/2020-12-10-1/managed_instance_list_view_at_aws_web_console.png" data-fancybox="images" data-caption="AWSのWebコンソール上のマネージドインスタンス一覧"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="AWSのWebコンソール上のマネージドインスタンス一覧" data-src="/assets/posts/post/2020-12-10-1/managed_instance_list_view_at_aws_web_console.png" class="lazyload"></a></p> <p><code class="language-plaintext highlighter-rouge">iam-role</code>オプションは、立ち上げたコンテナが指定したロールにAssumeRoleされて実行されます。 このロールにAsuumeRoleされるのは、<code class="language-plaintext highlighter-rouge">amazon-ssm-agent start</code>を行ってインスタンスが登録されたあとである点に注意が必要です。 このスクリプトでは、</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aws ssm delete-activation <span class="nt">--activation-id</span> <span class="s2">"</span><span class="k">${</span><span class="nv">SSM_AGENT_ID</span><span class="k">}</span><span class="s2">"</span>
+</code></pre></div></div> <p>がECSのタスクIAMロールで指定したロール、</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cleanup<span class="o">()</span> <span class="o">{</span>
+    <span class="c"># このコンテナのSession Managerのマネージドインスタンス登録を解除する</span>
+    aws ssm deregister-managed-instance <span class="nt">--instance-id</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">cat</span> <span class="s2">"</span><span class="k">${</span><span class="nv">REGISTRATION_FILE</span><span class="k">}</span><span class="s2">"</span> | jq <span class="nt">-r</span> .ManagedInstanceID<span class="si">)</span><span class="s2">"</span> <span class="o">||</span> <span class="nb">true
+    exit </span>0
+<span class="o">}</span>
+</code></pre></div></div> <p>TRAPで実行されるこの関数はオプションで指定したロールで実行されます。</p> <p>また、後述するセッションログの送信には、このロールに適切な権限を付与する必要があります。</p> <h3 id="awsのインフラ環境構築">AWSのインフラ環境構築</h3> <ol> <li>Session Managerの構築</li> <li>VPCの構築</li> <li>IAMロールの構築</li> <li>ECSのクラスタ構築</li> </ol> <p>の順でAWSのインフラ環境を構築していきます。</p> <p>インフラ環境の構築に関しては、Terraformのコードで表現していきます。 Terraformのバーションは以下の通りです。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>terraform version
+Terraform v0.13.5
+</code></pre></div></div> <p>それでは先立って、使い回す値を変数として設定しておきます。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### var.tf</span>
+<span class="k">data</span> <span class="s2">"aws_region"</span> <span class="s2">"current"</span> <span class="p">{}</span>
+<span class="k">data</span> <span class="s2">"aws_caller_identity"</span> <span class="s2">"self"</span> <span class="p">{}</span>
+
+<span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">log_group_name</span> <span class="o">=</span> <span class="s2">"/ssm/session-manager"</span>
+  <span class="nx">s3_prefix</span>      <span class="o">=</span> <span class="s2">"ssm/session-log"</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="1-session-managerの構築">1. Session Managerの構築</h4> <p>Session Managerでは、セッションログと呼ばれる実行したコマンドの内容を記録する機能があります。 今回は、セッションログを暗号化できるようにSession Managerを構築します。</p> <p>前述したDockerイメージを登録方法、およびイメージを登録するためのECRのリソース作成に関しては割愛します。</p> <h5 id="セッションログをcloudwatch-logsに流すためのロググループの設定">セッションログをCloudWatch Logsに流すためのロググループの設定</h5> <p>ログをもとに何かしらアクションを起こしたい場合はCloudWatch Logsに出力するのが良いです。</p> <p>CloudWatch Logsのロググループはサーバーサイド暗号化が可能です。 これにはKMSのKeyが必要であるため、合わせてKeyを用意します。</p> <p>また、Keyの暗号、復号などの操作の権限を絞るために、対応したロググループおよびrootアカウントのみに制限します。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### log.tf</span>
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"log_group_policy"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span>    <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span>   <span class="o">=</span> <span class="p">[</span><span class="s2">"kms:*"</span><span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"AWS"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"arn:aws:iam::</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_caller_identity</span><span class="p">.</span><span class="nx">self</span><span class="p">.</span><span class="nx">account_id</span><span class="p">}</span><span class="s2">:root"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"kms:Encrypt*"</span><span class="p">,</span>
+      <span class="s2">"kms:Decrypt*"</span><span class="p">,</span>
+      <span class="s2">"kms:ReEncrypt*"</span><span class="p">,</span>
+      <span class="s2">"kms:GenerateDataKey*"</span><span class="p">,</span>
+      <span class="s2">"kms:Describe*"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"Service"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"logs.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.amazonaws.com"</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="nx">condition</span> <span class="p">{</span>
+      <span class="nx">test</span>     <span class="o">=</span> <span class="s2">"ArnEquals"</span>
+      <span class="nx">values</span>   <span class="o">=</span> <span class="p">[</span><span class="s2">"arn:aws:logs:</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_caller_identity</span><span class="p">.</span><span class="nx">self</span><span class="p">.</span><span class="nx">account_id</span><span class="p">}</span><span class="s2">:log-group:</span><span class="p">${</span><span class="kd">local</span><span class="p">.</span><span class="nx">log_group_name</span><span class="p">}</span><span class="s2">"</span><span class="p">]</span>
+      <span class="k">variable</span> <span class="o">=</span> <span class="s2">"kms:EncryptionContext:aws:logs:arn"</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_kms_key"</span> <span class="s2">"log_group_encryption_key"</span> <span class="p">{</span>
+  <span class="nx">description</span>              <span class="o">=</span> <span class="s2">"</span><span class="p">${</span><span class="kd">local</span><span class="p">.</span><span class="nx">log_group_name</span><span class="p">}</span><span class="s2"> log group encription key"</span>
+  <span class="nx">customer_master_key_spec</span> <span class="o">=</span> <span class="s2">"SYMMETRIC_DEFAULT"</span>
+  <span class="nx">key_usage</span>                <span class="o">=</span> <span class="s2">"ENCRYPT_DECRYPT"</span>
+  <span class="nx">enable_key_rotation</span>      <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">deletion_window_in_days</span>  <span class="o">=</span> <span class="mi">7</span>
+  <span class="nx">policy</span>                   <span class="o">=</span> <span class="k">data</span><span class="err">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">log_group_policy</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_kms_alias"</span> <span class="s2">"log_group_encryption"</span> <span class="p">{</span>
+  <span class="nx">name</span>          <span class="o">=</span> <span class="s2">"alias/kms-ssm-log-group-encryption-key"</span>
+  <span class="nx">target_key_id</span> <span class="o">=</span> <span class="nx">aws_kms_key</span><span class="p">.</span><span class="nx">log_group_encryption_key</span><span class="p">.</span><span class="nx">key_id</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_cloudwatch_log_group"</span> <span class="s2">"ssm"</span> <span class="p">{</span>
+  <span class="nx">name</span>       <span class="o">=</span> <span class="kd">local</span><span class="p">.</span><span class="nx">log_group_name</span>
+  <span class="nx">kms_key_id</span> <span class="o">=</span> <span class="nx">aws_kms_key</span><span class="p">.</span><span class="nx">ssm_encryption_key</span><span class="p">.</span><span class="nx">arn</span>
+<span class="p">}</span>
+</code></pre></div></div> <h5 id="セッションログを保存するためのs3の設定">セッションログを保存するためのS3の設定</h5> <p>ログをアーカイブしたい場合はS3に出力すると良いです。 S3ではKMSのKeyなしでサーバーサイド暗号化が可能です。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### s3.tf</span>
+<span class="k">resource</span> <span class="s2">"aws_s3_bucket"</span> <span class="s2">"ssm"</span> <span class="p">{</span>
+  <span class="nx">bucket</span> <span class="o">=</span> <span class="s2">"session-manager"</span>
+  <span class="nx">acl</span>    <span class="o">=</span> <span class="s2">"private"</span>
+
+  <span class="nx">versioning</span> <span class="p">{</span>
+    <span class="nx">enabled</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="p">}</span>
+
+  <span class="nx">server_side_encryption_configuration</span> <span class="p">{</span>
+    <span class="nx">rule</span> <span class="p">{</span>
+      <span class="nx">apply_server_side_encryption_by_default</span> <span class="p">{</span>
+        <span class="nx">sse_algorithm</span> <span class="o">=</span> <span class="s2">"AES256"</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_s3_bucket_public_access_block"</span> <span class="s2">"ssm"</span> <span class="p">{</span>
+  <span class="nx">bucket</span>                  <span class="o">=</span> <span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">ssm</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">block_public_acls</span>       <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">block_public_policy</span>     <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">ignore_public_acls</span>      <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">restrict_public_buckets</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div></div> <h5 id="session-managerのセッションログの設定">Session Managerのセッションログの設定</h5> <p>Session ManagerのセッションログをKMSのKeyで暗号化してS3とCloudWatch Logsに転送する設定をします。</p> <p>ポイントなのは、<code class="language-plaintext highlighter-rouge">aws_ssm_document</code>の<code class="language-plaintext highlighter-rouge">name</code>です。 この属性に設定している<code class="language-plaintext highlighter-rouge">SSM-SessionManagerRunShell</code>というドキュメント名は、AWS Webコンソール上で操作する際に使用される特別なものです。</p> <p>また、AWS CLIを用いてセッションを作成する際には、オプションでドキュメント名を指定できますが、デフォルト値としてこのドキュメントが使用されます。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### ssm.tf</span>
+<span class="k">resource</span> <span class="s2">"aws_kms_key"</span> <span class="s2">"session_log"</span> <span class="p">{</span>
+  <span class="nx">description</span>              <span class="o">=</span> <span class="s2">"Session log encription key"</span>
+  <span class="nx">customer_master_key_spec</span> <span class="o">=</span> <span class="s2">"SYMMETRIC_DEFAULT"</span>
+  <span class="nx">key_usage</span>                <span class="o">=</span> <span class="s2">"ENCRYPT_DECRYPT"</span>
+  <span class="nx">enable_key_rotation</span>      <span class="o">=</span> <span class="kc">true</span>
+  <span class="nx">deletion_window_in_days</span>  <span class="o">=</span> <span class="mi">7</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_kms_alias"</span> <span class="s2">"session_log_encryption"</span> <span class="p">{</span>
+  <span class="nx">name</span>          <span class="o">=</span> <span class="s2">"alias/kms-ssm-session-log-encryption-key"</span>
+  <span class="nx">target_key_id</span> <span class="o">=</span> <span class="nx">aws_kms_key</span><span class="p">.</span><span class="nx">session_log</span><span class="p">.</span><span class="nx">key_id</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_ssm_document"</span> <span class="s2">"session_log"</span> <span class="p">{</span>
+  <span class="nx">name</span> <span class="o">=</span> <span class="s2">"SSM-SessionManagerRunShell"</span>
+
+  <span class="nx">document_type</span>   <span class="o">=</span> <span class="s2">"Session"</span>
+  <span class="nx">document_format</span> <span class="o">=</span> <span class="s2">"JSON"</span>
+
+  <span class="nx">content</span> <span class="o">=</span> <span class="nx">jsonencode</span><span class="p">({</span>
+    <span class="nx">schemaVersion</span> <span class="o">=</span> <span class="s2">"1.0"</span>
+    <span class="nx">description</span>   <span class="o">=</span> <span class="s2">"Document to hold regional settings for Session Manager"</span>
+    <span class="nx">sessionType</span>   <span class="o">=</span> <span class="s2">"Standard_Stream"</span>
+    <span class="nx">inputs</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">s3BucketName</span>                <span class="o">=</span> <span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">ssm</span><span class="p">.</span><span class="nx">bucket</span>
+      <span class="nx">s3KeyPrefix</span>                 <span class="o">=</span> <span class="kd">local</span><span class="p">.</span><span class="nx">s3_prefix</span>
+      <span class="nx">s3EncryptionEnabled</span>         <span class="o">=</span> <span class="kc">true</span>
+      <span class="nx">cloudWatchLogGroupName</span>      <span class="o">=</span> <span class="nx">aws_cloudwatch_log_group</span><span class="p">.</span><span class="nx">ssm</span><span class="p">.</span><span class="nx">name</span>
+      <span class="nx">cloudWatchEncryptionEnabled</span> <span class="o">=</span> <span class="kc">true</span>
+      <span class="nx">kmsKeyId</span>                    <span class="o">=</span> <span class="nx">aws_kms_key</span><span class="p">.</span><span class="nx">session_log</span><span class="p">.</span><span class="nx">arn</span>
+    <span class="p">}</span>
+  <span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="2-vpcの構築">2. VPCの構築</h4> <p>今回のテーマである、パブリックには一切口を開けずにネットワークを構築してみます。</p> <h5 id="vpcの設定">VPCの設定</h5> <p>Session ManagerとAmazon Aurora MySQL用に、それぞれプライベートサブネットを用意します。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### vpc.tf</span>
+<span class="k">resource</span> <span class="s2">"aws_vpc"</span> <span class="s2">"vpc"</span> <span class="p">{</span>
+  <span class="nx">cidr_block</span>           <span class="o">=</span> <span class="s2">"10.10.0.0/16"</span>
+  <span class="nx">enable_dns_hostnames</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_subnet"</span> <span class="s2">"session_manager"</span> <span class="p">{</span>
+  <span class="nx">for_each</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">subnet_a</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">az</span> <span class="o">=</span> <span class="s2">"ap-northeast-1a"</span><span class="p">,</span> <span class="nx">tail_octet</span> <span class="o">=</span> <span class="s2">"11"</span> <span class="p">},</span>
+    <span class="nx">subnet_c</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">az</span> <span class="o">=</span> <span class="s2">"ap-northeast-1c"</span><span class="p">,</span> <span class="nx">tail_octet</span> <span class="o">=</span> <span class="s2">"12"</span> <span class="p">},</span>
+  <span class="p">}</span>
+  <span class="nx">vpc_id</span>            <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">availability_zone</span> <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">az</span>
+  <span class="nx">cidr_block</span>        <span class="o">=</span> <span class="s2">"10.10.</span><span class="p">${</span><span class="nx">each</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">tail_octet</span><span class="p">}</span><span class="s2">.0/24"</span>
+  <span class="nx">tags</span>              <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"Name"</span> <span class="p">=</span> <span class="s2">"session-manager-</span><span class="p">${</span><span class="nx">each</span><span class="p">.</span><span class="nx">key</span><span class="p">}</span><span class="s2">"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_route_table"</span> <span class="s2">"session_manager"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span> <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_route_table_association"</span> <span class="s2">"session_manager"</span> <span class="p">{</span>
+  <span class="nx">for_each</span>       <span class="o">=</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">session_manager</span>
+  <span class="nx">subnet_id</span>      <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">route_table_id</span> <span class="o">=</span> <span class="nx">aws_route_table</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span>
+<span class="p">}</span>
+</code></pre></div></div> <h5 id="セキュリティの設定">セキュリティの設定</h5> <p>プライベートなネットワーク構成にするのはよいですが、ECS on FargateでSSMエージェントを動作させる場合、以下のことが行われます。</p> <ul> <li>ECRからDockerイメージをPull <ul> <li>Dockerイメージのレイヤ情報はS3に保存されているため、S3へのアクセスが必要</li> </ul> </li> <li>SSMエージェントがSession Managerに通信</li> <li>セッションログをS3とCloudWatch Logsに送信</li> <li>セッションログを暗号化する際にKMSのKey情報を取得</li> </ul> <p>これらをプライベートなネットワークで実現するにはPrivate Linkを使用する必要があります。 Private Linkを使用することで、パブリックなインターネットを介さずにAWSが提供するサービスに接続できます。</p> <p>これが今回の肝です。</p> <p>また、Private Linkはセキュリティグループに紐付くので、関係がわかるように合わせてセキュリティグループグループの作成も行ってみます。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### security.tf</span>
+<span class="k">resource</span> <span class="s2">"aws_vpc_endpoint"</span> <span class="s2">"session_manager_s3"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span>            <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_name</span>      <span class="o">=</span> <span class="s2">"com.amazonaws.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.s3"</span>
+  <span class="nx">vpc_endpoint_type</span> <span class="o">=</span> <span class="s2">"Gateway"</span>
+  <span class="nx">route_table_ids</span>   <span class="o">=</span> <span class="p">[</span><span class="nx">aws_route_table</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_security_group"</span> <span class="s2">"session_manager"</span> <span class="p">{</span>
+  <span class="nx">name</span>        <span class="o">=</span> <span class="s2">"session-manager-security-group"</span>
+  <span class="nx">description</span> <span class="o">=</span> <span class="s2">"Allow ingress/egress for session manager"</span>
+  <span class="nx">vpc_id</span>      <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+
+  <span class="c1"># AWSの各種サービスに通信する際にHTTPSでアクセスが行われるため、アクセスを許可</span>
+  <span class="nx">ingress</span> <span class="p">{</span>
+    <span class="nx">from_port</span>   <span class="o">=</span> <span class="mi">443</span>
+    <span class="nx">to_port</span>     <span class="o">=</span> <span class="mi">443</span>
+    <span class="nx">protocol</span>    <span class="o">=</span> <span class="s2">"tcp"</span>
+    <span class="nx">cidr_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">cidr_block</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># S3のエンドポイントはGatewayなので、S3エンドポイントのCIDRへのアクセスを許可する</span>
+  <span class="nx">egress</span> <span class="p">{</span>
+    <span class="nx">from_port</span>   <span class="o">=</span> <span class="mi">443</span>
+    <span class="nx">to_port</span>     <span class="o">=</span> <span class="mi">443</span>
+    <span class="nx">protocol</span>    <span class="o">=</span> <span class="s2">"tcp"</span>
+    <span class="nx">cidr_blocks</span> <span class="o">=</span> <span class="nx">concat</span><span class="p">([</span><span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">cidr_block</span><span class="p">],</span> <span class="nx">aws_vpc_endpoint</span><span class="p">.</span><span class="nx">session_manager_s3</span><span class="p">.</span><span class="nx">cidr_blocks</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="c1"># SSMエージェントはインスタンスメタデータを取得するため、インスタンスメタデータが配信されているIPへのアクセスを許可する</span>
+  <span class="nx">egress</span> <span class="p">{</span>
+    <span class="nx">from_port</span>   <span class="o">=</span> <span class="mi">80</span>
+    <span class="nx">to_port</span>     <span class="o">=</span> <span class="mi">80</span>
+    <span class="nx">protocol</span>    <span class="o">=</span> <span class="s2">"tcp"</span>
+    <span class="nx">cidr_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"169.254.169.254/32"</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># MySQLのアクセスを許可</span>
+  <span class="nx">egress</span> <span class="p">{</span>
+    <span class="nx">from_port</span>   <span class="o">=</span> <span class="mi">3306</span>
+    <span class="nx">to_port</span>     <span class="o">=</span> <span class="mi">3306</span>
+    <span class="nx">protocol</span>    <span class="o">=</span> <span class="s2">"tcp"</span>
+    <span class="nx">cidr_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="nx">for</span> <span class="nx">middleware</span> <span class="nx">in</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">middleware</span> <span class="o">:</span> <span class="nx">middleware</span><span class="p">.</span><span class="nx">cidr_block</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_security_group"</span> <span class="s2">"mysql_from_session_manager"</span> <span class="p">{</span>
+  <span class="nx">name</span>        <span class="o">=</span> <span class="s2">"mysql-from-session_manager-security-group"</span>
+  <span class="nx">description</span> <span class="o">=</span> <span class="s2">"Allow access to mysql from session manager"</span>
+  <span class="nx">vpc_id</span>      <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+
+  <span class="c1"># Session Managerのマネージドインスタンスからのアクセスを許可</span>
+  <span class="nx">ingress</span> <span class="p">{</span>
+    <span class="nx">from_port</span>       <span class="o">=</span> <span class="mi">3306</span>
+    <span class="nx">to_port</span>         <span class="o">=</span> <span class="mi">3306</span>
+    <span class="nx">protocol</span>        <span class="o">=</span> <span class="s2">"tcp"</span>
+    <span class="nx">security_groups</span> <span class="o">=</span> <span class="p">[</span><span class="nx">aws_security_group</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="nx">egress</span> <span class="p">{</span>
+    <span class="nx">from_port</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nx">to_port</span>   <span class="o">=</span> <span class="mi">0</span>
+    <span class="nx">protocol</span>  <span class="o">=</span> <span class="s2">"-1"</span>
+    <span class="nx">cidr_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"0.0.0.0/0"</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_vpc_endpoint"</span> <span class="s2">"session_manager_logs"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span>              <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_name</span>        <span class="o">=</span> <span class="s2">"com.amazonaws.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.logs"</span>
+  <span class="nx">vpc_endpoint_type</span>   <span class="o">=</span> <span class="s2">"Interface"</span>
+  <span class="nx">subnet_ids</span>          <span class="o">=</span> <span class="p">[</span><span class="nx">for</span> <span class="nx">subnet</span> <span class="nx">in</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">session_manager</span> <span class="o">:</span> <span class="nx">subnet</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">security_group_ids</span>  <span class="o">=</span> <span class="p">[</span><span class="nx">aws_security_group</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">private_dns_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_vpc_endpoint"</span> <span class="s2">"session_manager_ecr"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span>              <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_name</span>        <span class="o">=</span> <span class="s2">"com.amazonaws.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.ecr.dkr"</span>
+  <span class="nx">vpc_endpoint_type</span>   <span class="o">=</span> <span class="s2">"Interface"</span>
+  <span class="nx">subnet_ids</span>          <span class="o">=</span> <span class="p">[</span><span class="nx">for</span> <span class="nx">subnet</span> <span class="nx">in</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">session_manager</span> <span class="o">:</span> <span class="nx">subnet</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">security_group_ids</span>  <span class="o">=</span> <span class="p">[</span><span class="nx">aws_security_group</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">private_dns_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_vpc_endpoint"</span> <span class="s2">"session_manager_ssm"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span>              <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_name</span>        <span class="o">=</span> <span class="s2">"com.amazonaws.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.ssm"</span>
+  <span class="nx">vpc_endpoint_type</span>   <span class="o">=</span> <span class="s2">"Interface"</span>
+  <span class="nx">subnet_ids</span>          <span class="o">=</span> <span class="p">[</span><span class="nx">for</span> <span class="nx">subnet</span> <span class="nx">in</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">session_manager</span> <span class="o">:</span> <span class="nx">subnet</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">security_group_ids</span>  <span class="o">=</span> <span class="p">[</span><span class="nx">aws_security_group</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">private_dns_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_vpc_endpoint"</span> <span class="s2">"session_manager_ssmmessages"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span>              <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_name</span>        <span class="o">=</span> <span class="s2">"com.amazonaws.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.ssmmessages"</span>
+  <span class="nx">vpc_endpoint_type</span>   <span class="o">=</span> <span class="s2">"Interface"</span>
+  <span class="nx">subnet_ids</span>          <span class="o">=</span> <span class="p">[</span><span class="nx">for</span> <span class="nx">subnet</span> <span class="nx">in</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">session_manager</span> <span class="o">:</span> <span class="nx">subnet</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">security_group_ids</span>  <span class="o">=</span> <span class="p">[</span><span class="nx">aws_security_group</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">private_dns_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_vpc_endpoint"</span> <span class="s2">"session_manager_kms"</span> <span class="p">{</span>
+  <span class="nx">vpc_id</span>              <span class="o">=</span> <span class="nx">aws_vpc</span><span class="p">.</span><span class="nx">vpc</span><span class="p">.</span><span class="nx">id</span>
+  <span class="nx">service_name</span>        <span class="o">=</span> <span class="s2">"com.amazonaws.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.kms"</span>
+  <span class="nx">vpc_endpoint_type</span>   <span class="o">=</span> <span class="s2">"Interface"</span>
+  <span class="nx">subnet_ids</span>          <span class="o">=</span> <span class="p">[</span><span class="nx">for</span> <span class="nx">subnet</span> <span class="nx">in</span> <span class="nx">aws_subnet</span><span class="p">.</span><span class="nx">session_manager</span> <span class="o">:</span> <span class="nx">subnet</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">security_group_ids</span>  <span class="o">=</span> <span class="p">[</span><span class="nx">aws_security_group</span><span class="p">.</span><span class="nx">session_manager</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span>
+  <span class="nx">private_dns_enabled</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="3-iamロールの構築">3. IAMロールの構築</h4> <p>今回登場するIAMロールは、以下の4つです。</p> <ol> <li>ECSのタスク実行ロールのためのロール</li> <li>ECSのタスクロールのためのロール</li> <li>SSMエージェントのためのロール</li> <li>オペレーターがSession Managerを使用するためのロール</li> </ol> <h5 id="ecsのタスク実行ロールの設定">ECSのタスク実行ロールの設定</h5> <p>タスクロール実行ロールは、ECSのコンテナエージェントが使用するロールです。 ECRからDockerイメージのPullやコンテナログCloudWatchに送信する際に必要です。</p> <p>AWSが管理しているポリシーで実現する場合、作成するロールにアタッチすべき最低限必要なポリシーは以下のとおりです。</p> <table> <thead> <tr> <th>ポリシー</th> <th>用途</th> </tr> </thead> <tbody> <tr> <td><code class="language-plaintext highlighter-rouge">arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy</code></td> <td>ECSのコンテナのログを送信</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly</code></td> <td>ECRからイメージをpull</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole</code></td> <td>Elastic Load BalancingロードバランサがECSコンテナインスタンスを登録および登録解除</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy</code></td> <td>ECSのタスク実行ロールに一般的に必要なアクセス</td> </tr> </tbody> </table> <p>また、作成するロールには<code class="language-plaintext highlighter-rouge">ecs-tasks.amazonaws.com</code>を信頼関係に追加する必要があります。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### ecs_task_execution_role.tf</span>
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"ecs_task_execution_assume_role"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"sts:AssumeRole"</span><span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"Service"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ecs-tasks.amazonaws.com"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role"</span> <span class="s2">"ecs_task_execution"</span> <span class="p">{</span>
+  <span class="nx">name</span>               <span class="o">=</span> <span class="s2">"ecs-task-execution"</span>
+  <span class="nx">assume_role_policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">ecs_task_execution_assume_role</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role_policy_attachment"</span> <span class="s2">"ecs_task_execution"</span> <span class="p">{</span>
+  <span class="nx">for_each</span>   <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">dummy_key_1</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"</span>
+    <span class="nx">dummy_key_2</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"</span>
+    <span class="nx">dummy_key_3</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"</span>
+    <span class="nx">dummy_key_4</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"</span>
+  <span class="p">}</span>
+  <span class="nx">role</span>       <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">ecs_task_execution</span><span class="p">.</span><span class="nx">name</span>
+  <span class="nx">policy_arn</span> <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span>
+<span class="p">}</span>
+</code></pre></div></div> <h5 id="ecsのタスクロールの設定">ECSのタスクロールの設定</h5> <p>タスクロールはコンテナが使用するロールです。 コンテナ内のアプリケーション（処理）がAWSサービスに接続する際に必要です。</p> <p>前述したDockerイメージでは、</p> <ul> <li>ECSのタスクからSystems ManagerにIAMロールを渡す</li> <li>System Managerのアクティベーションの発行</li> <li>System Managerのアクティベーションの削除</li> </ul> <p>が行われているため、それらに対応する権限を付与します。</p> <p>また、SSMエージェントを起動するために必要なAWSが管理しているポリシーである<code class="language-plaintext highlighter-rouge">AmazonSSMManagedInstanceCore</code>も合わせて付与します。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### ecs_task_role.tf</span>
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"ecs_task_assume_role"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"sts:AssumeRole"</span><span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"Service"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ecs-tasks.amazonaws.com"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role"</span> <span class="s2">"ecs_task_role"</span> <span class="p">{</span>
+  <span class="nx">name</span>               <span class="o">=</span> <span class="s2">"ecs-task-role"</span>
+  <span class="nx">assume_role_policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">ecs_task_assume_role</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"ecs_task_role"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">actions</span>   <span class="o">=</span> <span class="p">[</span><span class="s2">"iam:PassRole"</span><span class="p">]</span>
+    <span class="c1"># SSMエージェントが動作するロールに対してのみ制限をかけてもよい</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+    <span class="nx">condition</span> <span class="p">{</span>
+      <span class="nx">test</span>     <span class="o">=</span> <span class="s2">"StringEquals"</span>
+      <span class="k">variable</span> <span class="o">=</span> <span class="s2">"iam:PassedToService"</span>
+      <span class="nx">values</span>   <span class="o">=</span> <span class="p">[</span><span class="s2">"ssm.amazonaws.com"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"ssm:CreateActivation"</span><span class="p">,</span>
+      <span class="s2">"ssm:DeleteActivation"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_policy"</span> <span class="s2">"ecs_task_role"</span> <span class="p">{</span>
+  <span class="nx">name</span>   <span class="o">=</span> <span class="s2">"ecs-task-role"</span>
+  <span class="nx">policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">ecs_task_role</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role_policy_attachment"</span> <span class="s2">"ecs_task_role"</span> <span class="p">{</span>
+  <span class="nx">policy_arn</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"</span>
+  <span class="nx">role</span>       <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">ecs_task_role</span><span class="p">.</span><span class="nx">name</span>
+<span class="p">}</span>
+</code></pre></div></div> <h5 id="ssmエージェント用のロールの設定">SSMエージェント用のロールの設定</h5> <p>SSMエージェントがSession Managerに登録するために必要な権限を付与します。</p> <p>また、Dockerイメージの設定で言うところの<code class="language-plaintext highlighter-rouge">run.sh</code>の<code class="language-plaintext highlighter-rouge">amazon-ssm-agent start &amp;</code>からこのロールで実行されます。 具体的には、</p> <ul> <li>タスク終了時にマネージドインスタンスの登録の解除</li> <li>セッションログの暗号化</li> </ul> <p>が行われるため、それらに対応する権限を付与します。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### ssm_service_role.tf</span>
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"ssm_service_assume_role"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"sts:AssumeRole"</span><span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"Service"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ssm.amazonaws.com"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role"</span> <span class="s2">"ssm_service_role"</span> <span class="p">{</span>
+  <span class="nx">name</span>               <span class="o">=</span> <span class="s2">"ssm-agent-role"</span>
+  <span class="nx">assume_role_policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">ssm_service_assume_role</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"ssm_service_role"</span> <span class="p">{</span>
+  <span class="c1"># See also: https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/ssm-agent-minimum-s3-permissions.html</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"s3:GetObject"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"arn:aws:s3:::aws-ssm-</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">/*"</span><span class="p">,</span>
+      <span class="s2">"arn:aws:s3:::amazon-ssm-</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">/*"</span><span class="p">,</span>
+      <span class="s2">"arn:aws:s3:::amazon-ssm-packages-</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">/*"</span><span class="p">,</span>
+      <span class="s2">"arn:aws:s3:::</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">-birdwatcher-prod/*"</span><span class="p">,</span>
+      <span class="s2">"arn:aws:s3:::patch-baseline-snapshot-</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">/*"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># セッションログを保存できるようにする</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"s3:PutObject"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"arn:aws:s3:::</span><span class="p">${</span><span class="nx">aws_s3_bucket</span><span class="p">.</span><span class="nx">ssm</span><span class="p">.</span><span class="nx">bucket</span><span class="p">}</span><span class="s2">/</span><span class="p">${</span><span class="kd">local</span><span class="p">.</span><span class="nx">s3_prefix</span><span class="p">}</span><span class="s2">/*"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># セッションログを暗号化して保存する際にS3バケットのデフォルト暗号化設定が必要</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"s3:GetEncryptionConfiguration"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># セッションログをCloud Watch Logsに保存するために必要</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"logs:CreateLogStream"</span><span class="p">,</span>
+      <span class="s2">"logs:PutLogEvents"</span><span class="p">,</span>
+      <span class="s2">"logs:DescribeLogGroups"</span><span class="p">,</span>
+      <span class="s2">"logs:DescribeLogStreams"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="nx">aws_cloudwatch_log_group</span><span class="p">.</span><span class="nx">ssm</span><span class="p">.</span><span class="nx">arn</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># セッションログの暗号化のためのKMSキーで復号化するために必要</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"kms:Decrypt"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="nx">aws_kms_key</span><span class="p">.</span><span class="nx">session_log</span><span class="p">.</span><span class="nx">arn</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="c1"># run.sh内でコンテナ終了時にマネージドインスタンスの登録解除するようにしているので、そのための権限を付与</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"ssm:DeregisterManagedInstance"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_policy"</span> <span class="s2">"ssm_service_role"</span> <span class="p">{</span>
+  <span class="nx">name</span>   <span class="o">=</span> <span class="s2">"ssm-service-role-policy"</span>
+  <span class="nx">policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">ssm_service_role</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role_policy_attachment"</span> <span class="s2">"ssm_service_role"</span> <span class="p">{</span>
+  <span class="nx">for_each</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">dummy_key_1</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"</span>
+    <span class="nx">dummy_key_2</span> <span class="o">=</span> <span class="s2">"arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"</span>
+    <span class="nx">dummy_key_3</span> <span class="o">=</span> <span class="nx">aws_iam_policy</span><span class="p">.</span><span class="nx">ssm_service_role</span><span class="p">.</span><span class="nx">arn</span>
+  <span class="p">}</span>
+  <span class="nx">policy_arn</span> <span class="o">=</span> <span class="nx">each</span><span class="p">.</span><span class="nx">value</span>
+  <span class="nx">role</span>       <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">ssm_service_role</span><span class="p">.</span><span class="nx">name</span>
+<span class="p">}</span>
+</code></pre></div></div> <h5 id="オペレーターがsession-managerを使用する用のロールの設定">オペレーターがSession Managerを使用する用のロールの設定</h5> <p>オペレーターがSession Managerを操作できるようにするための権限を付与します。 また、セッションログの暗号化に使用されるデータ暗号化キーを生成する必要があるため、そのための権限を付与します。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### session_manager_operator_role.tf</span>
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"session_manager_operator_assume_role"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"sts:AssumeRole"</span><span class="p">]</span>
+
+    <span class="nx">principals</span> <span class="p">{</span>
+      <span class="nx">type</span>        <span class="o">=</span> <span class="s2">"Service"</span>
+      <span class="nx">identifiers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ec2.amazonaws.com"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role"</span> <span class="s2">"session_manager_operator"</span> <span class="p">{</span>
+  <span class="nx">name</span>               <span class="o">=</span> <span class="s2">"session-manager-operator"</span>
+  <span class="nx">assume_role_policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">session_manager_operator_assume_role</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="c1"># See also: https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/getting-started-restrict-access-quickstart.html</span>
+<span class="k">data</span> <span class="s2">"aws_iam_policy_document"</span> <span class="s2">"session_manager_operator"</span> <span class="p">{</span>
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"ssm:StartSession"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"arn:aws:ec2:*:*:instance/*"</span><span class="p">,</span>
+      <span class="s2">"arn:aws:ssm:</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_caller_identity</span><span class="p">.</span><span class="nx">self</span><span class="p">.</span><span class="nx">account_id</span><span class="p">}</span><span class="s2">:document/</span><span class="p">${</span><span class="nx">aws_ssm_document</span><span class="p">.</span><span class="nx">session_log</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">"</span>
+    <span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"ssm:TerminateSession"</span><span class="p">,</span>
+      <span class="s2">"ssm:ResumeSession"</span><span class="p">,</span>
+      <span class="s2">"ssm:DescribeSessions"</span><span class="p">,</span>
+      <span class="s2">"ssm:GetConnectionStatus"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"*"</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"ssm:GetDocument"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"arn:aws:ssm:::document/</span><span class="p">${</span><span class="nx">aws_ssm_document</span><span class="p">.</span><span class="nx">session_log</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">"</span><span class="p">]</span>
+  <span class="p">}</span>
+
+  <span class="nx">statement</span> <span class="p">{</span>
+    <span class="nx">effect</span> <span class="o">=</span> <span class="s2">"Allow"</span>
+    <span class="nx">actions</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"kms:GenerateDataKey"</span>
+    <span class="p">]</span>
+    <span class="nx">resources</span> <span class="o">=</span> <span class="p">[</span><span class="nx">aws_kms_key</span><span class="p">.</span><span class="nx">session_log</span><span class="p">.</span><span class="nx">arn</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_policy"</span> <span class="s2">"session_manager_operator"</span> <span class="p">{</span>
+  <span class="nx">name</span>   <span class="o">=</span> <span class="s2">"session-manager-for-operator"</span>
+  <span class="nx">policy</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">session_manager_operator</span><span class="p">.</span><span class="nx">json</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_iam_role_policy_attachment"</span> <span class="s2">"session_manager_operator"</span> <span class="p">{</span>
+  <span class="nx">policy_arn</span> <span class="o">=</span> <span class="nx">aws_iam_policy_document</span><span class="p">.</span><span class="nx">session_manager_operator</span><span class="p">.</span><span class="nx">arn</span>
+  <span class="nx">role</span>       <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">session_manager_operator</span><span class="p">.</span><span class="nx">name</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="4-ecsのクラスタ構築">4. ECSのクラスタ構築</h4> <p>ECS on FargateでDockerコンテナを動かすための設定をします。 そのためには、</p> <ul> <li>ECSのクラスタの構築</li> <li>Dockerイメージをタスクとして実行するためのタスク定義 <ul> <li>使用するコンピュータリソースの設定</li> <li>どのイメージを使用するかの設定</li> <li>コンテナ起動時の環境変数の設定</li> </ul> </li> </ul> <p>が必要です。</p> <div class="language-tf highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">### ecs.tf</span>
+<span class="k">resource</span> <span class="s2">"aws_ecs_cluster"</span> <span class="s2">"ssm_agent_ecs_cluster"</span> <span class="p">{</span>
+  <span class="nx">name</span> <span class="o">=</span> <span class="s2">"ssm-agent-ecs-cluster"</span>
+  <span class="nx">setting</span> <span class="p">{</span>
+    <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"containerInsights"</span>
+    <span class="nx">value</span> <span class="o">=</span> <span class="s2">"enabled"</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_cloudwatch_log_group"</span> <span class="s2">"ssm_agent_log_group"</span> <span class="p">{</span>
+  <span class="nx">name</span> <span class="o">=</span> <span class="s2">"/ecs/ssm_agent"</span>
+<span class="p">}</span>
+
+<span class="nx">locals</span> <span class="p">{</span>
+  <span class="nx">container_definitions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"ssm_agent"</span>
+      <span class="nx">image</span> <span class="o">=</span> <span class="s2">"xxxxxx.dkr.ecr.</span><span class="p">${</span><span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">.amazonaws.com/YOUR_REPOSITORY_NAME:YOUR_DOCKER_IMAGE_TAG"</span>
+      <span class="nx">environment</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"INSTANCE_NAME"</span>
+          <span class="nx">value</span> <span class="o">=</span> <span class="s2">"ssm-agent-from-ecs"</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"INSTANCE_IAM_ROLE"</span>
+          <span class="nx">value</span> <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">ssm_service_role</span><span class="p">.</span><span class="nx">name</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"AWS_REGION"</span>
+          <span class="nx">value</span> <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="nx">name</span>  <span class="o">=</span> <span class="s2">"CLOUDWATCH_RECEIVER_LOG_GROUP"</span>
+          <span class="nx">value</span> <span class="o">=</span> <span class="nx">aws_cloudwatch_log_group</span><span class="p">.</span><span class="nx">ssm_agent_log_group</span><span class="p">.</span><span class="nx">name</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+      <span class="nx">logConfiguration</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">logDriver</span> <span class="o">=</span> <span class="s2">"awslogs"</span>
+        <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s2">"awslogs-group"</span>         <span class="p">=</span> <span class="nx">aws_cloudwatch_log_group</span><span class="p">.</span><span class="nx">ssm_agent_log_group</span><span class="p">.</span><span class="nx">name</span>
+          <span class="s2">"awslogs-region"</span>        <span class="o">=</span> <span class="k">data</span><span class="p">.</span><span class="nx">aws_region</span><span class="p">.</span><span class="nx">current</span><span class="p">.</span><span class="nx">name</span>
+          <span class="s2">"awslogs-stream-prefix"</span> <span class="o">=</span> <span class="s2">"ecs"</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="nx">essential</span>    <span class="o">=</span> <span class="kc">true</span>
+      <span class="nx">startTimeout</span> <span class="o">=</span> <span class="mi">120</span>
+      <span class="nx">stopTimeout</span>  <span class="o">=</span> <span class="mi">120</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">resource</span> <span class="s2">"aws_ecs_task_definition"</span> <span class="s2">"ssm_agent"</span> <span class="p">{</span>
+  <span class="nx">family</span>                   <span class="o">=</span> <span class="s2">"ssm-agent"</span>
+  <span class="nx">container_definitions</span>    <span class="o">=</span> <span class="nx">jsonencode</span><span class="p">(</span><span class="kd">local</span><span class="p">.</span><span class="nx">container_definitions</span><span class="p">)</span>
+  <span class="nx">task_role_arn</span>            <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">ecs_task_role</span><span class="p">.</span><span class="nx">arn</span>
+  <span class="nx">execution_role_arn</span>       <span class="o">=</span> <span class="nx">aws_iam_role</span><span class="p">.</span><span class="nx">ssm_service_role</span><span class="p">.</span><span class="nx">arn</span>
+  <span class="nx">network_mode</span>             <span class="o">=</span> <span class="s2">"awsvpc"</span>
+  <span class="nx">memory</span>                   <span class="o">=</span> <span class="s2">"2048"</span>
+  <span class="nx">cpu</span>                      <span class="o">=</span> <span class="s2">"1024"</span>
+  <span class="nx">requires_compatibilities</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"FARGATE"</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="用意したファイルのおさらい">用意したファイルのおさらい</h4> <p>Terraformはどのファイルにどの設定を書いてもよいですが、今回は以下のようなファイルを用意しました。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── var.tf <span class="c"># 共通で使用する変数の定義</span>
+├── log.tf <span class="c"># セッションログをCloudWatch Logsに流すためのロググループの設定</span>
+├── s3.tf <span class="c"># セッションログを保存するためのS3の設定</span>
+├── ssm.tf <span class="c"># Session Managerのセッションログの設定</span>
+├── vpc.tf <span class="c"># VPCの設定</span>
+├── security.tf <span class="c"># セキュリティの設定</span>
+├── ecs_task_execution_role.tf <span class="c"># ECSのタスク実行ロールの設定</span>
+├── ecs_task_role.tf <span class="c"># ECSのタスクロールの設定</span>
+├── ssm_service_role.tf <span class="c"># SSMエージェント用のロールの設定</span>
+├── session_manager_operator_role.tf <span class="c"># Session Managerを使用するオペレーター用のロールの設定</span>
+└── ecs.tf <span class="c"># ECSクラスタおよびタスク定義の設定</span>
+</code></pre></div></div> <h2 id="ssmエージェントの起動">SSMエージェントの起動</h2> <p>環境構築が終わったので、あとはSSMエージェントのコンテナを起動するだけです。 構築したセキュリティグループでタスクを実行すれば、セッションマネージャーを使用できます。</p> <p><a href="/assets/posts/post/2020-12-10-1/ecs_task_execution_with_aws_web_console.png" data-fancybox="images" data-caption="AWS WebコンソールでのECSのタスク実行"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="AWS WebコンソールでのECSのタスク実行" data-src="/assets/posts/post/2020-12-10-1/ecs_task_execution_with_aws_web_console.png" class="lazyload"></a></p> <h2 id="注意点">注意点</h2> <h3 id="アドバンスドインスタンスティアについて">アドバンスドインスタンスティアについて</h3> <p>ハイブリッドアクティベーションの場合、インスタンス層がアドバンスドインスタンスティアとなります。</p> <p>ハイブリッドアクティベーション経由で登録したマネージドインスタンスが存在する状態で、Webコンソール上のSystem ManagerのSession Managerのページに遷移すると、アドバンスドインスタンスティアへの変更許可を求めるダイアログが自動でてくるので、ティアを変更できます。</p> <p>事前に許可したい場合は、以下のコマンドを実行します。</p> <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aws ssm update-service-setting <span class="nt">--setting-id</span> arn:aws:ssm:YOUR_REGION:YOUR_ACCOUNT_ID:servicesetting/ssm/managed-instance/activation-tier <span class="nt">--setting-value</span> advanced
+</code></pre></div></div> <h2 id="終わりに">終わりに</h2> <p>今回はSession Managerでプライベートネットワークにセキュアにアクセスするために、</p> <ul> <li>SSMエージェントを動かすDockerイメージの作成</li> <li>AWSのインフラ構築</li> </ul> <p>について紹介しました。</p> <p>見ていただいたように、サーバーレスとはいえ、いくつか準備しないといけないことがあるため、まだまだ面倒です。 <a href="https://azure.microsoft.com/ja-jp/services/azure-bastion/" target="_blank" rel="noopener noreferrer">Azure Bastion</a>のように、AWSもマネージドな踏み台のようなものを用意してほしいと思いました。</p> <p>また、運用を始めると、まとまったファイルなどを入力および出力したくなることもあります。</p> <p>その際は、専用のS3バケットを用意して入力および出力するのが良いと考えています。 S3を介することで、引き続きセキュアな環境が保てます。さらに、もし監査が必要な場合でも、対応が可能です。</p> <h2 id="参考記事">参考記事</h2> <ul> <li><a href="https://dev.classmethod.jp/articles/log-ssm-session-manager-for-shell-access-activity/" target="_blank" rel="noopener noreferrer">AWS Systems Manager Session Managerのシェル操作をログ出力する | Developers.IO</a></li> <li><a href="https://enokawa.hatenablog.jp/entry/2019/09/05/104545" target="_blank" rel="noopener noreferrer">Fargate containerにSession Managerでログインする - あしたから本気だす</a></li> <li><a href="https://iselegant.hatenablog.com/entry/2020/09/28/012409" target="_blank" rel="noopener noreferrer">続:「Bastion ~ AWS Fargateで実現するサーバーレスな踏み台設計」 - How elegant the tech world is…!</a></li> </ul> <div class="footnotes" role="doc-endnotes"> <ol> <li id="fn:amazon-ssm-agent-issues-313"> <p>環境変数サポートは開発要望としてすでに挙げており、<a href="https://github.com/aws/amazon-ssm-agent/issues/313" target="_blank" rel="noopener noreferrer">AWSのバックログに積まれている</a>。 <a href="#fnref:amazon-ssm-agent-issues-313" class="reversefootnote" role="doc-backlink">↩</a></p> </li> </ol> </div> </article> <section class="share"> <a href="//twitter.com/share?text=Session+Manager%E3%81%A7%E3%83%97%E3%83%A9%E3%82%A4%E3%83%99%E3%83%BC%E3%83%88%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E3%81%AB%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2020-12-10-1%3Futm_source%3Dtwitter%26utm_medium%3Dsocial&amp;via=kenchan0130" onclick="window.open(this.href, 'twitter-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-twitter fa-lg"></i> </a> <a href="//www.facebook.com/sharer.php?t=Session+Manager%E3%81%A7%E3%83%97%E3%83%A9%E3%82%A4%E3%83%99%E3%83%BC%E3%83%88%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E3%81%AB%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89&amp;u=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2020-12-10-1%3Futm_source%3Dfacebook%26utm_medium%3Dsocial" onclick="window.open(this.href, 'facebook-share', 'width=550,height=255,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-facebook fa-lg"></i> </a> <a href="//b.hatena.ne.jp/entry/panel/?btitle=Session+Manager%E3%81%A7%E3%83%97%E3%83%A9%E3%82%A4%E3%83%99%E3%83%BC%E3%83%88%E3%83%8D%E3%83%83%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AF%E3%81%AB%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2%E3%81%AB%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%81%99%E3%82%8B%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89&amp;url=https%3A%2F%2Fkenchan0130.github.io%2Fpost%2F2020-12-10-1" onclick="window.open(this.href, 'hatena-share', 'width=550,height=600,menubar=no,toolbar=no,resizable=yes');return false;"> <i class="fab fa-hatena fa-lg"></i> </a> </section> <section class="post-donation"> <div class="post-donation-panel"> <p class="post-donation-description"> 参考になった・面白かったと感じていただけましたら、サポートいただけると励みになります。 </p> <a class="post-donation-button" href="https://www.buymeacoffee.com/kenchan0130" onclick="gtag('event', 'click-buymeacoffee', { event_category: 'www.buymeacoffee.com/kenchan0130', event_label: '/post/2020-12-10-1' });" target="_blank" rel="noopener noreferrer"> <p class="post-donation-button-body"> <img class="icon lazyload" alt="buymeacoffee" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg"> <span class="label">サポートする</span> </p> </a> </div> </section> <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-2444060431947599" data-ad-slot="7319689305" data-ad-format="auto"></ins> <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script> <section class="sub-contents related-posts"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">あわせて読みたい</div> <div class="sub-contents-main"> <li> <a href="/post/2021-12-09-1">Next.jsでStatic GenerationしたサイトをAWSでホスティングする</a> <span class="post-date">- December 9, 2021</span> </li> <li> <a href="/post/2022-12-26-1">Azure Active DirectoryのアプリケーションをTerraformで管理する</a> <span class="post-date">- December 26, 2022</span> </li> <li> <a href="/post/2019-12-24-1">SAML認証が検証可能な開発環境用のIdPを構築</a> <span class="post-date">- December 24, 2019</span> </li> <li> <a href="/post/2019-12-24-2">Google ColaboratoryのRランタイムでCSVを操作してみる</a> <span class="post-date">- December 24, 2019</span> </li> </div> </div> </section> <section class="sub-contents tags"> <div class="sub-contents-wrapper"> <div class="sub-contents-title">Tags</div> <div class="sub-contents-main"> <a href="/tag/aws">AWS</a> <a href="/tag/bastion">Bastion</a> <a href="/tag/docker">Docker</a> <a href="/tag/ecs">ECS</a> <a href="/tag/serverless">Serverless</a> <a href="/tag/session-manager">Session Manager</a> <a href="/tag/system-manager">System Manager</a> <a href="/tag/terraform">Terraform</a> </div> </div> </section> </div> </div> </div> <footer class="site-footer"> <div class="wrapper"> <h3 class="footer-heading">kenchan0130 blog</h3> <div class="site-navigation"> <p><strong>Site Map</strong></p> <ul class="pages"> <li class="nav-link"> <a href="/archives">Archives</a> </li> <li class="nav-link"> <a href="/privacy">Privacy Policy</a> </li> <li class="nav-link"> <a href="/profile">Profile</a> </li> <li class="nav-link"> <a href="/profile/resume">Resume</a> </li> </ul> </div> <div class="site-contact"> <p><strong>Contact</strong></p> <ul class="social-media-list"> <li> <a href="https://twitter.com/kenchan0130" title="Follow me on Twitter" target="_blank" rel="noopener noreferrer"> <i class="fab fa-twitter"></i> <span class="username">kenchan0130</span> </a> </li> <li> <a href="https://github.com/kenchan0130" title="Fork me on GitHub" target="_blank" rel="noopener noreferrer"> <i class="fab fa-github"></i> <span class="username">kenchan0130</span> </a> </li> </ul> </div> <div class="site-signature"> <p class="rss-subscribe text"><strong>Subscribe <a href="/feed.xml">via RSS</a></strong></p> <p class="text">ソフトウェアエンジニア。記録に残したいことを雑に備忘するブログ。 投稿内容は個人の見解であり所属する組織の公式見解ではありません。 </p> </div> </div> <div class="licence">このサイトのコンテンツは<a href="https://creativecommons.org/licenses/by/4.0/deed.ja" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 International (CC-BY-4.0) License</a>の下でライセンスされています。</div> <div class="copyright">Copyright © 2017-2025 Tadayuki Onishi All Rights Reserved.</div> </footer> <script src="/assets/bundle/app.55445db2fff8ddfed8c5.js" async></script> <script async src="//www.googletagmanager.com/gtag/js?id=G-B7RX34Q5PL"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-B7RX34Q5PL");</script> <script async src="//www.googletagmanager.com/gtag/js?id=UA-79827366-2"></script> <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","UA-79827366-2");</script> </body> </html>
