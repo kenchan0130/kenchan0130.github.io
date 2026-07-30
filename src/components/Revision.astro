@@ -1,0 +1,33 @@
+---
+interface Props {
+  date: string;
+}
+const { date } = Astro.props;
+---
+
+<aside class="revision">
+  <strong>{date} 追記</strong>
+  <div><slot /></div>
+</aside>
+
+<style>
+  .revision {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 0.3rem solid var(--accent);
+    border-radius: 0.4rem;
+    margin: 1.5rem 0;
+    padding: 0.9rem 1.1rem;
+  }
+  strong {
+    display: block;
+    font-size: 0.82rem;
+    margin-bottom: 0.35rem;
+  }
+  :global(.revision > div > :first-child) {
+    margin-top: 0;
+  }
+  :global(.revision > div > :last-child) {
+    margin-bottom: 0;
+  }
+</style>

@@ -1,0 +1,233 @@
+---
+title: Jekyllの画像遅延ロードのためのライブラリを作った
+description: JekyllはRubyGemsで配布されているRuby製の静的サイト生成ツールです。 このブログもJekyllを使用しています。 そのJekyllでの使用を想定した画像の遅延ロードためのgemを作成したので、使い方を備忘として記載します。
+published: 2018-07-30
+categories:
+  - development
+tags:
+  - Jekyll
+  - Ruby
+  - RubyGems
+references: []
+draft: false 
+---
+
+[Jekyll](https://jekyllrb.com/) は [RubyGems](https://rubygems.org/) で配布されているRuby製の静的サイト生成ツールです。
+このブログもJekyllを使用しています。
+
+Jekyllでの使用を想定した画像の遅延ロードため [`jekyll-lazy-load-image`](https://github.com/kenchan0130/jekyll-lazy-load-image) というRubyGemsを作成しました。
+
+今回は作成の意図とその使い方などを備忘として記載していこうと思います。
+
+## ライブラリ作成のモチベーション
+### 重い画像があるとレンダリングが遅い
+通常、ブラウザにおけるHTMLのページレンダリング時の画像の読み込みは、
+レンダリングをブロック、つまり同期的に行います。
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <script type="text/javascript" charset="utf-8" src="path/to/javascript"></script>
+    <link rel="stylesheet" href="path/to/css">
+  </head>
+  <body>
+    <img src="path/to/image">
+  </body>
+</html>
+```
+
+上記のHTMLがブラウザでレンダリングされる場合、
+
+1. HTMLをリクエスト
+2. HTMLの取得
+3. HTMLのDOM生成
+    1. `path/to/javascript` のJavaScriptをリクエスト
+    2. `path/to/css` のCSSをリクエスト
+    3. `path/to/image` の画像をリクエスト
+4. ページレンダリング完了
+
+という挙動をします。
+
+もし `path/to/image` が重いファイルだった場合、「ページレンダリング完了」までに時間がかかってしまいます。
+
+1つの解決方法として `img` タグの `src` 属性にダミー画像やロード中の画像を指定しつつ、 JavaScriptを使用して画像を非同期で読み込むことでページレンダリングをブロックしないようにできます。
+
+たまたまこのブログで少々重めのgifを表示したいことがあり、体感的にレンダリングが遅かったため、非同期で画像を読み込みたいと考えました。
+
+### RubyGemsに切り出すという選択
+
+Jekyllのプロジェクトでは `_plugins` ディレクトリにファイルを設置することで、
+自作のJekyll Pluginを作成および導入が可能です。
+
+しかし、 `_plugins` に設置する自作のJekyll Pluginは、中々テストが書かれることがありません。
+
+RubyGemsに切り出せば、テストを記載するだろうと思い、切り出すことにしました。
+
+## ライブラリの作成方針
+
+`jekyll-lazy-load-image` を作成する際に、以下のようなことを気にして作成しました。
+
+### Jekyllにおける画像非同期読み込みの課題
+
+JekyllではしばしばHTMLをそのまま記載するのではなくMarkdownなど別のファイルフォーマットで記載されたドキュメントを使用して静的サイトを生成します。
+そのため、HTML以外のファイルフォーマットで記載されたドキュメントをJekyllのコンバーターでの処理が終わった後に `img` タグを変更する必要があります。
+
+### Jekyllの拡張の選択
+Jekyllには拡張をするための機構が
+
+- [Generators](https://jekyllrb.com/docs/plugins/#generators)
+- [Converters](https://jekyllrb.com/docs/plugins/#converters)
+- [Commands](https://jekyllrb.com/docs/plugins/#commands)
+- [Tags](https://jekyllrb.com/docs/plugins/#tags)
+- [Hooks](https://jekyllrb.com/docs/plugins/#hooks)
+
+の5つ用意されています。
+
+今回はJekyllのコンバーターの処理が終わったドキュメントに対して変更したいため、「Hooks」を使用します。
+
+Hooksにはドキュメントをレンダリングした後、静的HTMLを出力する前に呼び出される `:post_render` があります。
+こちらを使用して生成されたHTMLを変更する方法を選択しました。
+
+### 依存の最小化
+
+RubyGemsを作成する際には、依存するライブラリを選択できます。
+今回はなるべく軽量で汎用性が高いように作成したかったため、依存するライブラリを極力少なくすることにしました。
+
+よくやりがちな、とりあえず [ActiveSupport](https://github.com/rails/rails/tree/master/activesupport) を入れるみたいなことを避けて、本当に必要なライブラリだけを利用することにしました。
+
+もちろん、ActiveSupoortはとても便利です。
+よく使われるメソッドや拡張が数多く用意されていて、かつテストが書かれているというのはとても魅力的です。
+
+今回はHTMLの編集とJekyllのHooksを使用するため、
+
+- [Nokogiri](https://github.com/sparklemotion/nokogiri)
+  - HTMLの編集
+- [Jekyll](https://github.com/jekyll/jekyll)
+  - JekyllのHooksの呼び出し
+
+の2つのみを依存に含めました。
+
+### 設定項目の最小化
+
+RubyGemsへ切り出したため、さまざまなユーザーを想定しました。
+特にJekyllを使用しているサイトの作成者は、JekyllやRubyに詳しい人ばかりとは限りません。
+細かい設定などは逆に使用者に負担をかける可能性があります。
+
+そのため、最低限動作するに設計しました。
+具体的には `_config.yml` と `Gemfile` の変更と使用するJavaScriptの追加のみで動作するようにしました。
+
+#### 遅延ロードのJavaScriptの処遇
+
+細かい設定を少なくすると言ったわりには、 `jekyll-lazy-load-image` では遅延ロードのJavaScriptを使用者で設定してもらうようにしています。
+
+JekyllのTags拡張を使用することで、遅延ロードのJavaScriptの呼び出しを簡略化することも検討しました。
+しかし、ことJavaScriptに関してはサイトに寄って呼び出し方法がまちまちであるため、むやみに呼び出しを強制してしまうのは逆にライブラリとして使用されづらくなると考え、このような形にすることにしました。
+
+### 個別呼び出しへの対応
+
+設定項目を最小化することで、 JekyllやRubyに詳しくない方でもすぐに効果が現れるようにしました。
+
+もちろんJekyllやRubyに詳しい方もいるため、その人達用にメソッドを個別に呼び出せるようにしてカスタマイズできるようにしようと考えました。
+
+メインとなる `img` タグの `src` 属性の変更に関しては個別でも呼び出せるように設計をしました。
+しかし、まだ不十分な部分もあるため、 [Issue](https://github.com/kenchan0130/jekyll-lazy-load-image/issues/1) としてタスクに積み、改善を予定しています。
+
+## jekyll-lazy-load-imageの使い方
+
+### カスタマイズせずに動かす
+#### `Gemfile` の設定
+
+Jekyllのプロジェクトの `Gemfile` に以下を追加します。
+
+```ruby
+group :jekyll_plugins do
+  gem 'jekyll-lazy-load-image', require: 'jekyll-lazy-load-image/auto-execution'
+end
+```
+
+`gem 'jekyll-lazy-load-image'` のみでは拡張用に処理は走らないようになっており、
+`require: 'jekyll-lazy-load-image/auto-execution'` を付与することで、自動で処理が走ります。
+
+#### 遅延ロードのライブラリの設定
+
+遅延ロードライブラリはお好きなものを使用してかまいませんが、
+
+- [lazysizes](https://github.com/aFarkas/lazysizes)
+- [Echo.js](https://github.com/toddmotto/echo)
+- [TADA](https://github.com/fallroot/tada)
+
+あたりが良いかもしれません。
+
+Jekyllのプロジェクトのアセットに追加ソースを追加する、またはCDNを指定を読み込むなどを行い、遅延ロードライブラリを読み込ませます。
+
+例としてlazysizesをCDNで読み込ませる場合は、テンプレートの任意の場所に
+
+```html
+<script src="//cdnjs.cloudflare.com/ajax/libs/lazysizes/4.0.4/lazysizes.min.js" async></script>
+```
+
+を追加すれば完了です。
+
+#### \_config.ymlの設定
+
+Jekyllのプロジェクトの `_config.yml` に、このライブラリで使用する設定を以下のように記載します。
+
+```yaml
+lazy_load_image:
+  src_attr_name: data-src
+  preload_image: /path/to/image
+  class_attr_values:
+    - lazyload
+  ignore_selectors:
+    - ".ignore-lazy-image-load"
+  additional_attrs:
+    "data-size": auto
+```
+
+各設定の内容は以下です。使用する遅延ロードライブラリに合わせて設定してください。
+
+設定名|必須|内容
+:---:|:---:|:---
+`src_attr_name`|required|`img` タグの `src` 属性の代わりに設定する属性名
+`preload_image`|optional|画像のロードが終わるまでに表示させる内容、つまり `img` タグの `src` 属性にデフォルトで設定する内容
+`class_attr_values`|optional|`img` タグの `class` 属性に追加で付与する値（複数指定可能）
+`ignore_selectors`|optional|処理を除外する対象のセレクタ（cssまたはxpathで複数指定可能）
+`additional_attrs`|optional|追加で `img` タグに設定したい属性名と値の組み合わせ
+
+### カスタマイズして動かす
+
+処理を実行するタイミングやコンテナの種類を変えることができます。
+遅延ロードライブラリの設定は共通であるため省略します。
+
+#### Gemfileの設定
+
+Jekyllのプロジェクトの `Gemfile` に以下を追加します。
+
+```ruby
+gem 'jekyll-lazy-load-image'
+```
+
+#### \_pluginsディレクトリへファイルの追加
+
+ドキュメントに対して処理を行いたいとした場合は、 `_plugins` ディレクトリに
+
+```ruby
+require 'jekyll-lazy-load-image'
+
+JekyllLazyLoadImage.configure do |config|
+  config.owners = :documents
+end
+
+JekyllLazyLoadImage.execute
+```
+
+上記のようなファイルを任意の名前で追加することで実現できます。
+
+## まとめ
+
+今回はJekyllで作成するサイトに対して画像を遅延ロードの設定を施すライブラリの作成についてと、その使い方について記載しました。
+少しでも同じ課題を持っている方の助けになれば幸いです。
+
+また、今回作成した [`jekyll-lazy-load-image`](https://github.com/kenchan0130/jekyll-lazy-load-image) は、ある程度考えて設計したものの、実際使用してみると使いづらい点などがあるかと思います。
+OSSとして公開しているので、ぜひ [Issue](https://github.com/kenchan0130/jekyll-lazy-load-image/issues) 、 [Pull Request](https://github.com/kenchan0130/jekyll-lazy-load-image/pulls) いただければと思います。

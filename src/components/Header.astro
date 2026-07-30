@@ -1,0 +1,115 @@
+---
+import { Archive, Search } from "@lucide/astro";
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="/">
+      <img src="/assets/icons/logo.png" alt="" width="34" height="34" />
+      <span>kenchan0130 blog</span>
+    </a>
+    <div class="header-navigation">
+      <nav aria-label="主要ナビゲーション">
+        <a class="archive-link" href="/archives" aria-label="Archives">
+          <Archive aria-hidden="true" size={18} />
+          <span>Archives</span>
+        </a>
+        <a class="search-link" href="/search" aria-label="Search">
+          <Search aria-hidden="true" size={18} />
+          <span>Search</span>
+        </a>
+      </nav>
+      <div class="header-actions" role="group" aria-label="サイト操作">
+        <ThemeToggle />
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .header-inner {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: var(--site-width);
+    min-height: 4rem;
+    padding: 0 1.25rem;
+  }
+  .site-title {
+    align-items: center;
+    color: var(--text);
+    display: inline-flex;
+    font-weight: 700;
+    gap: 0.55rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .site-title img {
+    border-radius: 50%;
+    flex: none;
+  }
+  .header-navigation,
+  .header-actions {
+    align-items: center;
+    display: flex;
+  }
+  .header-navigation {
+    gap: 0.75rem;
+  }
+  nav {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+  }
+  .header-actions {
+    border-left: 1px solid var(--border);
+    gap: 0.35rem;
+    padding-left: 0.75rem;
+  }
+  .archive-link,
+  .search-link {
+    align-items: center;
+    color: var(--muted);
+    display: inline-flex;
+    gap: 0.35rem;
+    min-height: 2.75rem;
+    padding: 0 0.25rem;
+    text-decoration: none;
+  }
+  .archive-link:hover,
+  .search-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+  @media (max-width: 38rem) {
+    .header-inner {
+      padding-inline: 0.75rem;
+    }
+    .header-navigation {
+      gap: 0.5rem;
+    }
+    .header-actions {
+      gap: 0.3rem;
+      padding-left: 0.5rem;
+    }
+    .archive-link,
+    .search-link {
+      justify-content: center;
+      padding: 0;
+      width: 2.5rem;
+    }
+    .archive-link span,
+    .search-link span {
+      display: none;
+    }
+  }
+</style>

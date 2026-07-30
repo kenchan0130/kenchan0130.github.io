@@ -1,0 +1,73 @@
+---
+import { existsSync } from "node:fs";
+import path from "node:path";
+import sharp from "sharp";
+
+interface Props {
+  src: string;
+  alt: string;
+  title?: string;
+  class?: string;
+}
+
+const { src, alt, title, class: className } = Astro.props;
+const decodedSource = decodeURIComponent(src);
+const localPath = decodedSource.startsWith("/")
+  ? path.join(process.cwd(), "public", decodedSource)
+  : undefined;
+let dimensions: { width?: number; height?: number } = {};
+if (localPath && existsSync(localPath)) {
+  try {
+    const metadata = await sharp(localPath).metadata();
+    dimensions = { width: metadata.width, height: metadata.height };
+  } catch {
+    dimensions = {};
+  }
+}
+const variants = [480, 720, 1440]
+  .map((width) => ({ width, path: `${decodedSource}.w${width}.webp` }))
+  .filter(({ path: variant }) => existsSync(path.join(process.cwd(), "public", variant)));
+---
+
+<span class:list={["post-image", className]} role="figure" aria-label={title ?? alt}>
+  <picture>
+    {
+      variants.length > 0 && (
+        <source
+          type="image/webp"
+          srcset={variants.map(({ path: variant, width }) => `${variant} ${width}w`).join(", ")}
+          sizes="(max-width: 48rem) calc(100vw - 2.5rem), 45rem"
+        />
+      )
+    }
+    <img
+      src={decodedSource}
+      alt={alt}
+      title={title}
+      width={dimensions.width}
+      height={dimensions.height}
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
+  {title && <span class="post-image-caption">{title}</span>}
+</span>
+
+<style>
+  .post-image {
+    display: block;
+    margin: 1.75rem 0;
+  }
+  img {
+    border: 1px solid var(--border);
+    border-radius: 0.45rem;
+    margin-inline: auto;
+  }
+  .post-image-caption {
+    color: var(--muted);
+    display: block;
+    font-size: 0.82rem;
+    margin-top: 0.5rem;
+    text-align: center;
+  }
+</style>

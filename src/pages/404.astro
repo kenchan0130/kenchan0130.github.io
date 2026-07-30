@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page not found" noindex>
+  <div class="container narrow">
+    <p class="code">404</p>
+    <h1>ページが見つかりません</h1>
+    <p>URLを確認するか、検索とアーカイブから記事を探してください。</p>
+    <nav aria-label="404ページの案内">
+      <a href="/">Home</a>
+      <a href="/search">Search</a>
+      <a href="/archives">Archives</a>
+    </nav>
+  </div>
+</BaseLayout>
+
+<style>
+  .code {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  nav {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+</style>

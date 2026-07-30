@@ -1,0 +1,219 @@
+---
+title: Confluenceユーザーマクロのすゝめ
+description: IT企業にはおなじみの Atlassian社のConfluence。 有料プラグインも豊富ですが、人数に比例して課金されるため、使用しない人数分のライセンス費用も払わないといけないとなりどんどん導入が難しくなってくることもあります。 今回はちょっとしたプラグインであれば、お金をかけずに拡張できるユーザーマクロを紹介します。
+published: 2018-04-19
+categories:
+  - system-administration
+tags:
+  - Atlassian
+  - Confluence
+references: []
+draft: false 
+---
+
+みなさんの職場では、社内wikiやドキュメントツールは何を使用されていますでしょうか。
+
+- [Crowi](https://site.crowi.wiki/)
+- [esa](https://esa.io/)
+- [Kibela](https://kibe.la/ja)
+- [Qiita:Team](https://teams.qiita.com/)
+
+などMarkdownで書けてコラボレーションが可能なツールが出てきていますが、
+その中でも昔から根強い人気を誇るのがAtlassian製のConfluenceです。
+
+日本語検索が貧弱だったり、ドキュメント自体がプラグインを入れないと暗号化できなかったりといろいろつらかったりしますが、
+非エンジニアでも使える、マクロが豊富であるなどがあり選択されているところも多いかと思います。
+
+しかし、そのマクロも有料版になると課金がユーザー数分跳ね上がり経費が多くかかることもあります。
+
+今回はちょっとしたプラグインであれば、お金をかけずに拡張できるユーザーマクロを実例と交えて紹介していきます。
+
+## ユーザーマクロとは
+
+[本家](https://developer.atlassian.com/server/confluence/confluence-user-macro-guide/)のドキュメントにも記載されていますが、ユーザーマクロとは独自のカスタムマクロであり、特定のアクションの実行やカスタムの初期設定を適用するなどの操作が可能となります。
+
+ユーザーマクロの作成や編集などの管理には、システム管理者権限が必要となります。
+
+## ユーザーマクロを作成する方法
+
+1. 右上にある歯車マーク > 一般設定 > ユーザー マクロに移動します。
+2. ユーザーマクロの作成を選択します。
+3. マクロの詳細を入力します。
+4. 追加をクリックします。
+
+上記の作業をするだけで作成できます。
+設定すべき項目がいくつかありますが、特に重要なのが
+
+- Macro Body Processing
+- Template
+
+の2つです。
+
+### Macro Body Processing
+そもそもマクロ本文とは、ユーザーがマクロを選択した際に、ユーザーが入力する本文のコンテンツのことです。
+
+![マクロ本文の例](/assets/posts/post/2018-04-19-1/macro_body_example.png)
+
+#### No macro body
+マクロ本文が必要ない際に使用します。
+
+![マクロ本文なしの例](/assets/posts/post/2018-04-19-1/no_macro_body_example.png)
+
+#### Escaped
+マクロ本文のHTMLをエスケープする際に設定します。
+
+![エスケープ済みのイメージ1](/assets/posts/post/2018-04-19-1/macro_body_escape_image.png)
+![エスケープ済みのイメージ2](/assets/posts/post/2018-04-19-1/macro_body_escape_image_rendered.png)
+
+上記の場合ですと、`b` タグがエスケープされないと太字になってしまいますが、エスケープすることによってそのまま表示されます。
+
+#### Unrendered
+マクロ本文に記載されたHTMLがテンプレートの部分で処理する際にはまだレンダリングされていない状態で使用できます。
+
+#### Rendered
+マクロ本文に記載されたHTMLが適宜レンダリングされます。
+
+### Template
+マクロの動作を司るコードを設定できます。
+実態は [Velocity](https://velocity.apache.org/) のテンプレートとなっています。
+
+マクロ本文が存在する場合、 `$body` という変数で参照できます。
+
+#### Templateのベストプラクティス
+[Writing User Macros](https://confluence.atlassian.com/doc/writing-user-macros-4485.html) においても記載されていますが、
+テンプレートはコードですので、テンプレートがどの環境・設定で動作を想定しているのかをテンプレートのヘッダに記載しましょう。
+
+```html
+## Macro title: マクロタイトル
+## Description: A container within which to group AUI Tabs
+## Categories: Confluence content
+## Macro has a body: Y or N
+## Body processing: Rendered
+##
+## Developed by: kenchan0130
+## Date created: 2018/04/09
+## Confluence version: 3.5
+## Installed by: kenchan0130
+```
+
+## ユーザーマクロの例
+
+実際に作ってみないとわからないので、Confluenceに標準では入っていないタブの機能を用意してみましょう。
+
+### テンプレートの準備
+
+ベストプラクティスには書かれていませんでしたが、挿入するマクロのメインの親要素には
+
+```html
+#set( $id = $action.dateFormatter.calendar.timeInMillis )
+```
+
+上記のようにIDを付与することをオススメします。
+なぜなら、エンドユーザーは定義したマクロを1ページ中に複数回使用する可能性があり、
+一意特定できなくなってしまうと、セレクタなどがうまく動かずバグになってしまう可能性があるためです。
+
+#### タブの中身
+
+```html
+## Macro name: tab-content
+## Macro title: Tab Content
+## Description: A Tab content for Tabs Container
+## Categories: Confluence content
+## Macro has a body: Y
+## Body processing: Rendered
+##
+## Developed by: kenchan0130
+## Date created: 2018-04-15
+## Installed by: kenchan0130
+##
+## @param TabName:title=TabName|type=string|required=true|desc=Please input tab name.
+
+#set( $id = $action.dateFormatter.calendar.timeInMillis )
+
+<div class="js-tabs-pane" id="tab-$id" data-name="$paramTabName">
+$body
+</div>
+```
+
+`@param` というのは、マクロの挿入時に渡せるパラメータです。
+テンプレート内では、 `$param定義した名前` で参照できます。
+また、複数パラメータも用意できます。
+詳しくは [User Macro Template Syntax](https://confluence.atlassian.com/doc/user-macro-template-syntax-223906130.html) を御覧ください。
+
+#### タブ全体のコンテナ
+
+```html
+## Macro name: tabs-container
+## Macro title: Tabs Container
+## Description: A container within which to group Tabs
+## Categories: Confluence content
+## Macro has a body: Y
+## Body processing: Rendered
+##
+## Developed by: kenchan0130
+## Date created: 2018-04-15
+## Installed by: kenchan0130
+##
+## @noparams
+
+#set( $uniqueId = $action.dateFormatter.calendar.timeInMillis )
+
+<div id="tabs-$uniqueId" class="dvdsmpsn user-macro aui-tabs horizontal-tabs">
+$body
+</div>
+
+<script>
+AJS.toInit(function(jQuery) {
+  var tabsContainer = jQuery('#tabs-$uniqueId');
+  tabsContainer.prepend('<ul class="tabs-menu"></ul>');
+  tabsContainerFirstUl = tabsContainer.find('ul:first');
+
+  tabsContainer.find('.js-tabs-pane').each(function() {
+    var tabLabel = jQuery('<a>').attr({
+      href: '#' + jQuery(this).attr('id')
+    }).text(jQuery(this).data('name'));
+    var tabLi = jQuery('<li>').addClass('js-menu-item').append(tabLabel);
+    tabsContainerFirstUl.append(tabLi);
+  });
+
+  tabsContainer.find('li.js-menu-item:first').addClass('active-tab');
+  tabsContainer.find('.js-tabs-pane:first').addClass('active-pane');
+
+  tabsContainer.find('.js-menu-item').click(function() {
+    jQuery(this).addClass('active-tab').siblings().removeClass('active-tab');
+    jQuery(jQuery(this).find('a:first').attr('href')).addClass('active-pane').siblings().removeClass('active-pane');
+    return false;
+  });
+
+  AJS.tabs.setup();
+});
+</script>
+```
+
+パラメータがある場合は `@param` を記載していましたが、パラメータが必要ない場合は `@noparam` を指定しましょう。
+細かい挙動に関してはJavaScriptの話ですので、ここでは割愛します。
+
+また、 **AJS** というConfluenceがjQueryなどをラップしたオブジェクトを用意しており、 Confluenceを拡張する際に使用できます。
+
+### マクロの登録
+ベストプラクティス通り、コメント設定すべき内容がテンプレートにほぼ記載されているため、
+内容を確認しつつマクロを登録していきます。
+
+![ユーザーマクロブラウザの作成](/assets/posts/post/2018-04-19-1/create_user_macro_browser.png)
+
+アイコンのURLを指定しておくと、ユーザーマクロを選択する際に視認性が増す効果があります。
+
+![ユーザーマクロの設定](/assets/posts/post/2018-04-19-1/user_macro_setting.png)
+
+設定項目を入れたら、最後はテンプレートを挿入して保存ボタンを押すとマクロの作成が完了です。
+
+まずは、マクロブラウザの設定項目の **マクロブラウザは管理者のみ表示されます** を選択して、管理者のみで挙動を確認して、確認が終了したら **マクロブラウザですべてのユーザーに表示されます** を選択してエンドユーザーに使用可能になった旨を通知すると良いと思います。
+
+## まとめ
+Confluenceのユーザーマクロについて紹介しました。
+Webの技術がほぼすべて使用できるので、拡張性は無限大です。
+
+ユーザーマクロを使用することでコスト削減が可能となります。
+もちろんメンテナンスなど工数がかさむ可能性もあるため、機能によっては有料のプラグインを入れることも検討しましょう。
+
+ぜひステキなConfluence生活を送っていきましょう。

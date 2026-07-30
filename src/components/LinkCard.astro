@@ -1,0 +1,88 @@
+---
+import { ExternalLink } from "@lucide/astro";
+import cache from "../data/link-cards.json";
+
+interface Card {
+  title?: string;
+  description?: string;
+  siteName?: string;
+  image?: string;
+}
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+const card = (cache as Record<string, Card>)[href] ?? {};
+const url = new URL(href);
+const title = card.title || url.hostname;
+---
+
+<a class="link-card" href={href}>
+  <span class="link-copy">
+    <strong>{title}</strong>
+    {card.description && <span class="description">{card.description}</span>}
+    <span class="site"><ExternalLink aria-hidden="true" size={15} />{card.siteName || url.hostname}</span>
+  </span>
+  {card.image && <img src={card.image} alt="" loading="lazy" decoding="async" />}
+</a>
+
+<style>
+  .link-card {
+    align-items: stretch;
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    color: var(--text);
+    display: flex;
+    margin: 1.5rem 0;
+    min-height: 7rem;
+    overflow: hidden;
+    text-decoration: none;
+  }
+  .link-card:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .link-copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35rem;
+    justify-content: center;
+    min-width: 0;
+    padding: 1rem;
+  }
+  strong,
+  .description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+  }
+  strong {
+    -webkit-line-clamp: 2;
+  }
+  .description {
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    -webkit-line-clamp: 2;
+  }
+  .site {
+    align-items: center;
+    color: var(--muted);
+    display: flex;
+    font-size: 0.78rem;
+    gap: 0.35rem;
+  }
+  img {
+    aspect-ratio: 1.4;
+    border-left: 1px solid var(--border);
+    object-fit: cover;
+    width: 11rem;
+  }
+  @media (max-width: 34rem) {
+    img {
+      display: none;
+    }
+  }
+</style>

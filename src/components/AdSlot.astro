@@ -1,0 +1,42 @@
+---
+import { SITE } from "../config/site";
+---
+
+<aside class="ad-slot" aria-label="広告">
+  {
+    import.meta.env.PROD ? (
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={SITE.adsenseClient}
+        data-ad-slot="5517696728"
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    ) : (
+      <span>Advertisement</span>
+    )
+  }
+</aside>
+{
+  import.meta.env.PROD && (
+    <script is:inline>{`(adsbygoogle=window.adsbygoogle||[]).push({});`}</script>
+  )
+}
+
+<style>
+  .ad-slot {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    justify-content: center;
+    min-height: 15.625rem;
+    width: 100%;
+  }
+  span {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+</style>

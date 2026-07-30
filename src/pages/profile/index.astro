@@ -1,0 +1,41 @@
+---
+import { SITE } from "../../config/site";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Profile">
+  <article class="container narrow profile">
+    <h1>Profile</h1>
+    <img
+      src="/assets/profile_standard.png"
+      alt="Tadayuki Onishiのプロフィール画像"
+      width="240"
+      height="240"
+    />
+    <h2>{SITE.author}</h2>
+    <p>証券会社で働く、バックエンドエンジニア兼セキュリティ兼社内情報システムとかをやる人。</p>
+    <p>普段使っている言語はScala、Ruby、JavaScript辺りです。</p>
+    <p>アニメを見ること、お布団でぬくぬくすることを生きがいにしています。</p>
+    <p>
+      ご意見・ご質問、仕事のご相談・ご依頼は
+      <a href={SITE.profiles.x}>X（@kenchan0130）</a>宛にDMをお送りください。
+    </p>
+    <p>
+      こちらのアイコンは<a href="https://twitter.com/hajipion">@hajipion</a>に作成いただきました。
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .profile img {
+    display: block;
+    border-radius: 50%;
+    width: 10rem;
+    margin-inline: auto;
+  }
+  .profile h2 {
+    border: 0;
+    margin-top: 1.5rem;
+    text-align: center;
+  }
+</style>

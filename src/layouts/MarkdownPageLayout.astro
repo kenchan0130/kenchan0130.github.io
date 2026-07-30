@@ -1,0 +1,26 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+const { frontmatter } = Astro.props;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <article class="container narrow page">
+    <h1>{frontmatter.title}</h1>
+    <slot />
+  </article>
+</BaseLayout>
+
+<style>
+  .page :global(h1) {
+    margin-bottom: 2.5rem;
+  }
+  .page :global(li > ul),
+  .page :global(li > ol) {
+    margin-block: 0.15rem 0.25rem;
+    padding-inline-start: 1.4rem;
+  }
+  .page :global(li + li) {
+    margin-top: 0.15rem;
+  }
+</style>

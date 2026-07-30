@@ -1,0 +1,137 @@
+---
+import { CircleCheck, Link } from "@lucide/astro";
+---
+
+<div class="copy-wrap">
+  <button type="button" data-copy-url><Link aria-hidden="true" size={14} />URLをコピー</button>
+  <span aria-live="polite" class="status" data-copy-status data-state="idle" role="status">
+    <CircleCheck aria-hidden="true" size={15} />
+    <span data-copy-status-text></span>
+  </span>
+</div>
+
+<script>
+  let hideStatusTimer: number | undefined;
+
+  const copyText = async (text: string) => {
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return;
+      } catch {
+        // Continue with the compatibility fallback below.
+      }
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.append(textarea);
+    textarea.select();
+    const legacyDocument = document as unknown as {
+      execCommand(commandId: "copy"): boolean;
+    };
+    const copied = legacyDocument.execCommand("copy");
+    textarea.remove();
+
+    if (!copied) throw new Error("Clipboard access is unavailable");
+  };
+
+  document.querySelector("[data-copy-url]")?.addEventListener("click", async () => {
+    const status = document.querySelector<HTMLElement>("[data-copy-status]");
+    const statusText = status?.querySelector("[data-copy-status-text]");
+
+    const showStatus = (state: "success" | "error", message: string) => {
+      if (!status || !statusText) return;
+      status.dataset.state = state;
+      statusText.textContent = message;
+      if (hideStatusTimer) window.clearTimeout(hideStatusTimer);
+      hideStatusTimer = window.setTimeout(() => {
+        status.dataset.state = "idle";
+        statusText.textContent = "";
+      }, 2500);
+    };
+
+    try {
+      await copyText(window.location.href);
+      showStatus("success", "コピーしました");
+    } catch {
+      showStatus("error", "コピーできませんでした");
+    }
+  });
+</script>
+
+<style>
+  .copy-wrap {
+    align-items: center;
+    display: flex;
+    position: relative;
+  }
+  button {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.35rem;
+    color: var(--muted);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-size: 0.78rem;
+    gap: 0.3rem;
+    min-height: 2rem;
+    padding: 0 0.4rem;
+  }
+  button:hover {
+    background: var(--surface);
+    border-color: var(--border);
+    color: var(--text);
+  }
+  .status {
+    align-items: center;
+    background: color-mix(in srgb, #1a7f37 12%, var(--bg));
+    border: 1px solid color-mix(in srgb, #1a7f37 40%, var(--border));
+    border-radius: 0.4rem;
+    color: color-mix(in srgb, #1a7f37 80%, var(--text));
+    display: flex;
+    font-size: 0.78rem;
+    font-weight: 600;
+    gap: 0.35rem;
+    inset-inline-end: 0;
+    line-height: 1.4;
+    opacity: 0;
+    padding: 0.35rem 0.55rem;
+    pointer-events: none;
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    transform: translateY(-0.2rem);
+    transition:
+      opacity 120ms ease,
+      transform 120ms ease,
+      visibility 120ms;
+    visibility: hidden;
+    white-space: nowrap;
+    z-index: 2;
+  }
+  .status[data-state="success"],
+  .status[data-state="error"] {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+  .status[data-state="error"] {
+    background: color-mix(in srgb, #cf222e 10%, var(--bg));
+    border-color: color-mix(in srgb, #cf222e 40%, var(--border));
+    color: color-mix(in srgb, #cf222e 80%, var(--text));
+  }
+  .status[data-state="error"] :global(svg) {
+    display: none;
+  }
+  @media (max-width: 38rem) {
+    .status {
+      inset-inline-end: auto;
+      inset-inline-start: 0;
+    }
+  }
+</style>
