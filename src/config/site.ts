@@ -19,5 +19,6 @@ export const SITE = {
   },
   analyticsId: "G-B7RX34Q5PL",
   adsenseClient: "ca-pub-2444060431947599",
+  adsenseSlot: "7319689305",
   googleSiteVerification: "ZxlKORgZZwZ4TTmaQJFFEXLF3jmd6P_NVU9TEVW1bSg",
 } as const;
