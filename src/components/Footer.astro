@@ -1,0 +1,70 @@
+---
+import { ExternalLink } from "@lucide/astro";
+import { SITE } from "../config/site";
+
+const buildYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <nav aria-label="フッターナビゲーション">
+    <a href="/profile">Profile</a>
+    <a href="/profile/resume">Resume</a>
+    <a href="/archives">Archives</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/feed.xml">RSS</a>
+    <a class="external" href={SITE.profiles.github} aria-label="GitHub（外部サイト）">
+      GitHub<ExternalLink aria-hidden="true" size={13} />
+    </a>
+    <a class="external" href={SITE.profiles.x} aria-label="X（外部サイト）">
+      X<ExternalLink aria-hidden="true" size={13} />
+    </a>
+  </nav>
+  <p>© 2017–{buildYear} {SITE.author}</p>
+  <p class="license">
+    特に記載がない限り、当サイトの文章と自作画像は <a
+      class="external"
+      href="https://creativecommons.org/licenses/by/4.0/deed.ja"
+      aria-label="CC BY 4.0（外部サイト）"
+    >
+      CC BY 4.0<ExternalLink aria-hidden="true" size={13} />
+    </a> のもとで提供します。サイトの実装と記事内のコード例は <a
+      class="external"
+      href="https://opensource.org/license/mit"
+      aria-label="MIT License（外部サイト）"
+    >
+      MIT License<ExternalLink aria-hidden="true" size={13} />
+    </a> のもとで提供します。第三者に権利が帰属する著作物には、各権利者が定める利用条件が適用されます。
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.84rem;
+    margin-top: 5rem;
+    padding: 2.5rem 1.25rem;
+    text-align: center;
+  }
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    justify-content: center;
+  }
+  p {
+    margin: 0.9rem auto 0;
+  }
+  .license {
+    line-height: 1.7;
+    max-width: 48rem;
+  }
+  .external {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.2rem;
+  }
+  .external :global(svg) {
+    flex: none;
+  }
+</style>

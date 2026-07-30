@@ -1,0 +1,8 @@
+savePrefix: ""
+packageManagerStrictVersion: true
+managePackageManagerVersions: false
+
+onlyBuiltDependencies:
+  - "@biomejs/biome@2.5.5"
+  - "esbuild@0.28.1"
+  - "sharp@0.35.3"

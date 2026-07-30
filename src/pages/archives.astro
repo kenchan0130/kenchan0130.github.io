@@ -1,0 +1,63 @@
+---
+import PostList from "../components/PostList.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getPublishedPosts } from "../lib/posts";
+
+const posts = await getPublishedPosts();
+const categories = [...new Set(posts.flatMap((post) => post.data.categories))].sort();
+const years = [...new Set(posts.map((post) => post.data.published.getUTCFullYear()))].sort(
+  (a, b) => b - a,
+);
+---
+
+<BaseLayout title="Archives" description="記事を年別・カテゴリ別に探せるアーカイブです。">
+  <div class="container archive">
+    <h1>Archives</h1>
+    <nav aria-label="カテゴリ">
+      <span>Categories</span>
+      {
+        categories.map((category) => (
+          <a href={`/category/${category}`}>{category}</a>
+        ))
+      }
+    </nav>
+    {
+      years.map((year) => (
+        <section aria-labelledby={`year-${year}`}>
+          <h2 id={`year-${year}`}>{year}</h2>
+          <PostList posts={posts.filter((post) => post.data.published.getUTCFullYear() === year)} />
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .archive {
+    max-width: 52rem;
+  }
+  nav {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 2rem 0 4rem;
+  }
+  nav span {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+  }
+  nav a {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    padding: 0.25rem 0.75rem;
+    text-decoration: none;
+  }
+  section > h2 {
+    font-size: 1.35rem;
+    margin-top: 3.5rem;
+  }
+</style>

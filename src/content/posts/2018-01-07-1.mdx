@@ -1,0 +1,110 @@
+---
+title: macOSでSafariとGoogle Chromeのポリシーを設定する
+description: ブラウザのポリシーと言うとActive Directoryでグループポリシーを用意し、Internet Explorerの設定を行うというのはよく聞く話ですが、今回はmacOSの場合はどうすればよいかをSafariとGoogle Chromeを題材として紹介していきます。
+published: 2018-01-07
+categories:
+  - system-administration
+tags:
+  - macOS
+  - Google Chrome
+  - Safari
+references: []
+draft: false 
+---
+
+Active Directoryの標準のグループポリシーを使用すると、
+管理しているWindows端末のInternet Explorerに対して独自のポリシーを当てることができます。
+しかし、それ以外のブラウザではどのように制限をかけるのでしょうか。
+
+今回はmacOSにおける主要なブラウザであるSafariとGoogle Chromeのブラウザにフォーカスを当てて、
+適用できるポリシーおよびその設定方法を紹介します。
+
+えっ？Firefox？Firefoxはですね。。。ポリシーの当て方が上記のブラウザとは異なり一元管理しづらいため今回は外しました。すみません。
+mozillaが公式に出している[日本語の資料](https://www.mozilla.jp/business/faq/tech/)があるのでそちらを参照ください。
+
+## Safari
+
+SafariはMacユーザーにとっては標準で入っているブラウザであるため、かなり使っている人が多いです。
+しかし、私の調査能力不足なのか、Apple社が公式で出しているポリシーの資料がまったく見当たりません。
+
+そのため、どのようなポリシー（属性）が存在するのかを手作業で探していき、そのポリシーの意味を頑張って調査して設定して行く必要があります。どなたか資料の場所などご存じでしたらご教示ください！
+
+macOSのアプリケーションの環境設定は、アプリケーションのドメインが定まれば、外部から閲覧および設定が可能となります。
+
+### 属性の設定
+
+Safariの設定は `com.apple.Safari` および `com.apple.SafariTechnologyPreview` に入っているので、現在の設定を閲覧したい場合は、
+
+```sh
+defaults read com.apple.Safari
+```
+
+とすることで閲覧が可能です。
+また、設定を追加・上書きするには
+
+```sh
+defaults write com.apple.Safari ポリシー名 -型 値
+```
+
+のように設定します。
+
+### 各属性について
+
+項目が多いため、[CSV](/assets/posts/post/2018-01-07-1/safari_policies_ja.csv) にまとめました。
+`defaults read com.apple.Safari` をたたくとほかにも属性があったりするのですが、動作確認ができておらず分かる範囲をまとめました。
+
+また、Safari 11.0時点の情報であり、動作確認をしていないポリシーも多く含み、説明に関しても誤りがある可能性があります。
+設定に関してはあくまで自己責任でお願いします。
+
+## Google Chrome
+
+Google Chromeは2018年1月時点でInternet Explorerを超えて世界シェア1位（[Net Applications調べ](https://netmarketshare.com/browser-market-share.aspx)）になるほど、利用者が多いGoogle製のブラウザです。
+
+### 属性の設定
+
+Google Chromeの設定は `com.google.Chrome` および `com.google.Chrome.canary` に入っているので、現在の設定を閲覧したい場合は、
+
+```sh
+defaults read com.google.Chrome
+```
+
+とすることで閲覧が可能です。
+また、設定を追加・上書きするには
+
+```sh
+defaults write com.google.Chrome ポリシー名 -型 値
+```
+
+のように設定します。
+
+### 各属性について
+
+属性の内容は [Chromium デベロッパーサイト](http://www.chromium.org/administrators/policy-list-3) に記載されています。
+また、[Google Chrome ポリシーテンプレート ZIPファイル](https://dl.google.com/dl/edgedl/chrome/policy/policy_templates.zip)内に各言語毎の翻訳が入っているので、参考にしてみると良いでしょう。
+
+## 管理者として設定の配布
+
+各ユーザーが管理者権限を所有していない前提になりますが、
+
+- プロファイルの配布
+- plistファイル直置き
+
+などで配布できます。
+
+### プロファイルの配布
+
+管理者側で設定をしたい場合は、プロファイルマネージャーの「カスタム設定」やJamf Proなどを用いて管理端末に配布できます。
+
+![プロファイルマネージャーのカスタム設定項目の例](/assets/posts/post/2018-01-07-1/profile_manager_custom_settings_payload.png)
+
+### plistファイル直置き
+
+`/Library/Managed Preferences` ディレクトリに `アプリケーションドメイン.plist` ファイルを設置することで、すべてのユーザーに設定を反映できます。
+また、`/Library/Managed Preferences/ユーザー名` ディレクトリにplistファイルを設置することで、各ユーザー毎に設定を反映できます。
+
+## まとめ
+
+SafariとGoogle Chromeのポリシーの適用方法と、その属性について記載しました。
+また、管理者権限を持っていないユーザーに対して、管理者として設定を配布する方法を説明しました。
+
+すべてのポリシーを制御しようとするとキリがないため、セキュリティに関する項目を管理者側で設定しておくのがオススメです。

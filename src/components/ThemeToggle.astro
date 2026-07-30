@@ -1,0 +1,65 @@
+---
+import { Moon, Sun } from "@lucide/astro";
+---
+
+<button
+  class="theme-toggle"
+  type="button"
+  aria-label="表示テーマを切り替える"
+  title="表示テーマを切り替える"
+  data-theme-toggle
+>
+  <Moon class="dark-icon" aria-hidden="true" size={18} />
+  <Sun class="light-icon" aria-hidden="true" size={18} />
+</button>
+
+<script is:inline>
+  const button = document.querySelector("[data-theme-toggle]");
+  const root = document.documentElement;
+  const update = (theme, persist = true) => {
+    root.dataset.theme = theme;
+    if (persist) localStorage.setItem("theme", theme);
+    const label = `${theme === "dark" ? "ライト" : "ダーク"}テーマに切り替える`;
+    button?.setAttribute("aria-label", label);
+    button?.setAttribute("title", label);
+  };
+  const resolved =
+    root.dataset.theme ||
+    (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  update(resolved, false);
+  button?.addEventListener("click", () => {
+    const current =
+      root.dataset.theme ||
+      (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    update(current === "dark" ? "light" : "dark");
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.45rem;
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    min-height: 2.5rem;
+    justify-content: center;
+    padding: 0;
+    width: 2.5rem;
+  }
+  .theme-toggle:hover {
+    background: var(--surface-strong);
+  }
+  .light-icon {
+    display: none;
+  }
+  :global([data-theme="dark"]) .dark-icon {
+    display: none;
+  }
+  :global([data-theme="dark"]) .light-icon {
+    display: inline;
+  }
+</style>

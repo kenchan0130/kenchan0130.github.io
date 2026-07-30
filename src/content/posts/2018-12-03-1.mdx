@@ -1,0 +1,370 @@
+---
+title: Google Apps Scriptのモダンな開発環境を求めて
+description: Google Apps Script (GAS) はGoogle SpreadsheetやGmailなどのGoogleアプリの拡張または、 単体でサーバーのプロビジョニングや管理なしでスクリプト実行が可能な JavaScriptライクな言語または軽量アプリケーションです。 今回はGoogle Apps Scriptのモダンな開発方法を調査・検討を行ったため、その記録を備忘として残します。
+published: 2018-12-03
+categories:
+  - development
+tags:
+  - Google Apps Script
+  - JavaScript
+  - TypeScript
+  - clasp
+  - webpack
+  - Babel
+  - Node.js
+references: []
+draft: false 
+---
+
+これは [FOLIO Advent Calendar 2018](https://adventar.org/calendars/3424) の12/3の投稿でもあります。前日は [Mura-Mi](https://adventar.org/users/2268) さんで「[社員数が100人に迫っても社員と社長との距離を保つ「CEO Radio」の取り組み](http://t-and-p.hatenablog.com/entry/ceo-radio)」でした。
+
+Google Apps Script (GAS) はGoogle SpreadsheetやGmailなどのGoogleアプリの拡張または、
+単体でサーバーのプロビジョニングや管理なしでスクリプト実行が可能なJavaScriptライクな言語または軽量アプリケーションです。
+
+今回はこのGoogle Apps Scriptをモダンに開発するためにいろいろ模索したため、その内容を備忘として書き残しておきます。
+
+## Google Apps Scriptについて
+
+Google Apps Scriptについて従来の開発および使用方法について紹介します。
+
+### Google Apps Scriptの一般的な開発方法
+
+Google Apps Scriptは、各Googleアプリのツールバーの **ツール > スクリプトエディタ** またはGoogle DriveにGoogle Apps Scriptのアプリケーションを追加することで作成できます。
+
+![Script Editor from ToolBar](/assets/posts/post/2018-12-03-1/script_editor_from_toolbar.png)
+![Google Drive Add App](/assets/posts/post/2018-12-03-1/google_drive_add_app.png)
+
+Google Apps ScriptはJavaScript 1.6をベースに、 1.7および1.8の一部とECMAScript 5 APIのサブセットを提供しています。
+
+### Google Apps Scriptの実行
+
+Google Apps Scriptはグローバルな関数をエントリポイントとして実行されます。
+無名関数はエントリポイントとして利用できません。
+
+```javascript
+// This function can use as entry point.
+function myGlobalFunction() {
+  console.log('Ran myGlobalFunction.');
+}
+
+// This function cannot use as entry point.
+var myGlobalAnonymousFunction = function() {
+  console.log('Ran myGlobalAnonymousFunction.');
+};
+```
+
+#### エディタから実行
+
+Google Apps Scriptはエディタから実行できます。
+デバッグなど動作確認を行う際や、手動で実行したい場合などで有効です。
+
+![エディタから実行の例](/assets/posts/post/2018-12-03-1/run_script_from_manual.png)
+
+#### イベントトリガでの実行
+
+Google Apps Scriptはいくつかのイベントトリガを用いて実行できます。
+実行可能なトリガは以下の3つです。
+
+- GoogleアプリのSimple Triggerでの実行
+- 時間での実行
+- Googleカレンダーの予定更新での実行
+
+**GoogleアプリのSimple Triggerでの実行**
+
+Simple Triggerを使用するには、予約されている関数名の関数を作成することで実行可能となります。
+予約されている関数は、
+
+- `onOpen(e)`
+  - ユーザーが編集権限を持つスプレッドシート、ドキュメント、プレゼンテーション、またはフォームを開いた際に実行
+- `onEdit(e)`
+  - ユーザーがスプレッドシート内の値を変更した際に実行
+- `onInstall(e)`
+  - ユーザーがアドオンをインストールした際に実行
+- `doGet(e)`
+  - HTTP GETリクエストをWebアプリケーションに送信した際に実行
+  - 「Webアプリケーションとして導入」を実行することで、プロジェクトに一意なエンドポイントを発行
+- `doPost(e)`
+  - HTTP POSTリクエストをWebアプリケーションに送信した際に実行
+  - 「Webアプリケーションとして導入」を実行することで、プロジェクトに一意なエンドポイントを発行
+
+の全部で4つです。
+`onOpen(e)`、`onEdit(e)`、`onInstall(e)` を使用するにあたっては、
+
+- Googleスプレッドシート、スライド、ドキュメント、またはフォームとスクリプトのバインドが必要
+- 読み取り専用モードで開かれている場合は実行されない
+- スクリプトやAPIなどユーザーがUI上で操作をしないと実行されない
+- 認可が必要なスクリプトは実行されない
+- 30秒以上かかると、スクリプト実行がkillされる
+
+などの制約があります。
+詳しくは [Google Developers のサイト](https://developers.google.com/apps-script/guides/triggers/)を参照してください。
+
+**時間での実行**
+
+時間ベースでの実行は、
+
+- 特定の日時
+- 分毎
+- 時毎
+- 日毎
+- 週毎
+- 月毎
+
+が選択できます。
+
+![時間トリガーの選択](/assets/posts/post/2018-12-03-1/time_base_trigger_type_selection.png)
+
+**Googleカレンダーの予定更新での実行**
+
+Simple Triggerや時間でのトリガと比べると少し浮いてしまっていますが、
+Googleカレンダーの予定更新をトリガとしてスクリプトの実行が可能です。
+
+![Google カレンダーの予定更新トリガーの設定](/assets/posts/post/2018-12-03-1/calendar_trigger_settings.png)
+
+### ユーティリティサービス
+
+Google Apps Scriptにはグローバル関数として、あらかじめ **Utilities** が提供されています。
+主に「文字列のエンコード/デコード」、「日付の書式設定」、「JSON操作」などの機能を提供しているユーティリティ郡です。
+
+詳しくは [Google Developers のサイト](https://developers.google.com/apps-script/reference/utilities/)を参照してください。
+
+### サードパーティライブラリ
+
+Google Apps Scriptではサードパーティが用意したライブラリを使用できます。
+使用するにはライブラリを一意に特定するプロジェクトキーが必要になります。
+
+公開されているライブラリの検索機能などはないため、探すのがたいへんなのですが、[Google Apps Script List](https://github.com/oshliaer/google-apps-script-awesome-list) のように、有志の方が一覧を公開しています。このような情報からプロジェクトキーを特定するのが近道であると思われます。
+
+もしほかに良い検索方法などをご存じでしたらご教示ください。
+
+### マニフェストファイル
+
+マニフェストファイルとは、 Google Apps Scriptを期待通りに実行するための設定ファイルです。
+`appsscript.json` という名前のファイルであり、
+
+- 実行するタイムゾーン
+- OAuthの権限のスコープ
+- 依存ライブラリ
+- Webアプリケーションの権限スコープ
+
+などが設定できます。
+
+詳しくは [Google Developers のサイト](https://developers.google.com/apps-script/concepts/manifests)を参照してください。
+
+## Google Apps Scriptの便利なユースケース
+
+Google Apps ScriptではWebアプリケーションとして公開すると、**無料** でHTTP GETやHTTP POSTのエンドポイントを実現できることがわかりました。
+
+### HTTP POSTのWebアプリケーションの使用例
+
+HTTP POSTのWebアプリケーションを用意できるため、
+
+- Slack Botアプリケーション用のサーバー
+
+などのユースが考えられます。
+フォームの代替などとして使用する場合は、しばしばCSRFの実装が必要となるため、技術的には可能ですが、少々実現のハードルが高くなるため、あまりオススメできません。
+
+### HTTP GETのWebアプリケーションの使用例
+
+HTTP POSTのWebアプリケーションを用意できるため、
+
+- 定期的に更新されるHTMLやJSON APIなどをRSSとして配信
+  - SlackのRSS Appを使用してFeed登録すると通知を得ることが可能
+- 外部リソースなどをモックアップして、新たなJSON APIの提供
+
+などのユースが考えられます。
+もちろんクエリパラメータも受け付けられるため、実現できる幅が広がると思います。
+
+## Google Apps Scriptのモダンな開発方法
+
+ここまで、 Google Apps Scriptの基本的な開発方法などについて紹介してきました。
+
+さて、ここからが本題です。
+今までの開発方法ですと、 Web上でのみの開発や、存在しないライブラリに関しては自分で追加するなどの対応が必要でした。
+
+ここからは、上記の問題を解決するためにいろいろ調べて実践してみた内容を紹介します。
+
+### ローカル環境での開発
+
+先程も述べたとおり、 Web上のスクリプトエディタのみでの開発が主流でした。
+そのため先人たちは、
+
+- [google-apps-script](https://www.npmjs.com/package/google-apps-script)
+- [node-google-apps-script](https://www.npmjs.com/package/node-google-apps-script)
+
+などのNPMライブラリを開発してきました。
+
+そんな中、 2018年1月に満を持してGoogle社がGoogle Apps Scriptをローカル環境で開発するための `clasp` というCLIを[NPMライブラリ](https://www.npmjs.com/package/@google/clasp)としてかつ[GitHub上](https://github.com/google/clasp) でOSSとして提供を開始しました。
+
+2018年12月現在、この `clasp` がローカル環境での開発におけるデファクトスタンダードとなっています。
+
+### claspについて
+
+`clasp` は主にGoogle Apps Script APIを介して、
+
+- Google Apps Scriptプロジェクトの作成
+- Google Apps Scriptプロジェクトのコードのpull/push
+- Google Apps ScriptプロジェクトのWebアプリケーションのdeploy/undeploy
+
+を行うことができるCLIです。
+
+`clasp` はNPMライブラリで提供されているため、Node.jsおよび `npm` コマンドを事前にインストールしておく必要があります。
+
+```sh
+$ npm install -g @google/clasp
+$ clasp -h
+Usage: clasp <command> [options]
+
+clasp - The Apps Script CLI
+
+Options:
+  -v, --version
+  -h, --help              output usage information
+
+Commands:
+  login [options]     Log in to script.google.com
+  (略)
+  *                            Any other command is not supported
+```
+
+#### TypeScriptのサポート
+
+claspは [1.5](https://github.com/google/clasp/releases/tag/1.5) からTypeScriptをサポートしました。
+`tsc` コマンドなどによる事前のビルドを必要とせず、 push時に自動で `gs` 形式にトランスパイルが可能となりました。
+
+#### claspで使用される設定ファイル
+
+claspには、
+
+- `.clasprc.json`
+- `.clasp.json`
+- `.claspignore`
+
+の3つの設定ファイルがあります。
+
+**`.clasprc.json`**
+
+`.clasprc.json` はGoogle Apps Scriptを操作するためのAPIの認証情報が保存されています。
+これは `clasp login` コマンドを実行すると自動で生成されるため、あまり意識する必要はありません。
+
+**`.clasp.json`**
+
+`.clasp.json` は各プロジェクトごとの設定を定義するファイルです。
+
+```json
+{
+  "scriptId": "xxxxxxxxxxxxxxx",
+  "rootDir": "dist/",
+  "fileExtension": "ts",
+  "filePushOrder": ["file1.ts", "file2.ts"]
+}
+```
+
+`scriptId` は、Google Apps ScriptプロジェクトのURL `https://script.google.com/d/<SCRIPT_ID>/edit` の `d` と `edit` の間の文字列であり、必須項目です。
+それ以外の属性は任意項目です。
+
+詳しくはclaspの[README](https://github.com/google/clasp/blob/master/README.md)を参照してください。
+
+**`.claspignore`**
+
+`.claspignore` は `clasp push` 時に、pushする内容を制限を設定するためのファイルです。
+記法は `.gitignore` と同じです。
+
+### ローカル開発の実現調査
+
+claspを使用していくのがデファクトスタンダードであり、型のあるTypeScriptで開発を行えることが分かったため、これらを使用して開発を進めていくことにしました。
+
+#### claspとTypeScriptを使用するための初期設定
+
+`modern-gas-sample` という作業ディレクトリでの作業を想定して、以下のコマンドで初期設定します。
+
+```sh
+$ mkdir modern-gas-sample
+$ cd modern-gas-sample
+# yarnが好みなのでyarnを使用している
+$ yarn init
+$ yarn add @google/clasp @types/google-apps-script tslint --dev
+$ yarn run tslint --init
+```
+
+`tslint` は必須ではないですが、開発効率向上のためTypeScriptを書く際は導入を推奨しています。
+これで最低限の開発環境設定は終わったため、次にGoogle Apps Scriptとリポジトリを連携します。
+
+```sh
+$ yarn run clasp create modern-gas-sample --rootDir ./src
+$ yarn run clasp pull
+$ mv src/Code.gs src/Code.ts
+```
+
+これにより、 `src/` 以下がGoogle Apps Scriptプロジェクトとsyncするようになりました。
+
+動作確認のため、 `Code.ts` を、
+
+```typescript
+// Code.ts
+function myGlobalFunction(): void {
+  const message = 'This is myGlobalFunction.';
+  console.log(message);
+}
+```
+
+上記のように編集してみて、Google Apps Scriptのプロジェクトにpushしてみます。
+
+```sh
+$ yarn run clasp push --watch
+```
+
+`--watch` オプションを付けることで、 `rootDir` のディレクトリのファイルに変更があった場合、自動でpushを行うことができます。
+
+Google Apps ScriptのプロジェクトURLにアクセスしてみると、無事 `.gs` ファイルとしてトランスパイルされたコードがGoogle Apps Scriptのプロジェクトにpushされていることが確認できます。
+
+![claspとTypeScriptを使用してGoogle Apps Scriptのプロジェクトにpushした例](/assets/posts/post/2018-12-03-1/clasp_push_with_typescript.png)
+
+ここで注意することは、このタイミングで `clasp pull` をしてしまうと、ビルドされた `.gs` ファイルがpullされてしまうということです。
+そのため、TypeScriptで記述したソースコードは必ずGit管理し、Google Apps Scriptプロジェクトには常にpushだけを行うようにすることをお勧めします。
+
+#### NPMパッケージの使用欲求
+
+先程挙げましたユースケースの中にRSSフィードを配信するというものがありました。
+このユースケースを実現するとした場合、自作でRSSフィードを生成するコードを書いても良いのですが、やはりテストされているNPMパッケージを使いたくなります。
+
+しかし2018年12月現在、 claspは [ES Modules をサポートしていない](https://github.com/google/clasp/issues/325)ため、claspのみではNPMパッケージを使用できません。
+
+もし、Node.jsの標準ライブラリやNPMパッケージを使用したい場合は、残念ながら
+
+- [webpack](https://babeljs.io/)
+- [Babel](https://webpack.js.org/)
+
+の力を借りなければいけません。
+
+どうしてもNPMパッケージが譲れない場合、執筆現在、私がたどり着いた答えは、
+
+- 愚直にwebpackを使用して、 [`ts-loader`](https://www.npmjs.com/package/ts-loader) および [`babel-loader`](https://www.npmjs.com/package/babel-loader) をかます
+
+という方法です。
+
+ NPMパッケージ、つまり `node_modules` に存在するファイルがES2015で記述されていた場合、 webpackでバンドルした際にES2015のファイルが存在してしまい、 Google Apps Scriptで実行できません。そのため、 Babelを用いてES5に変換する必要があります。
+
+### ローカル開発の実践
+
+今回は「愚直にwebpackを使用して、 [`ts-loader`](https://www.npmjs.com/package/ts-loader) および [`babel-loader`](https://www.npmjs.com/package/babel-loader) をかます」の手法を使用して、ニュースが配信されているJSON APIを呼び出し、RSSとして配信するためのアプリケーションをローカル開発で行ってみました。
+
+コードは[こちら](https://github.com/kenchan0130/jamf-nation-rss-gas)で公開しています。
+
+最低限の動作は確認できていますが絶賛拡張中のため、詳しい内容に関しては、また後日ブログがかけたらと思っています。
+
+## まとめ
+
+Google Apps Scriptの基本的な機能について紹介しました。
+また、 現在はローカルでの開発がclaspを使用して行われるのが主流であり、一通りのことができることを紹介しました。
+
+まだまだclasp含めGoole Apps Scriptは発展途上であるため、より便利に開発したい場合は、引き続きwebpackとBabelを使用し続ける必要があります。
+しかしclaspは開発速度が速いため、今後の対応に目が離せません。
+
+## 宣伝
+
+FOLIOでは[絶賛採用強化中](https://www.wantedly.com/companies/folio/projects)です。
+ご興味ある方はぜひご連絡ください！
+
+明日は [KeitaMoromizato](https://adventar.org/users/22353) さんによる「Node.js x thrift in FOLIO」です。
+引き続きFOLIO Advent Calendar 2018をお楽しみに！

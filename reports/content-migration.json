@@ -1,0 +1,1613 @@
+{
+  "generatedAt": "2026-07-30T02:57:53.976Z",
+  "posts": [
+    {
+      "slug": "2017-12-03-1",
+      "metadata": {
+        "title": "Apple製品を会社として導入するための準備をした話",
+        "published": "2017-12-03",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "macOS",
+          "iOS",
+          "DEP",
+          "VPP"
+        ]
+      },
+      "before": {
+        "headings": 22,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 7746
+      },
+      "after": {
+        "headings": 22,
+        "codeBlocks": 2,
+        "internalLinks": 2,
+        "images": 0,
+        "characters": 7563
+      }
+    },
+    {
+      "slug": "2017-12-17-1",
+      "metadata": {
+        "title": "FOLIOにおけるiOS/Android/macOSの端末管理とその運用について",
+        "published": "2017-12-17",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "macOS",
+          "iOS",
+          "DEP",
+          "VPP",
+          "Android",
+          "EMM"
+        ]
+      },
+      "before": {
+        "headings": 32,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 11324
+      },
+      "after": {
+        "headings": 32,
+        "codeBlocks": 0,
+        "internalLinks": 2,
+        "images": 2,
+        "characters": 11032
+      }
+    },
+    {
+      "slug": "2017-12-23-1",
+      "metadata": {
+        "title": "macOSにおける運用を続けていくためのsudo設定",
+        "published": "2017-12-23",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "sudo",
+          "sudoers",
+          "macOS",
+          "Linux"
+        ]
+      },
+      "before": {
+        "headings": 64,
+        "codeBlocks": 5,
+        "internalLinks": 0,
+        "images": 5,
+        "characters": 5012
+      },
+      "after": {
+        "headings": 64,
+        "codeBlocks": 5,
+        "internalLinks": 0,
+        "images": 5,
+        "characters": 5093
+      }
+    },
+    {
+      "slug": "2018-01-07-1",
+      "metadata": {
+        "title": "macOSでSafariとGoogle Chromeのポリシーを設定する",
+        "published": "2018-01-07",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "macOS",
+          "Google Chrome",
+          "Safari"
+        ]
+      },
+      "before": {
+        "headings": 10,
+        "codeBlocks": 4,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 2276
+      },
+      "after": {
+        "headings": 10,
+        "codeBlocks": 4,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 2302
+      }
+    },
+    {
+      "slug": "2018-04-19-1",
+      "metadata": {
+        "title": "Confluenceユーザーマクロのすゝめ",
+        "published": "2018-04-19",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Atlassian",
+          "Confluence"
+        ]
+      },
+      "before": {
+        "headings": 49,
+        "codeBlocks": 4,
+        "internalLinks": 0,
+        "images": 6,
+        "characters": 4956
+      },
+      "after": {
+        "headings": 49,
+        "codeBlocks": 4,
+        "internalLinks": 0,
+        "images": 6,
+        "characters": 5054
+      }
+    },
+    {
+      "slug": "2018-05-21-1",
+      "metadata": {
+        "title": "UserScriptで業務改善",
+        "published": "2018-05-21",
+        "categories": [
+          "business-improvement"
+        ],
+        "tags": [
+          "Tampermonkey",
+          "Violentmonkey",
+          "Greasemonkey",
+          "JavaScript",
+          "UserScript",
+          "Gmail"
+        ]
+      },
+      "before": {
+        "headings": 7,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 4,
+        "characters": 5254
+      },
+      "after": {
+        "headings": 7,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 4,
+        "characters": 5334
+      }
+    },
+    {
+      "slug": "2018-06-18-1",
+      "metadata": {
+        "title": "Circle CIを使用したWebページのGitHub Pagesへのデプロイ",
+        "published": "2018-06-18",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Circle CI",
+          "GitHub Pages",
+          "VuePress"
+        ]
+      },
+      "before": {
+        "headings": 16,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 3,
+        "characters": 5313
+      },
+      "after": {
+        "headings": 16,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 3,
+        "characters": 5340
+      }
+    },
+    {
+      "slug": "2018-07-16-1",
+      "metadata": {
+        "title": "1つの画面で効率よくiOSアプリ開発を行う方法",
+        "published": "2018-07-16",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "AppleInternal",
+          "debug",
+          "iOS",
+          "iOS Simulator",
+          "Xcode"
+        ]
+      },
+      "before": {
+        "headings": 10,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 11,
+        "characters": 4147
+      },
+      "after": {
+        "headings": 10,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 11,
+        "characters": 4335
+      }
+    },
+    {
+      "slug": "2018-07-30-1",
+      "metadata": {
+        "title": "Jekyllの画像遅延ロードのためのライブラリを作った",
+        "published": "2018-07-30",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Jekyll",
+          "Ruby",
+          "RubyGems"
+        ]
+      },
+      "before": {
+        "headings": 19,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 5306
+      },
+      "after": {
+        "headings": 19,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 5296
+      }
+    },
+    {
+      "slug": "2018-12-03-1",
+      "metadata": {
+        "title": "Google Apps Scriptのモダンな開発環境を求めて",
+        "published": "2018-12-03",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Google Apps Script",
+          "JavaScript",
+          "TypeScript",
+          "clasp",
+          "webpack",
+          "Babel",
+          "Node.js"
+        ]
+      },
+      "before": {
+        "headings": 29,
+        "codeBlocks": 7,
+        "internalLinks": 0,
+        "images": 6,
+        "characters": 8451
+      },
+      "after": {
+        "headings": 29,
+        "codeBlocks": 7,
+        "internalLinks": 0,
+        "images": 6,
+        "characters": 8549
+      }
+    },
+    {
+      "slug": "2019-07-16-1",
+      "metadata": {
+        "title": "組織におけるApple IDの運用",
+        "published": "2019-07-16",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Apple ID",
+          "VPP",
+          "DEP",
+          "Education",
+          "Enterprise"
+        ]
+      },
+      "before": {
+        "headings": 12,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 6210
+      },
+      "after": {
+        "headings": 12,
+        "codeBlocks": 0,
+        "internalLinks": 3,
+        "images": 1,
+        "characters": 6186
+      }
+    },
+    {
+      "slug": "2019-12-16-1",
+      "metadata": {
+        "title": "Apple Business Manager/Apple School Managerの設定",
+        "published": "2019-12-16",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Apple ID",
+          "VPP",
+          "DEP",
+          "Education",
+          "Enterprise"
+        ]
+      },
+      "before": {
+        "headings": 19,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 13,
+        "characters": 8236
+      },
+      "after": {
+        "headings": 19,
+        "codeBlocks": 0,
+        "internalLinks": 1,
+        "images": 13,
+        "characters": 8449
+      }
+    },
+    {
+      "slug": "2019-12-18-1",
+      "metadata": {
+        "title": "クラウドPBXを選定してみる",
+        "published": "2019-12-18",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "PBX",
+          "Phone"
+        ]
+      },
+      "before": {
+        "headings": 17,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 4457
+      },
+      "after": {
+        "headings": 17,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 4447
+      }
+    },
+    {
+      "slug": "2019-12-23-1",
+      "metadata": {
+        "title": "Spring Security SAMLでSpring BootアプリをSAML対応",
+        "published": "2019-12-23",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "SAML",
+          "Spring Boot",
+          "Spring Security",
+          "Java"
+        ]
+      },
+      "before": {
+        "headings": 18,
+        "codeBlocks": 17,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 28808
+      },
+      "after": {
+        "headings": 18,
+        "codeBlocks": 17,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 28797
+      }
+    },
+    {
+      "slug": "2019-12-24-1",
+      "metadata": {
+        "title": "SAML認証が検証可能な開発環境用のIdPを構築",
+        "published": "2019-12-24",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "SAML",
+          "Docker",
+          "SimpleSAMLphp",
+          "PHP"
+        ]
+      },
+      "before": {
+        "headings": 6,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 5511
+      },
+      "after": {
+        "headings": 6,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 5501
+      }
+    },
+    {
+      "slug": "2019-12-24-2",
+      "metadata": {
+        "title": "Google ColaboratoryのRランタイムでCSVを操作してみる",
+        "published": "2019-12-24",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "SAML",
+          "Docker",
+          "SimpleSAMLphp",
+          "PHP"
+        ]
+      },
+      "before": {
+        "headings": 10,
+        "codeBlocks": 8,
+        "internalLinks": 0,
+        "images": 8,
+        "characters": 3424
+      },
+      "after": {
+        "headings": 10,
+        "codeBlocks": 8,
+        "internalLinks": 0,
+        "images": 8,
+        "characters": 3558
+      }
+    },
+    {
+      "slug": "2019-12-25-1",
+      "metadata": {
+        "title": "Google Apps Scriptのモダンな開発環境は理想だった",
+        "published": "2019-12-25",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Google Apps Script",
+          "JavaScript",
+          "TypeScript",
+          "clasp",
+          "Node.js"
+        ]
+      },
+      "before": {
+        "headings": 7,
+        "codeBlocks": 4,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 5267
+      },
+      "after": {
+        "headings": 7,
+        "codeBlocks": 4,
+        "internalLinks": 2,
+        "images": 0,
+        "characters": 5235
+      }
+    },
+    {
+      "slug": "2019-12-30-1",
+      "metadata": {
+        "title": "SFSafariViewControllerでリンク先に遷移できないバグにハマった",
+        "published": "2019-12-30",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Swift",
+          "Objective-C",
+          "iOS"
+        ]
+      },
+      "before": {
+        "headings": 6,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 3854
+      },
+      "after": {
+        "headings": 6,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 3844
+      }
+    },
+    {
+      "slug": "2020-01-27-1",
+      "metadata": {
+        "title": "Travis CIでNPMパッケージが\"missing api_key\"のためビルドできない問題の解消",
+        "published": "2020-01-27",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Travis CI",
+          "NPM",
+          "Node.js"
+        ]
+      },
+      "before": {
+        "headings": 3,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 1154
+      },
+      "after": {
+        "headings": 3,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 1162
+      }
+    },
+    {
+      "slug": "2020-02-05-1",
+      "metadata": {
+        "title": "Jamf Pro Serverの初期設定",
+        "published": "2020-02-05",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Jamf",
+          "Jamf Pro",
+          "macOS",
+          "iOS",
+          "iPadOS",
+          "Apple",
+          "MDM"
+        ]
+      },
+      "before": {
+        "headings": 7,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 4,
+        "characters": 3454
+      },
+      "after": {
+        "headings": 7,
+        "codeBlocks": 0,
+        "internalLinks": 1,
+        "images": 4,
+        "characters": 3537
+      }
+    },
+    {
+      "slug": "2020-02-13-1",
+      "metadata": {
+        "title": "Jamf Pro ServerにSSOを設定",
+        "published": "2020-02-13",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Jamf",
+          "Jamf Pro",
+          "macOS",
+          "iOS",
+          "iPadOS",
+          "Apple",
+          "MDM",
+          "SSO",
+          "Azure AD",
+          "Okta"
+        ]
+      },
+      "before": {
+        "headings": 13,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 19,
+        "characters": 8869
+      },
+      "after": {
+        "headings": 13,
+        "codeBlocks": 0,
+        "internalLinks": 1,
+        "images": 19,
+        "characters": 9190
+      }
+    },
+    {
+      "slug": "2020-07-01-1",
+      "metadata": {
+        "title": "WWDC 2020で発表されたエンタープライズ関連の新機能",
+        "published": "2020-07-01",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Education",
+          "Enterprise",
+          "iOS",
+          "iPadOS",
+          "macOS",
+          "MDM"
+        ]
+      },
+      "before": {
+        "headings": 21,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 16,
+        "characters": 7835
+      },
+      "after": {
+        "headings": 21,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 16,
+        "characters": 8113
+      }
+    },
+    {
+      "slug": "2020-07-07-1",
+      "metadata": {
+        "title": "Rails 5アップグレードへの道",
+        "published": "2020-07-07",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Ruby",
+          "Rails"
+        ]
+      },
+      "before": {
+        "headings": 42,
+        "codeBlocks": 19,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 6757
+      },
+      "after": {
+        "headings": 42,
+        "codeBlocks": 19,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 6747
+      }
+    },
+    {
+      "slug": "2020-07-17-1",
+      "metadata": {
+        "title": "RailsでJSONのリクエストパラメータがパースできなかった場合の対応",
+        "published": "2020-07-17",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Ruby",
+          "Rails"
+        ]
+      },
+      "before": {
+        "headings": 9,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 4110
+      },
+      "after": {
+        "headings": 9,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 4100
+      }
+    },
+    {
+      "slug": "2020-10-12-1",
+      "metadata": {
+        "title": "Jamf ProとInstallomatorで常に最新のアプリケーションを配布する",
+        "published": "2020-10-12",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Installomator",
+          "Jamf Pro",
+          "macOS",
+          "MDM",
+          "Volume Purchase"
+        ]
+      },
+      "before": {
+        "headings": 13,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 10,
+        "characters": 5840
+      },
+      "after": {
+        "headings": 13,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 10,
+        "characters": 6016
+      }
+    },
+    {
+      "slug": "2020-10-21-1",
+      "metadata": {
+        "title": "Cloud Functions for Firebaseを使用した時に、Cloud Storageのストレージ容量が圧迫される問題について調べた",
+        "published": "2020-10-21",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Firebase",
+          "Cloud Functions",
+          "Cloud Storage",
+          "GCP",
+          "Node.js"
+        ]
+      },
+      "before": {
+        "headings": 4,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 5,
+        "characters": 2788
+      },
+      "after": {
+        "headings": 4,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 5,
+        "characters": 2868
+      }
+    },
+    {
+      "slug": "2020-11-04-1",
+      "metadata": {
+        "title": "macOSアプリケーションのアイコンを取得する",
+        "published": "2020-11-04",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "icns",
+          "Icons",
+          "Jamf Pro",
+          "macOS"
+        ]
+      },
+      "before": {
+        "headings": 7,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 6,
+        "characters": 2189
+      },
+      "after": {
+        "headings": 7,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 6,
+        "characters": 2287
+      }
+    },
+    {
+      "slug": "2020-12-03-1",
+      "metadata": {
+        "title": "PPPCで付与できないmacOSのプライバシー保護機能にアクセス権を付与する",
+        "published": "2020-12-03",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Jamf Pro",
+          "macOS",
+          "PPPC"
+        ]
+      },
+      "before": {
+        "headings": 15,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 11,
+        "characters": 7226
+      },
+      "after": {
+        "headings": 15,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 11,
+        "characters": 7414
+      }
+    },
+    {
+      "slug": "2020-12-10-1",
+      "metadata": {
+        "title": "Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築",
+        "published": "2020-12-10",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "AWS",
+          "Bastion",
+          "Docker",
+          "ECS",
+          "Serverless",
+          "Session Manager",
+          "System Manager",
+          "Terraform"
+        ]
+      },
+      "before": {
+        "headings": 56,
+        "codeBlocks": 21,
+        "internalLinks": 0,
+        "images": 3,
+        "characters": 23936
+      },
+      "after": {
+        "headings": 56,
+        "codeBlocks": 21,
+        "internalLinks": 0,
+        "images": 3,
+        "characters": 23959
+      }
+    },
+    {
+      "slug": "2020-12-15-1",
+      "metadata": {
+        "title": "erase-installを使ってmacOSの初期化、OS再インストール、OSアップグレードを行う",
+        "published": "2020-12-15",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Jamf Pro",
+          "macOS",
+          "macOSUpgrade",
+          "erase-install",
+          "Script"
+        ]
+      },
+      "before": {
+        "headings": 16,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 9,
+        "characters": 8023
+      },
+      "after": {
+        "headings": 16,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 9,
+        "characters": 8175
+      }
+    },
+    {
+      "slug": "2020-12-21-1",
+      "metadata": {
+        "title": "YouTubeとZoomを使用してオンライン勉強会を開催する",
+        "published": "2020-12-21",
+        "categories": [
+          "operation"
+        ],
+        "tags": [
+          "Loopback",
+          "OBS Studio",
+          "Streaming",
+          "YouTube",
+          "Zoom"
+        ]
+      },
+      "before": {
+        "headings": 14,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 7,
+        "characters": 4430
+      },
+      "after": {
+        "headings": 14,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 7,
+        "characters": 4546
+      }
+    },
+    {
+      "slug": "2020-12-28-1",
+      "metadata": {
+        "title": "Appleシリコンを搭載したMacデバイスのロックの挙動について",
+        "published": "2020-12-28",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Apple Silicon",
+          "Jamf",
+          "Mac",
+          "macOS",
+          "MDM"
+        ]
+      },
+      "before": {
+        "headings": 3,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 1709
+      },
+      "after": {
+        "headings": 3,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 1717
+      }
+    },
+    {
+      "slug": "2021-01-18-1",
+      "metadata": {
+        "title": "KeynoteのテンプレートをUIを介さずにテーマとして登録する",
+        "published": "2021-01-18",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Jamf",
+          "Keynote",
+          "Mac",
+          "macOS",
+          "Shell"
+        ]
+      },
+      "before": {
+        "headings": 12,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 9,
+        "characters": 4548
+      },
+      "after": {
+        "headings": 12,
+        "codeBlocks": 3,
+        "internalLinks": 0,
+        "images": 9,
+        "characters": 4700
+      }
+    },
+    {
+      "slug": "2021-01-27-1",
+      "metadata": {
+        "title": "macOS Big SurでSelf Serviceアプリケーションがクラッシュしてしまう問題の暫定対応の自動化",
+        "published": "2021-01-27",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Big Sur",
+          "launchd",
+          "Jamf",
+          "macOS",
+          "Shell"
+        ]
+      },
+      "before": {
+        "headings": 9,
+        "codeBlocks": 5,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 7713
+      },
+      "after": {
+        "headings": 9,
+        "codeBlocks": 5,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 7721
+      }
+    },
+    {
+      "slug": "2021-02-24-1",
+      "metadata": {
+        "title": "GitHub ActionsのRunner OSの情報を取得できるアクションを作った",
+        "published": "2021-02-24",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "GitHub",
+          "GitHub Actions",
+          "JavaScript",
+          "Linux",
+          "macOS",
+          "TypeScript",
+          "Windows"
+        ]
+      },
+      "before": {
+        "headings": 17,
+        "codeBlocks": 14,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 7802
+      },
+      "after": {
+        "headings": 17,
+        "codeBlocks": 14,
+        "internalLinks": 0,
+        "images": 1,
+        "characters": 7759
+      }
+    },
+    {
+      "slug": "2021-06-24-1",
+      "metadata": {
+        "title": "WWDC 2021で発表されたエンタープライズ関連の新機能",
+        "published": "2021-06-24",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Education",
+          "Enterprise",
+          "iOS",
+          "iPadOS",
+          "macOS",
+          "MDM",
+          "Jamf"
+        ]
+      },
+      "before": {
+        "headings": 27,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 25,
+        "characters": 14445
+      },
+      "after": {
+        "headings": 27,
+        "codeBlocks": 1,
+        "internalLinks": 2,
+        "images": 25,
+        "characters": 13872
+      }
+    },
+    {
+      "slug": "2021-10-29-1",
+      "metadata": {
+        "title": "Designship 2021のライブ配信サイトの開発周りについて",
+        "published": "2021-10-29",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Firebase",
+          "GCP",
+          "GitHub",
+          "Node.js",
+          "TypeScript"
+        ]
+      },
+      "before": {
+        "headings": 13,
+        "codeBlocks": 10,
+        "internalLinks": 0,
+        "images": 4,
+        "characters": 11286
+      },
+      "after": {
+        "headings": 13,
+        "codeBlocks": 10,
+        "internalLinks": 0,
+        "images": 4,
+        "characters": 11331
+      }
+    },
+    {
+      "slug": "2021-12-09-1",
+      "metadata": {
+        "title": "Next.jsでStatic GenerationしたサイトをAWSでホスティングする",
+        "published": "2021-12-09",
+        "categories": [
+          "development"
+        ],
+        "tags": [
+          "Advent Calendar",
+          "AWS",
+          "CloudFront",
+          "Next.js",
+          "S3",
+          "Terraform",
+          "TypeScript"
+        ]
+      },
+      "before": {
+        "headings": 10,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 6282
+      },
+      "after": {
+        "headings": 10,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 6272
+      }
+    },
+    {
+      "slug": "2022-02-26-1",
+      "metadata": {
+        "title": "管理視点におけるmacOSのSystem Extensionについて",
+        "published": "2022-02-26",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Jamf Pro",
+          "Kernel Extension",
+          "macOS",
+          "MDM",
+          "System Extension"
+        ]
+      },
+      "before": {
+        "headings": 13,
+        "codeBlocks": 11,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 9970
+      },
+      "after": {
+        "headings": 13,
+        "codeBlocks": 11,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 9996
+      }
+    },
+    {
+      "slug": "2022-04-06-1",
+      "metadata": {
+        "title": "macOSのソフトウェアアップデートをユーザーに通知する「S.U.P.E.R.M.A.N.」の紹介",
+        "published": "2022-04-06",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "S.U.P.E.R.M.A.N.",
+          "Jamf",
+          "macOS",
+          "Shell"
+        ]
+      },
+      "before": {
+        "headings": 28,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 10,
+        "characters": 9707
+      },
+      "after": {
+        "headings": 28,
+        "codeBlocks": 2,
+        "internalLinks": 1,
+        "images": 10,
+        "characters": 9884
+      }
+    },
+    {
+      "slug": "2022-08-18-1",
+      "metadata": {
+        "title": "WWDC 2022で発表されたエンタープライズ関連の新機能",
+        "published": "2022-08-18",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Education",
+          "Enterprise",
+          "iOS",
+          "iPadOS",
+          "macOS",
+          "tvOS",
+          "MDM",
+          "Jamf",
+          "Microsoft Endpoint Manager",
+          "WWDC",
+          "SSO"
+        ]
+      },
+      "before": {
+        "headings": 30,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 20,
+        "characters": 12822
+      },
+      "after": {
+        "headings": 30,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 20,
+        "characters": 13172
+      }
+    },
+    {
+      "slug": "2022-09-15-1",
+      "metadata": {
+        "title": "IdPを介してMacにログインできるXCredsを検証してみた",
+        "published": "2022-09-15",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Azure Active Directory",
+          "Jamf",
+          "Jamf Connect",
+          "IdP",
+          "macOS",
+          "MDM",
+          "SSO",
+          "XCreds"
+        ]
+      },
+      "before": {
+        "headings": 18,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 33,
+        "characters": 12705
+      },
+      "after": {
+        "headings": 18,
+        "codeBlocks": 0,
+        "internalLinks": 1,
+        "images": 33,
+        "characters": 13296
+      }
+    },
+    {
+      "slug": "2022-12-26-1",
+      "metadata": {
+        "title": "Azure Active DirectoryのアプリケーションをTerraformで管理する",
+        "published": "2022-12-26",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Azure Active Directory",
+          "Azure CLI",
+          "IaC",
+          "Microsoft Graph API",
+          "Terraform"
+        ]
+      },
+      "before": {
+        "headings": 20,
+        "codeBlocks": 21,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 22631
+      },
+      "after": {
+        "headings": 20,
+        "codeBlocks": 21,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 22656
+      }
+    },
+    {
+      "slug": "2023-12-12-1",
+      "metadata": {
+        "title": "Microsoft Intune管理下のWindowsデバイスの同期サイクルを変更する",
+        "published": "2023-12-12",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Microsoft Intune",
+          "PowerShell",
+          "Windows"
+        ]
+      },
+      "before": {
+        "headings": 9,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 10,
+        "characters": 5589
+      },
+      "after": {
+        "headings": 9,
+        "codeBlocks": 1,
+        "internalLinks": 0,
+        "images": 10,
+        "characters": 5864
+      }
+    },
+    {
+      "slug": "2024-06-19-1",
+      "metadata": {
+        "title": "WWDC 2024で発表されたエンタープライズ関連の新機能",
+        "published": "2024-06-19",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Education",
+          "Enterprise",
+          "iOS",
+          "iPadOS",
+          "macOS",
+          "tvOS",
+          "visionOS",
+          "MDM",
+          "Jamf",
+          "Microsoft Endpoint Manager",
+          "WWDC",
+          "SSO"
+        ]
+      },
+      "before": {
+        "headings": 27,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 20,
+        "characters": 11626
+      },
+      "after": {
+        "headings": 27,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 20,
+        "characters": 11976
+      }
+    },
+    {
+      "slug": "2024-12-09-1",
+      "metadata": {
+        "title": "Installomatorのパラメータの紹介",
+        "published": "2024-12-09",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Installomator",
+          "macOS",
+          "MDM",
+          "Zsh",
+          "swiftDialog"
+        ]
+      },
+      "before": {
+        "headings": 27,
+        "codeBlocks": 6,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 12727
+      },
+      "after": {
+        "headings": 27,
+        "codeBlocks": 6,
+        "internalLinks": 2,
+        "images": 0,
+        "characters": 12695
+      }
+    },
+    {
+      "slug": "2024-12-09-2",
+      "metadata": {
+        "title": "Installomatorでサポートされていないアプリケーションをインストールする",
+        "published": "2024-12-09",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Installomator",
+          "Jamf Pro",
+          "macOS",
+          "MDM",
+          "Zsh",
+          "swiftDialog"
+        ]
+      },
+      "before": {
+        "headings": 4,
+        "codeBlocks": 4,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 4724
+      },
+      "after": {
+        "headings": 4,
+        "codeBlocks": 4,
+        "internalLinks": 2,
+        "images": 2,
+        "characters": 4728
+      }
+    },
+    {
+      "slug": "2024-12-16-1",
+      "metadata": {
+        "title": "Installomatorでアプリケーションのインストールの進捗を表示する",
+        "published": "2024-12-16",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Installomator",
+          "Jamf Pro",
+          "macOS",
+          "MDM",
+          "Zsh",
+          "swiftDialog"
+        ]
+      },
+      "before": {
+        "headings": 6,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 8,
+        "characters": 3585
+      },
+      "after": {
+        "headings": 6,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 8,
+        "characters": 3719
+      }
+    },
+    {
+      "slug": "2025-06-19-1",
+      "metadata": {
+        "title": "WWDC 2025で発表されたエンタープライズ関連の新機能",
+        "published": "2025-06-19",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Apple",
+          "Education",
+          "Enterprise",
+          "iOS",
+          "iPadOS",
+          "macOS",
+          "tvOS",
+          "visionOS",
+          "MDM",
+          "Jamf",
+          "WWDC"
+        ]
+      },
+      "before": {
+        "headings": 38,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 18,
+        "characters": 11135
+      },
+      "after": {
+        "headings": 38,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 18,
+        "characters": 11449
+      }
+    },
+    {
+      "slug": "2025-12-07-1",
+      "metadata": {
+        "title": "Microsoft Entra Global Secure Accessを試してみたので仕組みをまとめてみる",
+        "published": "2025-12-07",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Microsoft Entra",
+          "Global Secure Access",
+          "Microsoft Internet Access",
+          "Microsoft Private Access",
+          "SWG",
+          "Microsoft Entra Suite"
+        ]
+      },
+      "before": {
+        "headings": 19,
+        "codeBlocks": 2,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 6958
+      },
+      "after": {
+        "headings": 19,
+        "codeBlocks": 0,
+        "internalLinks": 0,
+        "images": 2,
+        "characters": 5435
+      }
+    },
+    {
+      "slug": "2025-12-14-1",
+      "metadata": {
+        "title": "クロスプラットフォームで動作するintunewinファイルの作成・解凍ツールを作った",
+        "published": "2025-12-14",
+        "categories": [
+          "system-administration"
+        ],
+        "tags": [
+          "Go",
+          "Linux",
+          "Microsoft Intune",
+          "macOS",
+          "Windows"
+        ]
+      },
+      "before": {
+        "headings": 17,
+        "codeBlocks": 11,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 7498
+      },
+      "after": {
+        "headings": 17,
+        "codeBlocks": 11,
+        "internalLinks": 0,
+        "images": 0,
+        "characters": 7488
+      }
+    }
+  ]
+}

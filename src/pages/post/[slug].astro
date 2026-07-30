@@ -1,0 +1,331 @@
+---
+import { render } from "astro:content";
+import AdSlot from "../../components/AdSlot.astro";
+import CopyUrl from "../../components/CopyUrl.astro";
+import LinkCard from "../../components/LinkCard.astro";
+import PostImage from "../../components/PostImage.astro";
+import Revision from "../../components/Revision.astro";
+import TableOfContents from "../../components/TableOfContents.astro";
+import { SITE } from "../../config/site";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  formatDate,
+  formatIsoDate,
+  getPublishedPosts,
+  getRelatedPosts,
+  type Post,
+  postPath,
+} from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, allPosts: posts },
+  }));
+}
+
+const { post, allPosts } = Astro.props as { post: Post; allPosts: Post[] };
+const { Content, headings } = await render(post);
+const related = getRelatedPosts(post, allPosts);
+const canonical = postPath(post);
+const description = post.data.description || SITE.description;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description,
+  datePublished: formatIsoDate(post.data.published),
+  ...(post.data.updated ? { dateModified: formatIsoDate(post.data.updated) } : {}),
+  mainEntityOfPage: new URL(canonical, SITE.url).href,
+  image: new URL(`/og/${post.id}.png`, SITE.url).href,
+  author: {
+    "@type": "Person",
+    name: SITE.author,
+    url: `${SITE.url}/profile`,
+  },
+  publisher: {
+    "@type": "Person",
+    name: SITE.author,
+  },
+};
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={description}
+  canonical={canonical}
+  image={`/og/${post.id}.png`}
+  type="article"
+  published={post.data.published}
+  updated={post.data.updated}
+  noindex={post.data.draft}
+  jsonLd={jsonLd}
+>
+  <div class="post-page">
+    <div class="post-shell">
+      <article
+        data-pagefind-body
+        data-pagefind-meta={`keywords:${[...post.data.categories, ...post.data.tags].join(" ")}`}
+      >
+        {
+          post.data.draft && (
+            <p class="draft-banner"><strong>Draft</strong> — 開発環境でのみ表示されています。</p>
+          )
+        }
+        <header class="post-header">
+          <div class="categories">
+            {
+              post.data.categories.map((category) => (
+                <a href={`/category/${category}`}>{category}</a>
+              ))
+            }
+          </div>
+          <h1 data-pagefind-meta={`title, url:${canonical}`}>{post.data.title}</h1>
+          <div class="post-meta">
+            <time
+              datetime={formatIsoDate(post.data.published)}
+              data-pagefind-meta="published, published_iso[datetime]"
+            >
+              {formatDate(post.data.published)}
+            </time>
+            <CopyUrl />
+          </div>
+        </header>
+        <TableOfContents headings={headings} mode="mobile" />
+        <div class="post-content">
+          <Content components={{ Revision, LinkCard, img: PostImage }} />
+        </div>
+        <footer class="post-footer">
+          <AdSlot />
+          <section class="coffee" aria-label="Buy Me a Coffee">
+            <p>記事が役立ったら、コーヒーで応援していただけるとうれしいです。</p>
+            <a href={SITE.profiles.coffee}>Buy Me a Coffee</a>
+          </section>
+          {
+            related.length > 0 && (
+              <section class="related" aria-labelledby="related-heading">
+                <h2 id="related-heading">Related posts</h2>
+                <ul>
+                  {related.map((item) => (
+                    <li>
+                      <a href={postPath(item)}>{item.data.title}</a>
+                      <time datetime={formatIsoDate(item.data.published)}>
+                        {formatDate(item.data.published)}
+                      </time>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+        </footer>
+      </article>
+      <TableOfContents headings={headings} mode="desktop" />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .post-page {
+    background: var(--surface);
+  }
+  .post-shell {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: minmax(0, 52rem) 15rem;
+    margin: 0 auto;
+    max-width: 71.25rem;
+    padding: 3rem 1.25rem 4rem;
+  }
+  .post-shell > article {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+    min-width: 0;
+    padding: 2.25rem 2.5rem 2.5rem;
+  }
+  article > :global(.toc-mobile) {
+    display: none;
+  }
+  .post-header {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.25rem;
+    padding-bottom: 1.5rem;
+  }
+  .post-header h1 {
+    font-size: clamp(1.75rem, 3.2vw, 2.1rem);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .categories a {
+    background: var(--surface);
+    border-radius: 2rem;
+    font-size: 0.78rem;
+    padding: 0.18rem 0.65rem;
+    text-decoration: none;
+  }
+  .post-content {
+    line-height: 1.9;
+  }
+  .post-content :global(p),
+  .post-content :global(ul),
+  .post-content :global(ol),
+  .post-content :global(blockquote),
+  .post-content :global(table),
+  .post-content :global(pre) {
+    margin-block: 1.4rem;
+  }
+  .post-content :global(figure.frame > pre) {
+    margin-block: 0;
+  }
+  .post-content :global(h2) {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    margin-top: 3.75rem;
+  }
+  .post-content :global(li + li) {
+    margin-top: 0.25rem;
+  }
+  .post-content :global(ul),
+  .post-content :global(ol) {
+    padding-inline-start: 1.6rem;
+  }
+  .post-content :global(li > ul),
+  .post-content :global(li > ol) {
+    margin-block: 0.15rem 0.25rem;
+    padding-inline-start: 1.4rem;
+  }
+  .post-content :global(li > ul > li + li),
+  .post-content :global(li > ol > li + li) {
+    margin-top: 0.1rem;
+  }
+  .post-content :global(a[href^="/post/"]::before) {
+    background: url("/assets/icons/favicon-32x32.png") center / cover no-repeat;
+    border-radius: 50%;
+    content: "";
+    display: inline-block;
+    height: 0.95em;
+    margin-inline-end: 0.28em;
+    vertical-align: -0.1em;
+    width: 0.95em;
+  }
+  .post-content :global(.default-value) {
+    align-items: center;
+    display: inline-flex;
+    gap: 0.4rem;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+  .post-content :global(.default-value > code) {
+    line-height: 1.08;
+  }
+  .post-content :global(.default-label) {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+    border-radius: 999px;
+    color: var(--accent-strong);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.4;
+    padding: 0.08rem 0.4rem;
+  }
+  .post-meta {
+    align-items: center;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    gap: 1rem;
+    justify-content: space-between;
+  }
+  .draft-banner {
+    background: #fff8c5;
+    border: 1px solid #d4a72c;
+    border-radius: 0.4rem;
+    color: #3d2d00;
+    padding: 0.7rem 1rem;
+  }
+  .post-footer {
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 3rem;
+  }
+  .post-footer h2 {
+    border: 0;
+    font-size: 1.2rem;
+    margin: 0 0 0.8rem;
+    padding: 0;
+  }
+  .coffee {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    padding: 1.25rem;
+  }
+  .coffee p {
+    color: var(--muted);
+    margin: 0 0 1rem;
+  }
+  .coffee a {
+    background: var(--text);
+    border-radius: 0.4rem;
+    color: var(--bg);
+    display: inline-block;
+    font-weight: 700;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.9rem;
+    text-decoration: none;
+  }
+  .related ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .related li {
+    border-top: 1px solid var(--border);
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.85rem 0;
+  }
+  .related time {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  @media (max-width: 72rem) {
+    .post-page {
+      background: var(--bg);
+    }
+    .post-shell {
+      display: block;
+      max-width: calc(var(--article-width) + 2.5rem);
+    }
+    .post-shell > article {
+      border: 0;
+      padding: 0;
+    }
+    .post-shell > :global(.toc-desktop) {
+      display: none;
+    }
+    article > :global(.toc-mobile) {
+      display: block;
+    }
+  }
+  @media (max-width: 38rem) {
+    .post-shell {
+      padding-top: 1.5rem;
+    }
+    .post-meta {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

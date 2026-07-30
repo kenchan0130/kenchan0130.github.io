@@ -1,0 +1,93 @@
+---
+import "@fontsource-variable/noto-sans-jp";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { SITE } from "../config/site";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  image?: string;
+  type?: "website" | "article";
+  published?: Date;
+  updated?: Date | undefined;
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
+}
+
+const {
+  title,
+  description = SITE.description,
+  canonical = Astro.url.pathname,
+  image = "/og/default.png",
+  type = "website",
+  published,
+  updated,
+  noindex = false,
+  jsonLd,
+} = Astro.props;
+const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title;
+const canonicalUrl = new URL(canonical, SITE.url);
+const imageUrl = new URL(image, SITE.url);
+---
+
+<!doctype html>
+<html lang={SITE.language}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} data-pagefind-meta="description[content]" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" href="/assets/icons/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/assets/icons/apple-icon-180x180.png" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.title} href="/feed.xml" />
+    <meta name="google-site-verification" content={SITE.googleSiteVerification} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.title} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    {updated && <meta property="article:modified_time" content={updated.toISOString()} />}
+    {jsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script is:inline>
+      document.documentElement.dataset.theme =
+        localStorage.getItem("theme") ||
+        (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    </script>
+    {
+      import.meta.env.PROD && (
+        <>
+          <script
+            is:inline
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${SITE.analyticsId}`}
+          />
+          <script is:inline define:vars={{ analyticsId: SITE.analyticsId }}>
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config",analyticsId);`}
+          </script>
+          <script
+            is:inline
+            async
+            crossorigin="anonymous"
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseClient}`}
+          />
+        </>
+      )
+    }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+  </body>
+</html>

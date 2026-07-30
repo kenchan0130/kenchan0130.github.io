@@ -1,0 +1,178 @@
+---
+import PagefindResults from "../components/PagefindResults.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { formatDate, getPublishedPosts, postPath } from "../lib/posts";
+
+const devPosts = import.meta.env.DEV
+  ? (await getPublishedPosts()).map((post) => ({
+      title: post.data.title,
+      description: post.data.description,
+      published: formatDate(post.data.published),
+      path: postPath(post),
+      terms: [...post.data.categories, ...post.data.tags].join(" "),
+    }))
+  : [];
+---
+
+<BaseLayout title="Search" description="ブログ内の記事を検索します。" noindex>
+  <div class="container search-page">
+    <h1 class="visually-hidden">記事を検索</h1>
+    <p>気になるキーワードで記事を検索できます。</p>
+    <div class="search-ui">
+      {
+        import.meta.env.DEV ? (
+          <div class="dev-search">
+            <div class="search-controls">
+              <label class="visually-hidden" for="dev-search-page-input">キーワード</label>
+              <input
+                id="dev-search-page-input"
+                type="search"
+                placeholder="キーワードを入力"
+                autocomplete="off"
+                data-dev-search-page-input
+              />
+            </div>
+            <p class="search-summary" aria-live="polite" data-dev-search-page-summary>
+              キーワードを入力してください。
+            </p>
+            <ul class="dev-results" data-dev-search-page-results />
+          </div>
+        ) : (
+          <>
+            <pagefind-config lang="ja" bundle-path="/pagefind/" />
+            <div class="search-controls">
+              <pagefind-input placeholder="キーワードを入力" />
+            </div>
+            <pagefind-summary />
+            <PagefindResults />
+          </>
+        )
+      }
+    </div>
+    <noscript>検索にはJavaScriptが必要です。<a href="/archives">Archives</a>をご利用ください。</noscript>
+  </div>
+  {
+    import.meta.env.PROD && (
+      <>
+        <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+        <script is:inline type="module" src="/pagefind/pagefind-component-ui.js" />
+      </>
+    )
+  }
+</BaseLayout>
+
+<script is:inline define:vars={{ devPosts }}>
+  const input = document.querySelector("[data-dev-search-page-input]");
+  const summary = document.querySelector("[data-dev-search-page-summary]");
+  const results = document.querySelector("[data-dev-search-page-results]");
+
+  const renderDevResults = () => {
+    if (!input || !summary || !results) return;
+    const query = input.value.trim().toLocaleLowerCase("ja");
+    results.replaceChildren();
+    if (!query) {
+      summary.textContent = "キーワードを入力してください。";
+      return;
+    }
+
+    const matches = devPosts.filter(({ title, description, terms }) =>
+      `${title} ${description} ${terms}`.toLocaleLowerCase("ja").includes(query),
+    );
+    summary.textContent = `${matches.length}件の記事が見つかりました。`;
+    for (const post of matches) {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      const published = document.createElement("time");
+      const description = document.createElement("p");
+      link.href = post.path;
+      link.textContent = post.title;
+      published.className = "dev-result-date";
+      published.textContent = post.published;
+      description.className = "dev-result-description";
+      description.textContent = post.description;
+      item.append(link, published, description);
+      results.append(item);
+    }
+  };
+
+  input?.addEventListener("input", renderDevResults);
+</script>
+
+<style>
+  .search-page {
+    max-width: 52rem;
+  }
+  .search-page > p {
+    color: var(--muted);
+    margin-top: 0;
+    margin-bottom: 1.25rem;
+  }
+  .search-ui {
+    display: grid;
+    gap: 1rem;
+  }
+  .search-controls {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 0;
+    position: sticky;
+    top: calc(4rem + 1px);
+    z-index: 10;
+  }
+  .visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+  .dev-search input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--text);
+    font: inherit;
+    min-height: 3rem;
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+  }
+  .search-summary {
+    color: var(--muted);
+    font-size: 0.86rem;
+    margin: 0.75rem 0;
+  }
+  .dev-results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .dev-results :global(li) {
+    border-top: 1px solid var(--border);
+    padding: 1rem 0;
+  }
+  .dev-results :global(a) {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+  .dev-results :global(.dev-result-date) {
+    color: var(--muted);
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+  }
+  .dev-results :global(.dev-result-description) {
+    color: var(--muted);
+    display: -webkit-box;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    margin: 0.45rem 0 0;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+</style>

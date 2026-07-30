@@ -1,0 +1,54 @@
+---
+const resultTemplate = `
+  <li class="pf-result">
+    <div class="pf-result-card">
+      <div class="pf-result-content">
+        <p class="pf-result-title">
+          <a class="pf-result-link" href="{{ meta.url | default(url) | safeUrl }}">{{ meta.title }}</a>
+        </p>
+        {{#if meta.published}}
+        <p class="pf-result-date">
+          <time datetime="{{ meta.published_iso }}">{{ meta.published }}</time>
+        </p>
+        {{/if}}
+        {{#if meta.description}}
+        <p class="pf-result-description">{{ meta.description }}</p>
+        {{/if}}
+      </div>
+    </div>
+  </li>
+`;
+---
+
+<pagefind-results hide-sub-results>
+  <script is:inline type="text/pagefind-template" set:html={resultTemplate} />
+</pagefind-results>
+
+<style>
+  /* Pagefind intentionally resets all pf-* classes with high specificity. */
+  pagefind-results :global(.pf-result-date) {
+    color: var(--muted) !important;
+    font-size: 0.75rem !important;
+    margin: 0.2rem 0 0 !important;
+  }
+  pagefind-results :global(.pf-result-title) {
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    line-height: 1.5 !important;
+  }
+  pagefind-results :global(.pf-result-description) {
+    color: var(--muted) !important;
+    display: -webkit-box !important;
+    font-size: 0.82rem !important;
+    line-height: 1.65 !important;
+    margin: 0.45rem 0 0 !important;
+    overflow: hidden !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+  }
+  @media (max-width: 38rem) {
+    pagefind-results :global(.pf-result-description) {
+      -webkit-line-clamp: 1 !important;
+    }
+  }
+</style>
