@@ -7,7 +7,7 @@ import { SITE } from "../config/site";
     import.meta.env.PROD ? (
       <ins
         class="adsbygoogle"
-        style="display:block"
+        style="display:block;width:100%"
         data-ad-client={SITE.adsenseClient}
         data-ad-slot={SITE.adsenseSlot}
         data-ad-format="auto"
@@ -20,23 +20,26 @@ import { SITE } from "../config/site";
 </aside>
 {
   import.meta.env.PROD && (
-    <script is:inline>{`(adsbygoogle=window.adsbygoogle||[]).push({});`}</script>
+    <script is:inline>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
   )
 }
 
 <style>
   .ad-slot {
-    align-items: center;
     background: var(--surface);
     border: 1px solid var(--border);
-    display: flex;
-    justify-content: center;
     min-height: 15.625rem;
     width: 100%;
   }
   span {
+    align-items: center;
     color: var(--muted);
+    display: flex;
     font-size: 0.75rem;
+    justify-content: center;
+    min-height: inherit;
     text-transform: uppercase;
   }
 </style>

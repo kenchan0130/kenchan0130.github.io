@@ -72,7 +72,12 @@ const imageUrl = new URL(image, SITE.url);
             src={`https://www.googletagmanager.com/gtag/js?id=${SITE.analyticsId}`}
           />
           <script is:inline define:vars={{ analyticsId: SITE.analyticsId }}>
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config",analyticsId);`}
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+            gtag("config", analyticsId);
           </script>
           <script
             is:inline
