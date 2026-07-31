@@ -49,8 +49,9 @@ export default defineConfig({
         },
       },
       styleOverrides: {
+        borderColor: ({ theme }) => (theme.type === "dark" ? "#30363d" : "#d0d7de"),
         borderRadius: "0.5rem",
-        codeBackground: "var(--surface, #f6f8fa)",
+        codeBackground: ({ theme }) => (theme.type === "dark" ? "#161b22" : "#f6f8fa"),
         codeFontFamily: "var(--font-mono)",
       },
     }),

@@ -62,6 +62,18 @@ test("プロフィール画像をマウスとキーボードで切り替えら�
   await expect(standard).toHaveClass(/is-visible/);
 });
 
+test("ダークテーマのコードブロックに十分なコントラストがある", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("theme", "dark"));
+  await page.goto(articlePath);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+
+  const results = await new AxeBuilder({ page })
+    .include(".expressive-code")
+    .withRules(["color-contrast"])
+    .analyze();
+  expect(results.violations).toEqual([]);
+});
+
 for (const path of ["/", articlePath]) {
   test(`axeで重大なアクセシビリティ違反がない: ${path}`, async ({ page }) => {
     await page.goto(path);
