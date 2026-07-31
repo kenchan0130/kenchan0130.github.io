@@ -5,7 +5,7 @@ import { html } from "satori-html";
 import sharp from "sharp";
 
 let fontPromise: Promise<ArrayBuffer> | undefined;
-let avatarPromise: Promise<string> | undefined;
+let logoPromise: Promise<string> | undefined;
 
 async function getFont(): Promise<ArrayBuffer> {
   fontPromise ??= readFile(
@@ -14,11 +14,11 @@ async function getFont(): Promise<ArrayBuffer> {
   return fontPromise;
 }
 
-async function getAvatar(): Promise<string> {
-  avatarPromise ??= readFile(
-    path.join(process.cwd(), "public", "assets", "profile_standard.png"),
-  ).then((buffer) => `data:image/png;base64,${buffer.toString("base64")}`);
-  return avatarPromise;
+async function getLogo(): Promise<string> {
+  logoPromise ??= readFile(path.join(process.cwd(), "public", "assets", "icons", "logo.png")).then(
+    (buffer) => `data:image/png;base64,${buffer.toString("base64")}`,
+  );
+  return logoPromise;
 }
 
 function escapeHtml(value: string): string {
@@ -40,7 +40,7 @@ export async function createOgImage({ title, category = "Blog", date = "" }: OgO
   const fonts = [
     { name: "Noto Sans JP", data: fontData, weight: 400 as const, style: "normal" as const },
   ];
-  const avatar = await getAvatar();
+  const logo = await getLogo();
   const markup = html(`
     <div style="height:100%;width:100%;display:flex;flex-direction:column;justify-content:space-between;background:#0d1117;color:#f0f6fc;padding:64px 72px;font-family:Noto Sans JP">
       <div style="display:flex;align-items:center;gap:16px;color:#79c0ff;font-size:26px">
@@ -50,7 +50,7 @@ export async function createOgImage({ title, category = "Blog", date = "" }: OgO
       <div style="display:flex;font-size:58px;font-weight:400;line-height:1.35;letter-spacing:-2px;max-width:1040px">${escapeHtml(title)}</div>
       <div style="display:flex;align-items:center;justify-content:space-between;border-top:1px solid #3d444d;padding-top:28px">
         <span style="display:flex;font-size:27px;color:#c9d1d9">kenchan0130 blog</span>
-        <img src="${avatar}" style="width:72px;height:72px;border-radius:999px" />
+        <img src="${logo}" style="width:72px;height:72px" />
       </div>
     </div>
   `);

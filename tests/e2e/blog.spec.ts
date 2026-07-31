@@ -37,6 +37,31 @@ test("URLコピーとテーマ切り替えをキーボードで利用できる",
   await expect(page.locator("html")).toHaveAttribute("data-theme", /dark|light/);
 });
 
+test("プロフィール画像をマウスとキーボードで切り替えられる", async ({ page }) => {
+  await page.goto("/profile");
+  const avatar = page.getByRole("button", {
+    name: "Tadayuki Onishiのプロフィール画像。押すと表情が変わります",
+  });
+  const standard = avatar.locator('img[src="/assets/profile_standard.png"]');
+  const greeting = avatar.locator('img[src="/assets/profile_hi.png"]');
+  const criticalPass = avatar.locator('img[src="/assets/profile_critical_pass.png"]');
+
+  await expect(standard).toHaveClass(/is-visible/);
+  await avatar.hover();
+  await expect(greeting).toHaveClass(/is-visible/);
+  await page.mouse.move(0, 0);
+  await expect(standard).toHaveClass(/is-visible/);
+
+  await avatar.focus();
+  await expect(greeting).toHaveClass(/is-visible/);
+  await page.keyboard.press("Enter");
+  await expect(greeting).toHaveClass(/is-visible/);
+  await page.keyboard.press("Enter");
+  await expect(criticalPass).toHaveClass(/is-visible/);
+  await page.keyboard.press("Enter");
+  await expect(standard).toHaveClass(/is-visible/);
+});
+
 for (const path of ["/", articlePath]) {
   test(`axeで重大なアクセシビリティ違反がない: ${path}`, async ({ page }) => {
     await page.goto(path);

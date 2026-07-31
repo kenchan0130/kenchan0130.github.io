@@ -10,7 +10,7 @@ const contentDirectory = path.join(root, "src", "content", "posts");
 const outputDirectory = path.join(root, "public", "og");
 const cachePath = path.join(root, "reports", "og-cache.json");
 const fontPath = path.join(root, "scripts", "assets", "NotoSansCJKjp-Regular.otf");
-const avatarPath = path.join(root, "public", "assets", "profile_standard.png");
+const logoPath = path.join(root, "public", "assets", "icons", "logo.png");
 
 await mkdir(outputDirectory, { recursive: true });
 await mkdir(path.dirname(cachePath), { recursive: true });
@@ -24,7 +24,7 @@ try {
 
 const assetsHash = createHash("sha256")
   .update(await readFile(fontPath))
-  .update(await readFile(avatarPath))
+  .update(await readFile(logoPath))
   .update(await readFile(path.join(root, "src", "lib", "og.ts")))
   .digest("hex");
 const jobs = [{ slug: "default", title: "実装と運用の記録", category: "Blog", date: "" }];

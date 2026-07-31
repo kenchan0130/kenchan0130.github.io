@@ -6,12 +6,36 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 <BaseLayout title="Profile">
   <article class="container narrow profile">
     <h1>Profile</h1>
-    <img
-      src="/assets/profile_standard.png"
-      alt="Tadayuki Onishiのプロフィール画像"
-      width="240"
-      height="240"
-    />
+    <button
+      class="profile-avatar"
+      type="button"
+      title="表情を変える"
+      aria-label="Tadayuki Onishiのプロフィール画像。押すと表情が変わります"
+      data-profile-avatar
+    >
+      <img
+        class="is-visible"
+        src="/assets/profile_standard.png"
+        alt=""
+        width="240"
+        height="240"
+        data-profile-expression
+      />
+      <img
+        src="/assets/profile_hi.png"
+        alt=""
+        width="240"
+        height="240"
+        data-profile-expression
+      />
+      <img
+        src="/assets/profile_critical_pass.png"
+        alt=""
+        width="240"
+        height="240"
+        data-profile-expression
+      />
+    </button>
     <h2>{SITE.author}</h2>
     <p>証券会社で働く、バックエンドエンジニア兼セキュリティ兼社内情報システムとかをやる人。</p>
     <p>普段使っている言語はScala、Ruby、JavaScript辺りです。</p>
@@ -27,15 +51,109 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 </BaseLayout>
 
 <style>
-  .profile img {
-    display: block;
+  .profile-avatar {
+    appearance: none;
+    aspect-ratio: 1;
+    background: transparent;
+    border: 0;
     border-radius: 50%;
-    width: 10rem;
+    cursor: pointer;
+    display: grid;
     margin-inline: auto;
+    padding: 0;
+    position: relative;
+    transition:
+      filter 160ms ease,
+      transform 160ms ease;
+    width: 10rem;
+  }
+  .profile-avatar::after {
+    align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    bottom: 0.25rem;
+    color: var(--accent);
+    content: "✦";
+    display: flex;
+    font-size: 0.85rem;
+    height: 1.75rem;
+    justify-content: center;
+    opacity: 0;
+    position: absolute;
+    right: 0.25rem;
+    transform: rotate(-12deg) scale(0.7);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+    width: 1.75rem;
+  }
+  .profile-avatar:hover,
+  .profile-avatar:focus-visible {
+    filter: drop-shadow(0 0.45rem 0.6rem color-mix(in srgb, var(--accent) 18%, transparent));
+    transform: rotate(-1.5deg) scale(1.025);
+  }
+  .profile-avatar:hover::after,
+  .profile-avatar:focus-visible::after {
+    opacity: 1;
+    transform: rotate(8deg) scale(1);
+  }
+  .profile-avatar:focus-visible {
+    outline: 0.2rem solid var(--accent);
+    outline-offset: 0.25rem;
+  }
+  .profile-avatar img {
+    border-radius: 50%;
+    grid-area: 1 / 1;
+    height: 100%;
+    opacity: 0;
+    transform: scale(0.96);
+    transition:
+      opacity 140ms ease,
+      transform 160ms ease;
+    width: 100%;
+  }
+  .profile-avatar img.is-visible {
+    opacity: 1;
+    transform: scale(1);
   }
   .profile h2 {
     border: 0;
     margin-top: 1.5rem;
     text-align: center;
   }
+  @media (prefers-reduced-motion: reduce) {
+    .profile-avatar,
+    .profile-avatar::after,
+    .profile-avatar img {
+      transition: none;
+    }
+  }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-profile-avatar]").forEach((button) => {
+    const images = Array.from(
+      button.querySelectorAll<HTMLImageElement>("[data-profile-expression]"),
+    );
+    let selectedExpression = 0;
+
+    const showExpression = (index: number) => {
+      images.forEach((image, imageIndex) => {
+        image.classList.toggle("is-visible", imageIndex === index);
+      });
+    };
+
+    button.addEventListener("pointerenter", () => showExpression(1));
+    button.addEventListener("pointerleave", () => showExpression(selectedExpression));
+    button.addEventListener("focus", () => showExpression(1));
+    button.addEventListener("blur", () => showExpression(selectedExpression));
+    button.addEventListener("pointerdown", () => showExpression(2));
+    button.addEventListener("pointerup", () => showExpression(selectedExpression));
+    button.addEventListener("pointercancel", () => showExpression(selectedExpression));
+    button.addEventListener("click", () => {
+      selectedExpression = (selectedExpression + 1) % images.length;
+      showExpression(selectedExpression);
+    });
+  });
+</script>
