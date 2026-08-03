@@ -43,7 +43,7 @@ pnpm build
 pnpm test:e2e
 ```
 
-`development` ブランチへのpushで、GitHub Pagesの公式artifact/deployフローを使って
+`main` ブランチへのpushで、GitHub Pagesの公式artifact/deployフローを使って
 公開します。リポジトリのPages sourceは「GitHub Actions」に設定してください。
 
 ## License

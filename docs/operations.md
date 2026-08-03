@@ -8,10 +8,10 @@ changed by repository code.
 ### GitHub Pages
 
 - Source: GitHub Actions
-- Production branch: `development`
+- Production branch: `main`
 - Custom domain: none
 
-### Ruleset for `development`
+### Ruleset for `main`
 
 - Require a pull request before merging
 - Required status checks: `validate`, `dependency-review`
@@ -33,7 +33,7 @@ The repository-level Actions allowlist is left unchanged.
    git push origin pre-astro-migration
    ```
 
-4. Merge to `development` and verify the Pages deployment.
+4. Merge to `main` and verify the Pages deployment.
 5. Check the homepage, one image-heavy article, search, archives, RSS, OGP, GA4, and the manual
    AdSense slot.
 
