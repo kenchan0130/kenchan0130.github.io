@@ -14,7 +14,7 @@ changed by repository code.
 ### Ruleset for `main`
 
 - Require a pull request before merging
-- Required status checks: `validate`, `dependency-review`
+- Required status checks: `quality`, `build-test`, `dependency-review`
 - Required approvals: 0 (single-maintainer repository)
 - Block force pushes
 - Block branch deletion
