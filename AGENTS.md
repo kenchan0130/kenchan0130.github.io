@@ -18,7 +18,7 @@
 - 記事は `src/content/posts/*.mdx` のContent Collectionで管理する
 - サイト内検索にはPagefindを使用する
 - 公開記事のURLは `/post/YYYY-MM-DD-N` を維持する
-- 本番ブランチは `development` とし、GitHub ActionsからPagesへデプロイする
+- 本番ブランチは `main` とし、GitHub ActionsからPagesへデプロイする
 - Node.jsは `.node-version` と `package.json` の指定に従う
 - パッケージマネージャーは `pnpm@10.34.5` を使用する
 - 詳細な運用設定は `docs/operations.md` を参照する
@@ -110,7 +110,7 @@
 - `deploy` は `quality` と `build-test` の両方に依存させる
 - matrix化やジョブ分割は、セットアップの重複と総実行時間も考慮し、実測値に基づいて採用する
 - GitHub Actionsは完全なコミットSHAへ固定し、同じ行に正確なリリースバージョンをコメントする
-- GitHub PagesのSourceはGitHub Actions、本番デプロイ対象は `development` ブランチとする
+- GitHub PagesのSourceはGitHub Actions、本番デプロイ対象は `main` ブランチとする
 - workflowのジョブ名を変更したときは、ブランチ保護設定と `docs/operations.md` の必須チェック名も確認する
 - GitHub側の環境・Pages設定は、リポジトリコードから暗黙に変更せず、必要性と影響を確認してから変更する
 
