@@ -1,6 +1,7 @@
 ---
 layout: ../../layouts/MarkdownPageLayout.astro
 title: "Resume"
+disableTelephoneDetection: true
 ---
 
 ## 基本情報
