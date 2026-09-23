@@ -14,6 +14,7 @@ interface Props {
   published?: Date;
   updated?: Date | undefined;
   noindex?: boolean;
+  disableTelephoneDetection?: boolean;
   jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
@@ -26,6 +27,7 @@ const {
   published,
   updated,
   noindex = false,
+  disableTelephoneDetection = false,
   jsonLd,
 } = Astro.props;
 const pageTitle = title ? `${title} | ${SITE.title}` : SITE.title;
@@ -38,6 +40,7 @@ const imageUrl = new URL(image, SITE.url);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    {disableTelephoneDetection && <meta name="format-detection" content="telephone=no" />}
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle}</title>
     <meta name="description" content={description} data-pagefind-meta="description[content]" />
