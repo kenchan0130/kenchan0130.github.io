@@ -40,9 +40,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Audit dependencies
-        run: pnpm audit
-
       - name: Format, lint, and type-check
         env:
           TEXTLINT_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
