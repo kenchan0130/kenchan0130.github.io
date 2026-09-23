@@ -45,7 +45,7 @@
     "pagefind": "1.5.2",
     "satori": "0.29.0",
     "satori-html": "0.3.2",
-    "sharp": "0.35.3"
+    "sharp": "0.35.4"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.9",
