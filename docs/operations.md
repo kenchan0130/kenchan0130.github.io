@@ -46,6 +46,11 @@ not retained.
 - pnpm rejects packages published within the last seven days.
 - Dependabot opens weekly grouped minor/patch updates; major updates remain separate.
 - Security updates are reviewed and merged manually.
+- Pull requests use the required `dependency-review` check to block newly introduced high-severity
+  vulnerabilities. The separate `Dependency audit` workflow checks the full dependency tree at
+  high severity every Wednesday at 00:00 UTC and can also be run manually. Its findings are
+  tracked independently of the required `quality` check so existing advisories do not skip
+  formatting, lint, and type checks on unrelated pull requests.
 - GitHub Actions are pinned to full commit SHAs with the exact release in comments.
 - Automatic merge is not enabled.
 
