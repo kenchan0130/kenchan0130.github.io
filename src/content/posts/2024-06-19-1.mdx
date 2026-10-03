@@ -199,7 +199,7 @@ iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して�
 
 サービス構成ファイル機能はmacOS 14 Sonomaから導入され、独自の設定を配布[^service-configuration-file-location]できるようになりました。
 
-[^service-configuration-file-location]: `/private/var/db/ManagedConfigurationFiles/` ディレクトリにサービス構成ファイルが設置される
+[^service-configuration-file-location]: `/private/var/db/ManagedConfigurationFiles/`ディレクトリにサービス構成ファイルが設置される
 
 * sshd [^sshd] (`com.apple.sshd`)
   * SSHサービスの有効化/無効化、リスニングアドレス、リスニングポート、認証方法の変更、SSH経由でマシンにリモートアクセスできるユーザーの指定などが可能となる
@@ -240,7 +240,7 @@ iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して�
 
 IdPの認証を用いてFileVaultのロック解除が可能となります。
 
-具体的には、Platform SSOのFileVaultポリシー（`FileVaultPolicy`）に `AttemptAuthentication` を設定することで、先に進む前にIdPの認証が試行されます。
+具体的には、Platform SSOのFileVaultポリシー（`FileVaultPolicy`）に`AttemptAuthentication`を設定することで、先に進む前にIdPの認証が試行されます。
 
 ```xml
 <!-- com.apple.extensiblesso -->

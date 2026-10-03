@@ -93,7 +93,7 @@ XCredsとJamf Connectは、IdPを介してMacにログインする機能のみ�
 
 | 項目             | XCreds                                                                                 | Jamf Connect                                                                                                                       |
 |:---------------|----------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
-| **OSバージョン**    | `11.0` 以降[^xcreds-support-os]                                                                                | `10.15.4` 以降                                                                                                                         |
+| **OSバージョン**    | `11.0`以降[^xcreds-support-os]                                                                                | `10.15.4`以降                                                                                                                         |
 | **IDプロバイダ**    | Azure Active Directory<br/>Okta<br/>Google ID<br/>OneLogin<br/>任意のOIDCプロバイダ            | Azure Active Directory<br/>Google ID<br/>IBM Security Verify<br/>OneLogin<br/>PingFederate<br/>任意のOIDCプロバイダ                        |
 | **費用**         | 無償（OSS）<br/>オプションで[サポート](https://twocanoes.com/xcreds-support-plans/)が$999/年または$4999/年 | $24/年<br/>別途JumpStart（研修）代<br/>25ライセンスから                                                                                           |
 | **sudoコマンド**   | -                                                                                      | [Pluggable Authentication Module](https://docs.jamf.com/jamf-connect/2.14.0/documentation/Pluggable_Authentication_Module.html)の提供 |
@@ -126,7 +126,7 @@ Microsoft Azure Portalにアクセスして設定します。
 
 #### XCredsとAzure ADの統合
 
-1. [Azure サービス] > [アプリの登録] > [新規登録] をクリックします。
+1. [Azureサービス] > [アプリの登録] > [新規登録]をクリックします。
 
     ![Azure Portalのアプリの登録一覧](/assets/posts/post/2022-09-15-1/index_app_registration_at_azure_portal.png)
 
@@ -136,7 +136,7 @@ Microsoft Azure Portalにアクセスして設定します。
     * **サポートされているアカウントの種類**: `この組織ディレクトリのみに含まれるアカウント（xxxxxのディレクトリのみ - シングルテナント）`
       * ユースケースに合わせて設定
     * **リダイレクトURI**: `xcreds://auth/`
-      * **パブリッククライアント/ネイティブ（モバイルとデスクトップ）**として登録
+      * 「パブリッククライアント/ネイティブ（モバイルとデスクトップ）」として登録
 
     ![Azure Portalのアプリの登録の新規登録](/assets/posts/post/2022-09-15-1/app_creation_app_registration_at_azure_portal.png)
 
@@ -146,7 +146,7 @@ Microsoft Azure Portalにアクセスして設定します。
 
     ![XCredsアプリの概要](/assets/posts/post/2022-09-15-1/overview_at_app.png)
 
-1. [証明書とシークレット] > [新しいクライアントシークレット] から[説明]と[有効期限]を設定し、[追加]をクリックします。
+1. [証明書とシークレット] > [新しいクライアントシークレット]から[説明]と[有効期限]を設定し、[追加]をクリックします。
 
     ![XCredsアプリの証明書とシークレットのクライアントシークレット発行](/assets/posts/post/2022-09-15-1/secret_generation_certificate_and_secret_at_app.png)
 
@@ -163,11 +163,11 @@ Microsoft Azure Portalにアクセスして設定します。
 
 アプリケーションにログインできるように、ユーザーまたはまたはグループにアクセス権限を付与します。
 
-1. [Azure サービス] > [エンタープライズアプリケーション] > [XCreds（アプリの登録で登録した名前）] をクリックします。
+1. [Azureサービス] > [エンタープライズアプリケーション] > [XCreds（アプリの登録で登録した名前）]をクリックします。
 
     ![Azure Portalのエンタープライズアプリケーションの一覧](/assets/posts/post/2022-09-15-1/index_enterprise_application_at_azure_portal.png)
 
-1. [ユーザーとグループ] > [ユーザーまたはグループの追加] をクリックします。
+1. [ユーザーとグループ] > [ユーザーまたはグループの追加]をクリックします。
 
     ![エンタープライズアプリケーションのユーザーとグループ](/assets/posts/post/2022-09-15-1/user_and_group_at_app.png)
 
@@ -183,7 +183,7 @@ Jamf Proサーバーにアクセスして設定します。
 
 #### XCredsパッケージの登録
 
-1. [設定] > [コンピュータ管理] > [パッケージ] > [新規] をクリックします。
+1. [設定] > [コンピュータ管理] > [パッケージ] > [新規]をクリックします。
 1. [ファイル選択]から事前にダウンロードしておいたXCredsの`pkg`ファイルを選択して[保存]をクリックします。
     * [カテゴリ]の設定は任意
 
@@ -191,7 +191,7 @@ Jamf Proサーバーにアクセスして設定します。
 
 #### XCredsのプロファイルの設定
 
-1. [コンピュータ] > [構成プロファイル] > [新規] をクリックします。
+1. [コンピュータ] > [構成プロファイル] > [新規]をクリックします。
 1. [一般]の項目を選択し、各項目を設定します。
     * **名前**: `XCreds`
       * 名前は任意の文字列で可
@@ -201,12 +201,12 @@ Jamf Proサーバーにアクセスして設定します。
 
     ![Jamf ProにおけるXCredsの構成プロファイルの一般設定](/assets/posts/post/2022-09-15-1/xcreds_configration_profile_general_at_jamf_pro.png)
 
-1. [ログイン項目] > [構成] > [項目] > [追加] から、Itemに `/Applications/XCreds.app/` を設定して[Save]をクリックします。
+1. [ログイン項目] > [構成] > [項目] > [追加]から、Itemに`/Applications/XCreds.app/`を設定して[Save]をクリックします。
     * **末尾に`/`がないと正しく動作しないので注意**
 
     ![Jamf ProにおけるXCredsの構成プロファイルのログイン項目設定](/assets/posts/post/2022-09-15-1/xcreds_configration_profile_login_items_at_jamf_pro.png)
 
-1. [アプリケーションとカスタム設定] > [外部アプリケーション] > [追加] から[ソース]と[環境設定ドメイン]を設定し、[スキーマ追加]をクリックします。
+1. [アプリケーションとカスタム設定] > [外部アプリケーション] > [追加]から[ソース]と[環境設定ドメイン]を設定し、[スキーマ追加]をクリックします。
     * **ソース**: `カスタムスキーマ`
     * **環境設定ドメイン**: `com.twocanoes.xcreds`
 
@@ -242,7 +242,7 @@ Jamf Proサーバーにアクセスして設定します。
 
 今回、FileVaultの設定は別のプロファイルとして設定していますが、XCredsのプロファイルにまとめることも可能です。
 
-1. [コンピュータ] > [構成プロファイル] > [新規] をクリックします。
+1. [コンピュータ] > [構成プロファイル] > [新規]をクリックします。
 1. [一般]の項目を選択し、各項目を設定します。
     * **名前**: `FileVault`
       * 名前は任意の文字列で可
@@ -252,7 +252,7 @@ Jamf Proサーバーにアクセスして設定します。
 
     ![Jamf ProにおけるFileVaultの構成プロファイルの一般設定](/assets/posts/post/2022-09-15-1/file_vault_configration_profile_general_at_jamf_pro.png)
 
-1. [セキュリティとプライバシー] > [FileVault] をクリックして各項目を設定します。
+1. [セキュリティとプライバシー] > [FileVault]をクリックして各項目を設定します。
     * **FileVault オプションのユーザによる変更**: `[FileVaultの無効化を防止]としてトグルをON`
       * 設定は任意
       * 特別な理由がない限りは、FileVaultを無効化させる必要はない
@@ -279,7 +279,7 @@ XCredsのプロファイル側でもFileVaultを有効化しましたが、別�
 
 #### PreStage Enrollmentsの設定
 
-1. [コンピュータ] > [Prestage Enrollments] > [新規] をクリックします。
+1. [コンピュータ] > [Prestage Enrollments] > [新規]をクリックします。
 1. [一般]から各値を設定します。
     * **表示名**: `kenchan0130 HQ`
       * 任意の文字列
@@ -288,7 +288,7 @@ XCredsのプロファイル側でもFileVaultを有効化しましたが、別�
 
     ![Jamf ProにおけるPreStage Enrollmentsの一般設定](/assets/posts/post/2022-09-15-1/pre_stage_enrollments_general_at_jamf_pro.png)
 
-1. [アカウント設定] > [構成] をクリックして、各値を設定します。
+1. [アカウント設定] > [構成]をクリックして、各値を設定します。
     * **セットアップアシスタントの前にローカル管理者アカウントを作成する**: `有効`
       * **ユーザー名**: `kenchan0130admin`
         * 任意の文字列
@@ -298,12 +298,12 @@ XCredsのプロファイル側でもFileVaultを有効化しましたが、別�
 
     ![Jamf ProにおけるPreStage Enrollmentsのアカウント設定](/assets/posts/post/2022-09-15-1/pre_stage_enrollments_account_settings_at_jamf_pro.png)
 
-1. [構成プロファイル] > [構成] をクリックして、有効化したいプロファイルを選択します。
+1. [構成プロファイル] > [構成]をクリックして、有効化したいプロファイルを選択します。
     * 先程作成した構成プロファイルの**XCreds**と**FileVault**を選択
 
     ![Jamf ProにおけるPreStage Enrollmentsの構成プロファイル設定](/assets/posts/post/2022-09-15-1/pre_stage_enrollments_configration_profiles_at_jamf_pro.png)
 
-1. [登録パッケージ] > [構成] をクリックして、使用したいパッケージを選択します。
+1. [登録パッケージ] > [構成]をクリックして、使用したいパッケージを選択します。
     * 先程登録した**XCredsのパッケージ**を選択
 
     ![Jamf ProにおけるPreStage Enrollmentsの登録パッケージ設定](/assets/posts/post/2022-09-15-1/pre_stage_enrollments_enrollment_packages_at_jamf_pro.png)

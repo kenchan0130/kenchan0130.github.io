@@ -19,9 +19,9 @@ Railsのメジャーバージョンアップは毎回大幅なアップデート
 
 ## 前提
 
-Rubyのバージョンが `2.2.2` 以上でなければ、Rails 5は動作しません。
+Rubyのバージョンが`2.2.2`以上でなければ、Rails 5は動作しません。
 
-`2.2.2` 未満を使用している場合は、まずRubyのバージョンをアップデートしてからRailsのアップデートを行うことをオススメします。
+`2.2.2`未満を使用している場合は、まずRubyのバージョンをアップデートしてからRailsのアップデートを行うことをオススメします。
 
 ## ライブラリのバーションアップ
 
@@ -39,7 +39,7 @@ Rails 5へのアップグレードの原因切り分けのため、この時点�
 
 ## Rails 5のgemをインストール
 
-`Gemfile` の `rails` の項目を、以下のように変更します。
+`Gemfile`の`rails`の項目を、以下のように変更します。
 
 ```ruby
 # Gemfile
@@ -114,7 +114,7 @@ Controllerで使用される`before_filter`や`after_filter`などが非推奨�
 
 ### envの直接参照が非推奨
 
-`ActionController`を継承したクラス内での`env`を使用して、rack の`env`へのアクセスが非推奨となりました。
+`ActionController`を継承したクラス内での`env`を使用して、rackの`env`へのアクセスが非推奨となりました。
 
 #### envの直接参照が非推奨 - 対応方法
 
@@ -230,7 +230,7 @@ production環境では、過去のマイグレーションファイルに対し�
 rails db:migrate:reset
 ```
 
-などを実行する場合 `scheme.rb` が更新されてしまいます。
+などを実行する場合`scheme.rb`が更新されてしまいます。
 
 #### jsonおよびjsonb型カラムが存在するテーブルのマイグレーション時にデフォルト値の解釈が変更 - 対応方法
 
@@ -269,7 +269,7 @@ end
 
 #### ActionController::TestCaseが非推奨 - 対応方法
 
-`ActionDispatch::IntegrationTest` を使用しましょう。
+`ActionDispatch::IntegrationTest`を使用しましょう。
 
 具体的には、
 
@@ -307,7 +307,7 @@ end
 ### ActionController::ParametersがHash継承ではなくなった
 
 `ActionController::Parameters`が`Hash`クラスの継承でなくなりました。
-入れ子になっているパラメータ（オブジェクト）も `ActionController::Parameters`オブジェクトになっています。
+入れ子になっているパラメータ（オブジェクト）も`ActionController::Parameters`オブジェクトになっています。
 
 `params.merge`は必ず引数に`Hash`オブジェクトを取るようになったため気を付ける必要があります。
 

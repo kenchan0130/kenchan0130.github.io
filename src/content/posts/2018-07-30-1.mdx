@@ -12,10 +12,10 @@ references: []
 draft: false 
 ---
 
-[Jekyll](https://jekyllrb.com/) は [RubyGems](https://rubygems.org/) で配布されているRuby製の静的サイト生成ツールです。
+[Jekyll](https://jekyllrb.com/)は[RubyGems](https://rubygems.org/)で配布されているRuby製の静的サイト生成ツールです。
 このブログもJekyllを使用しています。
 
-Jekyllでの使用を想定した画像の遅延ロードため [`jekyll-lazy-load-image`](https://github.com/kenchan0130/jekyll-lazy-load-image) というRubyGemsを作成しました。
+Jekyllでの使用を想定した画像の遅延ロードため[`jekyll-lazy-load-image`](https://github.com/kenchan0130/jekyll-lazy-load-image)というRubyGemsを作成しました。
 
 今回は作成の意図とその使い方などを備忘として記載していこうと思います。
 
@@ -42,36 +42,36 @@ Jekyllでの使用を想定した画像の遅延ロードため [`jekyll-lazy-lo
 1. HTMLをリクエスト
 2. HTMLの取得
 3. HTMLのDOM生成
-    1. `path/to/javascript` のJavaScriptをリクエスト
-    2. `path/to/css` のCSSをリクエスト
-    3. `path/to/image` の画像をリクエスト
+    1. `path/to/javascript`のJavaScriptをリクエスト
+    2. `path/to/css`のCSSをリクエスト
+    3. `path/to/image`の画像をリクエスト
 4. ページレンダリング完了
 
 という挙動をします。
 
-もし `path/to/image` が重いファイルだった場合、「ページレンダリング完了」までに時間がかかってしまいます。
+もし`path/to/image`が重いファイルだった場合、「ページレンダリング完了」までに時間がかかってしまいます。
 
-1つの解決方法として `img` タグの `src` 属性にダミー画像やロード中の画像を指定しつつ、 JavaScriptを使用して画像を非同期で読み込むことでページレンダリングをブロックしないようにできます。
+1つの解決方法として`img`タグの`src`属性にダミー画像やロード中の画像を指定しつつ、 JavaScriptを使用して画像を非同期で読み込むことでページレンダリングをブロックしないようにできます。
 
 たまたまこのブログで少々重めのgifを表示したいことがあり、体感的にレンダリングが遅かったため、非同期で画像を読み込みたいと考えました。
 
 ### RubyGemsに切り出すという選択
 
-Jekyllのプロジェクトでは `_plugins` ディレクトリにファイルを設置することで、
+Jekyllのプロジェクトでは`_plugins`ディレクトリにファイルを設置することで、
 自作のJekyll Pluginを作成および導入が可能です。
 
-しかし、 `_plugins` に設置する自作のJekyll Pluginは、中々テストが書かれることがありません。
+しかし、 `_plugins`に設置する自作のJekyll Pluginは、中々テストが書かれることがありません。
 
 RubyGemsに切り出せば、テストを記載するだろうと思い、切り出すことにしました。
 
 ## ライブラリの作成方針
 
-`jekyll-lazy-load-image` を作成する際に、以下のようなことを気にして作成しました。
+`jekyll-lazy-load-image`を作成する際に、以下のようなことを気にして作成しました。
 
 ### Jekyllにおける画像非同期読み込みの課題
 
 JekyllではしばしばHTMLをそのまま記載するのではなくMarkdownなど別のファイルフォーマットで記載されたドキュメントを使用して静的サイトを生成します。
-そのため、HTML以外のファイルフォーマットで記載されたドキュメントをJekyllのコンバーターでの処理が終わった後に `img` タグを変更する必要があります。
+そのため、HTML以外のファイルフォーマットで記載されたドキュメントをJekyllのコンバーターでの処理が終わった後に`img`タグを変更する必要があります。
 
 ### Jekyllの拡張の選択
 Jekyllには拡張をするための機構が
@@ -86,7 +86,7 @@ Jekyllには拡張をするための機構が
 
 今回はJekyllのコンバーターの処理が終わったドキュメントに対して変更したいため、「Hooks」を使用します。
 
-Hooksにはドキュメントをレンダリングした後、静的HTMLを出力する前に呼び出される `:post_render` があります。
+Hooksにはドキュメントをレンダリングした後、静的HTMLを出力する前に呼び出される`:post_render`があります。
 こちらを使用して生成されたHTMLを変更する方法を選択しました。
 
 ### 依存の最小化
@@ -94,7 +94,7 @@ Hooksにはドキュメントをレンダリングした後、静的HTMLを出�
 RubyGemsを作成する際には、依存するライブラリを選択できます。
 今回はなるべく軽量で汎用性が高いように作成したかったため、依存するライブラリを極力少なくすることにしました。
 
-よくやりがちな、とりあえず [ActiveSupport](https://github.com/rails/rails/tree/master/activesupport) を入れるみたいなことを避けて、本当に必要なライブラリだけを利用することにしました。
+よくやりがちな、とりあえず[ActiveSupport](https://github.com/rails/rails/tree/master/activesupport)を入れるみたいなことを避けて、本当に必要なライブラリだけを利用することにしました。
 
 もちろん、ActiveSupoortはとても便利です。
 よく使われるメソッドや拡張が数多く用意されていて、かつテストが書かれているというのはとても魅力的です。
@@ -115,11 +115,11 @@ RubyGemsへ切り出したため、さまざまなユーザーを想定しまし
 細かい設定などは逆に使用者に負担をかける可能性があります。
 
 そのため、最低限動作するに設計しました。
-具体的には `_config.yml` と `Gemfile` の変更と使用するJavaScriptの追加のみで動作するようにしました。
+具体的には`_config.yml`と`Gemfile`の変更と使用するJavaScriptの追加のみで動作するようにしました。
 
 #### 遅延ロードのJavaScriptの処遇
 
-細かい設定を少なくすると言ったわりには、 `jekyll-lazy-load-image` では遅延ロードのJavaScriptを使用者で設定してもらうようにしています。
+細かい設定を少なくすると言ったわりには、 `jekyll-lazy-load-image`では遅延ロードのJavaScriptを使用者で設定してもらうようにしています。
 
 JekyllのTags拡張を使用することで、遅延ロードのJavaScriptの呼び出しを簡略化することも検討しました。
 しかし、ことJavaScriptに関してはサイトに寄って呼び出し方法がまちまちであるため、むやみに呼び出しを強制してしまうのは逆にライブラリとして使用されづらくなると考え、このような形にすることにしました。
@@ -130,15 +130,15 @@ JekyllのTags拡張を使用することで、遅延ロードのJavaScriptの呼
 
 もちろんJekyllやRubyに詳しい方もいるため、その人達用にメソッドを個別に呼び出せるようにしてカスタマイズできるようにしようと考えました。
 
-メインとなる `img` タグの `src` 属性の変更に関しては個別でも呼び出せるように設計をしました。
-しかし、まだ不十分な部分もあるため、 [Issue](https://github.com/kenchan0130/jekyll-lazy-load-image/issues/1) としてタスクに積み、改善を予定しています。
+メインとなる`img`タグの`src`属性の変更に関しては個別でも呼び出せるように設計をしました。
+しかし、まだ不十分な部分もあるため、 [Issue](https://github.com/kenchan0130/jekyll-lazy-load-image/issues/1)としてタスクに積み、改善を予定しています。
 
 ## jekyll-lazy-load-imageの使い方
 
 ### カスタマイズせずに動かす
-#### `Gemfile` の設定
+#### `Gemfile`の設定
 
-Jekyllのプロジェクトの `Gemfile` に以下を追加します。
+Jekyllのプロジェクトの`Gemfile`に以下を追加します。
 
 ```ruby
 group :jekyll_plugins do
@@ -146,8 +146,8 @@ group :jekyll_plugins do
 end
 ```
 
-`gem 'jekyll-lazy-load-image'` のみでは拡張用に処理は走らないようになっており、
-`require: 'jekyll-lazy-load-image/auto-execution'` を付与することで、自動で処理が走ります。
+`gem 'jekyll-lazy-load-image'`のみでは拡張用に処理は走らないようになっており、
+`require: 'jekyll-lazy-load-image/auto-execution'`を付与することで、自動で処理が走ります。
 
 #### 遅延ロードのライブラリの設定
 
@@ -171,7 +171,7 @@ Jekyllのプロジェクトのアセットに追加ソースを追加する、�
 
 #### \_config.ymlの設定
 
-Jekyllのプロジェクトの `_config.yml` に、このライブラリで使用する設定を以下のように記載します。
+Jekyllのプロジェクトの`_config.yml`に、このライブラリで使用する設定を以下のように記載します。
 
 ```yaml
 lazy_load_image:
@@ -189,11 +189,11 @@ lazy_load_image:
 
 設定名|必須|内容
 :---:|:---:|:---
-`src_attr_name`|required|`img` タグの `src` 属性の代わりに設定する属性名
-`preload_image`|optional|画像のロードが終わるまでに表示させる内容、つまり `img` タグの `src` 属性にデフォルトで設定する内容
-`class_attr_values`|optional|`img` タグの `class` 属性に追加で付与する値（複数指定可能）
+`src_attr_name`|required|`img`タグの`src`属性の代わりに設定する属性名
+`preload_image`|optional|画像のロードが終わるまでに表示させる内容、つまり`img`タグの`src`属性にデフォルトで設定する内容
+`class_attr_values`|optional|`img`タグの`class`属性に追加で付与する値（複数指定可能）
 `ignore_selectors`|optional|処理を除外する対象のセレクタ（cssまたはxpathで複数指定可能）
-`additional_attrs`|optional|追加で `img` タグに設定したい属性名と値の組み合わせ
+`additional_attrs`|optional|追加で`img`タグに設定したい属性名と値の組み合わせ
 
 ### カスタマイズして動かす
 
@@ -202,7 +202,7 @@ lazy_load_image:
 
 #### Gemfileの設定
 
-Jekyllのプロジェクトの `Gemfile` に以下を追加します。
+Jekyllのプロジェクトの`Gemfile`に以下を追加します。
 
 ```ruby
 gem 'jekyll-lazy-load-image'
@@ -210,7 +210,7 @@ gem 'jekyll-lazy-load-image'
 
 #### \_pluginsディレクトリへファイルの追加
 
-ドキュメントに対して処理を行いたいとした場合は、 `_plugins` ディレクトリに
+ドキュメントに対して処理を行いたいとした場合は、 `_plugins`ディレクトリに
 
 ```ruby
 require 'jekyll-lazy-load-image'
@@ -229,5 +229,5 @@ JekyllLazyLoadImage.execute
 今回はJekyllで作成するサイトに対して画像を遅延ロードの設定を施すライブラリの作成についてと、その使い方について記載しました。
 少しでも同じ課題を持っている方の助けになれば幸いです。
 
-また、今回作成した [`jekyll-lazy-load-image`](https://github.com/kenchan0130/jekyll-lazy-load-image) は、ある程度考えて設計したものの、実際使用してみると使いづらい点などがあるかと思います。
-OSSとして公開しているので、ぜひ [Issue](https://github.com/kenchan0130/jekyll-lazy-load-image/issues) 、 [Pull Request](https://github.com/kenchan0130/jekyll-lazy-load-image/pulls) いただければと思います。
+また、今回作成した[`jekyll-lazy-load-image`](https://github.com/kenchan0130/jekyll-lazy-load-image)は、ある程度考えて設計したものの、実際使用してみると使いづらい点などがあるかと思います。
+OSSとして公開しているので、ぜひ[Issue](https://github.com/kenchan0130/jekyll-lazy-load-image/issues) 、 [Pull Request](https://github.com/kenchan0130/jekyll-lazy-load-image/pulls)いただければと思います。

@@ -9,13 +9,19 @@ rules:
     max-comma:
       max: 5
     no-exclamation-question-mark: false
+    ja-no-weak-phrase: false
+    no-mix-dearu-desumasu:
+      preferInList: "ですます"
   preset-ja-spacing: true
   prh:
     rulePaths:
-      - ".textlint-prh/WEB+DB_PRESS.yml"
       - ".textlint-prh/kenchan0130.yml"
   no-nfd: true
   "@textlint-ja/preset-ai-writing":
     ai-tech-writing-guideline: false
 filters:
   comments: true
+  allowlist:
+    allow:
+      # UIのメニュー階層は「[設定] > [一般]」のように区切り記号の前後にスペースを入れる
+      - "/\\] > \\[/"

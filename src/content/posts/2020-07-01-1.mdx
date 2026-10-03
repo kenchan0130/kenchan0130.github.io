@@ -57,7 +57,7 @@ macOS Big Surでは、UAMDMを使用してもAutomated Device Enrollmentとま�
 
 などが使用できます。
 
-Apple社ではAutomated Device Enrollmentで登録したデバイスを**organization-owned（組織所有）**、UAMDMで登録したデバイスを**user-owned（個人所有）**という用語に統合したようです。
+Apple社ではAutomated Device Enrollmentで登録したデバイスを**organization-owned**（組織所有）、UAMDMで登録したデバイスを**user-owned**（個人所有）という用語に統合したようです。
 
 ### ソフトウェアアップデートの管理
 
@@ -104,7 +104,7 @@ macOS Big Surでは「システム設定 > プロファイル」の「ダウン�
 
 もし、ユーザーが**8分間**何もアクションを起こさない場合、ダウンロードしたプロファイルは自動的に削除されます。
 
-また、コマンドラインを使用しても（おそらく `sudo` を使用しても）完全にはプロファイルがインストールできなくなります。
+また、コマンドラインを使用しても（おそらく`sudo`を使用しても）完全にはプロファイルがインストールできなくなります。
 コマンドラインでインストールを行うと、同様にダウンロードされたものとして扱われ、同様に手動での操作が必要になります。
 
 おそらくですが、MDMコマンドを使用したプロファイルのプッシュ（インストール）に関してはこの制限の対象外であると思われます。
@@ -113,16 +113,16 @@ macOS Big Surでは「システム設定 > プロファイル」の「ダウン�
 
 ![What's new in managing Apple devicesのセッションで発表されたnetworrksetup limitations for standard users](/assets/posts/post/2020-07-01-1/networrksetup_limitations_for_standard_users.png)
 
-macOS Big Sur以前のOSの場合、管理者ユーザーおよび標準ユーザーは `networksetup` コマンドを使用することで、一部ネットワークの設定を変更できました。
+macOS Big Sur以前のOSの場合、管理者ユーザーおよび標準ユーザーは`networksetup`コマンドを使用することで、一部ネットワークの設定を変更できました。
 
-macOS Big Surからは、標準ユーザーは `networksetup` コマンドを使用してもread onlyであり、ネットワーク設定に関しては、
+macOS Big Surからは、標準ユーザーは`networksetup`コマンドを使用してもread onlyであり、ネットワーク設定に関しては、
 
 * Wi-Fi-のオン/オフ
 * アクセスポイントの変更
 
 のみが可能です。
 
-ただし、`sudo` を使用することでこの制限を回避できます。
+ただし、`sudo`を使用することでこの制限を回避できます。
 
 ### シリアル番号の仕様変更
 

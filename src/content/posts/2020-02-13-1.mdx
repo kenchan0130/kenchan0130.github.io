@@ -86,7 +86,7 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
 
     ![Oktaのセキュリティの認証ページへの遷移](/assets/posts/post/2020-02-13-1/okta_security_authentication.png)
 
-1. 「Sign On」タブに遷移して、Jamf Pro Serverにログイン可能なポリシーが一つまたは複数あり、すべての「Session Lifetime」の時間が同一の場合、その時間をメモします。
+1. 「Sign On」タブに遷移して、Jamf Pro Serverにログイン可能なポリシーが1つまたは複数あり、すべての「Session Lifetime」の時間が同一の場合、その時間をメモします。
     * のちほど、この時間をJamf Pro Server側に設定します。
 
     ![Oktaの認証のSing On設定](/assets/posts/post/2020-02-13-1/okta_authentication_sign_on.png)
@@ -98,14 +98,14 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
 
     ![Jamf Pro Serverの設定ページ](/assets/posts/post/2020-02-13-1/jamf_settings.png)
 
-1. 「Single Sign-On 認証を有効化」にチェックを付けます。
+1. 「Single Sign-On認証を有効化」にチェックを付けます。
 1. 各種値を設定し、保存します。
     * **アイデンティティプロバイダ**のセクション
         * **アイデンティティプロバイダ**には「Okta」を指定します。
         * **エンティティID**には「`https://サブドメイン名.jamfcloud.com/saml/metadata`」を指定します。
-        * **アイデンティティプロバイダのメタデータソース**には「メタデータ URL」を指定し、Okta側の設定で取得した「Identity Provider metadata」のURLを指定します。
-            * 「メタデータファイル」と「メタデータ URL」はどちらを選択しても構いませんが、視認性や設定の容易さから「メタデータ URL」を選択しました。
-        * **トークン有効期限（分）**にはOkta側の設定で取得した「Session Lifetime」を分単位に変換した値を指定します。
+        * **アイデンティティプロバイダのメタデータソース**には「メタデータURL」を指定し、Okta側の設定で取得した「Identity Provider metadata」のURLを指定します。
+            * 「メタデータファイル」と「メタデータURL」はどちらを選択しても構いませんが、視認性や設定の容易さから「メタデータURL」を選択しました。
+        * 「トークン有効期限（分）」にはOkta側の設定で取得した「Session Lifetime」を分単位に変換した値を指定します。
             * Okta側の認証のサインインポリシーが複数あり、「Session Lifetime」が異なる場合は、**SAML トークンの有効期限を無効化**にチェックを入れることを推奨します。
     * **セキュリティ**のセクション
         * **アイデンティティプロバイダのユーザマッピング**には「NameID」を指定します。
@@ -149,8 +149,8 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
     ![Azure ADのJamf Proアプリケーションのシングルサインオン画面](/assets/posts/post/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on.png)
 
 1. 追加するJamf Proアプリケーションの構成情報を指定します。
-    * **識別子（エンティティID）**には「`https://サブドメイン名.jamfcloud.com/saml/metadata`」を指定します。
-    * **応答URL（Assertion Consumer Service URL）**には「`https://サブドメイン名.jamfcloud.com/saml/SSO`」を指定します。
+    * 「識別子（エンティティID）」には「`https://サブドメイン名.jamfcloud.com/saml/metadata`」を指定します。
+    * 「応答URL（Assertion Consumer Service URL）」には「`https://サブドメイン名.jamfcloud.com/saml/SSO`」を指定します。
     * **サインオンURL**には「`https://サブドメイン名.jamfcloud.com`」を指定します。
 
     ![Azure ADのJamf Proアプリケーションのシングルサインオンの基本的なSAML構成画面](/assets/posts/post/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on_base_configuration.png)
@@ -174,13 +174,13 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
 
     ![Jamf Pro Serverの設定ページ](/assets/posts/post/2020-02-13-1/jamf_settings.png)
 
-1. 「Single Sign-On 認証を有効化」にチェックを付けます。
+1. 「Single Sign-On認証を有効化」にチェックを付けます。
 1. 各種値を設定し、保存します。
     * **アイデンティティプロバイダ**のセクション
         * **アイデンティティプロバイダ**には「Azure」を指定します。
         * **エンティティID**には「`https://サブドメイン名.jamfcloud.com/saml/metadata`」を指定します。
-        * **アイデンティティプロバイダのメタデータソース**には「メタデータ URL」を指定し、Azure AD側の設定で取得した「アプリのフェデレーションメタデータ」のURLを指定します。
-        * **トークン有効期限（分）**にはなにも指定せずに**SAML トークンの有効期限を無効化**にチェックを入れます。
+        * **アイデンティティプロバイダのメタデータソース**には「メタデータURL」を指定し、Azure AD側の設定で取得した「アプリのフェデレーションメタデータ」のURLを指定します。
+        * 「トークン有効期限（分）」にはなにも指定せずに**SAML トークンの有効期限を無効化**にチェックを入れます。
             * Azure ADを使用するとセッションの関係でいくつかのエラーが発生する可能性があるため、有効期限を無効化しています。
     * **セキュリティ**のセクション
         * **アイデンティティプロバイダのユーザマッピング**には「NameID」を指定します。

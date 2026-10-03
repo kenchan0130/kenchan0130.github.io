@@ -92,7 +92,7 @@ provider "azuread" {
 └── provider.tf
 ```
 
-`provider.tf` に前述したプロバイダーの設定、`main.tf` に今回のユースケースを構成します。
+`provider.tf`に前述したプロバイダーの設定、`main.tf`に今回のユースケースを構成します。
 以下が最低限動作するコードです。
 
 ```hcl
@@ -190,7 +190,7 @@ resource "azuread_application" "jamf_pro" {
 
 #### identifier_urisを設定するとアプリケーションオブジェクトが作成できない問題
 
-`azuread_application`の`identifier_uris`に`https://exmaple.jamfcloud.com/saml/metadata` を設定しようとすると`terraform apply`時に以下のようなエラーが発生しました。
+`azuread_application`の`identifier_uris`に`https://exmaple.jamfcloud.com/saml/metadata`を設定しようとすると`terraform apply`時に以下のようなエラーが発生しました。
 
 ```
 ╷
@@ -440,7 +440,7 @@ SHELL
 └── provider.tf
 ```
 
-`provider.tf` に前述したプロバイダーの設定、`main.tf` に今回のユースケースを構成します。
+`provider.tf`に前述したプロバイダーの設定、`main.tf`に今回のユースケースを構成します。
 以下が最低限動作するコードです。
 
 ```hcl

@@ -121,9 +121,9 @@ end
 
 上記のようにクラスを評価しつつ文字列可すると`uninitialized constant RescueJsonParseErrors`となってしまいました。
 
-これは、`config/application.rb`が読み込まれた後に`initializers` のファイルが読み込まれることが原因です。
+これは、`config/application.rb`が読み込まれた後に`initializers`のファイルが読み込まれることが原因です。
 
-そのため、クラス名の文字列にするか、`config/application.rb`で `RescueJsonParseErrors`クラスを定義してあるファイルを明示的に`require`する必要があります。
+そのため、クラス名の文字列にするか、`config/application.rb`で`RescueJsonParseErrors`クラスを定義してあるファイルを明示的に`require`する必要があります。
 
 #### gemでの解決
 
@@ -135,7 +135,7 @@ end
 の2つが見つかりました。
 しかし執筆現在、それぞれのgemはメンテナンスが行われていないため、適切に判断して使用することをお勧めします。
 
-### Rails 5以降の場合
+### Rails 5以降の場合
 
 Rails 5系では、このあたりの処理に修正が入り、Controllerでリクエストパラメータのパース例外を捕捉できるようになりました。
 
