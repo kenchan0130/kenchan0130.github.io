@@ -9,6 +9,16 @@ rules:
     max-comma:
       max: 5
     no-exclamation-question-mark: false
+    max-kanji-continuous-len:
+      # 正式名称や一般的な技術用語
+      allow:
+        - 世界開発者会議
+        - 公開鍵暗号方式
+        - 共通鍵暗号方式
+        - 金融商品取引業者
+        - 第一種金融取引業者
+        - 第二種金融取引業者
+        - 認定販売代理店
     ja-no-weak-phrase: false
     no-mix-dearu-desumasu:
       preferInList: "ですます"
