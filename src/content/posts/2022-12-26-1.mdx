@@ -92,7 +92,7 @@ provider "azuread" {
 └── provider.tf
 ```
 
-`provider.tf`に前述したプロバイダーの設定、`main.tf`に今回のユースケースを構成します。
+`provider.tf`に前述したプロバイダの設定、`main.tf`に今回のユースケースを構成します。
 以下が最低限動作するコードです。
 
 ```hcl
@@ -440,7 +440,7 @@ SHELL
 └── provider.tf
 ```
 
-`provider.tf`に前述したプロバイダーの設定、`main.tf`に今回のユースケースを構成します。
+`provider.tf`に前述したプロバイダの設定、`main.tf`に今回のユースケースを構成します。
 以下が最低限動作するコードです。
 
 ```hcl
@@ -765,4 +765,4 @@ resource "azuread_service_principal_claims_mapping_policy_assignment" "jamf_pro"
 
 の構築例を紹介しました。
 
-これは最低限の設定であったため、その他にも設定したい項目がある場合は[Terraformのプロバイダの公式ドキュメント](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)や[Microsoft Graphの公式ドキュメント](https://learn.microsoft.com/ja-jp/graph/api/resources/azure-ad-overview)を参考に対応してみると良いと思います。
+これは最低限の設定であったため、そのほかにも設定したい項目がある場合は[Terraformのプロバイダの公式ドキュメント](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)や[Microsoft Graphの公式ドキュメント](https://learn.microsoft.com/ja-jp/graph/api/resources/azure-ad-overview)を参考に対応してみると良いと思います。

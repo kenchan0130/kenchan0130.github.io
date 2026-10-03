@@ -104,7 +104,7 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
         * **アイデンティティプロバイダ**には「Okta」を指定します。
         * **エンティティID**には「`https://サブドメイン名.jamfcloud.com/saml/metadata`」を指定します。
         * **アイデンティティプロバイダのメタデータソース**には「メタデータURL」を指定し、Okta側の設定で取得した「Identity Provider metadata」のURLを指定します。
-            * 「メタデータファイル」と「メタデータURL」はどちらを選択しても構いませんが、視認性や設定の容易さから「メタデータURL」を選択しました。
+            * 「メタデータファイル」と「メタデータURL」はどちらを選択してもかまいませんが、視認性や設定の容易さから「メタデータURL」を選択しました。
         * 「トークン有効期限（分）」にはOkta側の設定で取得した「Session Lifetime」を分単位に変換した値を指定します。
             * Okta側の認証のサインインポリシーが複数あり、「Session Lifetime」が異なる場合は、**SAML トークンの有効期限を無効化**にチェックを入れることを推奨します。
     * **セキュリティ**のセクション
@@ -185,7 +185,7 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
     * **セキュリティ**のセクション
         * **アイデンティティプロバイダのユーザマッピング**には「NameID」を指定します。
         * **JAMF PROのユーザマッピング**には「ユーザ名」を指定します。
-            * [公式ドキュメント](https://docs.microsoft.com/ja-jp/azure/active-directory/saas-apps/jamfprosamlconnector-tutorial)には、**Eメール**を指定するように記載されていますが、Jamf Pro側でEmailは一意な属性ではないため、**ユーザ名**を指定することをお勧めします。
+            * [公式ドキュメント](https://docs.microsoft.com/ja-jp/azure/active-directory/saas-apps/jamfprosamlconnector-tutorial)には、**Eメール**を指定するように記載されていますが、Jamf Pro側でEmailは一意な属性ではないため、「ユーザ名」を指定することをお勧めします。
         * **アイデンティティプロバイダグループ属性名**には何も指定しません。
             * `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups`を指定し、Azure AD側で設定するとアサーションにグループを追加できるらしいですが、試したところ特に追加されているようには見受けられずこの機能が使用できることを確認できませんでした。
         * **LDAP グループ用の RDN キー**には何も設定しません。

@@ -164,19 +164,19 @@ spring:
 
 の3点です。
 
-#### spring.security.saml2.service-provider.entity-idの注意点
+#### `spring.security.saml2.service-provider.entity-id`の注意点
 
 `spring.security.saml2.service-provider.entity-id`は、Service ProviderをIdentity Provider側に一意に特定するためのエンティティIDです。Spring Security SAMLは実装上、Assertion Consumer Service[^ACS]のURLが`[hostname]/[SamlPrefix]/SSO/alias/[EntityID]`となる点に注意が必要ですで**SamlPrefix**はデフォルトで`saml/sp`ですが、Spring Securityの設定箇所で変更ができます。
 
 [^ACS]: Assertion Consumer Serviceは、Identity ProviderのAssertionを渡す先（Service ProviderのURL）
 
-#### spring.security.saml2.service-provider.keysの注意点
+#### `spring.security.saml2.service-provider.keys`の注意点
 
 `spring.security.saml2.service-provider.keys`はService Providerのmetadataを署名する際に使用する鍵の設定です。
 Microsoft Azure Active Directoryなどの多くのIdentity Providerはこの署名を確認しないため、必須ではありません。
 しかし、Spring Security SAMLは必須として要求してくるため、ダミーの証明書を使用して署名する対応をする必要がある点に注意が必要です。
 
-#### spring.security.saml2.service-provider.name-idsの注意点
+#### `spring.security.saml2.service-provider.name-ids`の注意点
 
 `spring.security.saml2.service-provider.name-ids`は必須ではありません。
 また、ymlで設定する分には特に問題ありません。
