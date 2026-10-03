@@ -24,25 +24,21 @@ draft: false
 今回のカンファレンスは有料であるため、参加者のみがライブ配信サイトに入れるという機能が必要です。
 
 具体的には、チケット購入者、スポンサー様には事前にパスコードが発行されます。
-そのパスコードと一致した場合、サイトにログインできるようにしていました。
+そのパスコードと一致した場合は、サイトへログインできるようにしていました。
 
 インフラ基盤としてFirebaseを使用している場合、認証機能はFirebase Authenticationを選択することが多いですが、今回はGCPの[Identity Platform](https://cloud.google.com/identity-platform)を選択しました。
 
-これは、
+これは、次の2つがあるためです。
 
 * **カンファレンスの参加者が使用するライブ配信サイト**
 * **カンファレンスのオペレーションチームが利用する管理画面**
 
-があるためです。
-
-これをFirebase Authenticationで実現する場合、
+これをFirebase Authenticationで実現する場合、次の方法でも実現は可能かもしれません。
 
 * Firebase AuthenticationのCustom Claimを使用する
 * Firebaseのプロジェクトを複数用意する
 
-という方法でも実現は可能かもしれません。
-
-しかし、「Firebase AuthenticationのCustom Claimを使用する」方法では、コンテキストが分離しておらず、カンファレンスの参加者のセッションで管理画面にはアクセスできないようにするなど、少々面倒なクライアント側の対応が必要です。
+しかし、「Firebase AuthenticationのCustom Claimを使用する」方法ではコンテキストが分離していません。そのため、カンファレンスの参加者のセッションで管理画面にはアクセスできないようにするなど、少々面倒なクライアント側の対応が必要です。
 また、「Firebaseのプロジェクトを複数用意する」方法では、ライブ配信サイトが使用しているFirebase Realtime Databaseへ直接アクセスできないため、別途サーバーで処理する機構を用意する必要があります。
 
 Identity PlatformはFirebaseではなくGCPのサービスですが、Firebase Authenticationと互換性があり、SAMLやOIDCの認証方式やマルチテナント機能をサポートしています。
@@ -212,7 +208,7 @@ export const adminPageApp = {
 Webサイトを構築する際、動作確認や品質保証のため、本番環境のほかに、開発環境や品質保証（QA）環境など、複数環境を用意することがあります。
 
 基本的には、それぞれの環境には本番環境と同じ内容をデプロイすることで、確認作業ができます。
-理想的には差異がないことが望ましいですが、設定値など、どうしてもそれぞれの環境ごとに異なる値を使いたいことがあります。
+理想的には環境間の差異をなくすのが望ましいですが、設定値など、どうしてもそれぞれの環境ごとに異なる値を使いたいことがあります。
 
 多くの場合、複数環境はそのためのインフラ環境を用意し、環境差異は**環境変数**で吸収します。
 
@@ -240,17 +236,18 @@ Error: Invalid config name someservice.HOGE, cannot use upper case.
 しかし、しばしば値をスネークケースやキャメルケースで設定したいことがあります。
 実は、JSON文字列として値を設定する場合、この制約を受けずに済みます。
 
-JSONを処理するのは面倒である点、「Next.jsとFirebase for Cloud Functionsで共通の値を使用」で定義した値をシームレスに使用できる点から、Shell ScriptではなくTypeScriptで`firabase functions:config:set`コマンドをラップすることにしました。
+Shell ScriptではなくTypeScriptで`firabase functions:config:set`コマンドをラップすることにしました。
+JSONを処理するのは面倒である点と、「Next.jsとFirebase for Cloud Functionsで共通の値を使用」で定義した値をシームレスに使用できる点が理由です。
 
-ちなみに、Firebase CLIは[firebase-tools](https://github.com/firebase/firebase-tools)としてJavaScriptで実装されているため、わざわざCLIをラップせずにモジュールとして呼び出せば良いとも考えましたが、
+ちなみに、Firebase CLIは[firebase-tools](https://github.com/firebase/firebase-tools)としてJavaScriptで実装されているため、わざわざCLIをラップせずにモジュールとして呼び出せば良いとも考えました。
+しかし、次の理由から、Firebase CLIをラップすることにしました。
 
 * TypeScriptの型が提供されていない
   * [https://github.com/firebase/firebase-tools/issues/2378](https://github.com/firebase/firebase-tools/issues/2378)
 * クレデンシャルやプロジェクト情報を別途取得する必要がある
 
-という理由から、Firebase CLIをラップすることにしました。
-
-また、このRuntime ConfigurationをFirebaseエミュレータで使用する場合、functionsのルートディレクトリ（`firebase.json`の`functions.source`に設定しているディレクトリ）に`.runtimeconfig.json`を設置する必要があります。
+また、このRuntime ConfigurationをFirebaseエミュレータで使用する場合は、`.runtimeconfig.json`を設置する必要があります。
+設置場所は、functionsのルートディレクトリ（`firebase.json`の`functions.source`に設定しているディレクトリ）です。
 
 このあたりを吸収するため、簡単なスクリプトを作成することにしました。
 
@@ -336,12 +333,11 @@ $ STAGE='prod' ts-node functionConfig.ts production
 
 この処理のデメリットとしては、Runtime Configurationのキー名を変更した場合、値が残り続けてしまう点です。
 
-値を残さないために、差分を計算してRuntime Configurationをunsetできますが、
+値を残さないために、差分を計算してRuntime Configurationをunsetできます。
+しかし、次のような問題があります。
 
 * デプロイ前にunsetすると、デプロイ間際でのユーザー影響が出る（無停止デプロイができない状態）
 * デプロイ後にunsetすると、別プロセスでsetおよびunsetが実行されたりするケースなどを考慮する必要がある
-
-という問題があります。
 
 今回は短期間なプロジェクトであるため、トップレベルのキー（`stageconfig`）の変更はないと考え、unset処理は入れませんでした。
 
@@ -357,7 +353,7 @@ $ STAGE='prod' ts-node functionConfig.ts production
 
 さらに、本番環境に関しては、GitHub Actionsの`workflow_dispatch`機能を使用して、任意のタイミングでデプロイできるようにしました。
 
-![GitHub Actionsでのworkflow_dispatchでのデプロイ](/assets/posts/post/2021-10-29-1/deploy_on_github_actions_by_workflow_dispatch.png)
+![GitHub Actionsのworkflow_dispatchを使ったデプロイ](/assets/posts/post/2021-10-29-1/deploy_on_github_actions_by_workflow_dispatch.png)
 
 ### GitHub Actionsと周辺ファイル設定
 
@@ -430,18 +426,18 @@ step内のスクリプトが煩雑にならないように、Firebaseの環境�
 初回デプロイ時に、動作確認をしていると、Callable HTTPS Functionを呼び出した際に、CORSエラーとなりました。
 原因は、Cloud Functionsが任意のユーザーが呼び出せる様になっていなかったためです。
 
-![Callable HTTPS Functionが呼び出しができない状態 at GCPコンソール](/assets/posts/post/2021-10-29-1/callable_https_function_non_allowed_all_users_at_gcp_console.png)
+![Callable HTTPS Functionを呼び出せない状態 at GCPコンソール](/assets/posts/post/2021-10-29-1/callable_https_function_non_allowed_all_users_at_gcp_console.png)
 
 この問題は、**Cloud Functions 起動元**ロールに**allUsers**プリンシパルを設定した権限を、該当のCloud Functionsに付与することで解決しました。
 
-![Callable HTTPS Functionが呼び出しができる状態 at GCPコンソール](/assets/posts/post/2021-10-29-1/callable_https_function_allowed_all_users_at_gcp_console.png)
+![Callable HTTPS Functionを呼び出せる状態 at GCPコンソール](/assets/posts/post/2021-10-29-1/callable_https_function_allowed_all_users_at_gcp_console.png)
 
 しかし、別のProjectでは再現しなかったため、なぜ権限が付与されていなかったのかの原因まではわかりませんでした。
 もしわかる方がいらっしゃいましたらご教示ください。
 
 ## 終わりに
 
-当日はライブ配信サイト自体は大きな問題もなく、無事2日間カンファレンスを開催できました。
+当日はライブ配信サイト自体に大きな問題もなく、無事2日間カンファレンスを開催できました。
 もちろん、完璧ではなくいくつもの反省点がありましたが、それらは来年以降、改善したいと考えています。
 
 また、当日参加できなかった方は[アーカイブを販売](https://vimeo.com/ondemand/designship2021)しているので、ぜひこの機会にご覧ください。

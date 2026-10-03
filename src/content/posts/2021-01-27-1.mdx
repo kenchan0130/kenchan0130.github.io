@@ -18,7 +18,8 @@ macOS Big Sur、および執筆時点のSelf Serviceの最新バージョンで�
 
 [@rotomx](https://twitter.com/rotomx)さんが[macOS Big SurでJamf ProのSelf Serviceがクラッシュする問題の暫定対応](https://zenn.dev/rotomx/articles/7592f4c563eb35)の記事で原因と解決方法を書かれているので、詳しくはそちらを参照してください。
 
-こちらでは解決方法として、Self Serviceアプリケーションがクラッシュしたら`~/Library/Application Support/com.jamfsoftware.selfservice.mac/CocoaAppCD.storedata`のファイルを都度消すという方法が取られています。
+こちらでは、解決方法として次のファイルを都度消す方法が取られています。
+Self Serviceアプリケーションがクラッシュしたら、`~/Library/Application Support/com.jamfsoftware.selfservice.mac/CocoaAppCD.storedata`を消すという方法です。
 
 しかし、都度消すのは面倒ですので、今回はこの作業から解放されるべく対応を自動化する方法を紹介します。
 
@@ -166,7 +167,7 @@ exit 0
 ## 暫定対応を外す
 
 この問題が解消したら、暫定対応を外すことが考えられます。
-プログラムの内容的にそこまで悪さをするものではないですが、無駄なプロセスは動かしたくはないものです。
+プログラムの内容的にそこまで悪さをするものではないですが、無駄なプロセスを動かしたくはないものです。
 
 暫定対応を外したい場合は、`IS_REMOVE`変数を`true`にして実行します。
 コマンドライン経由の場合は、第2引数、Jamf Pro経由の場合は、第5引数がこれに該当します。
@@ -179,7 +180,7 @@ exit 0
 
 ### Agentの設定ファイルの置き場所を決める
 
-`launchd`には、
+`launchd`には、次の2つがあります。
 
 * Daemon
   * OS起動時に、PID 1（つまりroot権限であると考えて良い）の`launchd`によって起動されるプログラム
@@ -187,11 +188,9 @@ exit 0
 * Agent
   * ユーザー権限で起動するlaunchdによって起動されるプログラム
 
-の2つがあります。
-
 今回はroot権限で動作させる必要はないので、Agentを使用します。
 
-また、Agentの設定ファイルは
+また、Agentの設定ファイルは次の3箇所に置かれます。
 
 * `~/Library/LaunchAgents`
   * 各ユーザーが管理する各ユーザーごとに実行するAgentの設定ファイル置き場
@@ -201,9 +200,7 @@ exit 0
   * OSが管理する各ユーザーごとに実行するAgentの設定ファイル置き場
   * 基本的にはいじらないところ
 
-の3箇所に置かれます。
-
-このスクリプトでは、
+このスクリプトでは、次のように`DEPLOY_FOR_ALL_USERS`変数が`false`の場合は`~/Library/LaunchAgents`、`true`の場合は`/Library/LaunchAgents`にファイルを設置するようにしています。
 
 ```sh
 LAUNCH_AGENT_PLIST_PATH="/Library/LaunchAgents/${LAUNCH_AGENT_ID}.plist"
@@ -218,8 +215,6 @@ if ! "${DEPLOY_FOR_ALL_USERS}";then
   LAUNCH_AGENT_PLIST_PATH="${CURRENT_USER_HOME_DIRECTORY}${LAUNCH_AGENT_PLIST_PATH}"
 fi
 ```
-
-のように、`DEPLOY_FOR_ALL_USERS`変数が`false`の場合は`~/Library/LaunchAgents`、`true`の場合は`/Library/LaunchAgents`にファイルを設置するようにしています。
 
 ### Agentの設定ファイルを定義
 
@@ -259,14 +254,12 @@ fi
 /bin/sh -c ps axc | grep "設定したアプリケーション名" || rm -rf "${HOME}/Library/Application Support/com.jamfsoftware.selfservice.mac/CocoaAppCD.storedata" && sleep "設定したThrottle Interval"
 ```
 
-一見単純そうなスクリプトですが、
+一見単純そうなスクリプトですが、次の4つのポイントがあります。
 
 1. `/bin/sh -c`
 1. `ps xc | grep "設定したアプリケーション名" ||`
 1. `&amp;`
 1. `sleep "設定したThrottle Interval"`
-
-の4つのポイントがあります。
 
 1つ目は、`/bin/sh -c`です。
 
@@ -291,7 +284,7 @@ Self Serviceのアプリケーションが起動中にファイルを消すと�
 Agentの設定ファイルの置き場に設定ファイルを設置すると、ユーザーがログインした際に自動でAgentが起動します。
 
 しかし、このスクリプトが実行された際に、すでにユーザーがログインしている場合は、Agentは起動されません。
-そのため、
+そのため、次のコードで明示的にAgentを起動しています。
 
 ```sh
 if [[ "${CURRENT_USER}" ]];then
@@ -301,10 +294,8 @@ if [[ "${CURRENT_USER}" ]];then
 fi
 ```
 
-のように、明示的にAgentを起動するようにしています。
-
 ## 終わりに
 
 macOS Big SurでSelf Serviceアプリケーションがクラッシュしてしまう問題の暫定対応の自動化する方法を紹介しました。
 
-もちろんこんなことをぜずに済むに越したことはないのですが、根本はSelf Serviceアプリケーションの問題ですので、Jamf社の対応に期待しましょう。
+もちろんこのような対応をしないで済むのが一番なのですが、根本はSelf Serviceアプリケーションの問題ですので、Jamf社の対応に期待しましょう。

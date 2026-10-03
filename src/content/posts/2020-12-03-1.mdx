@@ -41,7 +41,7 @@ macOSでは、High Sierra（10.13）からUser Consentと呼ばれるプライ�
 ## PPPC (Privacy Preferences Policy Control)について
 
 PPPCは、デバイスのUser ConsentをMDMのポリシーで制御するためのしくみです。
-これにより、指定したアプリケーションの対するUser Consentを制御できますが、以下の表に示すとおり、一部許可ができない項目が存在します。
+これにより、指定したアプリケーションに対するUser Consentを制御できます。ただし、以下の表に示すとおり、一部許可できない項目も存在します。
 
 項目|制御|役割
 ---|---|---
@@ -92,7 +92,7 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
 
 1. [設定] > [コンピュータの管理] > [スクリプト]から新規作成に進みます。
 
-    * カテゴリの設定は必須ではありませんが、このスクリプトを分類するのに使用できます。以下の画像では例として**Security**を指定しています。
+    * カテゴリの設定は任意ですが、このスクリプトの分類に使用できます。以下の画像では例として**Security**を指定しています。
 
     ![TCC-Permitterの新規スクリプト作成の一般セクションの設定](/assets/posts/post/2020-12-03-1/create_script_general_ttc_permitter.png)
 
@@ -113,11 +113,11 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
 
 1. [設定] > [コンピュータの管理 - 管理用フレームワーク] > [拡張属性]から新規作成に進みます。
 1. 各値を設定します。
-    * **表示名**: `Zoom disabled TCC service values`
-    * **データタイプ**: `String`
-    * **インベントリの表示**: `Extension Attributes`
+    * 「表示名」: `Zoom disabled TCC service values`
+    * 「データタイプ」: `String`
+    * 「インベントリの表示」: `Extension Attributes`
         * コンピュータのインベントリ情報のどのセクションで表示するかの設定であるため、任意のものを指定してかまいません。
-    * **入力タイプ**: `Script`
+    * 「入力タイプ」: `Script`
         * スクリプト入力欄に以下のスクリプトの`BUNDLE_ID_OR_BINARY_PATH`を**us.zoom.xos**に変更して貼り付けます。
 
           ```sh
@@ -162,19 +162,19 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
 
 1. [コンピュータ] > [ポリシー]から新規作成に進みます。
 1. Generalセクションで各値を設定します。
-    * **表示名**: `Allow Camera or Microphone or ScreenCapture to Zoom`
-    * **カテゴリ**: `Security`
+    * 「表示名」: `Allow Camera or Microphone or ScreenCapture to Zoom`
+    * 「カテゴリ」: `Security`
         * カテゴリの設定は任意です。
-    * **トリガー**: `Recurring Check-in`
-    * **実行頻度**: `Ongoing`
+    * 「トリガー」: `Recurring Check-in`
+    * 「実行頻度」: `Ongoing`
         * ScopeにSmart Computer Groupを使用するため、Ongoingで問題ないです。
 
     ![Installomatorを使用したZoomポリシーのオプションセクションのGeneral設定](/assets/posts/post/2020-12-03-1/create_policy_to_allow_access_for_zoom_optipons_general_using_ttc_permitter.png)
 
 1. 次に、スクリプトの項目を選択し、登録したTCC-Permitterのスクリプトを追加します。
 1. パラメータ4とパラメータ5に値を設定します。
-    * **パラメータ4**: `us.zoom.xos`
-    * **パラメータ5**: `Camera,Microphone,ScreenCapture`
+    * 「パラメータ4」: `us.zoom.xos`
+    * 「パラメータ5」: `Camera,Microphone,ScreenCapture`
 
     ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプト設定](/assets/posts/post/2020-12-03-1/create_policy_to_allow_access_for_zoom_optipons_scripts_using_ttc_permitter.png)
 
@@ -195,13 +195,11 @@ mdls -name kMDItemCFBundleIdentifier -r <アプリケーション名>
 # mdls -name kMDItemCFBundleIdentifier -r /Applications/zoom.us.app
 ```
 
-また、もし現在のデバイスの許可の状態を見て判断したい場合は、
+また、もし現在のデバイスの許可の状態を見て判断したい場合は、次のコマンドで確認できます。
 
 ```sh
 sqlite3 -header -csv "$HOME/Library/Application Support/com.apple.TCC/TCC.db" "SELECT service, client, allowed FROM access"
 ```
-
-で確認できます。
 
 ### 注意点
 

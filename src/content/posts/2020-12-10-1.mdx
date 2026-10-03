@@ -1,6 +1,6 @@
 ---
 title: Session Managerでプライベートネットワークにセキュアにアクセスする環境を構築
-description: AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。 今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。
+description: AWS Systems ManagerにSession Managerという機能があります。 Session Managerを使用することで、専用の踏み台サーバーの用意や、SSHおよびRDPポートを開けずに、ブラウザやCLIからプライベートネットワークにアクセスできます。 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。 今回は、Session Managerを用いて、プライベートネットワークへセキュアにアクセスするための環境を構築する方法を紹介します。
 published: 2020-12-10
 categories:
   - development
@@ -22,7 +22,7 @@ Session Managerを使用することで、専用の踏み台サーバーの用�
 
 また、セッションログを出力でき、実際に操作した人やその内容の監査が可能です。
 
-今回は、Session Managerを用いて、プライベートネットワークにセキュアにアクセスするための環境を構築する方法を紹介します。
+今回は、Session Managerを用いて、プライベートネットワークへセキュアにアクセスするための環境を構築する方法を紹介します。
 
 また、この記事は[FOLIO Advent calendar 2020](https://adventar.org/calendars/5553)の7日目の記事でもあります。（3日遅れの投稿です...）
 
@@ -37,14 +37,12 @@ SSMエージェントを動作させているサーバー、つまり、踏み�
 
 ## 環境構築
 
-上記の図の構成を実現するために大きく分けて、
+上記の図の構成を実現するには、大きく分けて次の作業が必要となります。
 
 * Dockerイメージの準備
 * AWSの設定
 
-が必要となります。
-
-それぞれを構築方法を順に紹介します。
+それぞれの構築方法を順に紹介します。
 
 ### Dockerイメージの準備
 
@@ -59,7 +57,7 @@ SSMエージェントを動作させているサーバー、つまり、踏み�
 
 * `seelog.xml.mustache`
   * SSMエージェントがログ出力のために使用している[seelog](https://github.com/cihub/seelog)ロギングライブラリ
-  * コンテナ起動時に動的にファイルを生成したいため、テンプレートエンジンとして[mustache](https://mustache.github.io/)として用意
+  * コンテナ起動時に動的にファイルを生成したいため、テンプレートエンジンの[mustache](https://mustache.github.io/)の形式で用意
     * 環境変数を埋め込めればよいのですが、機能が提供されていないため、このようなことをしている
     * 環境変数サポートは開発要望としてすでに挙げており、[AWSのバックログに積まれている](https://github.com/aws/amazon-ssm-agent/issues/313)
 
@@ -165,7 +163,7 @@ SSMエージェントがログ出力のために使用している[seelog](https
 Dockerfile内で呼び出すShell Scriptをまとめたものです。
 
 ECSでコンテナを起動する場合、EC2と異なり、自動でSession Managerのインスタンスとして登録されません。
-そのため、Session Managerのハイブリッドアクティベーションを使用してコンテナをマネージドインスタンスとしてSession Managerに登録するようにします。
+そのため、Session Managerのハイブリッドアクティベーションを使用してコンテナをマネージドインスタンスとしてSession Managerへ登録します。
 
 ```sh
 #!/bin/bash
@@ -248,13 +246,13 @@ aws ssm create-activation \
 
 `iam-role`オプションは、立ち上げたコンテナが指定したロールにAssumeRoleされて実行されます。
 このロールにAsuumeRoleされるのは、`amazon-ssm-agent start`を行ってインスタンスが登録されたあとである点に注意が必要です。
-このスクリプトでは、
+このスクリプトの次のコマンドは、ECSのタスクIAMロールに指定したロールの権限で実行されます。
 
 ```sh
 aws ssm delete-activation --activation-id "${SSM_AGENT_ID}"
 ```
 
-がECSのタスクIAMロールで指定したロール、
+また、TRAPから呼ばれる次の関数は、オプションに指定したロールの権限で実行されます。
 
 ```sh
 cleanup() {
@@ -263,8 +261,6 @@ cleanup() {
     exit 0
 }
 ```
-
-TRAPで実行されるこの関数はオプションで指定したロールで実行されます。
 
 また、後述するセッションログの送信には、このロールに適切な権限を付与する必要があります。
 
@@ -633,7 +629,7 @@ resource "aws_vpc_endpoint" "session_manager_kms" {
 **ECSのタスク実行ロールの設定**
 
 タスクロール実行ロールは、ECSのコンテナエージェントが使用するロールです。
-ECRからDockerイメージのPullやコンテナログCloudWatchに送信する際に必要です。
+ECRからのDockerイメージのPullや、コンテナログのCloudWatchへの送信で必要です。
 
 AWSが管理しているポリシーで実現する場合、作成するロールにアタッチすべき最低限必要なポリシーは以下のとおりです。
 
@@ -679,15 +675,13 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 **ECSのタスクロールの設定**
 
 タスクロールはコンテナが使用するロールです。
-コンテナ内のアプリケーション（処理）がAWSサービスに接続する際に必要です。
+コンテナ内のアプリケーション（処理）がAWSサービスへ接続する際に必要です。
 
-前述したDockerイメージでは、
+前述したDockerイメージでは次の処理が行われているため、それらに対応する権限を付与します。
 
 * ECSのタスクからSystems ManagerにIAMロールを渡す
 * System Managerのアクティベーションの発行
 * System Managerのアクティベーションの削除
-
-が行われているため、それらに対応する権限を付与します。
 
 また、SSMエージェントを起動するために必要なAWSが管理しているポリシーである`AmazonSSMManagedInstanceCore`も合わせて付与します。
 
@@ -743,15 +737,13 @@ resource "aws_iam_role_policy_attachment" "ecs_task_role" {
 
 **SSMエージェント用のロールの設定**
 
-SSMエージェントがSession Managerに登録するために必要な権限を付与します。
+SSMエージェントがSession Managerへ登録するために必要な権限を付与します。
 
 また、Dockerイメージの設定で言うところの`run.sh`の`amazon-ssm-agent start &`からこのロールで実行されます。
-具体的には、
+具体的には次の処理が行われるため、それらに対応する権限を付与します。
 
 * タスク終了時にマネージドインスタンスの登録の解除
 * セッションログの暗号化
-
-が行われるため、それらに対応する権限を付与します。
 
 ```tf
 ### ssm_service_role.tf
@@ -932,15 +924,13 @@ resource "aws_iam_role_policy_attachment" "session_manager_operator" {
 #### 4. ECSのクラスタ構築
 
 ECS on FargateでDockerコンテナを動かすための設定をします。
-そのためには、
+そのためには、次のものが必要です。
 
 * ECSのクラスタの構築
 * Dockerイメージをタスクとして実行するためのタスク定義
   * 使用するコンピュータリソースの設定
   * どのイメージを使用するかの設定
   * コンテナ起動時の環境変数の設定
-
-が必要です。
 
 ```tf
 ### ecs.tf
@@ -1037,7 +1027,7 @@ Terraformはどのファイルにどの設定を書いてもよいですが、�
 
 ハイブリッドアクティベーションの場合、インスタンス層がアドバンスドインスタンスティアとなります。
 
-ハイブリッドアクティベーション経由で登録したマネージドインスタンスが存在する状態で、Webコンソール上のSystem ManagerのSession Managerのページに遷移すると、アドバンスドインスタンスティアへの変更許可を求めるダイアログが自動でてくるので、ティアを変更できます。
+ハイブリッドアクティベーション経由で登録したマネージドインスタンスが存在する状態で、Webコンソール上のSystem ManagerのSession Managerのページに遷移します。すると、アドバンスドインスタンスティアへの変更許可を求めるダイアログが自動で表示されるので、ティアを変更できます。
 
 事前に許可したい場合は、以下のコマンドを実行します。
 
@@ -1047,12 +1037,10 @@ aws ssm update-service-setting --setting-id arn:aws:ssm:YOUR_REGION:YOUR_ACCOUNT
 
 ## 終わりに
 
-今回はSession Managerでプライベートネットワークにセキュアにアクセスするために、
+今回はSession Managerでプライベートネットワークへセキュアにアクセスするための、次の内容について紹介しました。
 
 * SSMエージェントを動かすDockerイメージの作成
 * AWSのインフラ構築
-
-について紹介しました。
 
 見ていただいたように、サーバーレスとはいえ、いくつか準備しないといけないことがあるため、まだまだ面倒です。
 [Azure Bastion](https://azure.microsoft.com/ja-jp/services/azure-bastion/)のように、AWSもマネージドな踏み台のようなものを用意してほしいと思いました。

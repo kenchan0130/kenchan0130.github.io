@@ -34,19 +34,17 @@ draft: false
 
 iOS/iPadOS 15では、VPNとデバイス管理の画面が統合され、デバイスの状態を1つの包括的な場所で表示できる予定です。
 
-この画面では、
+この画面では、次の操作が可能となる予定です。
 
 * VPNの管理
 * User Enrollmentのアカウントの管理
 * プロファイルの管理
 
-が可能となる予定です。
-
 ### User Enrollemnt配下のデバイスへのアプリケーションの強制インストール
 
 ![What’s new in managing Apple devicesのセッションで発表されたRequried app](/assets/posts/post/2021-06-24-1/required_app.png)
 
-User Enrollment配下のデバイスでは、組織からアプリケーションをインストールさせる場合、アプリケーションごとにエンドユーザーが許可および拒否が選択できます。
+User Enrollment配下のデバイスでは、組織からアプリケーションをインストールさせる場合、アプリケーションごとにエンドユーザーが許可および拒否を選択できます。
 しかし、これだとMDMベンダーの管理アプリケーションすらインストールされない可能性があります。
 
 この問題を解決するために、User Enrollment配下のデバイスに対して、1つだけ強制的にアプリケーションをインストールできるようになる予定です。
@@ -73,20 +71,19 @@ User Enrollment配下のデバイスの対してManaged Open Inと呼ばれる�
 しかし、Managed Open Inを適用してしまうと、このようなユースケースが実現できなくなります。
 これはエンドユーザーにとって良いUXではありません。
 
-個人的には、「管理対象アプリケーションのOutは許可しないが、Inだけは許可する」といったような機能がないとManaged pasteboardを有効化しても同様の問題が発生する可能性があると考えています。
+個人的には、「管理対象アプリケーションのOutは許可しないが、Inだけは許可する」といったような機能がないと、Managed pasteboardを有効化しても同様の問題を避けられない可能性があると考えています。
 
 ### 共有iPadにおける機能の強化
 
 ![What’s new in managing Apple devicesのセッションで発表されたShared iPadの機能追加](/assets/posts/post/2021-06-24-1/shared_ipad_new_features.png)
 
 共有iPadにおいて一時的にログインができる一時セッションの機能が、昨年のWWDCで発表されました。[^kenchan0130-2020-07-01-1-shared-ipad]
-この機能追加により、
+この機能追加により、次の3つの機能が追加されました。
 
 * ユーザーログインを一時セッションのユーザーのみの制限
 * 一時セッションのユーザーがログインできる最大期間の設定
 * すべてのユーザーがログインできる最大期間の設定
 
-の3つの機能が追加されました。
 これらはiPadOS 14.5から使用できます。
 
 [^kenchan0130-2020-07-01-1-shared-ipad]: 私の「[WWDC 2020で発表されたエンタープライズ関連の新機能 - 共有iPadの改善](/post/2020-07-01-1)」記事でも紹介している
@@ -95,7 +92,7 @@ User Enrollment配下のデバイスの対してManaged Open Inと呼ばれる�
 
 ![Discover account-driven User Enrollmentのセッションで発表された管理アカウント情報への導線追加](/assets/posts/post/2021-06-24-1/managed_account_to_be_displayed_on_top_of_settings.png)
 
-User Enrollment、つまりBYDO化されたデバイスにおいて、「設定」アプリケーションのトップに管理アカウント情報にアクセスするための動線が追加される予定です。管理アカウント情報の画面からはプロファイルなどの確認ができます。
+User Enrollment、つまりBYDO化されたデバイスにおいて、「設定」アプリケーションのトップへ、管理アカウント情報にアクセスするための動線が追加される予定です。管理アカウント情報の画面からはプロファイルなどの確認ができます。
 
 今までは「設定」アプリケーションの**一般 > プロファイルとデバイス管理**の該当プロファイル画面でしか確認できなかったため、管理アカウント情報にアクセスしやすくなります。
 
@@ -106,7 +103,7 @@ User Enrollment、つまりBYDO化されたデバイスにおいて、「設定�
 Managed Apple IDを使用してiCloudドライブが使えるようになる予定です。
 iCloudドライブのデフォルトの容量は5GBですが、容量の追加などについては発表がありませんでした。
 
-もしできるとなると、Apple Business ManagerやApple School Manager上で操作することになると予想しています。
+もし可能になれば、Apple Business ManagerやApple School Manager上で操作することになると予想しています。
 
 ### 新しいUser Enrollmentのオンボーディングフロー
 
@@ -119,11 +116,11 @@ User Enrollmentは、今まで最初にプロファイルをダウンロード�
 1. アカウント情報からドメイン情報を判別
 1. `https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement`に対してGETリクエストを送信しJSONを取得
 1. JSON内のMDMサーバーのURLにアクセスして、MDMサーバー側でユーザーを認証
-1. MDMサーバー上で事前にユーザーに紐付けたManaged Apple IDを使用してユーザーを認証
+1. MDMサーバー上で事前にユーザーと紐付けたManaged Apple IDを使用してユーザーを認証
     * Managed Apple IDの認証画面において、Managed Apple IDのメールアドレスが自動で補完される挙動のようですので、Managed Apple IDを紐付けなくてもよい可能性があります
 1. User Enrollmentのためのプロファイルがダウンロードされ、デバイスをBYOD化
 
-上記のフローにおける`https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement`にGETリクエストを行った場合、
+上記のフローにおける`https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement`にGETリクエストを行った場合は、次のようなJSONを返すようにする必要があります。
 
 ```json
 {
@@ -136,7 +133,6 @@ User Enrollmentは、今まで最初にプロファイルをダウンロード�
 }
 ```
 
-のようなJSONを返すようにする必要があります。
 また、未確認ですが、`Servers`が配列であるため、MDMサーバーを複数指定したら選択できるかもしれません。
 
 フローが少々分かりづらいため、おそらくこうであろうと思われるシーケンス図を書いてみました。
@@ -155,9 +151,9 @@ macOS Big Surのマイナーアップデートに関しては、[What's new for 
 ![What’s new in managing Apple devicesのセッションで発表されたSystem Extensionの削除機能](/assets/posts/post/2021-06-24-1/managing_system_extension.png)
 
 管理者はMDMを介して、任意のアプリケーションがSystem Extensionを使用する場合、System Extensionを許可しアクティブにできました。
-しかし、該当のアプリケーションを削除しても、System Extensionの情報がデバイスに残ったままになっていました。[^remove-system-extension-workaround]
+しかし、該当のアプリケーションを削除しても、System Extensionの情報がデバイス上に残ったままでした。[^remove-system-extension-workaround]
 
-[^remove-system-extension-workaround]: System Integrity Protection（SIP）を無効にして`systemextensionsctl reset`コマンドを実行する方法、もしくはGUIで該当のSystem Extensionを含むアプリケーションをゴミ箱に移動するとダイアログがでてくるので、管理者権限でSystem Extensionを削除するという方法しかなかった
+[^remove-system-extension-workaround]: System Integrity Protection（SIP）を無効にして`systemextensionsctl reset`コマンドを実行する方法しかなかった。もしくは、GUIで該当のSystem Extensionを含むアプリケーションをゴミ箱に移動するとダイアログがでてくるので、管理者権限でSystem Extensionを削除するという方法しかなかった
 
 今回のアップデートにより、System Extensionがリムーバブルとなります。
 
@@ -177,7 +173,7 @@ macOS Big Surのマイナーアップデートに関しては、[What's new for 
 今回新たに**エンドユーザーに対して通知を表示する**オプションが追加される予定です。
 これにより表示されるプロンプトをクリックすると、グレースフルシャットダウンが実行されます。
 
-この機能はJamf Proには実装されていないため[^macos-remote-restart-and-shutdown-via-mdm-command] [^jamf-now-remotely-restarting-or-shutting-down-devices]（正確にはAPI経由では実行できます）、存在を知りませんでしたが、エンドユーザーにとっては、なぜ再起動されるのかがわかると次のアクションつなげやすかったり、安心できたりするので良いと思います。
+この機能はJamf Proには実装されていないため[^macos-remote-restart-and-shutdown-via-mdm-command] [^jamf-now-remotely-restarting-or-shutting-down-devices]（正確にはAPI経由では実行できます）、存在を知りませんでした。エンドユーザーにとっては、なぜ再起動されるのかがわかると次のアクションにつなげやすかったり、安心できたりするので良いと思います。
 
 [^macos-remote-restart-and-shutdown-via-mdm-command]: [macOS remote Restart and Shutdown via MDM Commands](https://ideas.jamf.com/ideas/JN-I-21241)という機能リクエストは出ている
 [^jamf-now-remotely-restarting-or-shutting-down-devices]: Jamf Nowには[機能](https://support.jamfnow.com/s/article/Remotely-Restarting-or-Shutting-Down-Devices)として用意されている
@@ -207,12 +203,12 @@ Intel版のMacでは、ファームウェアパスワードを設定すること
 
 この機能をアクティベーションロック機能と一緒に使用することが推奨されるそうですが、Managed Apple IDではアクティベーションロック機能が使用できないため、個人的にはぜひそこをなんとかしてほしいと思いました。
 
-ここで言う「**デバイスからMDMが登録解除される**」が、
+ここで言う「**デバイスからMDMが登録解除される**」が、次のどちらを指しているかがわかりませんでした。
 
 * 該当プロファイルの削除
 * Apple Business Manager/Apple School MangerでMDMのデバイス割り当ての解除
 
-のどちらを指しているかがわからなかったため、もしわかる方がいらっしゃいましたら教えてください。
+もしわかる方がいらっしゃいましたら教えてください。
 
 ### すべてのコンテンツと設定を消去する機能
 
@@ -224,14 +220,14 @@ Macデバイスを初期化する場合、リカバリモードからデータ�
 
 また、この機能を制限するための新しい`allowEraseContentAndSettings`属性も追加されます。
 
-もしコマンドラインなど、API呼び出しにより「すべてのコンテンツと設定を消去」が実行できる場合、ワイパーウェアのようなものが出回ることが想定されます。
+もしコマンドラインなど、API呼び出しにより「すべてのコンテンツと設定を消去」を実行できる場合、ワイパーウェアのようなものが出回ると想定されます。
 ただ、Apple社もすでにこれについて考慮しているそうですので、大きく心配する必要はないかもしれません。
 
 ### User Enrollment配下のデバイスの管理対象アプリケーションのボリューム分離
 
 ![Discover account-driven User Enrollmentのセッションで発表されたmacOSにおけるUser Enrollment配下のManaged appsについて](/assets/posts/post/2021-06-24-1/managed_apps_for_user_enrollments.png)
 
-iOS/iPadOSのアップデートと同様に、管理対象アプリケーションのデータは別のボリュームに分離されるようになる予定です。
+iOS/iPadOSのアップデートと同様、管理対象アプリケーションのデータは別のボリュームに分離される予定です。
 合わせて、MDMコマンドまたはデバイスがMDMから登録解除された際に、管理対象アプリケーションが削除される挙動になる予定です。
 
 これは予想ですが、該当のアプリケーションが任意のディレクトリやファイルを操作している場合はそこまで追跡できないため、完璧にアプリケーションに関連するデータが削除されるわけではないと考えています。
@@ -246,14 +242,12 @@ iOS/iPadOSのアップデートと同様に、Managed Apple IDを使用してiCl
 
 ![Manage devices with Apple Configuratorのセッションで発表されたApple Configuratorを用いたMacデバイスのリストアとリバイブ](/assets/posts/post/2021-06-24-1/restore_and_revive_with_apple_configurator.png)
 
-Apple Configuratorを用いてリストアを実行すると、AppleシリコンまたはT2セキュリティチップを搭載したMacデバイスにおいて、
+Apple Configuratorを用いてリストアを実行すると、AppleシリコンまたはT2セキュリティチップを搭載したMacデバイスにおいて、次のことが実現できます。
 
 * すべてのコンテンツと設定の消去
 * ファームウェアとリカバリOSの更新
 * 最新のmacOSバージョンが再インストール
   * Appleシリコンを搭載したMacのみ
-
-が実現できます。
 
 これにより、Macデバイスを新しいユーザーに渡すことができます。
 
@@ -287,13 +281,13 @@ Apple Business Manager/Apple School ManagerでMDMサーバーにアサインし�
 管理者としては組織で貸与しているMacデバイスはUser Enrollmentではなく、Device Enrollmentにしたいはずです。
 そうなると、すでにエンドユーザーが使用しており、User Enrollmentなデバイスが問題になってきます。
 
-これはあくまで推測であり、試してみないとわかりませんが、
+これはあくまで推測であり、試してみないとわかりませんが、次の手順を踏むと再度セットアップアシスタントが起動します。
 
 1. MDMに関するプロファイルをすべて削除
 1. `/var/db/.AppleSetupDone`を削除
 1. Macデバイスを再起動
 
-の手順を踏んで、再度セットアップアシスタントが起動するしくみを応用して、User EnrollmentなデバイスをDevice Enrollmentなデバイスにできるかもしれません。
+このしくみを応用して、User EnrollmentなデバイスをDevice Enrollmentなデバイスにできるかもしれません。
 
 ### ソフトウェアアップデートの延期方法の拡充
 
@@ -323,7 +317,7 @@ Appleシリコン版のMacデバイスで同じようなことをしようとす
 
 ![Manage software updates in your organizationのセッションで発表されたUser deferral quotaについて](/assets/posts/post/2021-06-24-1/user_deferral_quota_macos.png)
 
-ソフトウェアアップデートを利用できるようにした際に、エンドユーザーが常に延期やキャンセルを行うことは望ましい状態ではありません。
+ソフトウェアアップデートを利用できるようにした際、エンドユーザーが常に延期やキャンセルを行うことは望ましい状態ではありません。
 
 macOS Montereyでは、ソフトウェアアップデートの延期やキャンセルを行える上限を設定できるようになる予定です。
 最大で3回まで設定でき、猶予を超えると強制的にソフトウェアアップデートが適用されます。
@@ -361,7 +355,7 @@ MDMサーバーが以下の通知をサブスクライブできるようにな�
 * 登録ユーザーの状態変更
   * デバイスに対してアセットを割り当てることが多いかもしれないが、ユーザーに対してアセットを割り当てることもでき、その際にはユーザー登録が必要となる
 
-非同期処理と合わせることで、アセットを一括で操作する際などのパフォーマンスが向上する可能性があります。
+非同期処理と合わせることで、アセットを一括で操作する際などのパフォーマンスを向上できる可能性があります。
 
 ### Declarative Device Management
 
