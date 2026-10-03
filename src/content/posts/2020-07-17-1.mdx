@@ -1,6 +1,6 @@
 ---
 title: RailsでJSONのリクエストパラメータがパースできなかった場合の対応
-description: Rails製のAPIサーバーで、クライアントから不正なJSONがリクエストパラメータが送られ、パースできなかった問題に遭遇ました。 今回はその対策と調査の記録を残します。
+description: Rails製のAPIサーバーで、クライアントから不正なJSONのリクエストパラメータが送られ、パースできない問題に遭遇しました。 今回はその対策と調査の記録を残します。
 published: 2020-07-17
 categories:
   - development
@@ -16,9 +16,9 @@ draft: false
 昨今、フロントエンド（Webやネイティブアプリケーションなど）は巨大化および複雑化しており、HTMLやJavaScript、CSSなどを配信する通常のモノリシックなRailsアプリケーションでは対応が難しくなってきました。
 このような状況も相まって、RailsをJSONなどを返すAPIサーバーとして使用するケースが増えてきています。
 
-Rails 5以降、[rails-api](https://github.com/rails-api/rails-api)がRails本体に取り込まれることになり[^merged-rails-api]、APIアプリケーションの作成が活発になると思われます。
+Rails 5以降、[rails-api](https://github.com/rails-api/rails-api)がRails本体へ取り込まれることになり[^merged-rails-api]、APIアプリケーションの作成が活発になると思われます。
 
-Rails製のAPIサーバーで、クライアントから不正なJSONがリクエストパラメータが送られ、パースできなかった問題に遭遇ました。
+Rails製のAPIサーバーで、クライアントから不正なJSONのリクエストパラメータが送られ、パースできない問題に遭遇しました。
  今回はその対策と調査の記録を残します。
 
 [^merged-rails-api]: [Rails api by dhh · Pull Request #19832 · rails/rails](https://github.com/rails/rails/pull/19832)
@@ -109,7 +109,7 @@ Railsで発生する例外を共通的に処理するのであれば、上記の
 
 #### ハマったところ
 
-`config/application.rb`にミドルウェアの差し込みを行う際、
+`config/application.rb`で次のようにミドルウェアの差し込みを行いました。
 
 ```ruby
 module MyApp
@@ -119,20 +119,19 @@ module MyApp
 end
 ```
 
-上記のようにクラスを評価しつつ文字列可すると`uninitialized constant RescueJsonParseErrors`となってしまいました。
+このようにクラスを評価しつつ文字列化すると`uninitialized constant RescueJsonParseErrors`となってしまいました。
 
-これは、`config/application.rb`が読み込まれた後に`initializers`のファイルが読み込まれることが原因です。
+これは、`config/application.rb`の読み込み後に`initializers`のファイルが読み込まれるためです。
 
 そのため、クラス名の文字列にするか、`config/application.rb`で`RescueJsonParseErrors`クラスを定義してあるファイルを明示的に`require`する必要があります。
 
 #### gemでの解決
 
-解決可能なgemを調べたところ、
+解決可能なgemを調べたところ、次の2つが見つかりました。
 
 * [rack_middleware_json_error_msg](https://rubygems.org/gems/rack_middleware_json_error_msg)
 * [catch_json_parse_errors](https://rubygems.org/gems/catch_json_parse_errors)
 
-の2つが見つかりました。
 しかし執筆現在、それぞれのgemはメンテナンスが行われていないため、適切に判断して使用することをお勧めします。
 
 ### Rails 5以降の場合
@@ -167,4 +166,4 @@ Rails 5.0.0において`ActionDispatch::ParamsParser::ParseError`は非推奨と
 何かしらの理由でリクエストのJSONのパラメータがパースできなかった場合、`ActionDispatch::Http::FilterParameters`が適用されずメールアドレスやパスワードなどが平分でログに出力される自体が考えられます。
 この処理を適用することで、リクエストパラメータの漏洩事故を防ぐことができます。
 
-これに限らず、サーバーはクライアントからのリクエストは信頼すべきではないため、適切にバリデーション処理を入れるべきでしょう。
+これに限らず、サーバーはクライアントからのリクエストを信頼すべきではないため、適切にバリデーション処理を入れるべきでしょう。

@@ -44,7 +44,7 @@ Managed Apple Accountを導入する際には、すでに個人で作成され�
 ![組織所有のデバイスへのApple Accountのサインイン制限](/assets/posts/post/2025-06-19-1/select_the_devices_from_which_users_can_sign_in.png)
 
 組織所有のデバイスへのManaged Apple Accountのみサインインできるように制限できます。
-この機能はMDMに依存せずにApple Business Manager/Apple School Managerで完結するという特徴があります。
+この機能はMDMに依存せず、Apple Business Manager/Apple School Managerだけで完結するという特徴があります。
 
 これにより、個人で作った組織のドメインのApple Accountのみならず、私物のApple Accountで組織所有のデバイスにサインインすることを防止できると思います。
 
@@ -217,7 +217,7 @@ curl -s -X GET https://api-business.apple.com/v1/orgDevices \
 
 ![Apple Configurator for iPhoneによるApple Vision Pro対応](/assets/posts/post/2025-06-19-1/apple_configurator_vision_pro.png)
 
-これまでApple Vision Proは自動デバイス登録のみの対応でしたが、Apple Configurator for iPhoneを使用してApple Vision Proを組織に追加できるようになりました。
+これまでApple Vision Proは自動デバイス登録のみの対応でしたが、Apple Configurator for iPhoneを使用した組織への追加も可能になりました。
 
 iPhone、iPad、Macと同様、Apple Vision ProのSetup Assistant中に、Apple Configuratorを実行しているiPhoneを近付けることで、ペアリングコードが表示されます。  
 このコードをiPhoneに入力することで、デバイスが組織に追加されます。
@@ -246,7 +246,7 @@ iPhone、iPad、Macと同様、Apple Vision ProのSetup Assistant中に、Apple 
 
 移行完了後、新しいデバイス管理サービスがActivation Lockの管理権限を取得し、Bootstrap tokenを使用してFileVaultキーのローテーションを実行できます。
 
-少々本筋と離れますが、プッシュ証明書の有効期限が切れてしまった、または誤った証明書をMDMサーバーに設定してしまった場合、MDM機能が使えなくなることがあります。
+少々本筋と離れますが、プッシュ証明書の有効期限が切れてしまった場合や、誤った証明書をMDMサーバーに設定してしまった場合、MDM機能を使えなくなることがあります。
 この機能を応用するとMDMサーバーを再設定できるかもしれません。
 
 ## デバイス管理に関するアップデート
@@ -295,7 +295,7 @@ Return to Service用に設定されたVision Proでは、コントロールセ�
 * iPadのバッテリー状態レポート
 * メッセージングと通話のデフォルトアプリケーションの設定
 * SIMごとのメッセージとFaceTime制限
-* AirPodsとBeatsヘッドフォンの一時的使用許可
+* AirPodsとBeatsヘッドフォンの一時的な使用許可
 * ネットワークリレープロファイルでのFQDNサポート
 * Network Extension URLフィルタリングAPI
 
@@ -335,7 +335,7 @@ macOS Tahoeからは、自動デバイス登録時のセットアップアシス
 1. セットアップアシスタントでPlatform SSOパネルが表示
 1. Platform SSO登録なしでは先に進めない
 1. 認証成功後、SSOがデバイス管理への認証済み登録を提供
-1. Managed Apple AccountをPlatform SSOと同じIdPと連携している場合、Managed Apple Accountへの自動サインイン
+1. Managed Apple AccountとPlatform SSOで同じIdPを連携している場合、Managed Apple Accountへの自動サインイン
 1. 認証成功後ローカルアカウントが作成される
 1. ローカルアカウントのパスワードはIdPと同期するか、またはSecure Enclaveでバックアップされたキーを使用してユーザーが設定
 1. ローカルアカウントのプロフィール画像をIdPのものと同期が可能
@@ -361,7 +361,7 @@ macOS Tahoeから、デバイス共有に最適化された「Authenticated Gues
 
 この機能を使用するには、Macに外付けNFCリーダーの設置が必要です。
 
-ユーザー認証情報（アクセスキー）は事前にウォレットパスにプロビジョニングする必要があります。
+ユーザー認証情報（アクセスキー）は、あらかじめウォレットパスへプロビジョニングする必要があります。
 このアクセスキーはSecure Enclaveに保存され、ハードウェアベースで暗号化されます。
 
 また、エクスプレスモードにより、iPhoneやApple Watchを起動およびアンロックせずともこの機能が使用できます。
@@ -372,7 +372,7 @@ macOS Tahoeから、デバイス共有に最適化された「Authenticated Gues
 
 ![ManagedAppフレームワークの提供開始](/assets/posts/post/2025-06-19-1/managed_app_framework_launch.png)
 
-iOS 18.4、iPadOS 18.4、visionOS 2.4から、アプリケーション開発者が利用できる新しい[ManagedAppフレームワーク](https://developer.apple.com/documentation/managedapp)が提供されました。
+iOS 18.4、iPadOS 18.4、visionOS 2.4から、アプリケーション開発者の利用できる新しい[ManagedAppフレームワーク](https://developer.apple.com/documentation/managedapp)が提供されました。
 
 このAPIにより、組織は以下を含むアプリケーション設定を安全に展開できます。
 
@@ -389,7 +389,7 @@ ManagedAppフレームワークの登場により、Managed App Configurationで
 
 今回はWWDC 2025で発表されたエンタープライズ関連の新機能について紹介しました。
 
-特に注目すべきは、Apple Business Manager/Apple School ManagerのAPI提供開始により自動化が大幅に進むことと、デバイス管理移行機能によってMDMサーバーの変更が簡素化されることです。また、Tap to LoginやAuthenticated Guest Modeなど、共有デバイス環境での体験向上も大きな進歩と言えるでしょう。
+特に注目すべきは、Apple Business Manager/Apple School ManagerのAPI提供開始により自動化が進むことと、デバイス管理移行機能によってMDMサーバーの変更が簡素化されることです。また、Tap to LoginやAuthenticated Guest Modeなど、共有デバイス環境での体験向上も大きな進歩と言えるでしょう。
 
 今回紹介した以外にも多くの機能追加・改善が行われています。詳細については、以下の一次情報も合わせてご確認ください。
 

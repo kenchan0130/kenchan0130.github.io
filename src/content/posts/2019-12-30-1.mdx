@@ -15,12 +15,12 @@ draft: false
 iOSやiPadOSではアプリケーション上でWebページを表示する際には、[UIWebView](https://developer.apple.com/documentation/uikit/uiwebview)と[WKWebView](https://developer.apple.com/documentation/webkit/wkwebview)が使われてきました。
 iOS 9から[SFSafariViewController](https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller)が登場し、Webページを表示する方法が増えました。
 
-今回は、SFSafariViewControllerを使用した際にリンク先に遷移しないバグにハマったので備忘として記録します。
+今回は、SFSafariViewControllerを使用した際、リンク先へ遷移しないバグにハマったので備忘として記録します。
 
 ## UIWebViewについて
 
 執筆時点では、`UIWebView`の使用は非推奨となっています。
-2020年4月から`UIWebView`に関するAPIを使用したアプリケーションは審査が通らなくなる旨がアナウンスされました。[^updating-apps-that-use-web-views]
+2020年4月から`UIWebView`に関するAPIを使用したアプリケーションは審査を通らなくなる旨がアナウンスされました。[^updating-apps-that-use-web-views]
 
 [^updating-apps-that-use-web-views]: [Updating Apps that Use Web Views](https://developer.apple.com/news/?id=12232019b)
 
@@ -39,7 +39,7 @@ iOS 9から[SFSafariViewController](https://developer.apple.com/documentation/sa
 `SFSafariViewController`はiOS 9から使用できるようになったSafariの標準的な機能を備えたWebViewです。
 非常にシンプルなAPIで構成されており、`WKWebView`とは異なり、カスタマイズがほとんどできません。
 
-[SFSafariViewControllerDelegate](https://developer.apple.com/documentation/safariservices/sfsafariviewcontrollerdelegate)に関しても、
+[SFSafariViewControllerDelegate](https://developer.apple.com/documentation/safariservices/sfsafariviewcontrollerdelegate)に関しても、次の5つが用意されているのみです。
 
 1. 最初に表示する画面の読み込み完了した時
 2. ビューを閉じた時
@@ -48,8 +48,6 @@ iOS 9から[SFSafariViewController](https://developer.apple.com/documentation/sa
   - iOS 11から
 5. 最初に表示する画面の読み込み中に別のURLにリダイレクトされた時
   - iOS 11から
-
-の5つが用意されているのみです。
 
 OS標準のSafariとCookieは共有が可能です。
 しかし、ユーザーが最後にSafari上でプライベートブラウズモードを使用していた場合、`SFSafariViewController`でもプライベートブラウズモードを使用して対象のURLを表示する点に注意が必要です。
@@ -69,13 +67,12 @@ PlaygroundPage.current.liveView = SFSafariViewController(url: NSURL(string: "htt
 
 ## SFSafariViewControllerでは新しいタブまたはウィンドウを開くことができない
 
-`SFSafariViewController`を使用した場合、Webページ内に
+`SFSafariViewController`を使用した場合、Webページ内に次のようなリンクがあると、タップしても該当のリンク先を開くことができません。
 
 ```html
 <a href="https://kenchan0130.github.io" target="_blank">https://kenchan0130.github.io</a>
 ```
 
-のようなリンクがあった場合、タップしても該当のリンク先を開くことができません。
 この不具合はiOSシミュレーターでは発生せず、**実機のみ**で発生するためハマりました。
 一応、触角タッチや3D Touchを行う、または「Safariで開く」ボタンをタップしてOS標準のSafariを使用すれば該当リンクを開くことができますが、このUXをユーザーに強いるのは厳しいものがあります。
 
@@ -133,5 +130,5 @@ PlaygroundPage.current.liveView = ViewController()
 
 ## まとめ
 
-`SFSafariViewController`を使用した際にリンク先に遷移しないバグにハマったので対応方法を紹介しました。
+`SFSafariViewController`を使用した際、リンク先へ遷移しないバグにハマったので対応方法を紹介しました。
 `SFSafariViewController`ではどうにもできないので表示するサイトによって、サイト側を変更するかアプリケーション側を変更するかを選択するとよいでしょう。

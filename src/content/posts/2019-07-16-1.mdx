@@ -30,7 +30,7 @@ Managed Apple IDとMicrosoft Azure Active Directoryの統合機能はすでに�
 
 Apple IDは、Apple社のサービスを利用するのに必要なアカウントおよびユーザーを一意に特定するためのIDです。
 
-Apple IDを作成することで、
+Apple IDを作成することで、次のようなApple社が提供するさまざまなサービスを使用できます。
 
 - App Store
 - Apple Developer Program
@@ -39,14 +39,12 @@ Apple IDを作成することで、
 - iCloud
 - iTunes
 
-など、さまざまなApple社が提供するサービスを使用できます。
-
 ## 組織におけるApple IDに関する課題
 
 Apple IDの作成には、受信可能なメールアドレスとパスワードが必要です。
-さらに追加として、秘密の質問、SMS認証用の電話番号またはiOS/macOSが動作する端末が必要です。
+さらに追加として、秘密の質問と、SMS認証用の電話番号またはiOS/macOSの動作する端末が必要です。
 
-このような制約の中、組織において、個人で使用するApple IDと同様にApple IDを作成すると、いくつかの課題が起こる可能性があります。
+このような制約の中、組織において、個人で使用するApple IDと同様にApple IDを作成すると、いくつかの課題が起こりえます。
 
 以下に例を挙げます。
 
@@ -62,7 +60,8 @@ Apple IDの作成には、受信可能なメールアドレスとパスワード
 これらは組織においてしばしば問題となります。
 
 また、2019年2月からApple Developer Programの利用者は、SMS認証（[2ステップ確認](https://support.apple.com/ja-jp/HT204152)）または信頼できる電話番号を担保とする端末による認証（[2ファクタ認証](https://support.apple.com/ja-jp/HT204915)）が必須となりました。
-iOSアプリケーションの配布のためにApple Developer Programに加入している組織が多い現在、これをきっかけにApple IDを適切に管理をしていきたいという要望が増えてきている印象です。
+現在は、iOSアプリケーションを配布するためApple Developer Programへ加入している組織が多くあります。
+これを機に、Apple IDの適切な管理を進めたいという要望が増えてきている印象です。
 
 ### App Storeの規約について
 
@@ -86,29 +85,27 @@ App Storeのエンドユーザー向け規約である[LICENSED APPLICATION END 
 それが、Apple School Manager（以下「ASM」という）とApple Business Manager（以下「ABM」という）です。
 ASMは教育機関向け、ABMは企業向けのクラウドポータルです。
 
-両方とも、
+両方とも、次の機能が使用できます。
 
 - Device Enrollment Program（以下「DEP」という）
 - Managed Apple ID
 - Volume Purchase Program（以下「VPP」という）
 - MDM Server管理
 
-などの機能が使用できます。ASMは追加で、
+ASMでは追加で、次の機能も使用できます。
 
 - 学習管理システム
 - Classroomアプリケーション上の教材配布
 - iTunes Uへの名簿連携
 - 無料のiCloud 200GB容量
 
-が使用できます。
-
 ABMを使用するには**D-U-N-S Number**が必要です。
-また、ASMを使用するには**D-U-N-S Number**に加えて、Apple社が認める教育組織または教育行政組織である必要があります。
+また、ASMを使用するには**D-U-N-S Number**に加えて、Apple社の認める教育組織または教育行政組織である必要があります。
 
 ### Apple Deployment Programとの違い
 
 Apple Deployment Program（以下「ADP」という）はDEP管理がメインのポータルサイトを表したり、DEPとVPPのことを表したりしました。
-さらに、ADPポータル（`deploy.apple.com`）とVPPポータル（`vpp.itunes.com`）が存在していましたが、2018年にDEPとVPPが一元的に管理できるようにABMまたはASMに移行されました。
+さらに、ADPポータル（`deploy.apple.com`）とVPPポータル（`vpp.itunes.com`）が存在していましたが、DEPとVPPを一元管理できるよう、2018年にABMまたはASMへ移行されました。
 
 そのため、ADPはすでになくなったと考えても差し支えないでしょう。
 過去の使用などを参考にすると、ADPやDEP、VPPとの立ち位置が紛らわしいと思われますが、このような経緯があったためでした。
@@ -118,7 +115,7 @@ Apple Deployment Program（以下「ADP」という）はDEP管理がメイン�
 前置きが長くなりましたが、組織におけるApple IDに関する課題を解決するためのソリューションが**Managed Apple ID**です。「管理対象Apple ID」とも呼ばれます。
 
 Managed Apple IDは、企業であれば従業員に、教育機関であれば教職員や児童・生徒に発行できます。
-通常のApple IDと大きく異なる点は、組織内のApple IDを管理者が一括作成・管理が可能で、付与したManaged Apple IDに対して役割や権限を設定できることです。
+通常のApple IDと大きく異なる点は、組織内のApple IDを管理者が一括で作成・管理でき、付与したManaged Apple IDに対して役割や権限を設定できることです。
 また、セキュリティや管理の観点から一部制限を受ける機能やサービスがあります。
 
 ### Managed Apple IDと通常のApple IDの違い
@@ -151,7 +148,7 @@ Managed Apple IDと通常のApple IDには機能にいくつか違いがある�
 前提条件として、必要要件を満たしApple社の審査を通過しABM/ASMのグラウドポータルにアクセスできている必要があります。
 
 Managed Apple IDは、ASMまたはABMのポータルから作成したいApple IDのメールアドレス宛に送付するメールのリンクを経由して作成できます。
-[新しい Apple ID を作成する方法](https://support.apple.com/ja-jp/HT204316)から個人で作成してしまうと、以下のように少々面倒なマイグレーションを行う必要があるため注意が必要です。
+[新しい Apple ID を作成する方法](https://support.apple.com/ja-jp/HT204316)から個人で作成してしまうと、以下のように少々面倒なマイグレーションを行う必要があるため、ご注意ください。
 
 #### 通常のApple IDからManaged Apple IDへのメールアドレスの移行
 
@@ -175,7 +172,7 @@ Apple ID自体を移行しているわけではないため、サポートに問
 iOS 13から公式で**User Enrollment**と呼ばれるBYODのサポートを予定しています。
 このUser EnrollmentにはManaged Apple IDが必須となります。
 
-そのため、ABMのみMicrosoft Azure Active Directoryと連携してManaged Apple IDがシームレスに作成できる機能が追加される予定であることが発表されました。
+そのため、ABMのみ、Microsoft Azure Active Directoryと連携してManaged Apple IDをシームレスに作成できる機能の追加予定が発表されました。
 
 ![WWDC19におけるWhat's New in Managing Apple DevicesセッションのFederated Authenticationに関するスライド](/assets/posts/post/2019-07-16-1/federated_authentication.png)
 

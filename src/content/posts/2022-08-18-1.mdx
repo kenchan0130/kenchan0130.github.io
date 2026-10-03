@@ -40,7 +40,7 @@ tvOS 16では、設定やMDMコマンド経由で初期化（ワイプ）した�
 
 ### Apple Configurator for iPhoneによるApple Business Manager/Apple School Managerへのデバイス登録
 
-![What's new in managing Apple devicesのセッションで発表された、iOS/iPadOSのApple Configurator for iPhoneによるApple Business Manager/Apple School Managerへのデバイス登録](/assets/posts/post/2022-08-18-1/apple_configurator_for_iphone_supports_ios_and_ipados_device.png)
+![What's new in managing Apple devicesで発表された、iOS/iPadOSのApple Configurator for iPhoneによるApple Business Manager/Apple School Managerへのデバイス登録](/assets/posts/post/2022-08-18-1/apple_configurator_for_iphone_supports_ios_and_ipados_device.png)
 
 昨年のWWDC21にて、正規のビジネスチャネルで購入していない**macOSデバイス**をApple Configurator for iPhoneを用いてApple Business Manager/Apple School Managerに追加できる機能が発表されました。[^manage-devices-with-apple-configurator]
 
@@ -87,7 +87,7 @@ Webコンテンツフィルタリングは、アプリケーションごとに7�
 
 これはデフォルト値のようなもので、いつでもエンドユーザーが自由に値を変更できます。
 
-iOS/iPadOS 16では、
+iOS/iPadOS 16では、次のアクセシビリティが設定できる予定です。
 
 * 文字サイズ
 * VoiceOver
@@ -97,8 +97,6 @@ iOS/iPadOS 16では、
 * 視差効果を減らす
 * コントラストを上げる
 * 透明度を下げる
-
-のアクセシビリティが設定できる予定です。
 
 ### デバイス設定中にアプリケーションをインストール
 
@@ -132,7 +130,7 @@ macOS VenturaがサポートするMacは以下のとおりです。[^macos-ventu
 macOS Montereyのときと比べ、多くのハードウェアのサポートを終了します。
 皆さんの組織でお使いのハードウェアがサポート終了していないかをご確認ください。
 
-個人的には昔からMacを使われている方は、特にMacBook Pro（Retina, 15-inch, Mid 2015）がサポートされなくなるのが影響が大きいと思いました。[^macbook-pro-mid-2015]
+個人的には、昔からMacを使われている方にとって、特にMacBook Pro（Retina, 15-inch, Mid 2015）のサポート終了は影響が大きいと思いました。[^macbook-pro-mid-2015]
 
 [^macbook-pro-mid-2015]: MacBook Pro（Retina, 15-inch, Mid 2015）はスペックを上げても税抜30万以下になっていたため、資産の償却の観点からも重宝されていた
 
@@ -140,7 +138,8 @@ macOS Montereyのときと比べ、多くのハードウェアのサポートを
 
 ![macOS Venturaで導入されるシステム設定](/assets/posts/post/2022-08-18-1/macos_ventura_system_settings.png)
 
-macOS Venturaでは「システム環境設定」アプリケーション（`/System/Applications/System Preferences.app`）が廃止され、新たに「システム設定」アプリケーション（`/System/Applications/System Settings.app`）が導入されます。
+macOS Venturaでは「システム環境設定」アプリケーション（`/System/Applications/System Preferences.app`）が廃止されます。
+代わりに、新たに「システム設定」アプリケーション（`/System/Applications/System Settings.app`）が導入されます。
 
 システム環境設定の任意のペインは、MDMで無効化できていました。
 しかし、執筆時点で、システム設定で同様の機能が存在するかについての資料や発表が存在していません。
@@ -157,17 +156,16 @@ macOS Venturaでは「システム環境設定」アプリケーション（`/Sy
 
 ![What's new in managing Apple devicesのセッションで発表された、Platform Single Sign-on](/assets/posts/post/2022-08-18-1/platform_sso.png)
 
-macOS Montereyまでは、
+macOS Montereyまでは、次のようにエンドユーザーは複数回認証する必要がありました。
 
 1. ログインウィンドウで認証
 1. SSO拡張機能で認証
 
-のように、エンドユーザーが複数回認証する必要がありました。
-
 macOS Venturaでは、エンドユーザーがログインウィンドウの認証を終えると、アプリケーションやWebサイトに自動的にサインインできる予定です。
 画期的なのは、このログインウィンドウの認証を、組織が所有しているIdPに委任できることです。
 
-具体的には、初回起動時にローカルアカウントのパスワードでログインウィンドウの認証を終えると（合わせてFileVaultのロックの解除も行われます）、以降はローカルアカウントのパスワードではなく、IdPのパスワード認証またはをSecure Enclave-backedキー（おそらくTouch IDのみ）使用してロックの解除ができます。
+具体的には、初回起動時にローカルアカウントのパスワードでログインウィンドウの認証を終えます（合わせてFileVaultのロックの解除も行われます）。
+以降はローカルアカウントのパスワードではなく、IdPのパスワード認証またはSecure Enclave-backedキー（おそらくTouch IDのみ）を使用してロックの解除ができます。
 
 IdP側でパスワードレス認証として、たとえばYubiKeyなどのセキュリティキーを設定している場合は、初回起動以降のロック解除にはセキュリティキーは使用できません。
 
@@ -180,7 +178,7 @@ IdP側のパスワード認証以外の方法を使いたい場合は、引き�
 
 今回紹介された、Platform SSOの機能では、引き続きモバイルアカウントが残り続けてしまうため、まだ完全なパスワードレスが実現できていません。
 
-個人的には「Windows + Azure Active Directory」のように、初回起動時のローカルパスワードが廃止され、すべてIdP側の認証に寄せれれば、エンドユーザーの体験もかなり良くなり、真のパスワードレスが実現できると考えています。
+個人的には「Windows + Azure Active Directory」のように初回起動時のローカルパスワードが廃止され、すべてIdP側の認証に寄せられれば、エンドユーザーの体験もかなり良くなり真のパスワードレスが実現できると考えています。
 
 今後のさらなるアップデートに期待したいです。
 
@@ -188,7 +186,7 @@ IdP側のパスワード認証以外の方法を使いたい場合は、引き�
 
 ![What's new in managing Apple devicesのセッションで発表された、OSアップデートコマンドの改善](/assets/posts/post/2022-08-18-1/deploy_software_updates.png)
 
-[Power Napモード](https://support.apple.com/ja-jp/guide/mac-help/mh40773/mac)の場合、以下のOSアップデートのMDMコマンドに応答できるようになりました。
+[Power Napモード](https://support.apple.com/ja-jp/guide/mac-help/mh40773/mac)の場合、以下のOSアップデートのMDMコマンドへ応答できるようになりました。
 
 * ScheduleOSUpdate
   * OSの更新のスケジュール
@@ -201,7 +199,8 @@ IdP側のパスワード認証以外の方法を使いたい場合は、引き�
 `High`と`Low`が指定できます。
 `High`を指定した場合、エンドユーザーがソフトウェアアップデートの更新ボタンを押したのと同様の動作になります。
 
-おそらく`High`を指定したとしても、インターネットや電源につながっていない場合などは従来どおりアップデートが行われないと思われるため、どうしてもOSアップデートを実施させたい場合は、引き続き[S.U.P.E.R.M.A.N.](https://github.com/Macjutsu/super)のようなスクリプトなどで、OSアップデートの体験を向上させる必要があると考えられます。
+おそらく`High`を指定したとしても、インターネットや電源につながっていない場合などは従来どおりアップデートが行われないと思われます。
+そのため、どうしてもOSアップデートを実施させたい場合は、引き続き[S.U.P.E.R.M.A.N.](https://github.com/Macjutsu/super)のようなスクリプトなどでOSアップデートの体験を向上させる必要があると考えられます。
 
 ### セットアップアシスタントのネットワーク接続必須化
 
@@ -209,10 +208,10 @@ IdP側のパスワード認証以外の方法を使いたい場合は、引き�
 
 macOS Venturaから、T2チップを搭載したMacデバイスにおいて、「Macを消去または復元」またはワイプを実行後、Automated Device Enrollmentされたデバイスはセットアップアシスタント実行時にインターネット接続が必須になります。
 
-今までは、Automated Device Enrollmentされたデバイスがネットワークにつながっていない場合、Automated Device Enrollmentが実施されず、管理下に置かれないデバイスが発生することがありました。
+今までは、ネットワークにつながっていないデバイスにはAutomated Device Enrollmentを実施できませんでした。その結果、管理されないデバイスが発生してしまうこともありました。
 この機能によって、管理下に置かれないデバイスが発生する問題の解消につながります。
 
-ただ個人的には、「Macを消去または復元」の実施後だけではなく、初回起動時でも同様の問題が発生することがあります。もちろん初回の場合は端末に何も情報がないため、しかたないのはわかるのですが、すべての問題が解決するわけではないのが残念です。
+ただ個人的には、「Macを消去または復元」の実施後だけではなく、初回起動時でも同様の問題が起こりえます。もちろん初回の場合は端末に何も情報がないため、しかたないと思いますが、すべての問題を解決できるわけではなく残念です。
 
 ### プロファイルコマンドの変更
 
@@ -231,7 +230,7 @@ macOS Venturaから、`profiles`コマンドの`show`、`renew`および`validat
 MDM経由で配布した証明書は引き続き信頼されます。
 エンドユーザーがキーチェインアクセスアプリケーションから都度承認すれば信頼できます。
 
-詳細はわかっていませんが、結局エンドユーザーに承認権限を委譲してしまうと、この機能の効果が薄い可能性があるため、実際にどのようなワークロードで使われるのを想定しているのかを確認したほうが良いと思いました。
+詳細はわかっていませんが、結局エンドユーザーに承認権限を委譲してしまうと、この機能の効果は薄い可能性があるため、実際にどのようなワークロードで使われるのを想定しているのかを確認したほうが良いと思いました。
 
 ### USBおよびThunderboltアクセサリに関するセキュリティ強化
 
@@ -252,9 +251,9 @@ Appleシリコンを搭載したMacデバイスにおいて、エンドユーザ
 
 `eslogger`はEndpoint Security API[^endpoint-security-api]から提供されるイベントを補足してJSON化してくれるコマンドラインツールです。
 
-[^endpoint-security-api]: カーネル拡張およびOpenBSM auditが非推奨になった代わりに、macOS Catalinaから導入された、CrowdstrikeやMicrosoft Defender for Endpointのようなセキュリティアプリケーション向けのAPI
+[^endpoint-security-api]: カーネル拡張およびOpenBSM auditが非推奨となった代わりに、macOS Catalinaから導入された、CrowdstrikeやMicrosoft Defender for Endpointのようなセキュリティアプリケーション向けのAPI
 
-今までは、NativeのAPI、またはOpenBSM audit APIを呼び出していましたが、`eslogger`を使用することで、macOSのセキュリティ関連イベントを収集および可視化が容易になります。
+今までは、NativeのAPIまたはOpenBSM audit APIを呼び出していましたが、`eslogger`を使用することでmacOSのセキュリティ関連イベントの収集および可視化が容易になります。
 
 rootとTCCのフルディスクアクセスの権限が必要ですが、このJSONを使ってサードパーティのツールを必要とせずにmacOSのセキュリティイベントを捕捉できるのはかなり有用であると思いました。
 
@@ -290,19 +289,17 @@ iOS/iPadOS 16およびmacOS Venturaでは、新たにRapid Security Responseと�
 Apple Business Manager上で、Apple Buisiness Essentialsのライセンスの購入ができます。
 Apple Buisiness Essentialsのライセンスが有効化されると、Apple Business Manager上でApple Buisiness Essentialsに関する機能が使用できます。
 
-主な機能としては、
+主な機能としては、次が挙げられます。
 
 * 一部のMDMコマンドの実行
 * アプリケーションの配布
 * [AppleCare+ for Business Essentials](https://support.apple.com/ja-jp/guide/apple-business-essentials/axm42903165e/web)との統合
 
-が挙げられます。
-
 2022年4月にmacOS Serverの提供が終了し、そこに付随していたプロファイルマネージャーの更新が止まってしまい、Apple純正のMDMソリューションがない状態でした。
 そこにApple Buisiness Essentialsが登場したため、Apple純正のMDMソリューションを希望しているアメリカの組織の方々には朗報かもしれません。
 
 ただ、Microsoft Endpoint ManagerやJamf Proと異なり、機能が少ない印象を受けます。
-もし日本で使えたとしても、個人的には現在の機能郡では組織の実運用には耐えれないため、採用は見送りであると思いました。
+もし日本で使えたとしても、個人的には現在の機能郡では組織の実運用には耐えられないため、採用は見送りであると思いました。
 
 ## MDMベンダー向けのアップデート
 
@@ -312,12 +309,10 @@ Apple Buisiness Essentialsのライセンスが有効化されると、Apple Bus
 
 WWDC21で、アカウント駆動方式のBYDOフローが発表されました。
 
-このアカウント駆動方式のBYODフローでは、
+このアカウント駆動方式のBYODフローでは、次のようにエンドユーザーに2回以上認証が要求されていました。
 
 1. Manged Apple IDで認証
 1. MDMサービス側の登録アプリケーションにおいて、MDMサービスのアカウントで認証
-
-という形でエンドユーザーに2回以上認証が要求されていました。
 
 iOS/iPadOS 16では、エンドユーザーの認証を一度で済ませることができる予定です。
 
@@ -325,14 +320,12 @@ iOS/iPadOS 16では、エンドユーザーの認証を一度で済ませるこ�
 
 ![What's new in managing Apple devicesのセッションで発表された、eSIMインストールと制限](/assets/posts/post/2022-08-18-1/esim_installation_and_restriction.png)
 
-キャリアがeSIMを有効化するには、
+キャリアがeSIMを有効化するには、次の情報を必要とします。
 
 * IMEI
 * EID
 * シリアル
 * 電話番号
-
-が必要です。
 
 そのため、MDMサーバーがこれらの情報を取得できるようにMDMのAPIのレスポンスが変更されます。
 
@@ -350,32 +343,30 @@ WWDC21で、Apple MDMプロトコルの新しいパラダイムである、宣�
 
 ![Discover Managed Device Attestationのセッションで発表された、eSIMインストールと制限](/assets/posts/post/2022-08-18-1/managed_device_attestation.png)
 
-iOS/iPadOS 16、tvOS 16では、
+iOS/iPadOS 16、tvOS 16では、次を使用したデバイス認証が提供される予定です。
 
 * [Secure Enclave](https://support.apple.com/ja-jp/guide/security/sec59b0b31ff/web)
 * Appleの認証サーバー
 * 製造記録
 * OSカタログ
 
-を使用した、デバイス認証が提供される予定です。
-
 これにより、悪意のあるデバイスや抽出された秘密鍵を使用してMDMサーバーに問い合わせても信頼されたデバイスではないと判定でき、セキュリティを向上できます。
 
 ## 終わりに
 
 個人的にはPlatform SSOの発表が印象的でした。
-Apple社がログインウィンドウの認証周りを改善しようとしている姿勢が見れてうれしかったです。
+Apple社がログインウィンドウの認証周りを改善しようとしている姿勢が見られてうれしかったです。
 
 ただ、どうしてもいまの機能だけでは、顧客が欲しかったもの（真のパスワードレス）ではないため、今後のアップデートに期待したいです。
 
 いくつかのアップデートを紹介してきましたが、我々システム管理者目線では、これらの機能を積極的にサポートするようなSaaS、IdPなどをしっかり選択していくことが重要であると思いました。[^microsoft-simplifies-endpoint-managereenrollment-for-apple-updates]
 
-[^microsoft-simplifies-endpoint-managereenrollment-for-apple-updates]: Azure Active DirectoryおよびMicrosoft Endpoint Managerを提供するMicrosoft社は、「[Microsoft simplifies Endpoint Manager enrollment for Apple updates - Microsoft Tech Community](https://techcommunity.microsoft.com/t5/microsoft-endpoint-manager-blog/microsoft-simplifies-endpoint-manager-enrollment-for-apple/ba-p/3570319)」にてできる限り早くサポートしていく旨が発表されました
+[^microsoft-simplifies-endpoint-managereenrollment-for-apple-updates]: Azure Active DirectoryおよびMicrosoft Endpoint Managerを提供するMicrosoft社は、できる限り早くサポートしていく旨を発表しました。詳しくは「[Microsoft simplifies Endpoint Manager enrollment for Apple updates - Microsoft Tech Community](https://techcommunity.microsoft.com/t5/microsoft-endpoint-manager-blog/microsoft-simplifies-endpoint-manager-enrollment-for-apple/ba-p/3570319)」を参照してください
 
-また、ここでは紹介しませんでしたが、[パスキー](https://developer.apple.com/videos/play/wwdc2022/10092/)（マルチデバイスFIDOクレデンシャル）によって、Webサイトへのアクセスにおいて、パスワードレス認証が実現されます。
+また、ここでは紹介しませんでしたが、[パスキー](https://developer.apple.com/videos/play/wwdc2022/10092/)（マルチデバイスFIDOクレデンシャル）によってWebサイトへのアクセスにおけるパスワードレス認証が実現されます。
 このパスキーはiCloud Keychainを使用するため、Managed Apple IDを使用するエンタープライズな組織では恩恵を受けることができません。
 
-エンタープライズな組織では、サードパーティのパスワードマネージャーやIdPが提供している統合ツールなど使って、macOSのログインパスワードは引き続き使い続ける、半パスワードレスな環境にするしかないない状態です。
+エンタープライズな組織では、サードパーティのパスワードマネージャーやIdPが提供している統合ツールなど使って、macOSのログインパスワードは引き続き使い続ける、半パスワードレスな環境にするしかない状態です。
 
 今回紹介していない内容やアップデートされる機能などもあります。 ぜひ一次情報もご確認ください。
 

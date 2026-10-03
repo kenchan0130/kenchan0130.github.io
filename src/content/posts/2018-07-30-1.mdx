@@ -37,7 +37,7 @@ Jekyllでの使用を想定した画像の遅延ロードため[`jekyll-lazy-loa
 </html>
 ```
 
-上記のHTMLがブラウザでレンダリングされる場合、
+上記のHTMLがブラウザでレンダリングされる場合、次のような挙動をします。
 
 1. HTMLをリクエスト
 2. HTMLの取得
@@ -47,11 +47,10 @@ Jekyllでの使用を想定した画像の遅延ロードため[`jekyll-lazy-loa
     3. `path/to/image`の画像をリクエスト
 4. ページレンダリング完了
 
-という挙動をします。
-
 もし`path/to/image`が重いファイルだった場合、「ページレンダリング完了」までに時間がかかってしまいます。
 
-1つの解決方法として`img`タグの`src`属性にダミー画像やロード中の画像を指定しつつ、 JavaScriptを使用して画像を非同期で読み込むことでページレンダリングをブロックしないようにできます。
+1つの解決方法として、`img`タグの`src`属性にダミー画像やロード中の画像を指定しつつ、JavaScriptを使用して画像を非同期で読み込む方法があります。
+これにより、ページレンダリングをブロックしないようにできます。
 
 たまたまこのブログで少々重めのgifを表示したいことがあり、体感的にレンダリングが遅かったため、非同期で画像を読み込みたいと考えました。
 
@@ -60,7 +59,7 @@ Jekyllでの使用を想定した画像の遅延ロードため[`jekyll-lazy-loa
 Jekyllのプロジェクトでは`_plugins`ディレクトリにファイルを設置することで、
 自作のJekyll Pluginを作成および導入が可能です。
 
-しかし、 `_plugins`に設置する自作のJekyll Pluginは、中々テストが書かれることがありません。
+しかし、`_plugins`に設置する自作のJekyll Pluginは、中々テストが書かれません。
 
 RubyGemsに切り出せば、テストを記載するだろうと思い、切り出すことにしました。
 
@@ -74,15 +73,13 @@ JekyllではしばしばHTMLをそのまま記載するのではなくMarkdown�
 そのため、HTML以外のファイルフォーマットで記載されたドキュメントをJekyllのコンバーターでの処理が終わった後に`img`タグを変更する必要があります。
 
 ### Jekyllの拡張の選択
-Jekyllには拡張をするための機構が
+Jekyllには拡張をするための機構が、次の5つ用意されています。
 
 - [Generators](https://jekyllrb.com/docs/plugins/#generators)
 - [Converters](https://jekyllrb.com/docs/plugins/#converters)
 - [Commands](https://jekyllrb.com/docs/plugins/#commands)
 - [Tags](https://jekyllrb.com/docs/plugins/#tags)
 - [Hooks](https://jekyllrb.com/docs/plugins/#hooks)
-
-の5つ用意されています。
 
 今回はJekyllのコンバーターの処理が終わったドキュメントに対して変更したいため、「Hooks」を使用します。
 
@@ -99,22 +96,20 @@ RubyGemsを作成する際には、依存するライブラリを選択できま
 もちろん、ActiveSupoortはとても便利です。
 よく使われるメソッドや拡張が数多く用意されていて、かつテストが書かれているというのはとても魅力的です。
 
-今回はHTMLの編集とJekyllのHooksを使用するため、
+今回はHTMLの編集とJekyllのHooksを使用するため、次の2つのみを依存に含めました。
 
 - [Nokogiri](https://github.com/sparklemotion/nokogiri)
   - HTMLの編集
 - [Jekyll](https://github.com/jekyll/jekyll)
   - JekyllのHooksの呼び出し
 
-の2つのみを依存に含めました。
-
 ### 設定項目の最小化
 
 RubyGemsへ切り出したため、さまざまなユーザーを想定しました。
 特にJekyllを使用しているサイトの作成者は、JekyllやRubyに詳しい人ばかりとは限りません。
-細かい設定などは逆に使用者に負担をかける可能性があります。
+細かい設定などは、逆に使用者の負担となる可能性があります。
 
-そのため、最低限動作するに設計しました。
+そのため、最低限動作するように設計しました。
 具体的には`_config.yml`と`Gemfile`の変更と使用するJavaScriptの追加のみで動作するようにしました。
 
 #### 遅延ロードのJavaScriptの処遇
@@ -122,7 +117,8 @@ RubyGemsへ切り出したため、さまざまなユーザーを想定しまし
 細かい設定を少なくすると言ったわりには、 `jekyll-lazy-load-image`では遅延ロードのJavaScriptを使用者で設定してもらうようにしています。
 
 JekyllのTags拡張を使用することで、遅延ロードのJavaScriptの呼び出しを簡略化することも検討しました。
-しかし、ことJavaScriptに関してはサイトに寄って呼び出し方法がまちまちであるため、むやみに呼び出しを強制してしまうのは逆にライブラリとして使用されづらくなると考え、このような形にすることにしました。
+しかし、ことJavaScriptの呼び出し方法はサイトごとにまちまちです。
+むやみな呼び出しの強制は逆にライブラリとして使われづらくなると考え、このような形を選びました。
 
 ### 個別呼び出しへの対応
 
@@ -151,23 +147,19 @@ end
 
 #### 遅延ロードのライブラリの設定
 
-遅延ロードライブラリはお好きなものを使用してかまいませんが、
+遅延ロードライブラリはお好きなものを使用してかまいませんが、次のあたりが良いかもしれません。
 
 - [lazysizes](https://github.com/aFarkas/lazysizes)
 - [Echo.js](https://github.com/toddmotto/echo)
 - [TADA](https://github.com/fallroot/tada)
 
-あたりが良いかもしれません。
-
 Jekyllのプロジェクトのアセットに追加ソースを追加する、またはCDNを指定を読み込むなどを行い、遅延ロードライブラリを読み込ませます。
 
-例としてlazysizesをCDNで読み込ませる場合は、テンプレートの任意の場所に
+例としてlazysizesをCDNで読み込ませる場合は、テンプレートの任意の場所に次のコードを追加すれば完了です。
 
 ```html
 <script src="//cdnjs.cloudflare.com/ajax/libs/lazysizes/4.0.4/lazysizes.min.js" async></script>
 ```
-
-を追加すれば完了です。
 
 #### \_config.ymlの設定
 
@@ -210,7 +202,7 @@ gem 'jekyll-lazy-load-image'
 
 #### \_pluginsディレクトリへファイルの追加
 
-ドキュメントに対して処理を行いたいとした場合は、 `_plugins`ディレクトリに
+処理の対象をドキュメントにしたい場合は、次のようなファイルを任意の名前で`_plugins`ディレクトリへ追加します。
 
 ```ruby
 require 'jekyll-lazy-load-image'
@@ -221,8 +213,6 @@ end
 
 JekyllLazyLoadImage.execute
 ```
-
-上記のようなファイルを任意の名前で追加することで実現できます。
 
 ## まとめ
 
