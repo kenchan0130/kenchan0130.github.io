@@ -169,6 +169,8 @@ a {
 .d2-diagram {
   margin: 1.75rem 0;
   overflow-x: auto;
+  /* overflow-xで縦方向もスクロール領域になり、高さの端数で縦スクロールバーが出るのを防ぐ。 */
+  overflow-y: hidden;
 }
 .d2-diagram > svg {
   display: block;
@@ -198,7 +200,7 @@ svg.d2-svg .stroke-N3 {
   stroke: var(--muted);
 }
 svg.d2-svg .fill-N4 {
-  fill: var(--border);
+  fill: color-mix(in srgb, var(--accent) 12%, var(--bg));
 }
 svg.d2-svg .stroke-N4 {
   stroke: var(--border);

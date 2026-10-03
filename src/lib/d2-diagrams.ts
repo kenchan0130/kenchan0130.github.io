@@ -54,38 +54,43 @@ const defaultStyle = `
   !&shape: sql_table
   !&shape: class
   label.near: top-left
-  style.font-size: 16
+  style.font-size: 14
   style.bold: true
   style.stroke-width: 0
   style.border-radius: 16
 }
 **: {
   &shape: image
-  width: 56
-  height: 56
+  width: 40
+  height: 40
+  style.font-size: 14
+}
+**: {
+  &shape: sql_table
+  style.font-size: 14
 }
 (** -> **)[*]: {
   style.stroke-dash: 3
-  style.stroke-width: 3
-  style.font-size: 14
+  style.stroke-width: 2
+  style.font-size: 12
   style.fill: "${edgeLabelFill}"
 }
 (** <- **)[*]: {
   style.stroke-dash: 3
-  style.stroke-width: 3
-  style.font-size: 14
+  style.stroke-width: 2
+  style.font-size: 12
   style.fill: "${edgeLabelFill}"
 }
 (** <-> **)[*]: {
   style.stroke-dash: 3
-  style.stroke-width: 3
-  style.font-size: 14
+  style.stroke-width: 2
+  style.font-size: 12
   style.fill: "${edgeLabelFill}"
 }
 (** -- **)[*]: {
   style.stroke-dash: 3
-  style.stroke-width: 3
-  style.font-size: 14
+  style.stroke-width: 2
+  style.font-size: 12
   style.fill: "${edgeLabelFill}"
 }
 `;
