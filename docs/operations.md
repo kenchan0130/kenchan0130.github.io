@@ -51,6 +51,10 @@ not retained.
   high severity every Wednesday at 00:00 UTC and can also be run manually. Its findings are
   tracked independently of the required `quality` check so existing advisories do not skip
   formatting, lint, and type checks on unrelated pull requests.
+- `pnpm.auditConfig.ignoreGhsas` lists advisories that have no patched release and do not affect
+  this static site. Remove each entry once a fixed version is available.
+  - `GHSA-ch52-4w7c-c8xp` (`http-cache-semantics` via `astro`): Astro uses it only for the
+    build-time remote image cache. The site is served as static files without a shared HTTP cache.
 - GitHub Actions are pinned to full commit SHAs with the exact release in comments.
 - Automatic merge is not enabled.
 
