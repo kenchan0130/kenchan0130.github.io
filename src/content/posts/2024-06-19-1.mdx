@@ -84,7 +84,7 @@ iOS/iPadOS 17.5、およびmacOS 14.5以降では、自動デバイス登録に�
 
 ## ソフトウェアアップデートに関するアップデート
 
-### ソフトウェアアップデートの仕組みの刷新
+### ソフトウェアアップデートのしくみの刷新
 
 ![What's new in device managementのセッションで発表された、iOS/iPadOSのソフトウェアアップデートの仕組みの刷新について](/assets/posts/post/2024-06-19-1/software_update_settings.png)
 
@@ -199,7 +199,7 @@ iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して�
 
 サービス構成ファイル機能はmacOS 14 Sonomaから導入され、独自の設定を配布[^service-configuration-file-location]できるようになりました。
 
-[^service-configuration-file-location]: `/private/var/db/ManagedConfigurationFiles/` ディレクトリにサービス構成ファイルが設置される
+[^service-configuration-file-location]: `/private/var/db/ManagedConfigurationFiles/`ディレクトリにサービス構成ファイルが設置される
 
 * sshd [^sshd] (`com.apple.sshd`)
   * SSHサービスの有効化/無効化、リスニングアドレス、リスニングポート、認証方法の変更、SSH経由でマシンにリモートアクセスできるユーザーの指定などが可能となる
@@ -221,8 +221,8 @@ iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して�
 [^pam]: PAM (Pluggable Authentication Modules)はユーザーを認証するためのメカニズム
 [^cups]: CUPS (Common UNIX Printing System)は、エンドポイントをプリントサーバーとして機能させるモジュール式の印刷システム。このシステムにより、コンピュータはプリンタと通信し、印刷ジョブの整理が可能
 [^apache-httpd]: Apache httpdはオープンソースのWebサーバー
-[^bash]: bash (Bourne Again Shell)は、macos catalina未満でデフォルトシェルとして採用されていたシェル。`/private/etc/profile`は、bashのシェルセッションが開始された際にすべてのユーザーに対して実行されるシステム全体の設定ファイル
-[^zsh]: zsh (Z Shell)は、macos catalina以降でデフォルトシェルとして採用されているシェル。`/private/etc/zprofile`は、zshのシェルセッションが開始された際にすべてのユーザーに対して実行されるシステム全体の設定ファイル
+[^bash]: bash (Bourne Again Shell)は、macOS Catalina未満でデフォルトシェルとして採用されていたシェル。`/private/etc/profile`は、bashのシェルセッションが開始された際にすべてのユーザーに対して実行されるシステム全体の設定ファイル
+[^zsh]: zsh (Z Shell)は、macOS Catalina以降でデフォルトシェルとして採用されているシェル。`/private/etc/zprofile`は、zshのシェルセッションが開始された際にすべてのユーザーに対して実行されるシステム全体の設定ファイル
 
 ### 新しいディスク管理設定
 
@@ -240,7 +240,7 @@ iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して�
 
 IdPの認証を用いてFileVaultのロック解除が可能となります。
 
-具体的には、Platform SSOのFileVaultポリシー（`FileVaultPolicy`）に `AttemptAuthentication` を設定することで、先に進む前にIdPの認証が試行されます。
+具体的には、Platform SSOのFileVaultポリシー（`FileVaultPolicy`）に`AttemptAuthentication`を設定することで、先に進む前にIdPの認証が試行されます。
 
 ```xml
 <!-- com.apple.extensiblesso -->

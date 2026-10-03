@@ -65,7 +65,7 @@ draft: false
 ![エスケープ済みのイメージ1](/assets/posts/post/2018-04-19-1/macro_body_escape_image.png)
 ![エスケープ済みのイメージ2](/assets/posts/post/2018-04-19-1/macro_body_escape_image_rendered.png)
 
-上記の場合ですと、`b` タグがエスケープされないと太字になってしまいますが、エスケープすることによってそのまま表示されます。
+上記の場合ですと、`b`タグがエスケープされないと太字になってしまいますが、エスケープすることによってそのまま表示されます。
 
 #### Unrendered
 マクロ本文に記載されたHTMLがテンプレートの部分で処理する際にはまだレンダリングされていない状態で使用できます。
@@ -75,12 +75,12 @@ draft: false
 
 ### Template
 マクロの動作を司るコードを設定できます。
-実態は [Velocity](https://velocity.apache.org/) のテンプレートとなっています。
+実態は[Velocity](https://velocity.apache.org/)のテンプレートとなっています。
 
-マクロ本文が存在する場合、 `$body` という変数で参照できます。
+マクロ本文が存在する場合、 `$body`という変数で参照できます。
 
 #### Templateのベストプラクティス
-[Writing User Macros](https://confluence.atlassian.com/doc/writing-user-macros-4485.html) においても記載されていますが、
+[Writing User Macros](https://confluence.atlassian.com/doc/writing-user-macros-4485.html)においても記載されていますが、
 テンプレートはコードですので、テンプレートがどの環境・設定で動作を想定しているのかをテンプレートのヘッダに記載しましょう。
 
 ```html
@@ -135,10 +135,10 @@ $body
 </div>
 ```
 
-`@param` というのは、マクロの挿入時に渡せるパラメータです。
-テンプレート内では、 `$param定義した名前` で参照できます。
+`@param`というのは、マクロの挿入時に渡せるパラメータです。
+テンプレート内では、 `$param定義した名前`で参照できます。
 また、複数パラメータも用意できます。
-詳しくは [User Macro Template Syntax](https://confluence.atlassian.com/doc/user-macro-template-syntax-223906130.html) を御覧ください。
+詳しくは[User Macro Template Syntax](https://confluence.atlassian.com/doc/user-macro-template-syntax-223906130.html)を御覧ください。
 
 #### タブ全体のコンテナ
 
@@ -190,10 +190,10 @@ AJS.toInit(function(jQuery) {
 </script>
 ```
 
-パラメータがある場合は `@param` を記載していましたが、パラメータが必要ない場合は `@noparam` を指定しましょう。
+パラメータがある場合は`@param`を記載していましたが、パラメータが必要ない場合は`@noparam`を指定しましょう。
 細かい挙動に関してはJavaScriptの話ですので、ここでは割愛します。
 
-また、 **AJS** というConfluenceがjQueryなどをラップしたオブジェクトを用意しており、 Confluenceを拡張する際に使用できます。
+また、 **AJS**というConfluenceがjQueryなどをラップしたオブジェクトを用意しており、 Confluenceを拡張する際に使用できます。
 
 ### マクロの登録
 ベストプラクティス通り、コメント設定すべき内容がテンプレートにほぼ記載されているため、
@@ -207,7 +207,7 @@ AJS.toInit(function(jQuery) {
 
 設定項目を入れたら、最後はテンプレートを挿入して保存ボタンを押すとマクロの作成が完了です。
 
-まずは、マクロブラウザの設定項目の **マクロブラウザは管理者のみ表示されます** を選択して、管理者のみで挙動を確認して、確認が終了したら **マクロブラウザですべてのユーザーに表示されます** を選択してエンドユーザーに使用可能になった旨を通知すると良いと思います。
+まずは、マクロブラウザの設定項目の**マクロブラウザは管理者のみ表示されます**を選択して、管理者のみで挙動を確認して、確認が終了したら**マクロブラウザですべてのユーザーに表示されます**を選択してエンドユーザーに使用可能になった旨を通知すると良いと思います。
 
 ## まとめ
 Confluenceのユーザーマクロについて紹介しました。

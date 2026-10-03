@@ -23,7 +23,7 @@ iOSアプリケーションを開発しているとシミュレータでデバ�
 
 ## /AppleInternal
 
-`/AppleInternal` ディレクトリはApple社の内部用に用意されたフォルダです。
+`/AppleInternal`ディレクトリはApple社の内部用に用意されたフォルダです。
 このディレクトリが存在する場合、iOSシミュレータの隠された機能が有効化されます。
 
 もちろん、我々デベロッパー向けに用意されたものではないため、
@@ -33,13 +33,13 @@ iOSアプリケーションを開発しているとシミュレータでデバ�
 
 ### SIPによる制限
 
-High Sierra (10.13) から `/AppleInternal` ディレクトリ作成がSystem Integrity Protecton (SIP) の対象となり、
+High Sierra (10.13) から`/AppleInternal`ディレクトリ作成がSystem Integrity Protecton (SIP) の対象となり、
 
 ```sh
 sudo mkdir -p /AppleInternal
 ```
 
-を実行しても `mkdir: /AppleInternal: Operation not permitted` となってしまいます。
+を実行しても`mkdir: /AppleInternal: Operation not permitted`となってしまいます。
 
 Sierra (10.12) では上記のコマンドを実行してもフォルダを作成できていました。
 
@@ -51,13 +51,13 @@ SIPを無効にすることで、ディレクトリを作成可能ですが、�
 
 1. Macをシャットダウンします。
 2. リカバリモードとしてMacを立ち上げます。
-  - `⌘ + R` を押しながらMacの電源を入れます。
-  - Appleのロゴが出てきたら `⌘ + R` のキーを離してください。
+  - `⌘ + R`を押しながらMacの電源を入れます。
+  - Appleのロゴが出てきたら`⌘ + R`のキーを離してください。
 3. ディスクユーティリティを起動します。
 4. macOSがインストールされているディスクを選択して「マウント」ボタンを押します。
 5. ディスクユーティリティを終了します。
 6. メニューバーの「ユーティリティ > ターミナル」を選択してターミナルを起動します。
-7. `mkdir -p /Volumes/Macintosh\ HD/AppleInternal` を実行します。
+7. `mkdir -p /Volumes/Macintosh\ HD/AppleInternal`を実行します。
 8. メニューバーの「Appleマーク > 再起動」を選択して再起動します。
 
 #### 実行例
@@ -115,7 +115,7 @@ iOSシミュレータを起動してみます。
 
 ![iOS シミュレータの隠し機能の有効化確認](/assets/posts/post/2018-07-16-1/launch_ios_simulator.png)
 
-メニューバーに **Internal** の項目が出てきていることが確認できました。
+メニューバーに**Internal**の項目が出てきていることが確認できました。
 
 ## 1つの画面で表示
 
@@ -133,13 +133,13 @@ iOSシミュレータを起動してみます。
 
 ## 隠し機能の無効化
 
-隠し機能を無効化したい場合は `/AppleInternal` ディレクトリを削除するだけで良いです。
+隠し機能を無効化したい場合は`/AppleInternal`ディレクトリを削除するだけで良いです。
 
 ```sh
 sudo rm -rf /AppleInternal
 ```
 
-`/AppleInternal` ディレクトリの削除はSIPの対象ではないため、リカバリモードを使用せずとも削除が可能です。
+`/AppleInternal`ディレクトリの削除はSIPの対象ではないため、リカバリモードを使用せずとも削除が可能です。
 しかし、再び有効化したい場合はリカバリモードを使用してディレクトリを作成する必要があります。
 
 ## Internalのそのほかの機能
@@ -163,7 +163,7 @@ sudo rm -rf /AppleInternal
 
 ## まとめ
 
-`/AppleInternal` ディレクトリを作成することで、iOSシミュレータの隠し機能を有効にできました。
+`/AppleInternal`ディレクトリを作成することで、iOSシミュレータの隠し機能を有効にできました。
 
 また、1つの画面でデバッグが実現可能となり、画面サイズに制約がある場合に効率よくデバッグできる方法を紹介しました。
 

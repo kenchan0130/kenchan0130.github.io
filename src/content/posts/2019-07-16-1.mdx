@@ -44,7 +44,7 @@ Apple IDを作成することで、
 ## 組織におけるApple IDに関する課題
 
 Apple IDの作成には、受信可能なメールアドレスとパスワードが必要です。
-更に追加として、秘密の質問、SMS認証用の電話番号またはiOS/macOSが動作する端末が必要です。
+さらに追加として、秘密の質問、SMS認証用の電話番号またはiOS/macOSが動作する端末が必要です。
 
 このような制約の中、組織において、個人で使用するApple IDと同様にApple IDを作成すると、いくつかの課題が起こる可能性があります。
 
@@ -74,11 +74,11 @@ App Storeのエンドユーザー向け規約である[LICENSED APPLICATION END 
 ここでポイントとなるのが、**個人で所有または管理していない端末**でのApp Storeのアプリケーション（無料/有料問わず）の使用は**規約違反**の可能性があるということです。
 
 組織においてはしばしば、組織が貸与するmacOSやiOSの端末が使用されます。
-これらの端末上で通常のApple IDを使用してApp Storeを使用する場合、「ライセンスの範囲」と照らし合わせてみると、 **通常のApple IDを使用してStoreのアプリケーションを使用することは規約違反になりうる** と解釈できます。
+これらの端末上で通常のApple IDを使用してApp Storeを使用する場合、「ライセンスの範囲」と照らし合わせてみると、 **通常のApple IDを使用してStoreのアプリケーションを使用することは規約違反になりうる**と解釈できます。
 
 規約に準拠していない運用は、教育や企業、法人としてあるべき姿ではないため、このような運用は見直す必要があります。
 
-代替手段としては、[Apple製品を会社として導入するための準備をした話](/post/2017-12-03-1)でも言及しました **Volume Purchase Program** を使用すると、Apple社の規約に沿った形でApp Storeのアプリケーションを使用できます。
+代替手段としては、[Apple製品を会社として導入するための準備をした話](/post/2017-12-03-1)でも言及しました**Volume Purchase Program**を使用すると、Apple社の規約に沿った形でApp Storeのアプリケーションを使用できます。
 
 ## 課題解決のためのクラウドポータルApple School Manager/Apple Business Manager
 
@@ -102,20 +102,20 @@ ASMは教育機関向け、ABMは企業向けのクラウドポータルです�
 
 が使用できます。
 
-ABMを使用するには **D-U-N-S Number** が必要です。
-また、ASMを使用するには **D-U-N-S Number** に加えて、Apple社が認める教育組織または教育行政組織である必要があります。
+ABMを使用するには**D-U-N-S Number**が必要です。
+また、ASMを使用するには**D-U-N-S Number**に加えて、Apple社が認める教育組織または教育行政組織である必要があります。
 
 ### Apple Deployment Programとの違い
 
 Apple Deployment Program（以下「ADP」という）はDEP管理がメインのポータルサイトを表したり、DEPとVPPのことを表したりしました。
-更に、ADPポータル（deploy.apple.com）とVPPポータル（vpp.itunes.com）が存在していましたが、2018年にDEPとVPPが一元的に管理できるようにABMまたはASMに移行されました。
+さらに、ADPポータル（`deploy.apple.com`）とVPPポータル（`vpp.itunes.com`）が存在していましたが、2018年にDEPとVPPが一元的に管理できるようにABMまたはASMに移行されました。
 
 そのため、ADPはすでになくなったと考えても差し支えないでしょう。
 過去の使用などを参考にすると、ADPやDEP、VPPとの立ち位置が紛らわしいと思われますが、このような経緯があったためでした。
 
 ## Managed Apple IDとは
 
-前置きが長くなりましたが、組織におけるApple IDに関する課題を解決するためのソリューションが **Managed Apple ID** です。「管理対象Apple ID」とも呼ばれます。
+前置きが長くなりましたが、組織におけるApple IDに関する課題を解決するためのソリューションが**Managed Apple ID**です。「管理対象Apple ID」とも呼ばれます。
 
 Managed Apple IDは、企業であれば従業員に、教育機関であれば教職員や児童・生徒に発行できます。
 通常のApple IDと大きく異なる点は、組織内のApple IDを管理者が一括作成・管理が可能で、付与したManaged Apple IDに対して役割や権限を設定できることです。
@@ -155,16 +155,16 @@ Managed Apple IDは、ASMまたはABMのポータルから作成したいApple I
 
 #### 通常のApple IDからManaged Apple IDへのメールアドレスの移行
 
-通常のApple IDを `A@example.com` のメールアドレスで既に所有している場合、 `A@example.com` のメールアドレスでManaged Apple IDを作成できません。
-しかし、組織の現場ではしばしば `A@example.com` をManaged Apple IDにしたいケースがあります。
+通常のApple IDを`A@example.com`のメールアドレスですでに所有している場合、 `A@example.com`のメールアドレスでManaged Apple IDを作成できません。
+しかし、組織の現場ではしばしば`A@example.com`をManaged Apple IDにしたいケースがあります。
 
 その場合は、以下の手順を踏むことで実質メールアドレスを移行できます。
 
-1. `A@example.com` のApple IDを削除（または捨てアドなどに変更）
-2. `A@example.com` のエイリアスとして `B@example.com` を作成
-3. `B@example.com` でManaged Apple IDを作成
-4. `A@example.com` の削除（または変更）から30日待機
-5. `B@example.com` のManaged Apple IDを `A@example.com` に変更
+1. `A@example.com`のApple IDを削除（または捨てアドなどに変更）
+2. `A@example.com`のエイリアスとして`B@example.com`を作成
+3. `B@example.com`でManaged Apple IDを作成
+4. `A@example.com`の削除（または変更）から30日待機
+5. `B@example.com`のManaged Apple IDを`A@example.com`に変更
 
 通常のApple IDおよびManaged Apple IDのメールアドレスは無効化されてから一定の間、Apple社の内部では15日または30日間有効なApple IDとして取り扱われるため、このような手順が必要となります。
 
@@ -172,7 +172,7 @@ Apple ID自体を移行しているわけではないため、サポートに問
 
 ## これからのManaged Apple ID
 
-iOS 13から公式で **User Enrollment** と呼ばれるBYODのサポートを予定しています。
+iOS 13から公式で**User Enrollment**と呼ばれるBYODのサポートを予定しています。
 このUser EnrollmentにはManaged Apple IDが必須となります。
 
 そのため、ABMのみMicrosoft Azure Active Directoryと連携してManaged Apple IDがシームレスに作成できる機能が追加される予定であることが発表されました。

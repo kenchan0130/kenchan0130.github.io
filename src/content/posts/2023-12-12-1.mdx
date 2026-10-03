@@ -31,7 +31,7 @@ Microsoft Intuneでエンロールされているデバイスは、デフォル�
 | **Windows 10/11のPCをデバイスとして登録** | **約8時間ごと** |
 | **Windows 8.1**                | **約8時間ごと** |
 
-実際にデバイス上の設定を確認してみると、タスクスケジューラの `\Microsoft\Windows\EnterpriseMgmt\エンロールID` のタスクパスに登録されている `Schedule #3 created by enrollment client` タスクに、該当のトリガーが設定されていることが分かります。
+実際にデバイス上の設定を確認してみると、タスクスケジューラの`\Microsoft\Windows\EnterpriseMgmt\エンロールID`のタスクパスに登録されている`Schedule #3 created by enrollment client`タスクに、該当のトリガーが設定されていることが分かります。
 
 ![タスクスケジューラにおける、8時間ごとにMicrosoft Intuneと同期するタスク](/assets/posts/post/2023-12-12-1/intune_sync_task_per_8hours_on_task_scheduler.png)
 
@@ -47,7 +47,7 @@ Microsoft Intuneでエンロールされているデバイスは、デフォル�
 | **Windows 10/11のPCをデバイスとして登録** | **15分まで3分ごと、その後の2時間は15分ごと、その後は約8時間ごと** |
 | **Windows 8.1**                | **15分まで5分ごと、その後の2時間は15分ごと、その後は約8時間ごと** |
 
-こちらも、タスクスケジューラの `\Microsoft\Windows\EnterpriseMgmt\エンロールID` のタスクパスに登録されている、
+こちらも、タスクスケジューラの`\Microsoft\Windows\EnterpriseMgmt\エンロールID`のタスクパスに登録されている、
 
 * `Schedule #1 created by enrollment client`
 * `Schedule #2 created by enrollment client`
@@ -58,14 +58,14 @@ Microsoft Intuneでエンロールされているデバイスは、デフォル�
 
 ## 同期サイクルを変更する
 
-前述の通り、8時間ごとにMicrosoft Intuneと同期するタスクは `Schedule #3 created by enrollment client` でした。
+前述の通り、8時間ごとにMicrosoft Intuneと同期するタスクは`Schedule #3 created by enrollment client`でした。
 このサイクルを変更したい場合は、トリガーの「繰り返し間隔」を変更することで実現できます。
 
 このタスクは管理者権限で作成されているため、以下の操作も管理者権限で行う必要があります。
 
-1. `Schedule #3 created by enrollment client` > [プロパティ] > [トリガー] を選択
+1. `Schedule #3 created by enrollment client` >[プロパティ] > [トリガー]を選択
     ![properties of schedule 3 created by enrollment client task](/assets/posts/post/2023-12-12-1/properties_of_schedule_3_created_by_enrollment_client_task.png)
-2. [編集] > [繰り返し間隔] から時間を変更
+2. [編集] > [繰り返し間隔]から時間を変更
     ![trigger interval of schedule 3 created by enrollment client task](/assets/posts/post/2023-12-12-1/trigger_interval_of_schedule_3_created_by_enrollment_client_task.png)
 
 エンロールされた際のこのタスクが作成されるため、以降タスクの設定が上書きされることは基本的にはありません。
@@ -164,10 +164,10 @@ Microsoft IntuneでPowerShellを配布する場合、選択肢としては大き
 * Win32アプリ（`.intunewin`）として配布
 * プロアクティブな修復のスクリプトパッケージとして配布
 
-今回は**「プロアクティブな修復のスクリプトパッケージとして配布」**を使用して、上記のスクリプトを配布してみます。
+今回は「**プロアクティブな修復のスクリプトパッケージとして配布**」を使用して、上記のスクリプトを配布してみます。
 これにより、もしWindows Updateなどで設定値がデフォルトに戻る場合でも、自動的に設定値を期待通りに設定し直せます。
 
-1. Microsoft Intune管理センター > [デバイス] > [修復] から、スクリプトパッケージの作成を選択
+1. Microsoft Intune管理センター >[デバイス] > [修復]から、スクリプトパッケージの作成を選択
 
     ![プロアクティブな修復](/assets/posts/post/2023-12-12-1/proactive_remediation.png)
 
@@ -175,7 +175,7 @@ Microsoft IntuneでPowerShellを配布する場合、選択肢としては大き
 
     ![カスタムスクリプトの作成 - 基本](/assets/posts/post/2023-12-12-1/create_script_package_basics_proactive_remediation.png)
 
-3. 作成したスクリプトを「検出スクリプト」としてアップロード、「64 ビットの PowerShell でスクリプトを実行する」を**はい**に設定
+3. 作成したスクリプトを「検出スクリプト」としてアップロード、「64ビットのPowerShellでスクリプトを実行する」を**はい**に設定
 
     ![カスタムスクリプトの作成 - 設定](/assets/posts/post/2023-12-12-1/create_script_package_settings_proactive_remediation.png)
 

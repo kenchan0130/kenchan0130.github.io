@@ -14,7 +14,7 @@ references: []
 draft: false 
 ---
 
-これは [FOLIO Advent Calendar 2017](https://qiita.com/advent-calendar/2017/folio-sec) の12/3の投稿でもあります。前日は [chocoi](https://qiita.com/chocoi) さんで「[とある新興証券会社での AWS Direct Connect 利用に関して](https://qiita.com/chocoi/items/04d8d56aa45b8c0c40c6)」でした。
+これは[FOLIO Advent Calendar 2017](https://qiita.com/advent-calendar/2017/folio-sec)の12/3の投稿でもあります。前日は[chocoi](https://qiita.com/chocoi)さんで「[とある新興証券会社での AWS Direct Connect 利用に関して](https://qiita.com/chocoi/items/04d8d56aa45b8c0c40c6)」でした。
 
 今回は社内情報システム案件でも中々情報の少ない、Apple製品についてフォーカスを当ててみます。
 主にmacOS端末を導入した際の記録的な感じでいろいろ書いていければと思います。
@@ -22,7 +22,7 @@ macOS端末はWindows端末とは異なり、シリーズとスペックくら�
 今後導入することになった際、
 
 「実際導入するとなったらこういう流れになるのか」
-「実はそんな仕組みもあるのか」
+「実はそんなしくみもあるのか」
 
 というキッカケになれば幸いです。
 
@@ -61,7 +61,7 @@ Apple Deployment Programは廃止になっています。
 
 もともとApple製品を取扱っている販売会社さんとつながりがあったため、まずは聞いてみました。
 
-**販社さん**「Apple製品取扱ありますよ！キッティングまでおまかせください！」  
+**販社さん**「Apple製品取扱ありますよ！キッティングまでお任せください！」  
 **私**「そうなんですね、ちなみに割引とかありますか？」  
 **販社さん**「Apple製品値引き難しいんですよね。すみません」  
 **私**「なるほど、Appleさんやはり定価が基本なんですね。キッティングというと設定含めてやってもらえますか？」  
@@ -164,14 +164,14 @@ Apple Deployment Programには大きく
 
 ### Device Enrollment Program
 
-こちらが先程何度か出てきていた **DEP** と呼んでいたものです。
+こちらが先程何度か出てきていた**DEP**と呼んでいたものです。
 
 iOS端末の場合、アクティベーションしたらすぐにMDM機能の設定が可能であるため、社内情報管理者がセットアップなしでエンドユーザーにデバイスを渡すことも可能となります。
 
 端的に言うと、ようこそ画面の設定の削減とMDM機能への強制アサインができる君です。
 詳しくはApple社が出している[ガイド](https://www.apple.com/jp/education/docs/DEP_Guide.pdf)をご確認ください。
 
-また、macOS端末も[プロファイルマネージャー](https://support.apple.com/ja-jp/profile-manager)や [Jamf Pro](https://www.jamf.com/ja/products/jamf-pro/) などと連携することで、多くの手間が削減されます。
+また、macOS端末も[プロファイルマネージャー](https://support.apple.com/ja-jp/profile-manager)や[Jamf Pro](https://www.jamf.com/ja/products/jamf-pro/)などと連携することで、多くの手間が削減されます。
 
 #### 利用条件
 
@@ -209,13 +209,13 @@ Apple Deployment Programを有効にするには
 
 ### Apple Deployment ProgramにおけるApple IDの罠
 
-[Apple ID](https://appleid.apple.com/) はApple製品をお持ちの方ならご存じだとは思いますが、Appleのサービスを受けるためには必要になるアカウントです。
+[Apple ID](https://appleid.apple.com/)はApple製品をお持ちの方ならご存じだとは思いますが、Appleのサービスを受けるためには必要になるアカウントです。
 
 Apple IDのページには
 
 > 1 つの Apple ID とパスワードで、Apple のサービスすべてにアクセスできます。
 
-と書いてありますが、これは **嘘** です。
+と書いてありますが、これは**嘘**です。
 
 Apple IDはApple Deployment Programに登録してしまうと、iTunesのサービスを受けることができなくなります。つまり、音楽やApp Storeが使用できなくなります。
 
@@ -245,7 +245,7 @@ Apple IDはApple Deployment Programに登録してしまうと、iTunesのサー
 
 #### 解決策
 
-**社内でメールを受け取れる共有のアカウント（グループやエイリアス）を使用する** が現状一番よい解決策であると思われます。
+**社内でメールを受け取れる共有のアカウント（グループやエイリアス）を使用する**が現状一番よい解決策であると思われます。
 
 あまり、共有して使いたくはないですが、個人に依存してしまうのも、退職などの際に面倒なことになるので背に腹は変えられないと思います。
 
@@ -260,9 +260,9 @@ iOSやmacOS向けのアプリケーションを配信している方はお馴染
 [D-U-N-S Number - Support - Apple Developer](https://developer.apple.com/support/D-U-N-S/)にも記載されているように、Appleの画面より申請リクエストを投げることができます。
 
 1. 上記のURLの内容に記載があるように、AppleのD-U-N-S Number look up toolを使用して英語表記の会社名でリクエストを投げます。
-2. リクエストを投げると、**D-U-N-S Number Request/Update Confirmation** のようなメールが飛んでくるので先方から連絡が来るまで待ちましょう。
-3. **Please provide your business registration and we will send it to our investigations team to verify your information.** みたいに言われるので、登記簿謄本など会社情報が記載されている公的書類を添付して送り返しましょう。日本語のものでも大丈夫です。
-4. **D-U-N-S Number Request/Update Completed** のようなメールが来るので、内容にD-U-N-S Numberが記載されていれば完了です。
+2. リクエストを投げると、**D-U-N-S Number Request/Update Confirmation**のようなメールが飛んでくるので先方から連絡が来るまで待ちましょう。
+3. 「**Please provide your business registration and we will send it to our investigations team to verify your information.**」みたいに言われるので、登記簿謄本など会社情報が記載されている公的書類を添付して送り返しましょう。日本語のものでも大丈夫です。
+4. **D-U-N-S Number Request/Update Completed**のようなメールが来るので、内容にD-U-N-S Numberが記載されていれば完了です。
 
 #### 発行方法その2
 
@@ -278,18 +278,18 @@ Appleさん直販はよいぞ〜というお話をしました。Apple社の回�
 とても親切に対応いただけるのでぜひ一度話だけでも聞きに行ってみてください。
 
 また、Apple Deployment Programについてできることと、ハマりどころを少しだけお話しました。
-MDM機能を利用した[プロファイルマネージャー](https://support.apple.com/ja-jp/profile-manager)や [Jamf Pro](https://www.jamf.com/ja/products/jamf-pro/) などと合わせることでとてつもない効果を発揮します。
+MDM機能を利用した[プロファイルマネージャー](https://support.apple.com/ja-jp/profile-manager)や[Jamf Pro](https://www.jamf.com/ja/products/jamf-pro/)などと合わせることでとてつもない効果を発揮します。
 
 まだApple製品導入におけるスタートラインに立っただけです。
 どういったことを考慮に入れているかなど、実際のキッティングついては次回をお待ちください。
 
 ## 宣伝
 
-現在、[FOLIO](https://corp.folio-sec.com) では既存の概念にとらわれず、社員に快適に働いてもらう環境を構築する社内情報システム担当を募集しています。
+現在、[FOLIO](https://corp.folio-sec.com)では既存の概念にとらわれず、社員に快適に働いてもらう環境を構築する社内情報システム担当を募集しています。
 
 <LinkCard href="https://www.wantedly.com/projects/171731/widget" />
 
 また、社内情報システム以外にも一緒に働いていただける方も[募集](https://www.wantedly.com/companies/folio/projects)しています。
 お気軽にお声がけください！！
 
-明日はFOLIO期待のインターン [odakyoka](https://qiita.com/odakyoka) ちゃんによる「1か月で1万のフォロワーを増やすtwitterマーケティング戦略的について」です！
+明日はFOLIO期待のインターン[odakyoka](https://qiita.com/odakyoka)ちゃんによる「1ヵ月で1万のフォロワーを増やすTwitterマーケティング戦略的について」です！

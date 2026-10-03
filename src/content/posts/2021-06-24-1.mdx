@@ -26,7 +26,7 @@ draft: false
 
 以下のアップデートのほとんどが、iOS/iPadOS 15から実現される予定です。
 
-### VPNとデバイスマネージメントの画面の統合
+### VPNとデバイスマネジメントの画面の統合
 
 ![What’s new in managing Apple devicesのセッションで発表されたVPNとデバイスマネージメントの画面の統合](/assets/posts/post/2021-06-24-1/vpn_and_device_management.png)
 
@@ -117,13 +117,13 @@ User Enrollmentは、今まで最初にプロファイルをダウンロード�
 
 1. デバイス上で組織のアカウント情報を入力
 1. アカウント情報からドメイン情報を判別
-1. `https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement` に対してGETリクエストを送信しJSONを取得
+1. `https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement`に対してGETリクエストを送信しJSONを取得
 1. JSON内のMDMサーバーのURLにアクセスして、MDMサーバー側でユーザーを認証
 1. MDMサーバー上で事前にユーザーに紐付けたManaged Apple IDを使用してユーザーを認証
     * Managed Apple IDの認証画面において、Managed Apple IDのメールアドレスが自動で補完される挙動のようですので、Managed Apple IDを紐付けなくてもよい可能性があります
 1. User Enrollmentのためのプロファイルがダウンロードされ、デバイスをBYOD化
 
-上記のフローにおける `https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement` にGETリクエストを行った場合、
+上記のフローにおける`https://アカウント情報のドメイン/.well-known/com.apple.remotemanagement`にGETリクエストを行った場合、
 
 ```json
 {
@@ -290,7 +290,7 @@ Apple Business Manager/Apple School ManagerでMDMサーバーにアサインし�
 これはあくまで推測であり、試してみないとわかりませんが、
 
 1. MDMに関するプロファイルをすべて削除
-1. `/var/db/.AppleSetupDone` を削除
+1. `/var/db/.AppleSetupDone`を削除
 1. Macデバイスを再起動
 
 の手順を踏んで、再度セットアップアシスタントが起動するしくみを応用して、User EnrollmentなデバイスをDevice Enrollmentなデバイスにできるかもしれません。

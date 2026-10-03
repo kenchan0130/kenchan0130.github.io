@@ -133,11 +133,11 @@ async function main() Promise<void> {
 main().catch((e: Error) => core.setFailed(e.message));
 ```
 
-上記の例では、アクションとしては `main().catch((e: Error) => core.setFailed(e.message))` が実行されます。
+上記の例では、アクションとしては`main().catch((e: Error) => core.setFailed(e.message))`が実行されます。
 
 ### ファイルの分割
 
-上記の例の場合、`main` 関数にすべての処理を記述しても良いですが、テストのしやすさのためファイルを分割することがあります。
+上記の例の場合、`main`関数にすべての処理を記述しても良いですが、テストのしやすさのためファイルを分割することがあります。
 アクションを作る場合でも、問題なくファイル分割が可能です。
 
 ```typescript

@@ -19,9 +19,9 @@ Railsのメジャーバージョンアップは毎回大幅なアップデート
 
 ## 前提
 
-Rubyのバージョンが `2.2.2` 以上でなければ、Rails 5は動作しません。
+Rubyのバージョンが`2.2.2`以上でなければ、Rails 5は動作しません。
 
-`2.2.2` 未満を使用している場合は、まずRubyのバージョンをアップデートしてからRailsのアップデートを行うことをオススメします。
+`2.2.2`未満を使用している場合は、まずRubyのバージョンをアップデートしてからRailsのアップデートを行うことをオススメします。
 
 ## ライブラリのバーションアップ
 
@@ -39,7 +39,7 @@ Rails 5へのアップグレードの原因切り分けのため、この時点�
 
 ## Rails 5のgemをインストール
 
-`Gemfile` の `rails` の項目を、以下のように変更します。
+`Gemfile`の`rails`の項目を、以下のように変更します。
 
 ```ruby
 # Gemfile
@@ -114,7 +114,7 @@ Controllerで使用される`before_filter`や`after_filter`などが非推奨�
 
 ### envの直接参照が非推奨
 
-`ActionController`を継承したクラス内での`env`を使用して、rack の`env`へのアクセスが非推奨となりました。
+`ActionController`を継承したクラス内での`env`を使用して、Rackの`env`へのアクセスが非推奨となりました。
 
 #### envの直接参照が非推奨 - 対応方法
 
@@ -202,13 +202,13 @@ end
 
 のようにJSONパーサを定義（代入）するようにしましょう。
 
-### ActiveRecord::Migrationにバーション指定が追加
+### `ActiveRecord::Migration`にバーション指定が追加
 
 `ActiveRecord::Migration`にバージョンの指定が必要になりました。
 
 production環境では過去のマイグレーションファイルにバーションが指定されていなくても問題ないのですが、CIでのテストなど、データベースがリセットされており、都度マイグレーションを走らせると警告が出てしまいます。
 
-#### ActiveRecord::Migrationにバーション指定が追加 - 対応方法
+#### `ActiveRecord::Migration`にバーション指定が追加 - 対応方法
 
 すでに存在するマイグレーションファイルの`ActiveRecord::Migration`を`ActiveRecord::Migration[4.2]`に変更しましょう。
 
@@ -230,7 +230,7 @@ production環境では、過去のマイグレーションファイルに対し�
 rails db:migrate:reset
 ```
 
-などを実行する場合 `scheme.rb` が更新されてしまいます。
+などを実行する場合`scheme.rb`が更新されてしまいます。
 
 #### jsonおよびjsonb型カラムが存在するテーブルのマイグレーション時にデフォルト値の解釈が変更 - 対応方法
 
@@ -251,7 +251,7 @@ Rubyの空ハッシュオブジェクトを、デフォルト値として設定�
 `Object.prepend`を使用するようにしましょう。
 具体的な例についてはTechscoreさんの[Ruby2.0のModule#prependは如何にしてalias_method_chainを撲滅するのか！？](http://www.techscore.com/blog/2013/01/22/ruby2-0%E3%81%AEmodule-prepend%E3%81%AF%E5%A6%82%E4%BD%95%E3%81%AB%E3%81%97%E3%81%A6alias_method_chain%E3%82%92%E6%92%B2%E6%BB%85%E3%81%99%E3%82%8B%E3%81%AE%E3%81%8B%EF%BC%81%EF%BC%9F/)に詳しく書かれています。
 
-### ActionController::TestCaseが非推奨
+### `ActionController::TestCase`が非推奨
 
 クラス名を言われても何を指しているのかピンと来ないかもしれませんが、ControllerやHTTP Requestのテストの際に、
 
@@ -267,9 +267,9 @@ end
 上記のようにテストを実現していました。
 このAPIが変更になりました。
 
-#### ActionController::TestCaseが非推奨 - 対応方法
+#### `ActionController::TestCase`が非推奨 - 対応方法
 
-`ActionDispatch::IntegrationTest` を使用しましょう。
+`ActionDispatch::IntegrationTest`を使用しましょう。
 
 具体的には、
 
@@ -304,10 +304,10 @@ end
 
 クラス名をオブジェクトの状態で渡しましょう。
 
-### ActionController::ParametersがHash継承ではなくなった
+### `ActionController::Parameters`が`Hash`継承ではなくなった
 
 `ActionController::Parameters`が`Hash`クラスの継承でなくなりました。
-入れ子になっているパラメータ（オブジェクト）も `ActionController::Parameters`オブジェクトになっています。
+入れ子になっているパラメータ（オブジェクト）も`ActionController::Parameters`オブジェクトになっています。
 
 `params.merge`は必ず引数に`Hash`オブジェクトを取るようになったため気を付ける必要があります。
 
@@ -326,9 +326,9 @@ params.permit(:title).to_h
 
 今回の変更で一番の鬼門はこの変更であると個人的に思っています。
 
-#### ActionController::ParametersがHash継承ではなくなった - 対応方法
+#### `ActionController::Parameters`が`Hash`継承ではなくなった - 対応方法
 
-`ActionController::Parameters`同士をマージする際は`Hash`オブジェクトに変換してください。
+`ActionController::Parameters`どうしをマージする際は`Hash`オブジェクトに変換してください。
 
 キーが不定なパラメータを受け取る場合は、`to_unsafe_h`というメソッドが用意されているのでこちらを使用します。
 

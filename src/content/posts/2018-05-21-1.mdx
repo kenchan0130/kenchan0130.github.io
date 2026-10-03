@@ -32,7 +32,7 @@ Webサイトを使用していると「こうできたらもっと便利なの�
 
 UserScriptはブラウザでユーザーが用意したスクリプトを実行する為のしくみ、またはそのスクリプトを指します。実態はJavaScriptです。
 
-2005年にFirefoxのユーザースクリプトマネージャーアドオン [Greasemonkey](https://addons.mozilla.org/ja/firefox/addon/greasemonkey/) が誕生し、その中で使用されているスクリプトがUserScriptでした。
+2005年にFirefoxのユーザースクリプトマネージャーアドオン[Greasemonkey](https://addons.mozilla.org/ja/firefox/addon/greasemonkey/)が誕生し、その中で使用されているスクリプトがUserScriptでした。
 そのアドオンにちなんでGreasemonkeyスクリプトと呼ばれることもあります。
 
 その後、さまざまなブラウザでユーザースクリプトマネージャーの拡張機能が作成されました。
@@ -48,11 +48,11 @@ UserScriptはブラウザでユーザーが用意したスクリプトを実行�
 
 Uまずは先人たちが作成されているUserScriptを体験してみましょう。
 
-UserScriptを探すのにオススメなのは [Greasy Fork](https://greasyfork.org/) というUserScript用のリポジトリサイトです。
+UserScriptを探すのにオススメなのは[Greasy Fork](https://greasyfork.org/)というUserScript用のリポジトリサイトです。
 
 Greasy Forkは
 
-- `@require` で呼び出すCDN等を動的に変更できないリンク先（ホワイトリスト化されている）を使用しているスクリプトを公開されている
+- `@require`で呼び出すCDN等を動的に変更できないリンク先（ホワイトリスト化されている）を使用しているスクリプトを公開されている
   - これによりセキュリティリスクが軽減される
   - 詳しくは[こちら](https://greasyfork.org/help/external-scripts)を参照
 - スクリプトのバージョン管理機能が備わっている
@@ -62,7 +62,7 @@ Greasy Forkは
 - スクリプトの説明がある
 
 が可能となっています。
-また、 [Gist](https://gist.github.com/) で **UserScript 【使いたいサービス名】** で検索するとニッチなUserScriptが見つかります。
+また、 [Gist](https://gist.github.com/)で「UserScript 【使いたいサービス名】」で検索するとニッチなUserScriptが見つかります。
 
 ## UserScriptの作成
 
@@ -83,7 +83,7 @@ UserScriptが唯一通常のJavaScriptと異なるのが、独自で定義され
 - UserScriptをどのWebサイトで実行するかを指定する
 
 などができます。
-詳しくは [Tampermonkey Documentation](http://tampermonkey.net/documentation.php) をご覧ください。
+詳しくは[Tampermonkey Documentation](http://tampermonkey.net/documentation.php)をご覧ください。
 
 さて、それでは「Gmailにおいて、送り先のドメインに応じて色を変えて警告する」UserScript用にヘッダを定義していきます。
 
@@ -103,14 +103,14 @@ UserScriptが唯一通常のJavaScriptと異なるのが、独自で定義され
 // ==/UserScript==
 ```
 
-`@include` にて、URLまたはURLの正規表現を指定することでGmailのサイトのみで実行するようにしています。
-また、 `@require` を使用してjQueryおよびgmail.jsを事前に読み込むようにしています。
+`@include`にて、URLまたはURLの正規表現を指定することでGmailのサイトのみで実行するようにしています。
+また、 `@require`を使用してjQueryおよび`gmail.js`を事前に読み込むようにしています。
 
-ここで特に重要なのは `@version` と `@downloadURL` 、 `@updateURL` です。
+ここで特に重要なのは`@version`と`@downloadURL` 、 `@updateURL`です。
 
 ブックマークレットの欠点は、作って「ハイ終わり！」になってしまうことでした。
 
-しかし、 UserScriptではスクリプトをホスティング、および変更が合った際に `@version` をインクリメントすることにより、クライアント側で手動または自動で、`@updateURL` に記載されているホスティング先のUserScriptに更新できます。
+しかし、 UserScriptではスクリプトをホスティング、および変更が合った際に`@version`をインクリメントすることにより、クライアント側で手動または自動で、`@updateURL`に記載されているホスティング先のUserScriptに更新できます。
 
 これにより継続的なメンテナンスが可能となります。
 
@@ -152,10 +152,10 @@ Gmailの旧UIおよび新UIでも動作を確認しています。
 1. 設定画面にて「新規スクリプトを追加」を押します。
 ![新規スクリプト追加](/assets/posts/post/2018-05-21-1/add_script.png)
 
-2. スクリプトをエディタ内に記載して、 `[ctrl + s]` または保存アイコンをクリックして保存を押します。
+2. スクリプトをエディタ内に記載して、 `[ctrl + s]`または保存アイコンをクリックして保存を押します。
 ![スクリプトの追加と保存](/assets/posts/post/2018-05-21-1/new_script_and_save.png)
 
-3. Gmailのサイトをリロードして結果を確認します。今回は `gmail.com` をinternalのドメインとし、internalのドメインの場合、背景もデフォルトのままにする設定したため `gmail.com` のアドレスは色が変わっていません。
+3. Gmailのサイトをリロードして結果を確認します。今回は`gmail.com`をinternalのドメインとし、internalのドメインの場合、背景もデフォルトのままにする設定したため`gmail.com`のアドレスは色が変わっていません。
 ![Gmail にスクリプトが適用された結果](/assets/posts/post/2018-05-21-1/applied_script_to_gmail.png)
 ![Gmail にスクリプトが適用された結果（ポップアップ）](/assets/posts/post/2018-05-21-1/applied_script_to_gmail_popup.png)
 

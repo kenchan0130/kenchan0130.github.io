@@ -1,6 +1,24 @@
 # See also: https://github.com/prh/rules
 version: 1
 
+imports:
+  - path: WEB+DB_PRESS.yml
+    # 技術記事では英語のUI名・製品名・識別子や日本語の語句に誤って反応するため除外する
+    ignoreRules:
+      - expected: 付け足 # 「見つけた」を誤変換する
+      - expected: ゼロから # 「2.0から」を誤変換する
+      - expected: もと$1 # 「基調」を誤変換する
+      - expected: Cookie # 「クッキング」を誤変換する
+      - expected: チェイン # Appleの用語「キーチェーン」を誤変換する
+      - expected: 割り引き # 名詞の「割引」を誤変換する
+      - expected: セッション # 「Session Manager」などの製品名
+      - expected: ディスク # 「Full Disk Encryption」などのUI名
+      - expected: パス # 「Binary Path」などのUI名
+      - expected: マスター # 「master」ブランチ
+      - expected: ハッシュ # Rubyの「Hash」クラス
+      - expected: エンティティ # 「Entity ID」などのUI名
+      - expected: 接頭辞 # 一般的な技術用語の「プレフィックス」
+
 rules:
   - pattern: /(紐|ひも)[付づず]/
     expected: 紐付
