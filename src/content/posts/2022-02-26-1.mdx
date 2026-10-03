@@ -57,7 +57,7 @@ enabled  active  teamID  bundleID (version)  name  [state]
 `systemextensionsctl`の`list`サブコマンドでSystem Extensionの状態を確認できました。
 より詳細の情報を確認したい場合は、`/Library/SystemExtensions/db.plist`を参照することで確認できます。
 
-このファイルには、
+このファイルには、次の情報が保存されています。
 
 * ポリシーによって、どのSystem Extensionが有効化されているか
   * `developerMode`キーが該当
@@ -65,8 +65,6 @@ enabled  active  teamID  bundleID (version)  name  [state]
   * `extensionPolicies`キーが該当
 * OSが認識しているSystem Extensionの詳細情報
   * `extensions`キーが該当
-
-の情報が保存されています。
 
 ```sh
 $ plutil -convert xml1 -o - /Library/SystemExtensions/db.plist
@@ -345,11 +343,11 @@ System Extensionの許可に関しては以下の3つの方法が用意されて
 
 ## 終わりに
 
-管理されているmacOSでは、EDRやAVといったソフトウェアが導入されることが多いと思います。
+管理されているmacOSでは、EDRやAVといったソフトウェアを導入することが多いと思います。
 そのほとんどがSystem Extensionを使用しているため、それをきっかけにSystem Extensionを管理したいと考える方もいると思います。
 
-私も最初はバグにも悩まされ、どのようにしたら期待通りに機能するかがわかりませんでした。
-System Extensionに関してはJamfのサポートに問い合わせても、なかなか良い回答が得られなかった経験があるため、困っている方の一助になれば幸いです。
+私も最初はバグにも悩まされ、どのようにしたら期待どおり機能するかがわかりませんでした。
+System Extensionに関してはJamfのサポートに問い合わせても、なかなか良い回答を得られなかった経験があるため、困っている方の一助になれば幸いです。
 
 ちなみに、EDRやAVといったソフトウェアはSystem Extension以外にも、ファイルスキャンのためすべてのファイルのアクセスを行うため、合わせてPPPCの設定をする場合があります。
 System ExtensionとPPPCを混同しがちなのでご注意ください。

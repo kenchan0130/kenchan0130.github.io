@@ -45,7 +45,7 @@ GUIの操作であるため、直感的でわかりやすく、ほとんどの�
 「アプリの登録」は、Azure ADに登録するSaaSなどのサービスプロバイダがMicrosoft Graph APIで要求するリソースへのアクセス管理や、サービスプロバイダがアプリケーションにアクセスするためのトークンを発行する方法などを定義します。
 Azure ADでは**アプリケーションオブジェクト**と呼ばれ、後述のサービスプリンシパルオブジェクトのひな型となります。
 
-「エンタープライズアプリケーション」は、SaaSアプリケーションのSAMLによるSSOやユーザーやグループのプロビジョニング、Azure ADのユーザーやグループのアサインなどが設定できます。
+「エンタープライズアプリケーション」は、SaaSアプリケーションのSAMLによるSSO、ユーザーおよびグループのプロビジョニング、Azure ADのユーザーやグループのアサインなどが設定できます。
 エンタープライズアプリケーションで一覧化されているオブジェクトは、Azure ADでは**サービスプリンシパルオブジェクト**と呼ばれます。
 
 アプリケーションオブジェクトだけでは何も機能せず、実際にサービスプロバイダと認証情報のやりとりをするのがサービスプリンシパルオブジェクトです。
@@ -56,12 +56,10 @@ Azure ADでは**アプリケーションオブジェクト**と呼ばれ、後�
 
 ## Terraformでアプリケーションを管理
 
-今回は、アプリケーション管理で特に多く使用される、
+今回は、アプリケーション管理で特に多く使用される次の2つのユースケースをTerraformでコード管理してみます。
 
 * サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証
 * サービスプロバイダがAzure ADをIdPとしてOIDCを使用して認証
-
-の2つのユースケースをTerraformでコード管理してみます。
 
 どちらのケースでも以下のように、Azure ADのプロバイダの設定をする必要があります。
 
@@ -349,7 +347,7 @@ resource "azuread_app_role_assignment" "jamf_pro" {
 
 今回特にロールは定義しておらず、サービスプロバイダにログインできる人を制限したいだけですので、デフォルトロールを使用してサービスプリンシパルオブジェクトとユーザーオブジェクトの紐付けを行っています。
 
-往々にして、サービスプリンシパルオブジェクトには複数のユーザーおよびグループオブジェクトを紐付けたくなります。そのため、今回は`for_each`を使用して複数のユーザーおよびグループオブジェクトを紐付けれるようにしてみました。
+往々にして、サービスプリンシパルオブジェクトには複数のユーザーおよびグループオブジェクトを紐付けたくなります。そのため、今回は`for_each`を使用して複数のユーザーやグループオブジェクトを紐付けられるようにしてみました。
 
 ### SAMLの構成に伴うazuread_service_principal_token_signing_certificateリソース
 
@@ -389,7 +387,8 @@ SHELL
 }
 ```
 
-[time_rotating](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/rotating)リソースと[timeadd](https://developer.hashicorp.com/terraform/language/functions/timeadd)関数を使用することで、`azuread_service_principal_token_signing_certificate`リソースの`end_time`を**3年**として登録し、terraformをapplyして**2年**以降に再度terraformをapplyすると証明書の更新が自動で実行されるようにしています。
+[time_rotating](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/rotating)リソースと[timeadd](https://developer.hashicorp.com/terraform/language/functions/timeadd)関数を使用し、`azuread_service_principal_token_signing_certificate`リソースの`end_time`を**3年**として登録しています。
+これにより、terraformをapplyして**2年**以降に再度terraformをapplyすると、証明書の更新が自動で実行されます。
 
 署名証明書が自動で更新されたくない場合は、`time_rotating`リソースは使わずに、`end_date`をベタ書きで指定、または何も指定しない（デフォルトでは3年）ことで対応可能です。
 
@@ -578,15 +577,14 @@ resource "azuread_application" "oidc_app" {
 
 今回のサービスプロバイダはOIDCのハイブリッド フローを有効化するように求められているため、`implicit_grant`ブロックの`id_token_issuance_enabled`を有効にしています。
 
-また、サービスプロバイダはスコープとして、
+また、サービスプロバイダはスコープとして次を要求しています。
 
 * `openid`
 * `profile`
 * `offline_access`
 * `https://graph.microsoft.com/mail.read`
 
-を要求しています。
-これらのアクセス許可を定義するため、`required_resource_access`ブロックでMicrosoft Graph APIで定義されているスコープを許可しています。
+これらのアクセス許可を定義するため、`required_resource_access`ブロックでMicrosoft Graph APIが定義しているスコープを許可しています。
 
 Microsoft Graph APIではUUIDでスコープを定義しますが、UUIDが扱いづらいため、Azure ADのTerraformプロバイダにはこれらをうまく参照するためのデータソースが用意されています。
 
@@ -691,14 +689,14 @@ resource "azuread_service_principal_delegated_permission_grant" "oidc_app" {
 }
 ```
 
-今回のサービスプロバイダはスコープとして、
+今回のサービスプロバイダはスコープとして次を要求しています。
 
 * `openid`
 * `profile`
 * `offline_access`
 * `https://graph.microsoft.com/mail.read`
 
-を要求しており、`azuread_application`リソースの`required_resource_access`でAPIアクセスの許可を定義していました。
+そのため、`azuread_application`リソースの`required_resource_access`でAPIアクセスの許可を定義していました。
 
 しかし、実際にこのスコープにアクセスするには、アプリケーションオブジェクトではなく、サービスプリンシパルオブジェクトごとに管理者の同意が必要です。
 
@@ -748,21 +746,19 @@ resource "azuread_service_principal_claims_mapping_policy_assignment" "jamf_pro"
 
 ![Azure PortalにおけるSAMLの属性とクレームの変更画面](/assets/posts/post/2022-12-26-1/saml_attributes_and_claims_at_azure_portal.png)
 
-[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/active-directory-claims-mapping)にも、
+[公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/active-directory-claims-mapping)にも、次のように記載されています。
 
 > これは、Azure portal で提供しているクレームのカスタマイズの後継機能です。 同一のアプリケーションに対し、このドキュメントで詳述する Microsoft Graph または Powershell を利用した方法に加えて、Azure portal でもクレームをカスタマイズした場合、そのアプリケーションのトークンでは、Azure portal での構成は無視されます。 このドキュメントで詳しく説明した方法で行った構成は、ポータルには反映されません。
 
-と記載されており、仕様のようです。
+これは仕様のようです。
 
-この仕様は場合によっては運用上支障が出る可能性があるため、注意が必要です。
+この仕様は場合によっては運用上の支障となる可能性があるため、注意が必要です。
 
 ## 終わりに
 
-今回はTerraformを使用して、
+今回はTerraformを使用して、次の構築例を紹介しました。
 
 * サービスプロバイダがAzure ADをIdPとしてSAMLを使用して認証
 * サービスプロバイダがAzure ADをIdPとしてOIDCを使用して認証
-
-の構築例を紹介しました。
 
 これは最低限の設定であったため、そのほかにも設定したい項目がある場合は[Terraformのプロバイダの公式ドキュメント](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs)や[Microsoft Graphの公式ドキュメント](https://learn.microsoft.com/ja-jp/graph/api/resources/azure-ad-overview)を参考に対応してみると良いと思います。

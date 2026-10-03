@@ -16,7 +16,7 @@ references: []
 draft: false 
 ---
 
-これまで、管理下にあるmacOSに最新バーションのアプリケーションをインストールするスクリプトである、[Installomator](https://github.com/Installomator/Installomator)に関していくつか記事を投稿してきました。
+これまで、管理下のmacOSへ最新バーションのアプリケーションをインストールするスクリプトである、[Installomator](https://github.com/Installomator/Installomator)に関していくつか記事を投稿してきました。
 
 * [Jamf ProとInstallomatorで常に最新のアプリケーションを配布する](/post/2020-10-12-1)
 * [Installomatorのパラメータの紹介](/post/2024-12-09-1)
@@ -134,7 +134,7 @@ Installomatorでサポートされていないアプリケーションをイン�
 
 この記事が皆さんのお役に立てば幸いです。
 
-ちなみに、署名していないアプリケーションはインストールする方法はないのか？という声も聞こえてきそうですが、Installomatorではセキュリティ上のリスクがあるため、サポートされていません。[^label-without-teamid]
+ちなみに、署名していないアプリケーションをインストールする方法はないのか？という声も聞こえてきそうですが、Installomatorではセキュリティ上のリスクがあるため、サポートされていません。[^label-without-teamid]
 しかし、どうしてもインストールしたい場合は、署名されていないアプリケーションをインストールするリスクを正しく理解して、`installAppWithPath`関数内のTeamIDに関するロジックを独自に変更することで実現ができるでしょう。
 
 [^label-without-teamid]: セキュリティ上の懸念からTeamIDを要求することに決定したことが[コメント](https://github.com/Installomator/Installomator/issues/595#issuecomment-1167910667)されています。

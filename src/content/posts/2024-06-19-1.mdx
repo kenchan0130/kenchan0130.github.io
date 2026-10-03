@@ -41,7 +41,7 @@ draft: false
 
 ### Managed Apple Account（旧Managed Apple ID）のドメイン制限
 
-![What's new in device managementのセッションで発表された、Apple Business Manager/Apple School ManagerにおけるManaged Apple Account（旧Managed Apple ID）のドメイン制限について](/assets/posts/post/2024-06-19-1/domain_capture.png)
+![What's new in device managementで発表された、Apple Business Manager/Apple School ManagerにおけるManaged Apple Account（旧Managed Apple ID）のドメイン制限について](/assets/posts/post/2024-06-19-1/domain_capture.png)
 
 組織のドメインでManaged Apple Accountを展開した場合においても、エンドユーザーが個人のApple Accountを組織のドメインで作成できてしまいました。ただし、IdPのFederationを有効化する場合にのみエンドユーザーが個人のApple Accountを組織のドメインで作成できなくする方法はありました。
 
@@ -65,7 +65,7 @@ iOS/iPadOS 18、およびmacOS 15 Sequoiaから、Apple IntelligenceがOSに標�
 
 セットアップアシスタントにおいても、Apple Intelligenceに関する項目が追加されるため、この項目をスキップするように構成できます。
 
-また、iOS/iPadOS 18に関しては読み上げなどで使用されるボイス選択の項目もスキップも可能になります。
+また、iOS/iPadOS 18に関しては読み上げなどで使用されるボイス選択の項目のスキップも可能になります。
 
 ### ベータプログラムへのアップデート管理
 
@@ -78,7 +78,7 @@ Apple School Manager/Apple Business Managerの管理者ロールを持つユー�
 
 ### 自動デバイス登録におけるベータプログラムの選択
 
-![What's new in device managementのセッションで発表された、Apple Business Manager/Apple School Managerにおける自動デバイス登録におけるベータプログラムの選択について](/assets/posts/post/2024-06-19-1/manage_beta_updates_in_setup_assistant.png)
+![What's new in device managementのセッションで発表された、Apple Business Manager/Apple School Managerの自動デバイス登録におけるベータプログラムの選択について](/assets/posts/post/2024-06-19-1/manage_beta_updates_in_setup_assistant.png)
 
 iOS/iPadOS 17.5、およびmacOS 14.5以降では、自動デバイス登録におけるセットアップアシスタント中にベータプログラムを設定できます。
 
@@ -135,7 +135,7 @@ iOS/iPadOS、およびmacOSのSafariの拡張機能が管理できます。
 また、管理下にあるアプリケーションについては、アプリケーションごとにロックと非表示を制御できます。
 
 アプリケーションを非表示にすると、アプリケーションは合わせてロックされます。
-そのため、アプリケーションのロックを制限すると、アプリケーションの非表示も制限される挙動になる点に注意するようにアナウンスされていました。
+そのため、アプリケーションのロックを制限すると、アプリケーションの非表示も制限される挙動となるため注意するよう、アナウンスされていました。
 
 ### 盗難デバイスの保護
 
@@ -164,13 +164,13 @@ iOS 17.4からはセキュリティ遅延を発生させる対象として以下
 * Exchangeアカウントを手動で追加
 * パスコードやExchangeペイロードの手動インストール
 
-iOS 18では、盗難デバイスの保護が有効になってから最初の3時間内に新しくセットアップされたデバイスでMDMに登録する場合、セキュリティ遅延が発生しない特別な例外が追加されます。
+iOS 18では、盗難デバイスの保護が有効になってから最初の3時間内に新しくセットアップされたデバイスでMDMに登録する場合、セキュリティ遅延の発生しない特別な例外が追加されます。
 
 ### in-houseアプリケーションの信頼
 
 ![What's new in device managementのセッションで発表された、iOS/iPadOSのin-houseアプリケーションの信頼について](/assets/posts/post/2024-06-19-1/trust_in_house_apps.png)
 
-iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して独自の社内アプリケーション（in-houseアプリケーション）をインストールするには、「設定」でチームIDを信頼することに加えて、再起動が必要になります。チームIDごとに、1回のデバイスの再起動が必要です。
+iOS/iPad OS 18から、MDMを使用せずに新しいチームIDを使用して独自の社内アプリケーション（in-houseアプリケーション）をインストールするには、「設定」でチームIDを信頼することに加えて、再起動が必要になります。チームIDごとに、1回のデバイスの再起動が必要です。
 
 ## macOSに関するアップデート
 
@@ -240,7 +240,7 @@ iOS/iPad OS 18から、MDMを使用せず、新しいチームIDを使用して�
 
 IdPの認証を用いてFileVaultのロック解除が可能となります。
 
-具体的には、Platform SSOのFileVaultポリシー（`FileVaultPolicy`）に`AttemptAuthentication`を設定することで、先に進む前にIdPの認証が試行されます。
+具体的には、Platform SSOのFileVaultポリシー（`FileVaultPolicy`）で`AttemptAuthentication`を設定すると、先へ進む前にIdPの認証が試行されます。
 
 ```xml
 <!-- com.apple.extensiblesso -->
@@ -253,7 +253,7 @@ IdPの認証を用いてFileVaultのロック解除が可能となります。
 </dict>
 ```
 
-もしIdPのサーバーが利用できない場合は、ユーザーが提供したクレデンシャルが正しい場合でもログインが可能なようにフォールバックされます。
+もしIdPのサーバーを利用できない場合は、ユーザーの提供したクレデンシャルが正しければログインできるようにフォールバックされます。
 
 また、ログインウィンドウやロック画面でもIdPの認証を用いるように構成できます。
 具体的には、Platform SSOのロック解除のポリシー（`UnlockPolicy`）やログインウィンドウポリシー（`LoginPolicy`）に`RequireAuthentication`を設定することでIdPの認証が要求されます。
@@ -277,7 +277,7 @@ IdPの認証を用いてFileVaultのロック解除が可能となります。
 </dict>
 ```
 
-さらに、HPKE[^hpke]を含む、より強力なセキュリティオプションが追加される旨が発表されていましたが、具体的に具体的なユースケースや設定方法などは示されていませんでした。
+さらに、HPKE[^hpke]を含む、より強力なセキュリティオプションの追加が発表されていましたが、具体的なユースケースや設定方法などは示されていませんでした。
 
 [^hpke]: HPKE (Hybrid Public Key Encryption)は公開鍵暗号方式と共通鍵暗号方式を組み合わせて任意の平文を暗号化するための、汎用的な枠組みとして[RFC 9180](https://www.rfc-editor.org/rfc/rfc9180.html)で定義されている
 
