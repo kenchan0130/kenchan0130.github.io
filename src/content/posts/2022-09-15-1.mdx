@@ -19,46 +19,41 @@ draft: false
 ---
 
 IdPを介してMacにログインできるツールとしては、Jamf社が開発している[Jamf Connect](https://www.jamf.com/ja/products/jamf-connect/)が有名です。
-しかし、Jamf Connectは有償であり、追加でJamf Connect用のJumpStartの費用がかかり、最小スロットが25ライセンスからであるため、導入のハードルが高い場合があります。
+しかし、Jamf Connectは有償であり、追加でJamf Connect用のJumpStartの費用もかかります。また、最小スロットは25ライセンスからであるため、導入のハードルが高くなることもあります。
 
 今回は、IdPを介してMacにログインできるXCredsを検証してみました。
 
 ## XCredsとは
 
 [XCreds](https://twocanoes.com/products/mac/xcreds/)とは[Twocanoes Software](https://twocanoes.com/)社が[オープンソースソフトウェア（OSS）として開発](https://github.com/twocanoes/xcreds)している、IdPを介してMacにログインできるツールです。
-XCredsは、
+XCredsは、次の2つのコンポーネントで構成されています。
 
 * XCreds Login
 * XCredsアプリケーション
 
-の2つのコンポーネントで構成されています。
-
-執筆現在、
+執筆現在、次のIdPおよび任意のOIDCをサポートするIdPで使用可能です。
 
 * Azure Active Directory
 * Google Workspace
 * Okta
 
-および、任意のOIDCをサポートするIdPで使用可能です。
-
-また、IdP側の認証が、
+また、IdP側の認証が次の場合のみサポートしています。
 
 * パスワード認証
 * パスワード認証および多要素認証
 
-である場合のみサポートしています。セキュリティキーなどのパスワードレス認証はサポートしていません。
+セキュリティキーなどのパスワードレス認証はサポートしていません。
 
 ### XCreds Login
 
 XCreds Loginは既存のmacOSのログインウィンドウを、IdPのWebViewを介した認証画面に切り替える、セキュリティエージェントです。
 
-認証が完了すると、OIDCのレスポンスから取得できる、
+認証が完了すると、OIDCのレスポンスから取得できる次のトークンと、IdPの認証に使用したパスワードをそれぞれKeychainに保存します。
 
 * アクセストークン
 * IDトークン
 * リフレッシュトークン
 
-および、IdPの認証に使用したパスワードをそれぞれKeychainに保存します。
 XCredsでは、これらを合わせてXCredsトークンと呼びます。
 
 また、macOSのローカルパスワードとIdPのパスワードが異なっていた場合は、MacのローカルパスワードをIdPのパスワードに変更します。
@@ -72,18 +67,16 @@ XCredsアプリケーションは、IdPのパスワードとローカルパス�
 
 もしIdP側でパスワードの変更などにより、トークンが無効になっていた場合は、WebViewを介しがIdPの認証画面が表示されます。
 
-認証に成功すると、XCreds Loginと同様にXCredsトークン、つまり、
+認証に成功すると、XCreds Loginと同様にXCredsトークン、つまり次の情報がKeychainに保存されます。
 
 * IdPのパスワード
 * アクセストークン
 * IDトークン
 * リフレッシュトークン
 
-がKeychainに保存されます。
-
 また、macOSのローカルパスワードとIdPのパスワードが異なっていた場合は、MacのローカルパスワードをIdPのパスワードに変更します。
 
-XCredsアプリケーションはユーザーがログインウィンドウにログインした際に起動するように設定することが推奨されています。
+XCredsアプリケーションは、ログインウィンドウでのユーザーのログイン時に起動するよう設定することが推奨されています。
 
 ## 代替ツールとの比較
 
@@ -131,11 +124,11 @@ Microsoft Azure Portalにアクセスして設定します。
     ![Azure Portalのアプリの登録一覧](/assets/posts/post/2022-09-15-1/index_app_registration_at_azure_portal.png)
 
 1. リダイレクトURIと任意のアプリケーション名を設定し、[登録]をクリックします。
-    * **名前**: `XCreds`
+    * 「名前」: `XCreds`
       * 名前は任意の文字列で可
-    * **サポートされているアカウントの種類**: `この組織ディレクトリのみに含まれるアカウント（xxxxxのディレクトリのみ - シングルテナント）`
+    * 「サポートされているアカウントの種類」: `この組織ディレクトリのみに含まれるアカウント（xxxxxのディレクトリのみ - シングルテナント）`
       * ユースケースに合わせて設定
-    * **リダイレクトURI**: `xcreds://auth/`
+    * 「リダイレクトURI」: `xcreds://auth/`
       * 「パブリッククライアント/ネイティブ（モバイルとデスクトップ）」として登録
 
     ![Azure Portalのアプリの登録の新規登録](/assets/posts/post/2022-09-15-1/app_creation_app_registration_at_azure_portal.png)
@@ -161,7 +154,7 @@ Microsoft Azure Portalにアクセスして設定します。
 
 #### XCredsへのログイン許可
 
-アプリケーションにログインできるように、ユーザーまたはまたはグループにアクセス権限を付与します。
+アプリケーションにログインできるように、ユーザーまたはグループにアクセス権限を付与します。
 
 1. [Azureサービス] > [エンタープライズアプリケーション] > [XCreds（アプリの登録で登録した名前）]をクリックします。
 
@@ -193,10 +186,10 @@ Jamf Proサーバーにアクセスして設定します。
 
 1. [コンピュータ] > [構成プロファイル] > [新規]をクリックします。
 1. [一般]の項目を選択し、各項目を設定します。
-    * **名前**: `XCreds`
+    * 「名前」: `XCreds`
       * 名前は任意の文字列で可
-    * **レベル**: `Computer Level`
-    * **配布方法**: `Install Automatically`
+    * 「レベル」: `Computer Level`
+    * 「配布方法」: `Install Automatically`
     * 説明、サイト、カテゴリは任意
 
     ![Jamf ProにおけるXCredsの構成プロファイルの一般設定](/assets/posts/post/2022-09-15-1/xcreds_configration_profile_general_at_jamf_pro.png)
@@ -207,8 +200,8 @@ Jamf Proサーバーにアクセスして設定します。
     ![Jamf ProにおけるXCredsの構成プロファイルのログイン項目設定](/assets/posts/post/2022-09-15-1/xcreds_configration_profile_login_items_at_jamf_pro.png)
 
 1. [アプリケーションとカスタム設定] > [外部アプリケーション] > [追加]から[ソース]と[環境設定ドメイン]を設定し、[スキーマ追加]をクリックします。
-    * **ソース**: `カスタムスキーマ`
-    * **環境設定ドメイン**: `com.twocanoes.xcreds`
+    * 「ソース」: `カスタムスキーマ`
+    * 「環境設定ドメイン」: `com.twocanoes.xcreds`
 
     ![Jamf ProにおけるXCredsの構成プロファイルのアプリケーションとカスタム設定の外部アプリケーション設定](/assets/posts/post/2022-09-15-1/xcreds_configration_profile_application_and_custom_settings_external_application_at_jamf_pro.png)
 
@@ -217,16 +210,16 @@ Jamf Proサーバーにアクセスして設定します。
     ![Jamf ProにおけるXCredsの構成プロファイルのアプリケーションとカスタム設定の外部アプリケーション設定におけるカスタムスキーマの追加](/assets/posts/post/2022-09-15-1/xcreds_configration_profile_application_and_custom_settings_external_application_custom_schema_at_jamf_pro.png)
 
 1. [環境設定ドメインのプロパティ]の[Add/Remove properties]から必要およびカスタムしたい項目を選択し、値を設定します。
-    * **Client ID**: `Azure ADで取得した[アプリケーション（クライアント）ID]`
-    * **Client Secret**: `Azure ADで発行したシークレット`
-    * **Discovery URL**: `https://login.microsoftonline.com/<Azure ADで取得した[ディレクトリ（テナント）ID]>/.well-known/openid-configuration`
-    * **Scopes**: `profile openid offline_access`
+    * 「Client ID」: `Azure ADで取得した[アプリケーション（クライアント）ID]`
+    * 「Client Secret」: `Azure ADで発行したシークレット`
+    * 「Discovery URL」: `https://login.microsoftonline.com/<Azure ADで取得した[ディレクトリ（テナント）ID]>/.well-known/openid-configuration`
+    * 「Scopes」: `profile openid offline_access`
       * OIDCの認証時に必要なクレームを設定できる
-    * **Show Support Status Message**: `false`
+    * 「Show Support Status Message」: `false`
       * 設定は任意
       * WebViewのログイン画面を表示する際にXCredsのサポートを訴求するメッセージを表示される
       * 今回は特に必要ないため非表示にしている
-    * **Enable Full Disk Encryption (FED)**: `true`
+    * 「Enable Full Disk Encryption (FED)」: `true`
       * 設定は任意
       * ユーザーが初めてログインしたタイミングで、FileVaultの暗号化が実行される
 
@@ -244,23 +237,23 @@ Jamf Proサーバーにアクセスして設定します。
 
 1. [コンピュータ] > [構成プロファイル] > [新規]をクリックします。
 1. [一般]の項目を選択し、各項目を設定します。
-    * **名前**: `FileVault`
+    * 「名前」: `FileVault`
       * 名前は任意の文字列で可
-    * **レベル**: `Computer Level`
-    * **配布方法**: `Install Automatically`
+    * 「レベル」: `Computer Level`
+    * 「配布方法」: `Install Automatically`
     * 説明、サイト、カテゴリは任意
 
     ![Jamf ProにおけるFileVaultの構成プロファイルの一般設定](/assets/posts/post/2022-09-15-1/file_vault_configration_profile_general_at_jamf_pro.png)
 
 1. [セキュリティとプライバシー] > [FileVault]をクリックして各項目を設定します。
-    * **FileVault オプションのユーザによる変更**: `[FileVaultの無効化を防止]としてトグルをON`
+    * **FileVault オプションのユーザによる変更**は`[FileVaultの無効化を防止]としてトグルをON`
       * 設定は任意
       * 特別な理由がない限りは、FileVaultを無効化させる必要はない
-    * **ユーザに休止状態からの復帰後 FileVault の解除を要求**: `[有効]としてトグルをON`
+    * **ユーザに休止状態からの復帰後 FileVault の解除を要求**は`[有効]としてトグルをON`
       * 設定は任意
-    * **個人所有のリカバリキーのエスクロー**: `トグルをON`
-      * **暗号化の方法**: `リカバリーキーを自動的に暗号化/復号`
-      * **エスクローの場所の説明**: `Jamf Pro`
+    * 「個人所有のリカバリキーのエスクロー」: `トグルをON`
+      * 「暗号化の方法」: `リカバリーキーを自動的に暗号化/復号`
+      * 「エスクローの場所の説明」: `Jamf Pro`
         * 任意の文字列
 
     ![Jamf ProにおけるFileVaultの構成プロファイルのセキュリティとプライバシーのFileVault設定](/assets/posts/post/2022-09-15-1/file_vault_configration_profile_security_and_privacy_file_vault_at_jamf_pro.png)
@@ -272,7 +265,7 @@ Jamf Proサーバーにアクセスして設定します。
 XCredsのプロファイル側でもFileVaultを有効化しましたが、別途FileVaultのプロファイル設定が必要なのには2つの理由があります。
 
 1. XCredsの`Save PRK`とJamf Proとの相性が良くない
-    * `Save PRK`はMDMのエクスローサービスがパーソナルリカバリーキーを収集できるように、デフォルトでは`/var/db/FDE/FDESetup.plist`に情報を保存するが、Jamfエージェントはそのファイルを読み込まないため、Jamf Proサーバーにパーソナルリカバリーが収集されない
+    * `Save PRK`はMDMのエクスローサービスがパーソナルリカバリーキーを収集できるように、デフォルトでは`/var/db/FDE/FDESetup.plist`に情報を保存する。しかし、Jamfエージェントはそのファイルを読み込まないため、Jamf Proサーバーにパーソナルリカバリーが収集されない
 1. MDMのAPI（構成プロファイル）でログイン時にFileVaultを有効化すると、XCredsの処理と競合してしまう
     * FileVaultの有効化のポップアップが表示されてしまい、XCredsがログインウィンドウへのログイン処理が実行できずにログインが失敗したと認識されてしまう
     * FileVaultの有効化のポップアップをログアウト後にすることで、XCredsの設定側ではFileVaultの設定をしないことも可能だが、ログアウト後にFileVaultを有効化する場合、強制終了やエンドユーザーのライフサイクルを考慮しないといけないため、あまり推奨されない
@@ -281,19 +274,19 @@ XCredsのプロファイル側でもFileVaultを有効化しましたが、別�
 
 1. [コンピュータ] > [Prestage Enrollments] > [新規]をクリックします。
 1. [一般]から各値を設定します。
-    * **表示名**: `kenchan0130 HQ`
+    * 「表示名」: `kenchan0130 HQ`
       * 任意の文字列
-    * **設定アシスタントオプション**: `[プライバシー]をアンチェック`
-      * [設定アシスタントによる自動アドバンス]や[設定アシスタントオプション]をすべてチェックしてしまうと、XCredsのパッケージがログインウィンドウに到達する前に展開されない可能性があるため、**何かしら設定アシスタントの項目を残しておくことが推奨される**
+    * 「設定アシスタントオプション」: `[プライバシー]をアンチェック`
+      * [設定アシスタントによる自動アドバンス]や[設定アシスタントオプション]をすべてチェックしてしまうと、XCredsのパッケージがログインウィンドウへ到達する前に展開されない可能性があるため、**何かしら設定アシスタントの項目を残しておくことが推奨される**
 
     ![Jamf ProにおけるPreStage Enrollmentsの一般設定](/assets/posts/post/2022-09-15-1/pre_stage_enrollments_general_at_jamf_pro.png)
 
 1. [アカウント設定] > [構成]をクリックして、各値を設定します。
-    * **セットアップアシスタントの前にローカル管理者アカウントを作成する**: `有効`
-      * **ユーザー名**: `kenchan0130admin`
+    * 「セットアップアシスタントの前にローカル管理者アカウントを作成する」: `有効`
+      * 「ユーザー名」: `kenchan0130admin`
         * 任意の文字列
       * **パスワード**、 **パスワードの確認**: `任意のパスワード`
-      * **ローカルアカウントユーザータイプ**: `アカウントの作成をスキップ`
+      * 「ローカルアカウントユーザータイプ」: `アカウントの作成をスキップ`
         * XCredsがアカウントを作成するためスキップしておく必要がある
 
     ![Jamf ProにおけるPreStage Enrollmentsのアカウント設定](/assets/posts/post/2022-09-15-1/pre_stage_enrollments_account_settings_at_jamf_pro.png)
@@ -317,15 +310,13 @@ XCredsのプロファイル側でもFileVaultを有効化しましたが、別�
 
 初期化状態のMacを起動して確認していきます。
 
-最初は、
+最初は、次の画面が順に表示されるため、指示に従い設定します。
 
 1. 言語
 1. 国または地域
 1. 文字入力および音声入力
 1. アクセシビリティ
 1. ネットワーク
-
-が順に表示されるため、指示に従い、設定します。
 
 1. リモートマネジメントの表示を確認して[続ける]をクリックします。
 
@@ -387,10 +378,10 @@ XCredsについて解説するとともに、ゼロタッチデプロイにお�
 
 XCredsはIdPを介してMacにログインするための最低限の機能を有していることがわかりました。
 
-ただ、Jamf Connectは有償なだけあり、[リリースノート](https://docs.jamf.com/jamf-connect/2.15.0/documentation/Release_History.html)などを見る限り、高機能かつ、UXも洗練されているように見受けられるという印象を受けます。
+ただ、Jamf Connectは有償なだけあり、[リリースノート](https://docs.jamf.com/jamf-connect/2.15.0/documentation/Release_History.html)などを見る限り、高機能かつUXも洗練されているように見受けられます。
 
 また、macOS Venturaから導入予定のPlatform Single Sign-onとも競合する可能性があります。
-お使いのIdPが[Platform Single Sign-on](/post/2022-08-18-1#platform-single-sign-on)をサポートする場合は、そちらを使用するのが良い可能性があります。
+お使いのIdPが[Platform Single Sign-on](/post/2022-08-18-1#platform-single-sign-on)をサポートする場合は、そちらを使用したほうが良いかもしれません。
 ただ、もしIdPのサポートが実施されない、またはサポートに時間がかかる場合は、XCredsが引き続き有効な手段となると思いました。
 
 XCredsやJamf Connect（おそらくPlatform Single Sign-onも）すべてに言えることですが、これらを導入してもFileVaultの解除がパスワードおよびリカバリーキーのみしかサポートしていないため、パスワードレスになるわけではありません。

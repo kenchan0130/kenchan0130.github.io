@@ -46,7 +46,7 @@ macOSやLinuxを使用している場合、わざわざWindows環境を用意す
 
 また、GitHub
 ActionsなどのCI/CDサービスでは、Windowsランナーの実行コストがLinuxランナーと比較して2〜3倍高くなることが一般的です。
-そのため、公式ツールをCI/CDに組み込むと、ビルドコストが大幅に増加してしまうという課題もありました。
+そのため、公式ツールをCI/CDに組み込むと、ビルドコストが増加してしまうという課題もありました。
 
 ### intunewinファイルの解凍ができない
 
@@ -68,7 +68,7 @@ ActionsなどのCI/CDサービスでは、Windowsランナーの実行コスト�
 $ intunewin pack <ソースフォルダ> <出力ファイル.intunewin>
 ```
 
-実行例：
+実行例は次のとおりです。
 
 ```sh
 $ intunewin pack ./myapp ./dist/myapp.intunewin
@@ -84,7 +84,7 @@ Successfully created ./dist/myapp.intunewin
 $ intunewin unpack <入力ファイル.intunewin> <出力フォルダ>
 ```
 
-実行例：
+実行例は次のとおりです。
 
 ```sh
 $ intunewin unpack myapp.intunewin ./extracted
@@ -195,7 +195,7 @@ IntuneWinPackage/
 </ApplicationInfo>
 ```
 
-主要な項目の説明：
+主要な項目の説明は次のとおりです。
 
 - `EncryptionKey`: コンテンツの暗号化に使用される256ビット（32バイト）のAES鍵
 - `MacKey`: 改ざん検証用のHMAC-SHA256に使用される256ビット（32バイト）の鍵
@@ -266,7 +266,7 @@ func Encrypt(input io.Reader, output io.Writer, encryptionKey, macKey, iv []byte
 }
 ```
 
-PKCS7パディングの実装：
+PKCS7パディングの実装は次のとおりです。
 
 ```go
 func pkcs7Pad(data []byte, blockSize int) []byte {
