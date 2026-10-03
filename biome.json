@@ -12,6 +12,7 @@
       "!test-results",
       "!public/assets/posts",
       "!src/content/posts",
+      "!src/assets/d2-icons",
       "!reports"
     ]
   },
