@@ -45,7 +45,7 @@
   - 生成物確認: `pnpm verify:build`
   - E2E・アクセシビリティ: `pnpm test:e2e`
   - 全体確認: `pnpm test`
-- `pnpm lint` はコンテンツ検証と変更記事のtextlintを含むため、CIで同じ検証を重複実行しない
+- `pnpm lint` はコンテンツ検証と全記事のtextlintを含むため、CIで同じ検証を重複実行しない
 
 ## 本番サービスの識別子
 

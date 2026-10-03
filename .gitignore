@@ -5,6 +5,7 @@
 dist/
 node_modules/
 .venv/
+.claude/worktrees/
 playwright-report/
 test-results/
 *.log
