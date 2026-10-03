@@ -377,6 +377,24 @@ flowchart LR
 - 文体の統一（です・ます調）
 - 適切な句読点の使用
 - 冗長な表現の回避
+- `@textlint-ja/preset-ai-writing` で、リスト項目の太字ラベルや絵文字、誇張表現などAI生成文に多い記述パターンを検出する
+- `ai-tech-writing-guideline` は `severity` 指定が反映されずエラー扱いになり、このガイドで使う「〜する必要があります」なども検出するため無効にしている
+
+## 文章推敲スキル
+
+- 記事の執筆・推敲には `natural-japanese` スキルを使用できる
+- スキル本体は `.agents/skills/natural-japanese` に [coji/natural-japanese](https://github.com/coji/natural-japanese) の v1.5.0（`21e632661a910bf97289c501089ad11eb8b4d85f`）を配置し、`.claude/skills/natural-japanese` からシンボリックリンクしている
+- 配置したスキルのファイルは直接編集せず、更新するときはリリースタグとコミットSHAを確認して丸ごと置き換え、この項目のバージョンも更新する
+- 検査スクリプトは `uv run` での実行を前提としているが、Python 3.10以上の仮想環境に `sudachipy` と `sudachidict-core` を入れれば `uv` なしでも実行できる。技術記事では `--genre tech` を指定する
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install sudachipy sudachidict-core
+.venv/bin/python .agents/skills/natural-japanese/scripts/lint.py src/content/posts/YYYY-MM-DD-N.mdx --genre tech
+```
+
+- `uv` がない環境では、スキル内の `uv run scripts/...` を `.venv/bin/python .agents/skills/natural-japanese/scripts/...` に読み替える
+- スキルの文体憲法と、このガイドの文体（です・ます調、「〜と思います」などの表現）が異なる場合は、このガイドを優先する
 
 ## 記事作成時のチェックリスト
 
