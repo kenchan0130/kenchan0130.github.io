@@ -47,7 +47,9 @@ def main() -> None:
         unicodes.update(range(start, end + 1))
 
     for weight, name in [(400, "Regular"), (700, "Bold")]:
-        font = instancer.instantiateVariableFont(TTFont(source), {"wght": weight})
+        font = instancer.instantiateVariableFont(
+            TTFont(source), {"wght": weight}, updateFontNames=True
+        )
         options = subset.Options()
         options.layout_features = ["*"]
         options.name_IDs = ["*"]
