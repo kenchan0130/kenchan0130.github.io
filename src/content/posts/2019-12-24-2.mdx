@@ -27,7 +27,7 @@ Googleアカウントがあれば、無料で使用できます。
 前述の通り、ColaboratoryはGoogle社が提供クラウド型のJupyter Notebook環境です。
 2コアのCPUとGPU、TPUが無料で使用できます。スゴイ！
 
-動作するランタイムは、以下の4つの言語です
+動作するランタイムは、以下の4つの言語です。
 
 - Python 2
 - Python 3
@@ -74,7 +74,7 @@ R.version
 
 ![Rのバージョン情報を表示](/assets/posts/post/2019-12-24-2/run_r_print_version.png)
 
-執筆時点で最新版のRが使用できることが確認できました。
+執筆時点で最新版のRを使用できることが確認できました。
 必ず最新版とは限らないですが、ほぼ最新版が使用できるようになっているのだと思われます。
 
 ## 使用したいファイルをアップロード
@@ -119,7 +119,7 @@ financial_instruments_traders_data %>% head
 
 無事読み込めました。ここからはRの世界です。
 
-たとえば、各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数を出したいとした場合は
+たとえば、各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数を出したい場合は、次のようにすることで出力できます。
 
 ```r
 financial_instruments_traders_data %>%
@@ -127,8 +127,6 @@ financial_instruments_traders_data %>%
   mutate(第二種, 第二種 = ifelse(第二種 == "○", 1, 0)) %>%
   group_by(所管) %>% summarise(sum(第一種), sum(第二種))
 ```
-
-とすることで出力できます。
 
 ![各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数](/assets/posts/post/2019-12-24-2/summarised_group_by_shokan.png)
 

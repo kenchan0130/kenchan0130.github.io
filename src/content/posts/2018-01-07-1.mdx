@@ -19,7 +19,7 @@ Active Directoryの標準のグループポリシーを使用すると、
 今回はmacOSにおける主要なブラウザであるSafariとGoogle Chromeのブラウザにフォーカスを当てて、
 適用できるポリシーおよびその設定方法を紹介します。
 
-えっ？Firefox？Firefoxはですね。。。ポリシーの当て方が上記のブラウザとは異なり一元管理しづらいため今回は外しました。すみません。
+えっ？Firefox？Firefoxはですね…ポリシーの当て方が上記のブラウザとは異なり一元管理しづらいため今回は外しました。すみません。
 mozillaが公式に出している[日本語の資料](https://www.mozilla.jp/business/faq/tech/)があるのでそちらを参照ください。
 
 ## Safari
@@ -33,27 +33,24 @@ macOSのアプリケーションの環境設定は、アプリケーションの
 
 ### 属性の設定
 
-Safariの設定は`com.apple.Safari`および`com.apple.SafariTechnologyPreview`に入っているので、現在の設定を閲覧したい場合は、
+Safariの設定は`com.apple.Safari`および`com.apple.SafariTechnologyPreview`に入っているので、現在の設定は次のコマンドで閲覧できます。
 
 ```sh
 defaults read com.apple.Safari
 ```
 
-とすることで閲覧が可能です。
-また、設定を追加・上書きするには
+また、設定を追加・上書きするには、次のように設定します。
 
 ```sh
 defaults write com.apple.Safari ポリシー名 -型 値
 ```
-
-のように設定します。
 
 ### 各属性について
 
 項目が多いため、[CSV](/assets/posts/post/2018-01-07-1/safari_policies_ja.csv)にまとめました。
 `defaults read com.apple.Safari`をたたくとほかにも属性があったりするのですが、動作確認ができておらず分かる範囲をまとめました。
 
-また、Safari 11.0時点の情報であり、動作確認をしていないポリシーも多く含み、説明に関しても誤りがある可能性があります。
+また、Safari 11.0時点の情報であり、動作確認をしていないポリシーも多く含むため、説明に誤りを含む可能性もあります。
 設定に関してはあくまで自己責任でお願いします。
 
 ## Google Chrome
@@ -62,20 +59,17 @@ Google Chromeは2018年1月時点でInternet Explorerを超えて世界シェア
 
 ### 属性の設定
 
-Google Chromeの設定は`com.google.Chrome`および`com.google.Chrome.canary`に入っているので、現在の設定を閲覧したい場合は、
+Google Chromeの設定は`com.google.Chrome`および`com.google.Chrome.canary`に入っているので、現在の設定は次のコマンドで閲覧できます。
 
 ```sh
 defaults read com.google.Chrome
 ```
 
-とすることで閲覧が可能です。
-また、設定を追加・上書きするには
+また、設定を追加・上書きするには、次のように設定します。
 
 ```sh
 defaults write com.google.Chrome ポリシー名 -型 値
 ```
-
-のように設定します。
 
 ### 各属性について
 
@@ -84,12 +78,10 @@ defaults write com.google.Chrome ポリシー名 -型 値
 
 ## 管理者として設定の配布
 
-各ユーザーが管理者権限を所有していない前提になりますが、
+各ユーザーが管理者権限を所有していない前提になりますが、次のような方法で配布できます。
 
 - プロファイルの配布
 - plistファイル直置き
-
-などで配布できます。
 
 ### プロファイルの配布
 

@@ -27,7 +27,7 @@ Spring SecurityはSpring Bootアプリケーションの認証と認可を設定
 
 現在は、[Spring Security](https://github.com/spring-projects/spring-security)本体でSAMLの機能開発が進められています。
 
-これからSpring Securityを用いてSAMLの実装を行う場合は、Spring Security SAMLではなく、[Spring Security](https://github.com/spring-projects/spring-security)のSAML実装を使用することを推奨します。
+これからSpring Securityを用いてSAMLを実装する場合は、Spring Security SAMLではなく、[Spring Security](https://github.com/spring-projects/spring-security)のSAML実装を使用することを推奨します。
 </Revision>
 
 ## SAMLとは
@@ -42,7 +42,7 @@ SAMLには1.1と2.0の2つのバージョンがありますが、今から導入
 ## Spring Security SAML
 
 執筆時点では、**1.0.10**がGAとしてリリースされており、2.0.0が非公開なマイルストーンで開発されています。
-しかし本家の[README（2.0.0.M31時点）](https://github.com/spring-projects/spring-security-saml/blob/873662f57b1296634fcd517f1bda38230d33cf6a/README.md)によると、
+しかし本家の[README（2.0.0.M31時点）](https://github.com/spring-projects/spring-security-saml/blob/873662f57b1296634fcd517f1bda38230d33cf6a/README.md)には次のように書かれています。
 
 > This repository is not being actively maintained, but will remain hosted for educational and reference purposes. It contains an independent, easier to use and abstracted through Java POJOs, SAML library on top of the OpenSAML library. The concept was also validated against Keycloak as the underlying dependency.
 >
@@ -50,7 +50,7 @@ SAMLには1.1と2.0の2つのバージョンがありますが、今から導入
 >
 > We continue to accept pull request for all branches, but will not actively drive feature development in this repository.
 
-とあるように、活発な開発が行われていません。
+このとおり、活発な開発が行われていません。
 しかし、Spring SecurityのSAML対応のヒントになります。
 
 ## Spring Security SAMLの導入にあたって
@@ -60,7 +60,7 @@ Spring Security SAMLは前述の通り活発な開発されておらず、1系�
 
 不具合がある状態かつ一定の機能のみを限定的に使用することを許容するのであれば、[spring-security-saml-dsl](https://github.com/spring-projects/spring-security-saml-dsl)を使用することで実現が可能です。
 
-しかし、これは健全ではないため、ここでは執筆時点で最新版の[2.0.0.M31](https://github.com/spring-projects/spring-security-saml/releases/tag/2.0.0.M31)を使用してSpring BootアプリケーションにSAMLを導入する方法を紹介します。
+しかし、この状態は健全と言えないため、執筆時点で最新版の[2.0.0.M31](https://github.com/spring-projects/spring-security-saml/releases/tag/2.0.0.M31)を使用してSpring BootアプリケーションにSAMLを導入する方法を紹介します。
 
 ## Spring Security SAMLを導入
 
@@ -156,17 +156,15 @@ spring:
             assertion-consumer-service-index: 0
 ```
 
-特に注意するべき項目は、
+特に注意するべき項目は次の3点です。
 
 1. `spring.security.saml2.service-provider.entity-id`
 2. `spring.security.saml2.service-provider.keys`
 3. ここには記載はないですが、`spring.security.saml2.service-provider.name-ids`
 
-の3点です。
-
 #### `spring.security.saml2.service-provider.entity-id`の注意点
 
-`spring.security.saml2.service-provider.entity-id`は、Service ProviderをIdentity Provider側に一意に特定するためのエンティティIDです。Spring Security SAMLは実装上、Assertion Consumer Service[^ACS]のURLが`[hostname]/[SamlPrefix]/SSO/alias/[EntityID]`となる点に注意が必要ですで**SamlPrefix**はデフォルトで`saml/sp`ですが、Spring Securityの設定箇所で変更ができます。
+`spring.security.saml2.service-provider.entity-id`は、Service ProviderをIdentity Provider側に一意に特定するためのエンティティIDです。Spring Security SAMLは実装上、Assertion Consumer Service[^ACS]のURLが`[hostname]/[SamlPrefix]/SSO/alias/[EntityID]`となる点に注意が必要です。**SamlPrefix**はデフォルトで`saml/sp`ですが、Spring Securityの設定箇所で変更ができます。
 
 [^ACS]: Assertion Consumer Serviceは、Identity ProviderのAssertionを渡す先（Service ProviderのURL）
 
@@ -178,7 +176,7 @@ Microsoft Azure Active Directoryなどの多くのIdentity Providerはこの署�
 
 #### `spring.security.saml2.service-provider.name-ids`の注意点
 
-`spring.security.saml2.service-provider.name-ids`は必須ではありません。
+`spring.security.saml2.service-provider.name-ids`の設定は任意です。
 また、ymlで設定する分には特に問題ありません。
 詳しく検証できていませんが、propertiesの形式で記載するとSpring Security SAMLが提供する[NameId](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/saml2/metadata/NameId.java)型に変換されない不具合があります。
 
@@ -198,7 +196,8 @@ public class SamlSecurityConfiguration extends SamlServerConfiguration {}
 
 ### Spring Security SAMLが設定値を使用できるようにする
 
-前述の`SamlServerConfiguration`を継承したクラス、つまり設定値をSpring Security SAMLが使用できるようにするために[SamlServiceProviderServerBeanConfiguration](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/config/SamlServiceProviderServerBeanConfiguration.java)を継承したクラスの`getDefaultHostSamlServerConfiguration`メソッドをオーバーライドして`SamlServerConfiguration`のインスタンスを使用するように設定します。
+Spring Security SAMLが設定値を使用できるよう、[SamlServiceProviderServerBeanConfiguration](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/config/SamlServiceProviderServerBeanConfiguration.java)を継承したクラスを作成します。
+このクラスで`getDefaultHostSamlServerConfiguration`メソッドをオーバーライドし、前述の`SamlServerConfiguration`を継承したクラスのインスタンスを使用するよう設定します。
 
 ```java
 import org.springframework.context.annotation.Configuration;
@@ -281,7 +280,8 @@ public class SamlServerBeanConfiguration extends SamlServiceProviderServerBeanCo
 ```
 
 これにより、型のキャストができます。
-今回は1つのIdentity Providerのみを設定しているため、`spring.security.saml2.service-provider.providers[0]`のような形で設定値を取得しましたが、複数ある場合はリストで[ExternalIdentityProviderConfiguration](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/config/ExternalIdentityProviderConfiguration.java)を生成すると良いでしょう。
+今回は1つのIdentity Providerのみを設定しているため、`spring.security.saml2.service-provider.providers[0]`のような形で設定値を取得しました。
+複数ある場合は、リストで[ExternalIdentityProviderConfiguration](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/config/ExternalIdentityProviderConfiguration.java)を生成すると良いでしょう。
 
 ### Spring SecurityでSpring Security SAMLを使えるようにする
 
@@ -537,7 +537,7 @@ public class SamlServerBeanConfiguration extends SamlServiceProviderServerBeanCo
 
 Identity Providerの多くはレスポンスにメールアドレスなどの情報を付加します。
 その中でも`AttributeStatement`にはカスタム値が格納されており、使用したいケースがあります。
-しかし、[SimpleAuthenticationManager](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/authentication/SimpleAuthenticationManager.java)ではカスタム値はパースされず[DefaultSamlAuthentication](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/spi/DefaultSamlAuthentication.java)インスタンスとしてピュアなstringとして保持されているだけです。
+しかし、[SimpleAuthenticationManager](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/authentication/SimpleAuthenticationManager.java)ではカスタム値はパースされず[DefaultSamlAuthentication](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/spi/DefaultSamlAuthentication.java)インスタンスにピュアなstringのまま保持されているだけです。
 また、このXMLを使用するたびに毎回パースするのはコストが高いため、一度だけパースされて認証情報として保持されていてほしいです。
 
 まずは、なにをするにしてもXMLをパースしなければいけません。SAMLレスポンスのXMLは名前空間がついている可能性があるのでそれを考慮してパースする必要があります。
@@ -760,7 +760,8 @@ public class CustomAuthenticationManager implements AuthenticationManager {
 }
 ```
 
-この`AuthenticationManager`をSpring Security SAMLに設定する必要があるので、[SamlServiceProviderServerBeanConfiguration](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/config/SamlServiceProviderServerBeanConfiguration.java)を継承したクラスで`spAuthenticationResponseFilter`メソッドをオーバーライドします
+この`AuthenticationManager`をSpring Security SAMLに設定する必要があります。
+そのため、[SamlServiceProviderServerBeanConfiguration](https://github.com/spring-projects/spring-security-saml/blob/b06f7e18f4593e29be637afe563a31f74b12e12c/core/src/main/java/org/springframework/security/saml/provider/service/config/SamlServiceProviderServerBeanConfiguration.java)を継承したクラスで`spAuthenticationResponseFilter`メソッドを次のようにオーバーライドします。
 
 ```java
 import javax.servlet.Filter;
@@ -803,4 +804,4 @@ Spring BootアプリケーションでSAMLを使用したSSOの対応方法を�
 いくつかの不具合のために独自のパッチを当てて対応する必要があり、容易に導入というわけにはいきませんでした。
 
 この量のカスタマイズが必要なのであれば、本家のサポートの状態と合わせて鑑みると別途ライブラリ化するなどの対応が必要であると感じました。
-事業の状況によってそのような時間が取れない場合は、同じように独自にカスタマイズすることが無難な場合もあると思いますので、その際には参考になれば幸いです。
+事業の状況によってそのような時間を取れない場合は、同じように独自でカスタマイズするのが無難なこともあると思います。その際の参考になれば幸いです。

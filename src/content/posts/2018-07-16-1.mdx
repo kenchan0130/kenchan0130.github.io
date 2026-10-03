@@ -33,13 +33,12 @@ iOSアプリケーションを開発しているとシミュレータでデバ�
 
 ### SIPによる制限
 
-High Sierra (10.13) から`/AppleInternal`ディレクトリ作成がSystem Integrity Protecton (SIP) の対象となり、
+High Sierra (10.13) から`/AppleInternal`ディレクトリ作成がSystem Integrity Protecton (SIP) の対象となりました。
+そのため、次のコマンドを実行しても`mkdir: /AppleInternal: Operation not permitted`となってしまいます。
 
 ```sh
 sudo mkdir -p /AppleInternal
 ```
-
-を実行しても`mkdir: /AppleInternal: Operation not permitted`となってしまいます。
 
 Sierra (10.12) では上記のコマンドを実行してもフォルダを作成できていました。
 
@@ -47,7 +46,7 @@ Sierra (10.12) では上記のコマンドを実行してもフォルダを作�
 
 SIPを無効にすることで、ディレクトリを作成可能ですが、セキュリティの観点からあまりオススメできません。
 
-今回はSIPは無効にせずに、リカバリモードを使用すること実現させます。
+今回はSIPを無効にせず、リカバリモードを使用して実現させます。
 
 1. Macをシャットダウンします。
 2. リカバリモードとしてMacを立ち上げます。

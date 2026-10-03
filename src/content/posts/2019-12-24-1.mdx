@@ -36,7 +36,7 @@ IdPとして動作するOSSはいくつかあります。その中でもお手�
 - [saml-idp](https://github.com/mcguinness/saml-idp)
   - Node.jsで記述されているIdP
   - 独自で拡張したIdPサーバーを用意したい場合も使用しやすい
-  - CLIが用意されており、Node.jsが動作する環境があればすぐに導入が可能
+  - CLIが用意されており、Node.jsの動作する環境があればすぐに導入できる
   - 本家がDocker Imageを用意している
 - [SimpleSAMLphp](https://github.com/simplesamlphp/simplesamlphp)
   - PHPで記述されているIdP
@@ -50,7 +50,8 @@ IdPとして動作するOSSはいくつかあります。その中でもお手�
   - メンテナンスが頻繁に行われている
   - 設定のためのREST APIがある
 
-どれを選択するかは悩みどころですが、特に**ドキュメントが豊富**というのが多くの人が開発に携わった際に効いてくるため、今回はSimpleSAMLphpを選択して話を進めていきます。
+どれを選択するかは悩みどころです。
+特に**ドキュメントの豊富さ**は、多くの人が開発へ携わる際に効いてくるため、SimpleSAMLphpを選択して話を進めていきます。
 
 ## SimpleSAMLphpについて
 
@@ -78,7 +79,8 @@ $ docker run --name=idp \
 `SIMPLESAMLPHP_SP_ENTITY_ID`にSPのエンティティID、`SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE`にSPのAssertion Consumer ServiceのURLを指定して起動します。
 `http://localhost:8080`でページが表示されれば完了です。
 
-あとは、SP側のIdPのメタデータURLを`http://localhost:8080/simplesaml/saml2/idp/metadata.php`、エンティティIDを`SIMPLESAMLPHP_SP_ENTITY_ID`と同じ値を設定することでSimpleSAMLphpをIdPとして使用できます。
+あとは、SP側でIdPのメタデータURLを`http://localhost:8080/simplesaml/saml2/idp/metadata.php`に設定します。
+また、エンティティIDに`SIMPLESAMLPHP_SP_ENTITY_ID`と同じ値を設定することで、SimpleSAMLphpをIdPとして使用できます。
 
 ## ユーザーをカスタマイズする
 
