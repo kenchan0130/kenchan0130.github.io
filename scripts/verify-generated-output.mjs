@@ -50,6 +50,17 @@ for (const file of await collectHtmlFiles(distDirectory)) {
   if (/<p\b[^>]*>\s*<figure\b/.test(html)) {
     errors.push(`p要素内にfigure要素が生成されています: ${path.relative(root, file)}`);
   }
+  if (/data-language="d2"/.test(html)) {
+    errors.push(
+      `D2図が描画されずにコードブロックとして出力されています: ${path.relative(root, file)}`,
+    );
+  }
+  for (const [svg] of html.matchAll(/<svg\b(?:[^>"]|"[^"]*")*>/g)) {
+    if (!svg.includes(" data-d2-version=")) continue;
+    if (!/\srole="img"/.test(svg) || !/\saria-label="[^"]+"/.test(svg)) {
+      errors.push(`D2図に代替テキストがありません: ${path.relative(root, file)}`);
+    }
+  }
 }
 
 const resumeHtml = await readFile(path.join(distDirectory, "profile", "resume.html"), "utf8");

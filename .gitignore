@@ -3,6 +3,7 @@
 .cache/
 .pnpm-store/
 dist/
+public/d2/
 node_modules/
 .venv/
 .claude/worktrees/

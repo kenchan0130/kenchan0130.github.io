@@ -1,9 +1,11 @@
 import mdx from "@astrojs/mdx";
+import { satteri } from "@astrojs/markdown-satteri";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
+import astroD2 from "astro-d2";
 import expressiveCode from "astro-expressive-code";
-import mermaid from "astro-mermaid";
 import type { ExpressiveCodePlugin } from "astro-expressive-code";
+import { d2DiagramMarkup, d2DiagramSources } from "./src/lib/d2-diagrams";
 
 const focusableCodeBlocks: ExpressiveCodePlugin = {
   name: "Focusable code blocks",
@@ -29,13 +31,18 @@ export default defineConfig({
     format: "file",
   },
   integrations: [
-    mermaid({
-      autoTheme: true,
-      enableLog: false,
-      mermaidConfig: {
-        fontFamily: '"Noto Sans JP Variable", "Noto Sans JP", sans-serif',
-        securityLevel: "strict",
+    astroD2({
+      experimental: { useD2js: true },
+      fonts: {
+        regular: "src/assets/fonts/d2/NotoSansJP-Regular.ttf",
+        italic: "src/assets/fonts/d2/NotoSansJP-Regular.ttf",
+        bold: "src/assets/fonts/d2/NotoSansJP-Bold.ttf",
+        semibold: "src/assets/fonts/d2/NotoSansJP-Bold.ttf",
       },
+      inline: true,
+      layout: "elk",
+      pad: 16,
+      theme: { default: "0", dark: false },
     }),
     expressiveCode({
       themes: ["github-light", "github-dark"],
@@ -61,6 +68,10 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    processor: satteri({
+      mdastPlugins: [d2DiagramSources],
+      hastPlugins: [d2DiagramMarkup],
+    }),
     shikiConfig: {
       wrap: false,
     },
