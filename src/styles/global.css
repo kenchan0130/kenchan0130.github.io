@@ -9,6 +9,9 @@
   --accent: #0969da;
   --accent-strong: #0550ae;
   --focus: #0969da;
+  --d2-line: #6e7781;
+  --d2-badge: #fff1c2;
+  --d2-badge-text: #3d2d00;
   --font-sans: "Noto Sans JP Variable", "Noto Sans JP", system-ui, sans-serif;
   --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --site-width: 76rem;
@@ -26,6 +29,9 @@
   --accent: #58a6ff;
   --accent-strong: #79c0ff;
   --focus: #58a6ff;
+  --d2-line: #6e7681;
+  --d2-badge: #3b2e0a;
+  --d2-badge-text: #f2cc60;
 }
 
 * {
@@ -158,6 +164,147 @@ hr {
 button,
 a {
   touch-action: manipulation;
+}
+/* D2図はサイトのテーマ切り替えに追従させるため、D2のテーマ色クラスをサイトの色で上書きする。 */
+.d2-diagram {
+  margin: 1.75rem 0;
+  overflow-x: auto;
+}
+.d2-diagram > svg {
+  display: block;
+  height: auto;
+  margin-inline: auto;
+  max-width: var(--d2-width);
+  /* 文字が小さくなりすぎないよう、80%より小さくする場合は横スクロールにする。 */
+  min-width: calc(var(--d2-width) * 0.8);
+  width: 100%;
+}
+svg.d2-svg .fill-N1 {
+  fill: var(--text);
+}
+svg.d2-svg .stroke-N1 {
+  stroke: var(--text);
+}
+svg.d2-svg .fill-N2 {
+  fill: var(--muted);
+}
+svg.d2-svg .stroke-N2 {
+  stroke: var(--muted);
+}
+svg.d2-svg .fill-N3 {
+  fill: var(--muted);
+}
+svg.d2-svg .stroke-N3 {
+  stroke: var(--muted);
+}
+svg.d2-svg .fill-N4 {
+  fill: var(--border);
+}
+svg.d2-svg .stroke-N4 {
+  stroke: var(--border);
+}
+svg.d2-svg .fill-N5 {
+  fill: var(--border);
+}
+svg.d2-svg .stroke-N5 {
+  stroke: var(--border);
+}
+svg.d2-svg .fill-N6 {
+  fill: var(--surface-strong);
+}
+svg.d2-svg .stroke-N6 {
+  stroke: var(--surface-strong);
+}
+svg.d2-svg .fill-N7 {
+  fill: var(--bg);
+}
+svg.d2-svg .stroke-N7 {
+  stroke: var(--bg);
+}
+svg.d2-svg .fill-B1 {
+  fill: var(--accent);
+}
+svg.d2-svg .stroke-B1 {
+  stroke: var(--accent);
+}
+svg.d2-svg .fill-B2 {
+  fill: var(--accent);
+}
+svg.d2-svg .stroke-B2 {
+  stroke: var(--accent);
+}
+svg.d2-svg .fill-B3 {
+  fill: color-mix(in srgb, var(--accent) 24%, var(--bg));
+}
+svg.d2-svg .stroke-B3 {
+  stroke: color-mix(in srgb, var(--accent) 24%, var(--bg));
+}
+svg.d2-svg .fill-B4 {
+  fill: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+svg.d2-svg .stroke-B4 {
+  stroke: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+svg.d2-svg .fill-B5 {
+  fill: color-mix(in srgb, var(--accent) 4%, var(--bg));
+}
+svg.d2-svg .stroke-B5 {
+  stroke: color-mix(in srgb, var(--accent) 4%, var(--bg));
+}
+svg.d2-svg .fill-B6 {
+  fill: var(--bg);
+}
+svg.d2-svg .stroke-B6 {
+  stroke: var(--bg);
+}
+svg.d2-svg .fill-AA2 {
+  fill: var(--accent-strong);
+}
+svg.d2-svg .stroke-AA2 {
+  stroke: var(--accent-strong);
+}
+svg.d2-svg .fill-AA4 {
+  fill: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+svg.d2-svg .stroke-AA4 {
+  stroke: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+svg.d2-svg .fill-AA5 {
+  fill: var(--bg);
+}
+svg.d2-svg .stroke-AA5 {
+  stroke: var(--bg);
+}
+svg.d2-svg .fill-AB4 {
+  fill: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+svg.d2-svg .stroke-AB4 {
+  stroke: color-mix(in srgb, var(--accent) 8%, var(--bg));
+}
+svg.d2-svg .fill-AB5 {
+  fill: var(--bg);
+}
+svg.d2-svg .stroke-AB5 {
+  stroke: var(--bg);
+}
+svg.d2-svg .connection.stroke-B1,
+svg.d2-svg .connection.stroke-B2 {
+  stroke: var(--d2-line);
+}
+svg.d2-svg .connection.fill-B1,
+svg.d2-svg .connection.fill-B2 {
+  fill: var(--d2-line);
+  stroke: var(--d2-line);
+}
+svg.d2-svg .d2-edge-label {
+  fill: var(--d2-badge);
+}
+svg.d2-svg .d2-edge-label + text {
+  fill: var(--d2-badge-text);
+  font-weight: 700;
+}
+svg.d2-svg .d2-icon {
+  color: var(--accent);
 }
 @media (prefers-reduced-motion: reduce) {
   html {

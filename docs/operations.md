@@ -58,6 +58,19 @@ not retained.
 - GitHub Actions are pinned to full commit SHAs with the exact release in comments.
 - Automatic merge is not enabled.
 
+## D2 diagram assets
+
+- D2 diagrams are rendered at build time with D2.js (`astro-d2` with `experimental.useD2js`), so
+  the D2 binary is not required locally or in CI.
+- `src/assets/fonts/d2` contains Noto Sans JP subsets used for text measurement and embedding.
+  `node scripts/build-d2-fonts.mjs` downloads `ofl/notosansjp/NotoSansJP[wght].ttf` and `OFL.txt`
+  from `google/fonts` at a pinned commit, verifies their SHA-256 checksums, and writes 400 and 700
+  weight subsets with `subset-font`. HarfBuzz does not update the name table when instancing, so
+  the internal font names keep the variable font's default ("Noto Sans JP Thin"). D2 renames the
+  embedded font, so this does not affect rendering.
+- `src/assets/d2-icons` contains icons copied from `lucide-static` v1.51.0. Add icons from the same
+  version and keep the license file when adding new ones.
+
 ## Dashboard-only configuration
 
 - Google AdSense Privacy & Messaging handles consent where required. The site does not implement a
