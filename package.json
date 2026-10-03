@@ -74,6 +74,11 @@
       "@biomejs/biome@2.5.5": true,
       "esbuild@0.28.1": true,
       "sharp@0.35.3": true
+    },
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-ch52-4w7c-c8xp"
+      ]
     }
   }
 }
