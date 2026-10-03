@@ -14,7 +14,7 @@ references: []
 draft: false 
 ---
 
-macOSを使用している場合、Apple社が提供する[Keynote](https://apps.apple.com/jp/app/keynote/id409183694)が無料で使用できます。
+macOSを使用している場合、Apple社の提供する[Keynote](https://apps.apple.com/jp/app/keynote/id409183694)を無料で使用できます。
 
 スライドを作成するツールは、Microsoft PowerPointが有名です。
 macOS版も提供されていますが、どうしてもWindowsと比べると使い勝手が劣ってしまうことがあります。
@@ -22,12 +22,11 @@ macOS版も提供されていますが、どうしてもWindowsと比べると�
 KeynoteはmacOSに最適化されており、個人的には使い勝手がとても良いと感じています。
 
 さて、Microsoft PowerPoint同様、Keynoteにもテンプレート機能があります。
-通常、テンプレートはUIを介してテーマとして登録しますが、
+通常、テンプレートはUIを介してテーマとして登録します。
+しかし、次のような要件があった場合に使える公式のツールなどは提供されていません。
 
 * 複数個テンプレートをテーマとして登録したい
 * 管理化に置かれているデバイスに配布したい
-
-という要件があった場合、公式にはツールなどが提供されていません。
 
 今回は、KeynoteのテンプレートをUIを介さずに登録するツールを作成したので、その使い方を紹介します。
 
@@ -52,13 +51,11 @@ macOS Catalinaからデフォルトシェルがzshになったため、このツ
 
 Keynote Template Deploymentの[リリースページ](https://github.com/kenchan0130/keynote-template-deployment/releases)から最新バージョンのコードをダウンロードし、`keynote-template-deployment.sh`を取得します。
 
-このスクリプトは3つの引数を受け取るようになっており、
+このスクリプトは3つの引数を受け取るようになっており、次の値が指定できます。
 
 1. テンプレートファイルのURL
 1. テーマセレクタ上での名前
 1. 登録するユーザーのタイプ
-
-が指定できます。
 
 つまり、以下のように実行します。
 
@@ -88,16 +85,14 @@ Keynote Template Deploymentの[リリースページ](https://github.com/kenchan
 
 ![テーマセレクタ上でのテーマの名前](/assets/posts/post/2021-01-18-1/theme_name_on_theme_selector.png)
 
-文字数制限は（内部的にはSQLiteに保存しているため）ないに等しいですが、あまりに長すぎるとテーマセレクタの動作が重くなる可能性があるため、適切な文字数を設定してください。
+文字数制限は（内部的にはSQLiteに保存しているため）ないに等しいです。ただし、あまりに長すぎるとテーマセレクタの動作を重くする可能性があるため、適切な文字数を設定してください。
 
 ### 登録するユーザーのタイプ（第三引数）について
 
-タイプは、
+タイプは次の2種類を用意しています。
 
 * `current`
 * `all`
-
-の2種類を用意しています。
 
 `current`の場合は、現在ログインしているユーザーに対してテンプレートをテーマとして登録します。
 
@@ -116,7 +111,7 @@ Keynote Template DeploymentはJamf Proをサポートしています。
 
 1. [設定] > [コンピュータの管理] > [スクリプト]から新規作成に進みます。
 
-    * カテゴリの設定は必須ではありませんが、このスクリプトを分類するのに使用できます。
+    * カテゴリの設定は任意ですが、このスクリプトの分類に使用できます。
 
     ![Keynote Template Deploymentの新規スクリプト作成の一般セクションの設定](/assets/posts/post/2021-01-18-1/create_script_general_keynote_template_deployment.png)
 
@@ -126,11 +121,11 @@ Keynote Template DeploymentはJamf Proをサポートしています。
 
 1. オプションセクションのパラメータラベルを設定します。
     * 設定しなくても動作しますが、ポリシー側で使用する際にわかりやすくなるので設定しています。
-    * **パラメータ4**: KeynoteのテンプレートのURLを指定することがわかるような名前
+    * 「パラメータ4」: KeynoteのテンプレートのURLを指定することがわかるような名前
       * 例として、`Keynote template URL`を指定しています。
-    * **パラメータ5**: Keynoteのテーマセレクタの一覧に表示する名前を指定することがわかるような名前
+    * 「パラメータ5」: Keynoteのテーマセレクタの一覧に表示する名前を指定することがわかるような名前
       * 例として、`Display name on theme selector`を指定しています。
-    * **パラメータ6**: Keynoteのテンプレートをユーザーに配布するタイプを指定することがわかるような名前
+    * 「パラメータ6」: Keynoteのテンプレートをユーザーに配布するタイプを指定することがわかるような名前
       * 例として、`Type of specify the local users (current/all)`を指定しています。
 
     ![Keynote Template Deploymentの新規スクリプト作成のオプションセクションの設定](/assets/posts/post/2021-01-18-1/create_script_options_keynote_template_deployment.png)
@@ -141,19 +136,19 @@ Keynote Template DeploymentはJamf Proをサポートしています。
 
 1. [コンピュータ] > [ポリシー]から新規作成に進みます。
 1. Generalセクションで各値を設定します。
-    * **表示名**: `Deploy Keynote template for all local users`
-    * **カテゴリ**: `Applications`
+    * 「表示名」: `Deploy Keynote template for all local users`
+    * 「カテゴリ」: `Applications`
         * カテゴリの設定は任意です。
-    * **実行頻度**: `Ongoing`
+    * 「実行頻度」: `Ongoing`
         * Self Serviceで実行できるようにするため、`Ongoing`にしています。
 
     ![Keynote Template Deploymentをポリシーとして設定 オプションセクションのGeneral設定](/assets/posts/post/2021-01-18-1/create_policy_options_general_using_keynote_template_deployment.png)
 
 1. 次に、スクリプトの項目を選択し、登録したKeynote Template Deploymentのスクリプトを追加します。
 1. パラメータ4とパラメータ5、パラメータ6に値を設定します。
-    * **パラメータ4**: `https://example.com/sample.kth`
-    * **パラメータ5**: `株式会社○○のテーマ`
-    * **パラメータ6**: `all`
+    * 「パラメータ4」: `https://example.com/sample.kth`
+    * 「パラメータ5」: `株式会社○○のテーマ`
+    * 「パラメータ6」: `all`
       * 今回はすべてのローカルユーザーに配布してみるため、`all`にしています。
 
     ![Keynote Template Deploymentをポリシーとして設定 オプションセクションのスクリプト設定](/assets/posts/post/2021-01-18-1/create_policy_options_scripts_using_keynote_template_deployment.png)
@@ -169,13 +164,11 @@ Keynote Template DeploymentはJamf Proをサポートしています。
 
 Keynoteのテンプレートをテーマとして設定できる**Keynote Template Deployment**を作成したので、このツールの使い方を紹介しました。
 
-今回は紹介しませんでしたが、応用としては、
+今回は紹介しませんでしたが、応用として次のようなことを行うと、テーマを自動でアップデートできると思います。
 
 1. 現在配布しているバーションを外部サイトなどにホスティング
 1. 拡張属性にバーション情報またはアップデートが必要な旨を記録
 1. テンプレートが古いデバイス条件に一致するSmart Computer Groupを作成
 1. Smart Computer Groupに一致した場合、ポリシーを実行
-
-のようなことを行うと、テーマを自動でアップデートできると思います。
 
 もしスクリプトに不具合などがありましたら、[GitHubのIssue](https://github.com/kenchan0130/keynote-template-deployment/issues)または[@kenchan0130のTwitter](https://twitter.com/kenchan0130)までお知らせください。

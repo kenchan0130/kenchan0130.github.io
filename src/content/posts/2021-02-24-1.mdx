@@ -24,7 +24,8 @@ GitHub Actionsの`ubuntu-latest`が18.04から20.04にアップグレードさ�
 LoadError: libffi.so.6: cannot open shared object file: No such file or directory - /home/runner/work/kenchan0130.github.io/kenchan0130.github.io/vendor/bundle/ruby/2.7.0/gems/ffi-1.14.2/lib/ffi_c.so
 ```
 
-これは、[ffi](https://github.com/ffi/ffi)がNative Extensionを使用しており、
+これは、[ffi](https://github.com/ffi/ffi)がNative Extensionを使用していることが原因です。
+次のように[actions/cache](https://github.com/actions/cache)のアクションでキャッシュ設定をしていました。
 
 ```yaml
 - uses: actions/cache@v2
@@ -35,37 +36,33 @@ LoadError: libffi.so.6: cannot open shared object file: No such file or director
       v1-${{ runner.os }}-gems-
 ```
 
-のように[actions/cache](https://github.com/actions/cache)のアクションでキャッシュ設定をしていたため、Ubuntu 18.04の際のパスを記憶してキャッシュされ、Ubuntuのバーションが20.04にバーションが変わった際に不具合が生じてしまいました。
+そのため、Ubuntu 18.04の際のパスを記憶してキャッシュされ、Ubuntuのバーションが20.04にバーションが変わった際に不具合が生じてしまいました。
 
 今後また同じようなことが起こらないようにするためには、キャッシュのkeyにrunnerのOSのバージョンの情報を使用することが考えられます。
 
-しかし、任意のstepでバーション情報を求め、stepのrun内で`:set-output name=`の出力をすることでstepのoutputsとなり、キャッシュのkeyとして使用できますが、そのスクリプトを書くのも面倒ですし、各runnerのOSに対応するのもたいへんです。
+任意のstepでバーション情報を求め、stepのrun内で`:set-output name=`の出力をすることでstepのoutputsとなり、キャッシュのkeyとして使用できます。しかし、そのスクリプトを書くのも面倒ですし、各runnerのOSに対応するのもたいへんです。
 
-そのため、runnerのOSの情報を取得できるアクションを用意したほうが汎用性が高いと考え、[GitHub Actions runner OS system information](https://github.com/marketplace/actions/github-actions-runner-os-system-information)を作成しました。
+そのため、runnerのOSの情報を取得できるアクションを用意したほうが汎用的だと考え、[GitHub Actions runner OS system information](https://github.com/marketplace/actions/github-actions-runner-os-system-information)を作成しました。
 
 前置きが長くなりましたが、今回はこの問題を解決するために役立つGitHub Actionsのアクションを作成したので、備忘の兼ねてアクションの作り方を紹介します。
 
 ## アクションの種類の選択
 
-GitHub Actionsのアクションは、
+GitHub Actionsのアクションは、次の3つのどれかを選択できます。
 
 * Docker
 * JavaScript
 * 複合実行ステップ
-
-の3つのどれかを選択できます。
 詳しくは「[アクションについて](https://docs.github.com/ja/actions/creating-actions/about-actions)」を参照してください。
 
 ## 今回作成するアクションについて
 
 今回は「OSのプラットフォームを識別する値」を、アクション呼び出し側がoutputsとして使用できるようにしてみます。
 
-合わせて、Linux、macOSおよびWindowsの環境で動作させたいため、
+合わせて、Linux、macOSおよびWindowsの環境で動作させたいため、次のどちらかを選択することになります。
 
 * JavaScriptアクション
 * 複合実行ステップ
-
-のどちらかを選択することになります。
 
 実行環境によってスクリプトを使い分けたくなかったため、JavaScirptアクションで作成することにします。
 また、JavaScriptで書いてしまうと型情報がないため、TypeScriptで作成することにします。
@@ -97,13 +94,13 @@ NPMのパッケージとは異なり、リポジトリ内に`node_moduels`の依
 
 ### プロジェクトの初期化
 
-JavaScriptアクション、つまりNode.jsを使用するため、
+JavaScriptアクション、つまりNode.jsを使用するため、次のコマンドを実行して`package.json`を作成します。
 
 ```sh
 npm init
 ```
 
-を実行し`package.json`を作成します。NPMのパッケージとしては登録しないため、
+NPMのパッケージとしては登録しないため、次のように`private`は`true`としておきます。
 
 ```js
 // package.json
@@ -112,8 +109,6 @@ npm init
   ...
 }
 ```
-
-`private`は`true`としておきます。
 
 また、アクション作成に便利なモジュール郡である[@actions/core](https://www.npmjs.com/package/@actions/core)や[TypeScript](https://www.npmjs.com/package/typescript)など、必要なNPMのパッケージを依存に追加しておきます。
 
@@ -228,15 +223,13 @@ TypeScriptで作成しているため、通常通りユニットテストは実�
 
 GitHub ActionsでCIを実行する場合、作成しているアクションをテストできます。
 
-`action.yaml`が定義されていれば、現在作成しているアクションは、
+`action.yaml`が定義されていれば、現在作成しているアクションは次のように`uses: ./`とすることで実行できます。
 
 ```yaml
 - name: Run this action
   uses: ./
   id: this-action
 ```
-
-のように、`uses: ./`とすることで実行できます。
 
 ```yaml
 # .github/workflows/ci.yml
@@ -282,9 +275,9 @@ jobs:
 
 ### アクションのデプロイ
 
-パッケージングしたソースコードはGit管理しなければいけないですが、Pull Requset時に一緒にプッシュするのは億劫です。
+パッケージングしたソースコードはGit管理しなければいけないですが、Pull Requestの作成時、毎回一緒にプッシュするのは億劫です。
 
-そのため、今回は起点となるmasterブランチに変更があったらパッケージングをして、リポジトリにプッシュするようにしました。
+そのため、今回は起点となるmasterブランチに変更があったらパッケージングをして、リポジトリへプッシュするようにしました。
 
 ```yaml
 # .github/workflows/deploy.yml
@@ -342,11 +335,11 @@ jobs:
 もちろんアクションは`uses: リポジトリ名/リビジョン`と指定するため、必ずしもGitHub Marketplaceに公開されていなくても使用できます。
 
 GitHubのリリースを作成すると、GitHub Marketplaceに登録するかどうかを聞かれます。
-アグリーメントに同意し、**Publish this Action to the GitHub Marketplace**にチェックを入れることで自動でGitHub Marketplaceに公開されます。
+アグリーメントに同意し、**Publish this Action to the GitHub Marketplace**にチェックを入れると、自動でGitHub Marketplaceに公開されます。
 
 ![Releaseページ上でのアクションの公開](/assets/posts/post/2021-02-24-1/action_publish_on_release_page.png)
 
-[GitHub Marketplaceでのアクションの公開 - アクションの公開について](https://docs.github.com/ja/actions/creating-actions/publishing-actions-in-github-marketplace#about-publishing-actions)によると、`action.yaml`の`name`について以下のような一定のユニーク制約がある旨が記載されていますので注意が必要です。
+[GitHub Marketplaceでのアクションの公開 - アクションの公開について](https://docs.github.com/ja/actions/creating-actions/publishing-actions-in-github-marketplace#about-publishing-actions)によると、`action.yaml`の`name`には以下のようなユニーク制約があると記載されているため、注意が必要です。
 
 > * アクションのメタデータファイル中のnameがユニークであること。
 >   * nameはGitHub Marketplaceで公開されている既存のアクション名とマッチしてはならない。

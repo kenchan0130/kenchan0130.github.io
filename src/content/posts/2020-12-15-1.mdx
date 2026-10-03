@@ -26,7 +26,7 @@ macOSのデバイスを組織の従業員に貸与する場合、デバイスの
 
 ## 従来のデバイスの初期化およびOS再インストールの課題
 
-多くの場合、初期化およびデータは消さないOS再インストール作業は、
+多くの場合、初期化や、データを消さないOSの再インストール作業は、次のような操作でリカバリーモードを介して行います。
 
 * Intel版
   * **⌘ + R**
@@ -38,26 +38,23 @@ macOSのデバイスを組織の従業員に貸与する場合、デバイスの
 * Silicon版
   * **電源ボタン長押し**
 
-などでリカバリーモードを介して行います。
 
-または、事前にUSBなどの外部記憶媒体にmacOSのインストーラを作成しておき、起動オプションで外部記憶媒体を指定し、
+または、事前にUSBなどの外部記憶媒体にmacOSのインストーラを作成しておき、起動オプションで外部記憶媒体を指定して次の手順を実行します。
 
 1. ディスクの消去
 2. OSのインストール
 
-を行います。
-
 （Intel版のみ）ファームウェアのパスワードを設定している場合、リカバリーモードにはファームウェアのパスワードを入れないといけず面倒です。
 
-リカバリーモードの場合、
+リカバリーモードの場合、次の手順で初期化します。
 
 1. FileVaultの暗号化の解除
 1. ディスクユーティリティでディスクの消去（フォーマット）
 1. インターネット経由でのOSのインストール
 
-の手順で初期化しますが、OSインストール中にインターネット接続が不安定となるとOSがインストールされず、インターネットリカバリーを行うこととなり、初期化に多くの工数を割かなければいけないこともあります。
+しかし、OSインストール中にインターネット接続が不安定となるとOSがインストールされず、インターネットリカバリーを行うこととなり、初期化に多くの工数を割かなければいけないこともあります。
 
-また、macOSインストーラを使用した場合、リカバリーモードのように不安定な作業にはならないものの、T2チップを搭載していると、外部起動を事前に有効にしておかなければ使用できません。
+また、macOSインストーラを使用した場合、リカバリーモードのように不安定な作業にはならないものの、T2チップを搭載している場合は、事前に外部起動を有効にしておかなければ使用できません。
 新しいOSが出た際には、そのたびにインストーラを作成するのもたいへんです。
 
 ## 従来のOSアップグレードの課題
@@ -123,19 +120,19 @@ Build ID         : 19H2
 
 ### デバイス初期化およびOS再インストールのケース
 
-最新バージョンで初期化を行う場合は、
+最新バージョンで初期化を行う場合は、次のコマンドを実行します。
 
 ```sh
 curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-install.sh | sudo bash /dev/stdin --erase
 ```
 
-OSの再インストールを行う場合は、
+OSの再インストールを行う場合は、次のコマンドを実行します。
 
 ```sh
 curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-install.sh | sudo bash /dev/stdin --reinstall --sameos
 ```
 
-を実行します。実際には現在のメジャーバーションと一致する最新バージョンのOSをインストールしますが、往々にして現在のOSの最新バージョンにするケースが多いためこのようにしています。
+実際には現在のメジャーバーションと一致する最新バージョンのOSをインストールしますが、往々にして現在のOSの最新バージョンにするケースが多いためこのようにしています。
 
 もし、指定したバーションにしたい場合は、`--os`オプションを使用してください。
 
@@ -143,13 +140,13 @@ curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-
 
 ### OSアップグレードのケース
 
-最新バージョンにアップグレードする場合は、
+最新バージョンにアップグレードする場合は、次のコマンドを実行します。
 
 ```sh
 curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-install.sh | sudo bash /dev/stdin --reinstall
 ```
 
-バーションを指定したい場合は、
+バーションを指定したい場合は、次のコマンドを実行します。
 
 ```sh
 # パッチバージョンまで指定
@@ -157,8 +154,6 @@ curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-
 # マイナーバージョンまで指定
 curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-install.sh | sudo bash /dev/stdin --reinstall --os="11.0"
 ```
-
-を実行します。
 
 これにより、OSのアップグレードが可能です。
 
@@ -176,19 +171,19 @@ curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-
 
 1. [コンピュータ] > [ポリシー]から新規作成に進みます。
 1. Generalセクションで各値を設定します。
-    * **表示名**: `Erase and reinstall latest OS`
+    * 「表示名」: `Erase and reinstall latest OS`
         * これは例ですが、分かりやすい名前をつけてください。
-    * **カテゴリ**: `Admin`
+    * 「カテゴリ」: `Admin`
         * カテゴリの設定は任意です。
-    * **実行頻度**: `Ongoing`
-        * トリガーはなしで、Self Serviceで実行するためOngoingで問題ないです。
+    * 「実行頻度」: `Ongoing`
+        * トリガーは設定せずにSelf Serviceから実行するため、Ongoingで問題ないです。
 
     ![初期化および最新バージョンのOSインストールポリシー作成のオプションセクションのGeneral項目設定](/assets/posts/post/2020-12-15-1/create_erase_and_reinstall_latest_os_options_general.png)
 
 1. 次に、スクリプトの項目を選択し、登録したerase-installのスクリプトを追加します。
 1. パラメータ4とパラメータ5に値を設定します。
-    * **パラメータ4**: `--erase`
-    * **パラメータ5**: `--confirm`
+    * 「パラメータ4」: `--erase`
+    * 「パラメータ5」: `--confirm`
         * confirmオプションを使用するとJamf Helperを使用してOSインストーラを実行する前に確認ダイアログを表示できます。
 
     ![初期化および最新バージョンのOSインストールポリシー作成のオプションセクションのスクリプト項目設定](/assets/posts/post/2020-12-15-1/create_erase_and_reinstall_latest_os_options_script.png)
@@ -210,12 +205,12 @@ OSインストーラは数GBと少々重たいので、事前にダウンロー�
 
 1. [コンピュータ] > [ポリシー]から新規作成に進みます。
 1. Generalセクションで各値を設定します。
-    * **表示名**: `Download latest OS installer`
+    * 「表示名」: `Download latest OS installer`
         * これは例ですが、分かりやすい名前をつけてください。
-    * **カテゴリ**: `OS Update`
+    * 「カテゴリ」: `OS Update`
         * カテゴリの設定は任意です。
-    * **実行頻度**: `Ongoing`
-        * トリガーはなしで、Self Serviceで実行するためOngoingで問題ないです。
+    * 「実行頻度」: `Ongoing`
+        * トリガーは設定せずにSelf Serviceから実行するため、Ongoingで問題ないです。
 
     ![OSインストーラダウンロード用のポリシー作成のオプションセクションのGeneral項目設定](/assets/posts/post/2020-12-15-1/create_download_latest_os_installer_options_general.png)
 
@@ -237,19 +232,19 @@ OSインストーラは数GBと少々重たいので、事前にダウンロー�
 
 1. [コンピュータ] > [ポリシー]から新規作成に進みます。
 1. Generalセクションで各値を設定します。
-    * **表示名**: `Upgrade latest OS`
+    * 「表示名」: `Upgrade latest OS`
         * これは例ですが、分かりやすい名前をつけてください。
-    * **カテゴリ**: `OS Update`
+    * 「カテゴリ」: `OS Update`
         * カテゴリの設定は任意です。
-    * **実行頻度**: `Ongoing`
-        * トリガーはなしで、Self Serviceで実行するためOngoingで問題ないです。
+    * 「実行頻度」: `Ongoing`
+        * トリガーは設定せずにSelf Serviceから実行するため、Ongoingで問題ないです。
 
   ![OSアップグレード用のポリシー作成のオプションセクションのGeneral項目設定](/assets/posts/post/2020-12-15-1/create_upgrade_latest_os_options_general.png)
 
 1. 次に、スクリプトの項目を選択し、登録したerase-installのスクリプトを追加します。
 1. パラメータ4とパラメータ5に値を設定します。
-    * **パラメータ4**: `--reinstall`
-    * **パラメータ5**: `--confirm`
+    * 「パラメータ4」: `--reinstall`
+    * 「パラメータ5」: `--confirm`
         * confirmオプションを使用すると、Jamf Helperを使用してOSインストーラを実行する前に確認ダイアログを表示できます。
 
     ![OSアップグレード用のポリシー作成のオプションセクションのスクリプト項目設定](/assets/posts/post/2020-12-15-1/create_upgrade_latest_os_options_script.png)
@@ -268,13 +263,11 @@ OSインストーラは数GBと少々重たいので、事前にダウンロー�
 
 erase-installという名前が誤解を生みそうな名前ですが、初期化、OS再インストールおよびOSアップグレードが可能なスクリプトでした。
 
-紹介した以外にもいくつかオプションがあります。詳しくはerase-installの[README](https://github.com/grahampugh/erase-install/blob/main/README.md)、または
+紹介した以外にもいくつかオプションがあります。詳しくはerase-installの[README](https://github.com/grahampugh/erase-install/blob/main/README.md)、または次のコマンドの出力を参照してください。
 
 ```sh
 curl -s https://raw.githubusercontent.com/grahampugh/erase-install/master/erase-install.sh | bash /dev/stdin --help
 ```
-
-を参照してください。
 
 このスクリプトはOSインストーラのシグネチャの検証をしていないので、理解したうえで使用してください。[^issue-50]
 
