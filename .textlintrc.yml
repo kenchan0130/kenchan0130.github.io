@@ -10,6 +10,7 @@ rules:
       max: 5
     no-exclamation-question-mark: false
     max-kanji-continuous-len:
+      max: 6
       # 正式名称や一般的な技術用語
       allow:
         - 世界開発者会議
