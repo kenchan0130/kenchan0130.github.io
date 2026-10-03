@@ -15,5 +15,7 @@ rules:
       - ".textlint-prh/WEB+DB_PRESS.yml"
       - ".textlint-prh/kenchan0130.yml"
   no-nfd: true
+  "@textlint-ja/preset-ai-writing":
+    ai-tech-writing-guideline: false
 filters:
   comments: true
