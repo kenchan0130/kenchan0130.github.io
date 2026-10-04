@@ -504,12 +504,16 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 通常のエントリでは、値の名前に`EnableSmartScreen`のような書き込む値の名前が入ります。
 削除のエントリでは、値の名前に`**del.ShellSmartScreenLevel`や`**DelVals.`のような決まった名前が入り、その名前で削除の方法を指定します。
 
-たとえば、同じポリシーを無効にすると、次の2つのエントリが記録されます。
+たとえば、同じポリシーを無効にすると、コンピューターの構成の`Registry.pol`のエントリは次のように置き換わります。
 
-| 値の名前 | 動作 |
-| --- | --- |
-| `EnableSmartScreen` | `EnableSmartScreen`に`0`を書き込む |
-| `**del.ShellSmartScreenLevel` | 有効時に書き込まれた`ShellSmartScreenLevel`を削除する |
+```text title="SmartScreenのポリシーを無効にしたときのエントリ"
+[Software\Policies\Microsoft\Windows\System;EnableSmartScreen;REG_DWORD;4;0]
+[Software\Policies\Microsoft\Windows\System;**del.ShellSmartScreenLevel;REG_SZ;4; ]
+```
+
+1行目は、`EnableSmartScreen`に`0`を書き込むエントリです。
+2行目は、有効時に書き込まれた`ShellSmartScreenLevel`を削除するエントリです。
+削除のエントリではデータを使わないため、データには空白が1つだけ入っています。
 
 値の名前に入る削除の指定には、次の4種類があります。
 
