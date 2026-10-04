@@ -482,11 +482,19 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 [Software\Policies\Microsoft\Windows\System;ShellSmartScreenLevel;REG_SZ;10;Warn]
 ```
 
-- キー：`Software\Policies\Microsoft\Windows\System`。`HKLM`などのルートは含めず、ファイルの置き場所（`Machine`または`User`）でルートが決まります
-- 値の名前：`EnableSmartScreen`と`ShellSmartScreenLevel`
-- 型：`REG_DWORD`と`REG_SZ`
-- サイズ：データのバイト数。`REG_SZ`はUTF-16の文字列のため、`Warn`の4文字と終端の文字で10バイトです
-- データ：`1`と`Warn`
+どちらのエントリも、キーの欄は`Software\Policies\Microsoft\Windows\System`です。
+キーには`HKLM`などのルートを含めず、ファイルの置き場所（`Machine`または`User`）でルートが決まります。
+残りの欄は、次のとおりです。
+
+| 欄 | 1つ目のエントリ | 2つ目のエントリ |
+| --- | --- | --- |
+| 値の名前 | `EnableSmartScreen` | `ShellSmartScreenLevel` |
+| 型 | `REG_DWORD` | `REG_SZ` |
+| サイズ（バイト） | `4` | `10` |
+| データ | `1` | `Warn` |
+
+サイズはデータのバイト数です。
+`REG_SZ`はUTF-16の文字列のため、`Warn`の4文字と終端の文字で10バイトになります。
 
 エントリは先頭から順に処理されるので、同じ値に対する指定が複数あれば後のものが優先されます。
 
@@ -497,15 +505,21 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 
 たとえば、同じポリシーを無効にすると、次の2つのエントリが記録されます。
 
-- 値の名前の欄が`EnableSmartScreen`のエントリ。`EnableSmartScreen`に`0`を書き込みます
-- 値の名前の欄が`**del.ShellSmartScreenLevel`のエントリ。有効時に書き込まれた`ShellSmartScreenLevel`を削除します
+| 値の名前の欄 | 動作 |
+| --- | --- |
+| `EnableSmartScreen` | `EnableSmartScreen`に`0`を書き込む |
+| `**del.ShellSmartScreenLevel` | 有効時に書き込まれた`ShellSmartScreenLevel`を削除する |
 
 値の名前の欄に入る削除の指定には、次の4種類があります。
 
-- `**del.`の後に値の名前：その値を削除します。`**del.ShellSmartScreenLevel`なら`ShellSmartScreenLevel`を削除します
-- `**DeleteValues`：データの欄にセミコロン区切りで書いた値を削除します。データが`ValueA;ValueB`なら、`ValueA`と`ValueB`を削除します
-- `**DelVals.`：キーの欄に書いたキーの値をすべて削除します
-- `**DeleteKeys`：データの欄にセミコロン区切りで書いたサブキーを削除します
+| 値の名前の欄 | 削除するもの |
+| --- | --- |
+| `**del.`＋値の名前 | `**del.`の後に書いた名前の値 |
+| `**DeleteValues` | データの欄にセミコロン区切りで書いた値 |
+| `**DelVals.` | キーの欄に書いたキーの、すべての値 |
+| `**DeleteKeys` | データの欄にセミコロン区切りで書いたサブキー |
+
+たとえば、データの欄が`ValueA;ValueB`の`**DeleteValues`は、`ValueA`と`ValueB`を削除します。
 
 ADMXの`delete`要素や、`list`が既存の値を削除してから書き込む動作も、これらのエントリで表されます。
 詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
@@ -899,6 +913,31 @@ MDMからポリシーを指定するときは、エディタの表示名では�
 そのため、今回紹介したADMXの読み方はMDMでもそのまま役に立ちます。
 
 MDMでのしくみの詳細は、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
+
+## ポリシーを外しても値が残る場合と対策
+
+ADMXのポリシーは、外し方によってはWindowsデバイスに値が残ります。
+
+グループポリシーでは、`Software\Policies`配下などの管理されたポリシーの値は、未構成に戻すかGPOの適用対象から外れると削除されます。
+ただし、ポリシー用のキー以外に書き込むADMXでは、前述の入れ墨のように値が残ります。
+
+Intuneでは、ADMXのポリシーを構成プロファイルから削除しただけでは、Windowsデバイスのレジストリの値は変わらないことがありました。
+削除した時点で、Windowsデバイスには最後に配布した値が残ったままになります。
+
+そのため、ポリシーを外すときは、次の順に進めるのが安全だと思います。
+
+1. ポリシーを、外した後に期待する状態の値に変更して配布する
+2. Windowsデバイスのレジストリに反映されたことを`regedit`などで確認する
+3. GPOやIntuneの構成プロファイルから設定を削除する
+
+1.で配布する値は、「無効」が正解とは限りません。
+「無効」で書き込まれるのは、`disabledValue`に定義した値です。
+この値がデフォルトの動作と一致するかどうかは、ADMXによって異なります。
+たとえば、SmartScreenのポリシーを「無効」にすると`EnableSmartScreen`に`0`が書き込まれ、SmartScreenはオフになります。
+未構成のWindowsデバイスではSmartScreenはオンのため、「無効」を配布してから設定を削除すると、SmartScreenがオフのまま残る恐れがあります。
+ADMXの`disabledValue`や`disabledList`を読み、書き込まれる値がデフォルトの動作と一致するかを確かめてから選びます。
+
+自作のADMXでは、書き込み先を`Software\Policies`の配下にし、`disabledValue`や`disabledList`でもとの状態に戻す値を定義しておくと、値が残る問題を避けやすくなります。
 
 ## 終わりに
 
