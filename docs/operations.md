@@ -62,12 +62,11 @@ not retained.
 
 - D2 diagrams are rendered at build time with D2.js (`astro-d2` with `experimental.useD2js`), so
   the D2 binary is not required locally or in CI.
-- `src/assets/fonts/d2` contains Noto Sans JP subsets used for text measurement and embedding.
-  `node scripts/build-d2-fonts.mjs` downloads `ofl/notosansjp/NotoSansJP[wght].ttf` and `OFL.txt`
-  from `google/fonts` at a pinned commit, verifies their SHA-256 checksums, and writes 400 and 700
-  weight subsets with `subset-font`. HarfBuzz does not update the name table when instancing, so
-  the internal font names keep the variable font's default ("Noto Sans JP Thin"). D2 renames the
-  embedded font, so this does not affect rendering.
+- `src/assets/fonts/d2` contains Noto Sans JP used for text measurement and embedding.
+  `node scripts/build-d2-fonts.mjs` downloads the static 400 and 700 weight TTFs served by Google
+  Fonts and `OFL.txt` from a pinned `google/fonts` commit, verifies their SHA-256 checksums, and
+  checks that D2 measures text with them. The fonts are used as-is: D2 cannot read fonts subset by
+  HarfBuzz and silently falls back to its default font, which breaks Japanese label sizes.
 - `src/assets/d2-icons` contains icons copied from `lucide-static` v1.51.0. Add icons from the same
   version and keep the license file when adding new ones.
 
