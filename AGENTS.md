@@ -111,6 +111,7 @@
 - CIは `quality` と `build-test` を並列実行する
   - `quality`: audit、format、lint、型チェック
   - `build-test`: build、生成物検証、Playwright
+  - `build-test` のPlaywrightは、`PLAYWRIGHT_CHROMIUM_CHANNEL=chrome` でランナーにプリインストールされたGoogle Chromeを使い、ブラウザをインストールしない。Chromeのバージョンはランナーイメージの更新で変わるため、ブラウザの更新が原因と思われる失敗はローカルの既定のブラウザ（指定なし）でも再現するか確認する
 - `deploy` は `quality` と `build-test` の両方に依存させる
 - matrix化やジョブ分割は、セットアップの重複と総実行時間も考慮し、実測値に基づいて採用する
 - GitHub Actionsは完全なコミットSHAへ固定し、同じ行に正確なリリースバージョンをコメントする
