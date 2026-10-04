@@ -380,21 +380,21 @@ admx.elements -> adml.入力欄
 `key`属性にはルートを含めず、ルートは`class`属性から決まります。
 
 ```d2 title="policy要素のclass、key、valueName属性が、書き込み先のルート、キー、値の名前に対応する関係"
-policy: policy要素 {
+admx: ADMXのpolicy要素 {
   shape: sql_table
   "class": Machine
   key: 'Software\Policies\ExampleApp'
   valueName: ExampleValue
 }
-dest: 書き込み先 {
+reg: レジストリの書き込み先 {
   shape: sql_table
   ルート: HKLM
   キー: 'Software\Policies\ExampleApp'
   値の名前: ExampleValue
 }
-policy."class" -> dest.ルート
-policy.key -> dest.キー
-policy.valueName -> dest.値の名前
+admx."class" -> reg.ルート
+admx.key -> reg.キー
+admx.valueName -> reg.値の名前
 ```
 
 この例の書き込み先は、`HKLM\Software\Policies\ExampleApp`キーの`ExampleValue`です。
