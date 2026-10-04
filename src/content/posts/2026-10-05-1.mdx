@@ -920,22 +920,6 @@ MDMからポリシーを指定するときは、エディタの表示名では�
 
 MDMでのしくみの詳細は、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
 
-## ポリシーを外しても値が残る場合と対策
-
-ADMXのポリシーは、外し方によってはWindowsデバイスに値が残ります。
-グループポリシーでは前述の入れ墨のように、ポリシー用のキー以外に書き込んだ値が残ります。
-Intuneでは、構成プロファイルから設定を削除しても、レジストリの値はそのまま残ることがありました。
-
-そのため、ポリシーを外すときは次の順に進めるのが安全だと思います。
-
-1. 外した後に期待する状態の値を配布する
-2. Windowsデバイスのレジストリに反映されたことを`regedit`などで確認する
-3. GPOやIntuneの構成プロファイルから設定を削除する
-
-1.で「無効」を配布するときは、`disabledValue`で書き込まれる値を確認します。
-SmartScreenのポリシーを「無効」にすると、`EnableSmartScreen`に`0`が書き込まれ、SmartScreenはオフになります。
-未構成のWindowsデバイスではSmartScreenはオンのため、この状態で設定を削除すると、オフのまま残ります。
-
 ## 終わりに
 
 今回は、ADMXのしくみと読み方を紹介しました。
