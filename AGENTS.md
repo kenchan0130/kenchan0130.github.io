@@ -46,6 +46,10 @@
   - E2E・アクセシビリティ: `pnpm test:e2e`
   - 全体確認: `pnpm test`
 - `pnpm lint` はコンテンツ検証と全記事のtextlintを含むため、CIで同じ検証を重複実行しない
+- Astro 7はAIエージェントからの実行を検出すると、`astro dev`と`astro preview`をバックグラウンドで起動し、コマンドはすぐに終了する
+  - フォアグラウンドで起動したい場合は、`ASTRO_DEV_BACKGROUND=0`または`ASTRO_PREVIEW_BACKGROUND=0`を付けて実行する（[Astroのドキュメント](https://docs.astro.build/en/guides/build-with-ai/)）
+  - `pnpm test:e2e`は`playwright.config.ts`でこの環境変数を設定済みのため、そのまま実行できる
+  - バックグラウンドで起動したサーバーは、作業後に`pnpm exec astro preview stop`や`pnpm exec astro dev stop`で停止する。Playwrightはローカルではポート4321で起動中のサーバーを再利用するため、別のブランチのサーバーが残っていると、そのビルド結果をテストしてしまう
 
 ## 本番サービスの識別子
 
