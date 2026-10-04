@@ -35,3 +35,10 @@ rules:
         to:   紐付く
       - from: ひもずく
         to:   紐付く
+
+  # WEB+DB PRESSの辞書にない語も、エディタやコンピュータと同じく長音記号を付けない
+  - expected: フォルダ
+    pattern: /フォルダー/
+    specs:
+      - from: フォルダー
+        to:   フォルダ
