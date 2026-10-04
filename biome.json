@@ -11,6 +11,7 @@
       "!playwright-report",
       "!test-results",
       "!public/assets/posts",
+      "!public/d2",
       "!src/content/posts",
       "!src/assets/d2-icons",
       "!reports"
