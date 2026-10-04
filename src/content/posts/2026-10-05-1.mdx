@@ -661,11 +661,16 @@ ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`を
 
 ## ADMXファイルの配置と読み込み
 
-エディタがADMXとADMLを読み込む場所には、ローカルストアとセントラルストアの2つがあります。
+エディタは、決まったフォルダーからADMXとADMLを読み込んでポリシーを表示します。
 
-ローカルストアは各Windowsデバイスの`C:\Windows\PolicyDefinitions`で、`gpedit.msc`はここのADMXを読み込みます。
-ドメインでは、管理者が同じADMXを共有するために、SYSVOLの`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`にセントラルストアを作ります。
-グループポリシーのツールは、セントラルストアがあればそちらのADMXを使います。
+各Windowsデバイスには、Windows標準のADMXとADMLが`C:\Windows\PolicyDefinitions`に入っています。
+このフォルダーをローカルストアと呼び、`gpedit.msc`はここのADMXを読み込みます。
+
+ドメインのGPOを編集するときも、何もしなければGPMCを開いたWindowsデバイスのローカルストアが使われます。
+そのため、管理者が使うWindowsデバイスのバージョンによって、エディタに表示されるポリシーが変わります。
+これを避けるために、GPOの保存先と同じSYSVOLの`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`にADMXとADMLを置き、管理者全員で共有します。
+この共有フォルダーをセントラルストアと呼びます。
+GPMCのエディタは、セントラルストアがあればローカルストアの代わりにそちらを使います。
 
 どちらの置き場所でも、ADMXはフォルダーの直下に、ADMLは言語別のフォルダー（`ja-JP`、`en-US`など）に置きます。
 
@@ -712,16 +717,22 @@ Microsoftは[Create and Manage Central Store](https://learn.microsoft.com/en-us/
 Windowsデバイスでは、Group Policyサービス（`gpsvc`）が適用対象のGPOを決め、GPOごとの`Registry.pol`を読み取ります。
 読み取った内容はクライアント側の拡張機能（Registry CSE）に渡され、Registry CSEがレジストリに値を書き込みます。
 
-```d2 title="Group PolicyサービスがRegistry.polを読み取り、Registry CSEがレジストリに書き込むまでのシーケンス"
-shape: sequence_diagram
-pol: GPOのRegistry.pol
-gpsvc: Group Policyサービス
-cse: Registry CSE
-reg: レジストリ
-gpsvc -> pol: 読み取る
-pol -> gpsvc: エントリの一覧
-gpsvc -> cse: 適用を依頼
-cse -> reg: 順に書き込む
+```d2 title="Group PolicyサービスがGPOのRegistry.polを読み取り、Registry CSEがレジストリに書き込むまでの流れ"
+grid-columns: 2
+grid-gap: 64
+gpo: GPO {
+  pol: Registry.pol {shape: image; icon: /d2-icons/file-cog.svg}
+}
+client: Windowsデバイス {
+  grid-columns: 3
+  grid-gap: 64
+  gpsvc: Group Policyサービス {shape: image; icon: /d2-icons/cog.svg}
+  cse: Registry CSE {shape: image; icon: /d2-icons/cog.svg}
+  reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
+  gpsvc -> cse: 適用を依頼
+  cse -> reg: 書き込む
+}
+gpo.pol -> client.gpsvc: 読み取る
 ```
 
 ### 適用のタイミング
@@ -777,12 +788,16 @@ GPOはローカル、サイト、ドメイン、OU（組織単位）の順に適
 
 ### MDMでの評価との違い
 
-ここまではグループポリシーのしくみです。
-MDMでは、`Registry.pol`の代わりに、Windowsデバイス自身が持つADMXの定義に従って、MDMから受け取った「有効」「無効」と入力値をレジストリの値に変換します。
-Windows標準のADMXはOSに組み込まれています。
-サードパーティー製アプリケーションのADMXは、XMLをそのままMDM経由でWindowsデバイスに取り込みます。
-ポリシーの指定には、エディタの表示名ではなく、ADMXの`policy`要素の`name`、カテゴリの`name`、`elements`の`id`を使います。
-そのため、今回紹介した読み方はMDMでも役に立ちます。
+グループポリシーとMDMでは、ADMXを使ってレジストリの値に変換する場所が異なります。
+グループポリシーでは、管理側のエディタがADMXを使って値を決め、`Registry.pol`としてWindowsデバイスに届けます。
+MDMでは、Windowsデバイス自身がADMXを使い、MDMから受け取った設定をレジストリの値に変換します。
+
+変換に使うADMXは、Windows標準のものならOSに組み込まれています。
+サードパーティー製アプリケーションのADMXは、MDM経由でWindowsデバイスに取り込みます。
+
+MDMからポリシーを指定するときは、エディタの表示名ではなく、ADMXに書かれた名前を使います。
+ポリシーは`policy`要素の`name`とカテゴリの`name`で、入力値は`elements`の子要素の`id`で指定します。
+そのため、今回紹介したADMXの読み方はMDMでもそのまま役に立ちます。
 
 MDMでのしくみの詳細は、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
 
