@@ -641,10 +641,9 @@ MDMで設定した値は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下に�
 
 題材には、Windows標準の`SmartScreen.admx`にある「Windows Defender SmartScreen を構成します」というポリシーを使います。
 SmartScreenは、ファイルやアプリケーションの安全性を確認するMicrosoft Defenderの機能です。
-抜粋は、Windows 11 2026 Update（26H2）向けの管理用テンプレートのものです。
 
 Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`にあります。
-最新版は、Microsoftの[ダウンロードセンター](https://www.microsoft.com/en-us/download/details.aspx?id=108847)で配布されている管理用テンプレートにも含まれています。
+最新版は、Microsoftのダウンロードセンターで配布されている管理用テンプレートにも含まれています。
 
 このポリシーは、エディタの「コンピューターの構成 > 管理用テンプレート > Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」にあります。
 
@@ -776,7 +775,7 @@ ADMXとADMLの組み合わせに問題があると、エディタを開いたと
 
 Windowsの新しい管理用テンプレートをセントラルストアに反映するときは、既存のフォルダーへ上書きコピーしないほうが安全です。
 Microsoftは[Create and Manage Central Store](https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store)で、次の手順を紹介しています。
-新しいバージョン用のフォルダー（`PolicyDefinitions-26H2`など）を作ってファイルをそろえ、最後にフォルダー名を入れ替えます。
+新しいバージョン用のフォルダー（`PolicyDefinitions-new`など）を作ってファイルをそろえ、最後にフォルダー名を入れ替えます。
 この手順なら、問題が起きたときに古いフォルダーへ戻せます。
 
 また、ダウンロードセンターで配布されている管理用テンプレートは、セントラルストアで使うためのものです。
@@ -893,6 +892,5 @@ ADMXが決めているのは、エディタに何を表示し、どのレジス�
 - [Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)
 - [\[MS-GPREG\]: New or Changed GPO List Processing](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpreg/57226664-ce00-4487-994e-a6b3820f3e49)
 - [Create and Manage Central Store](https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store)
-- [Administrative Templates (.admx) for Windows 11 2026 Update (26H2)](https://www.microsoft.com/en-us/download/details.aspx?id=108847)
 - [Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)
 - [Configure Windows Update client policies](https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb)
