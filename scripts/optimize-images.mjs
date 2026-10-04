@@ -1,72 +1,34 @@
-import { createHash } from "node:crypto";
-import { access, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { access, rm } from "node:fs/promises";
 import sharp from "sharp";
+import { collectResponsiveImages } from "./lib/responsive-images.mjs";
 
-const root = process.cwd();
-const directory = path.join(root, "public", "assets", "posts");
-const cachePath = path.join(root, "reports", "responsive-image-cache.json");
-const widths = [480, 720, 1440];
+// 記事画像のレスポンシブ用WebPを生成する。生成したWebPはコミットし、ビルドでは生成しない。
+// 既存のWebPは作り直さないため、同じファイル名で画像を差し替えた場合は--forceを付けて実行する。
+const force = process.argv.includes("--force");
+const { expected, existing } = await collectResponsiveImages();
+const outputs = new Set(expected.map(({ output }) => output));
 let generated = 0;
-let cache = {};
-try {
-  cache = JSON.parse(await readFile(cachePath, "utf8"));
-} catch {
-  cache = {};
-}
-const nextCache = {};
+let removed = 0;
 
-async function walk(current) {
-  for (const entry of await readdir(current, { withFileTypes: true })) {
-    const file = path.join(current, entry.name);
-    if (entry.isDirectory()) {
-      await walk(file);
+for (const { source, width, output } of expected) {
+  if (!force) {
+    try {
+      await access(output);
       continue;
-    }
-    if (!/\.(?:png|jpe?g)$/i.test(entry.name) || /\.w\d+\.webp$/i.test(entry.name)) continue;
-    const image = sharp(file);
-    const metadata = await image.metadata();
-    const sourceHash = createHash("sha256")
-      .update(await readFile(file))
-      .digest("hex");
-    const relativePath = path.relative(directory, file).split(path.sep).join("/");
-    for (const width of widths) {
-      const output = `${file}.w${width}.webp`;
-      const key = `${relativePath}@${width}`;
-      if (width > (metadata.width ?? 0)) {
-        await rm(output, { force: true });
-        continue;
-      }
-      const hash = createHash("sha256")
-        .update(
-          JSON.stringify({
-            sourceHash,
-            width,
-            format: "webp",
-            quality: 82,
-            sharp: sharp.versions.sharp,
-          }),
-        )
-        .digest("hex");
-      nextCache[key] = hash;
-      let exists = true;
-      try {
-        await access(output);
-      } catch {
-        exists = false;
-      }
-      if (!exists || cache[key] !== hash) {
-        await sharp(file)
-          .resize({ width, withoutEnlargement: true })
-          .webp({ quality: 82 })
-          .toFile(output);
-        generated += 1;
-      }
+    } catch {
+      // 未生成のWebPだけを作る。
     }
   }
+  await sharp(source)
+    .resize({ width, withoutEnlargement: true })
+    .webp({ quality: 82 })
+    .toFile(output);
+  generated += 1;
 }
 
-await walk(directory);
-await mkdir(path.dirname(cachePath), { recursive: true });
-await writeFile(cachePath, `${JSON.stringify(nextCache, null, 2)}\n`);
-console.log(`Generated ${generated} responsive WebP images.`);
+for (const file of existing.filter((file) => !outputs.has(file))) {
+  await rm(file);
+  removed += 1;
+}
+
+console.log(`Generated ${generated} and removed ${removed} responsive WebP images.`);

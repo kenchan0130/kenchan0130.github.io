@@ -330,7 +330,9 @@ export const settings = {
 - 記事からは `/assets/posts/post/記事ID/sample.png` のように参照
 - 代替テキストは必須。説明目的を持たない画像だけ明示的に空の代替テキストを使う
 - 画像のMarkdownタイトルは、本文とは別にキャプションが必要な場合だけ指定する
-- 画像追加後は `pnpm optimize:images` を実行し、生成されたWebPもコミットする
+- 画像追加後は `pnpm optimize:images` を実行し、生成されたWebPもコミットする。ビルドやCIではWebPを生成しない
+- 既存の画像を同じファイル名で差し替えた場合は、`pnpm optimize:images --force` でWebPを作り直す
+- `pnpm lint` に含まれる `pnpm verify:images` が、WebPの不足、幅の違い、元画像のないWebPを検出する
 - 本文画像は共通の画像コンポーネントで寸法、遅延読み込み、レスポンシブ画像を補うため、独自の`img`要素を直接記述しない
 
 ```markdown
