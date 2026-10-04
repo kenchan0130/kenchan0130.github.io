@@ -51,7 +51,7 @@ gpo: GPO {
 client: Windowsデバイス {
   reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
   app: OSやアプリ {shape: image; icon: /d2-icons/app-window.svg}
-  app -> reg: 読み取る
+  reg -> app: 値を参照
 }
 admin.editor -> gpo.pol: 保存
 gpo.pol -> client.reg: 適用
@@ -74,7 +74,7 @@ local: 'C:\Windows\PolicyDefinitions' {
   admx: "SmartScreen.admx\nポリシーの定義" {shape: image; icon: /d2-icons/file-code.svg}
   adml: "ja-JP\\SmartScreen.adml\n表示用の文字列" {shape: image; icon: /d2-icons/languages.svg}
 }
-central: 'SYSVOL\Policies\PolicyDefinitions' {
+central: 'SYSVOL\Policies\PolicyDefinitions（セントラルストア）' {
   grid-columns: 2
   grid-gap: 24
   admx: "SmartScreen.admx" {shape: image; icon: /d2-icons/file-code.svg}
@@ -92,7 +92,7 @@ ADMXは言語に依存しない定義で、エディタに表示する文字列�
 この参照先の文字列は、言語ごとのADMLで定義します。
 同じADMXに日本語と英語のADMLを用意すれば、管理者は自分の言語で同じポリシーを設定できます。
 
-ADMLが必要なのは、エディタのように人がポリシーを見て選ぶ場面だけです。
+ADMLが必要なのは、エディタやレポートのように、人がポリシーの名前を読む場面だけです。
 レジストリに書き込む値を決めるのに必要な情報は、すべてADMXにあります。
 
 | 場面 | ADMX | ADML |
@@ -102,7 +102,8 @@ ADMLが必要なのは、エディタのように人がポリシーを見て選�
 | MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
 
 ADMは、Windows Vistaより前の形式です。
-ADMはGPO[^gpo]を作るたびにGPOのフォルダへコピーされるため、同じファイルが大量に保存されていました。
+ADMは、GPO[^gpo]を作成して最初に編集した時点で、そのGPOのフォルダへコピーされていました。
+そのため、同じファイルがGPOの数だけ保存されていました。
 ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.pol`だけが保存されます。
 
 [^gpo]: グループポリシーオブジェクトの略で、配布する設定のまとまりです。
@@ -136,7 +137,7 @@ ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.
 ```
 
 ルート要素の`policyDefinitions`には、このファイルのリビジョン（`revision`）とスキーマのバージョン（`schemaVersion`）を書きます。
-その下に、次の5つの要素を置きます。
+その下に、主に次の5つの要素を置きます（旧形式のADMを置き換えるときに使う`supersededAdm`は省略します）。
 
 ```d2 title="policyDefinitionsの5つの子要素。policiesの各ポリシーがcategoriesの分類とsupportedOnの対応バージョンを参照し、policyNamespacesとresourcesはファイル全体の情報を持つ"
 admx: policyDefinitions {
@@ -310,7 +311,7 @@ ADMLでこの文字列を「ExampleApp 1.0以降」と定義すると、エデ�
 ### エディタで表示するためのADML
 
 ADMLは、エディタでADMXのポリシーを表示するためのファイルです。
-MDMでADMXを取り込む場合など、エディタを使わない場面ではADMLは必要ありません。
+MDM（Intuneなどのモバイルデバイス管理）でADMXを取り込む場合など、エディタを使わない場面ではADMLは必要ありません。
 
 ```xml title="ADMLの基本構造"
 <?xml version="1.0" encoding="utf-8"?>
@@ -338,6 +339,8 @@ MDMでADMXを取り込む場合など、エディタを使わない場面ではA
 `stringTable`には、ADMXの`$(string.ID)`から参照される文字列を定義します。
 `presentationTable`には、ADMXの`$(presentation.ID)`から参照される画面部品の並びを定義します。
 画面部品は`refId`属性で、ADMXの`elements`の`id`と対応付けます。
+
+代表的な画面部品と、対応するADMXの要素は次のとおりです。
 
 | ADMLの画面部品 | 対応するADMXの要素 | エディタでの表示 |
 | --- | --- | --- |
@@ -432,6 +435,7 @@ GPOの適用対象から外れると、値は削除されます。
 一方で、アプリケーションが自分の設定を保存している`HKCU\Software\ExampleApp`のようなキーに、ADMXから直接書き込むこともできます。
 ただし、こうしたキーの値は「管理されていないポリシー（Unmanaged）」として扱われ、GPOの適用対象から外れても残り続けます。
 この状態は「入れ墨（tattooing）」と呼ばれます。
+たとえば、`HKCU\Software\ExampleApp`の`Theme`に`Dark`を書き込むポリシーを配布した後でGPOを外しても、`Theme`は`Dark`のまま残ります。
 
 エディタはデフォルトで管理されていないポリシーも表示しますが、フィルタオプションの「管理」で管理されたポリシーだけに絞れます。
 
@@ -443,8 +447,7 @@ GPOの適用対象から外れると、値は削除されます。
 自作のアプリケーションなら、この配下の値を通常の設定より優先して読むようにしておけば、入れ墨は起こりません。
 最も確実な方法のため、自作のADMXではまずこの形を検討するのがよいと思います。
 
-2つ目は、「無効」を適用したときに値を削除するよう、ADMXを定義することです。
-`disabledValue`に`delete`要素を指定すると、「無効」を適用したときに値が削除されます。
+2つ目は、`disabledValue`に`delete`要素を指定し、「無効」を適用したときに値を削除させることです。
 
 ```xml title="無効にしたときに、ポリシー用以外のキーの値を削除する例"
 <policy name="ExampleTheme" class="User" displayName="$(string.ExampleTheme)"
@@ -460,11 +463,13 @@ GPOの適用対象から外れると、値は削除されます。
 </policy>
 ```
 
-この場合も、GPOを外したり未構成に戻したりしただけだと、値が残ります。
+ただし、この方法でも「無効」を経由せずにGPOを外したり未構成に戻したりすると、値は残ります。
 GPOを外す前に「無効」を適用し、値が削除されたことを確認してから外します。
 
 3つ目は、ADMXではなく、グループポリシーの基本設定（Group Policy Preferences）のレジストリ項目で書き込むことです。
-レジストリ項目の「共通」タブで「適用されなくなったときにこの項目を削除する」を有効にすると、GPOの適用対象から外れたときに値が削除されます。
+レジストリ項目の共通オプションには、「Remove this item when it is no longer applied」（適用されなくなったときにこの項目を削除する）があります。
+このオプションを有効にすると、GPOの適用対象から外れたときに値が削除されます。
+なお、有効にすると、項目の操作は「置換」になります。
 
 ## GPOとRegistry.pol
 
@@ -504,7 +509,7 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 
 1つのエントリは、セミコロンで区切った5つの項目からなります。
 
-たとえば、後半で読むSmartScreenのポリシーを有効にして「警告」を選ぶと、コンピューターの構成の`Registry.pol`に次の2つのエントリが記録されます。
+たとえば、「既存のADMXの読み方」で題材にするSmartScreenのポリシーを有効にして「警告」を選ぶと、コンピューターの構成の`Registry.pol`に次の2つのエントリが記録されます。
 ここでは読みやすいように、型と数値をテキストで表しています。
 
 ```text title="SmartScreenのポリシーを有効にしたときのエントリ"
@@ -541,7 +546,7 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 
 1行目は、`EnableSmartScreen`に`0`を書き込むエントリです。
 2行目は、有効時に書き込まれた`ShellSmartScreenLevel`を削除するエントリです。
-削除のエントリではデータを使わないため、データには空白が1つだけ入っています。
+削除のエントリではデータを使いませんが、仕様では空白と終端の文字を入れることになっています（UTF-16で4バイト）。
 
 削除の指定には、次の4種類があります。
 表の`〇〇`には、削除する値の名前が入ります。
@@ -550,10 +555,10 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 | --- | --- |
 | `**del.〇〇` | 〇〇という名前の値 |
 | `**DeleteValues` | データにセミコロン区切りで書いた値 |
-| `**DelVals.` | キーに書いたキーの、すべての値 |
-| `**DeleteKeys` | データにセミコロン区切りで書いたサブキー |
+| `**DelVals.` | エントリのキーにある、すべての値 |
+| `**DeleteKeys` | データにセミコロン区切りで書いた、キー直下のサブキー |
 
-たとえば、データが`ValueA;ValueB`の`**DeleteValues`は、`ValueA`と`ValueB`を削除します。
+データが`ValueA;ValueB`の`**DeleteValues`は、`ValueA`と`ValueB`を削除します。
 
 ADMXの`delete`要素や、`list`が既存の値を削除してから書き込む動作も、これらのエントリで表されます。
 詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
@@ -566,8 +571,9 @@ ADMXの`delete`要素や、`list`が既存の値を削除してから書き込�
 Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、`Registry.pol`とGPOのどちらも使われません。
 MDMから届いた設定はWindowsのPolicy CSPというしくみが受け取り、ADMXの定義に従ってレジストリに値を書き込みます。
 
-MDMで設定した値は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下にも記録されます。
-`PolicyManager\current\device`の配下には領域ごとにポリシーの値が記録され、`PolicyManager\providers`の配下からは、どの管理元が値を書き込んだかを確認できます。
+MDMで設定した値の状態は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下でも調べられます。
+たとえば、デバイス向けの設定では、`PolicyManager\current\device`の配下に有効な値が、`PolicyManager\providers`の配下に管理元ごとの値が記録されます。
+ただし、記録される場所は設定によって異なります。
 
 ## 簡単な例：ADMXを書いてみる
 
@@ -722,7 +728,9 @@ SmartScreenは、ファイルやアプリケーションの安全性を確認す
 Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`にあります。
 最新版は、Microsoftのダウンロードセンターで配布されている管理用テンプレートにも含まれています。
 
-このポリシーは、エディタの「コンピューターの構成 > 管理用テンプレート > Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」にあります。
+このポリシーは、エディタの次の場所にあります。
+
+- コンピューターの構成 > 管理用テンプレート > Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー
 
 ### ADMLで文字列のIDを探す
 
@@ -831,12 +839,12 @@ ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`を
 
 これを避けるために、GPOの保存先と同じSYSVOLの`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`にADMXとADMLを置きます。
 このフォルダを**セントラルストア**と呼び、管理者全員で共有します。
-エディタは、セントラルストアがあればローカルストアの代わりにそちらを使います。
+`gpedit.msc`を含むエディタは、ドメインにセントラルストアがあればローカルストアの代わりにそちらを使います。
 
 どちらの置き場所でも、ADMXはフォルダの直下に、ADMLは言語別のフォルダ（`ja-JP`、`en-US`など）に置きます。
 
-表示言語のADMLがない場合は、ADMXの`resources`要素の`fallbackCulture`属性で指定した言語（デフォルトは`en-US`）のADMLが使われます。
-日本語のADMLがないサードパーティー製アプリケーションのポリシーが英語で表示されるのは、そのためです。
+表示言語のADMLがない場合は、ADMXの`resources`要素の`fallbackCulture`属性で指定した言語（デフォルトは`en-US`）のADMLを探します。
+日本語のADMLがなく英語のADMLだけを置いたサードパーティー製アプリケーションのポリシーが、英語で表示されるのはそのためです。
 
 ### 読み込み時のエラー
 
@@ -860,26 +868,30 @@ Microsoftは[Create and Manage Central Store](https://learn.microsoft.com/en-us/
 
 ## Windowsデバイスでどのように評価されるのか
 
-Windowsデバイスでは、Group Policyサービス（`gpsvc`）が適用対象のGPOを決め、GPOごとの`Registry.pol`を読み取ります。
-読み取った内容は、GPOの設定の種類ごとに適用を担当するクライアント側の拡張機能（CSE: Client-Side Extension）に渡されます。
-管理用テンプレートを担当するのはRegistry CSEで、Registry CSEがレジストリに値を書き込みます。
+Windowsデバイスでは、まずGroup Policyサービス（`gpsvc`）が適用対象のGPOを決めます。
+次に、クライアント側の拡張機能（CSE: Client-Side Extension）を呼び出します。
+CSEは、GPOの設定の種類ごとに適用を担当するコンポーネントです。
+管理用テンプレートを担当するのはRegistry CSEで、Registry CSEが各GPOの`Registry.pol`を読み取り、レジストリに値を書き込みます。
 
-```d2 title="Group PolicyサービスがGPOのRegistry.polを読み取り、Registry CSEがレジストリに書き込むまでの流れ"
+```d2 title="Group Policyサービスが適用対象のGPOを決めてRegistry CSEを呼び出し、Registry CSEがRegistry.polを読み取ってレジストリに書き込む流れ"
 grid-columns: 2
-grid-gap: 64
+grid-gap: 48
 gpo: GPO {
   pol: Registry.pol {shape: image; icon: /d2-icons/file-cog.svg}
 }
 client: Windowsデバイス {
-  grid-columns: 3
-  grid-gap: 64
+  grid-rows: 2
+  grid-columns: 2
+  vertical-gap: 48
+  horizontal-gap: 120
   gpsvc: Group Policyサービス {shape: image; icon: /d2-icons/cog.svg}
+  spacer: "" {style.opacity: 0}
   cse: Registry CSE {shape: image; icon: /d2-icons/cog.svg}
   reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
-  gpsvc -> cse: 適用を依頼
+  gpsvc -> cse: 対象のGPO
   cse -> reg: 書き込む
 }
-gpo.pol -> client.gpsvc: 読み取る
+gpo.pol -> client.cse: 読み取る
 ```
 
 ### 適用のタイミング
@@ -888,11 +900,11 @@ gpo.pol -> client.gpsvc: 読み取る
 
 - コンピューターの構成は、Windowsの起動時
 - ユーザーの構成は、ユーザーのサインイン時
-- 起動中やサインイン中は、バックグラウンドで定期的に更新
+- 起動後やサインイン後も、バックグラウンドで定期的に更新
 
 バックグラウンドでの更新は、デフォルトでは90分ごとです。
 多くのWindowsデバイスが同時に問い合わせないように、0〜30分のランダムな時間が加えられます。
-なお、ドメインコントローラ自身は5分ごとに更新されます。
+なお、ドメインコントローラ自身のコンピューターの構成は、5分ごとに更新されます。
 これらのデフォルト値は、`GroupPolicy.admx`のポリシーの説明に書かれています。
 たとえば、「コンピューターのグループ ポリシーの更新間隔を設定する」の説明で確認できます。
 
@@ -905,8 +917,15 @@ gpupdate /force
 ### 適用の順序
 
 1台のWindowsデバイスには、複数のGPOを適用できます。
-GPOはローカル、サイト（拠点などのネットワークの単位）、ドメイン、OU（部署などでまとめる組織単位）の順に適用され、後から適用されたGPOの設定が優先されます。
+GPOは、通常は次の順に適用され、後から適用されたGPOの設定が優先されます。
+
+1. ローカル
+2. サイト（拠点などのネットワークの単位）
+3. ドメイン
+4. OU（部署などでまとめる組織単位）
+
 頭文字を取ってLSDOUとも呼ばれます。
+ただし、同じ場所にリンクされた複数のGPOの順序や、「強制」「継承のブロック」の設定によって、結果は変わります。
 ドメインに参加していないWindowsデバイスでは、ローカルGPOだけが適用されます。
 
 ### 未構成、有効、無効の違い
@@ -939,12 +958,14 @@ GPOはローカル、サイト（拠点などのネットワークの単位）�
 グループポリシーでは、管理側のエディタがADMXを使って値を決め、`Registry.pol`としてWindowsデバイスに届けます。
 MDMでは、Windowsデバイス自身がADMXを使い、MDMから受け取った設定をレジストリの値に変換します。
 
-変換に使うADMXは、Windows標準のものならOSに組み込まれています。
+変換に使うADMXは、Windows標準の設定のうちMDMに対応したものなら、OSに組み込まれています。
 サードパーティー製アプリケーションのADMXは、MDM経由でWindowsデバイスに取り込みます。
 
-MDMからポリシーを指定するときは、エディタの表示名ではなく、ADMXに書かれた名前を使います。
-ポリシーは`policy`要素の`name`とカテゴリの`name`で、入力値は`elements`の子要素の`id`で指定します。
-そのため、今回紹介したADMXの読み方はMDMでもそのまま役に立ちます。
+MDMからポリシーを指定するときは、エディタの表示名ではなく、決められた名前を使います。
+取り込んだサードパーティー製アプリケーションのADMXでは、`policy`要素の`name`、カテゴリの`name`、`elements`の子要素の`id`で指定します。
+Windows標準の設定は、Policy CSPのドキュメントで名前を確認します。
+SmartScreenのように、ADMXの`name`（`ShellConfigureSmartScreen`）と[Policy CSPの名前](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen)（`EnableSmartScreenInShell`）が異なる設定もあるためです。
+どちらの場合も、ADMXを読めば、その設定がどのレジストリの値を変えるのかを確かめられます。
 
 MDMでのしくみの詳細は、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
 
@@ -970,4 +991,8 @@ ADMXが決めているのは、エディタに何を表示し、どのレジス�
 - [\[MS-GPREG\]: New or Changed GPO List Processing](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpreg/57226664-ce00-4487-994e-a6b3820f3e49)
 - [Create and Manage Central Store](https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store)
 - [Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)
-- [Configure Windows Update client policies](https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb)
+- [\[MS-GPREG\]: Registry Extension Encoding Overview](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpreg/793775cd-8dc5-4ae7-8d69-343de988fca6)
+- [Group Policy processing for Windows](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/group-policy/group-policy-processing)
+- [Recommendations for managing Group Policy administrative template (.adm) files](https://learn.microsoft.com/en-us/troubleshoot/windows-server/group-policy/manage-group-policy-adm-file)
+- [Group Policy preferences in Windows](https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/group-policy/group-policy-preferences)
+- [SmartScreen Policy CSP](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen)
