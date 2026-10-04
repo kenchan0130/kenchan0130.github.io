@@ -1,6 +1,6 @@
 ---
 title: ADMXのしくみと読み方
-description: ADMXとADMLの役割の違いとXMLの仕様、簡単な自作例、Windows標準のADMXの読み方、グループポリシーでWindowsデバイスに設定が適用されるまでのしくみを解説します。
+description: ADMXとADMLの役割の違いとXMLの仕様、設定した値が保存されるRegistry.polと書き込まれるレジストリの場所、簡単な自作例、Windows標準のADMXの読み方、Windowsデバイスで設定が評価されるしくみを解説します。
 published: 2026-10-05
 categories:
   - system-administration
@@ -11,46 +11,35 @@ references: []
 draft: true
 ---
 
-Windowsの設定を組織でまとめて管理するときは、グループポリシーの「管理用テンプレート」を使うことが多いと思います。
-この管理用テンプレートの正体が、ADMXと呼ばれるXMLファイルです。
-ADMXのしくみを知っておくと、目的の設定がレジストリのどこに書き込まれるのかを自分で調べられます。
+Windowsの設定の多くは、レジストリの値で決まります。
+グループポリシーの「管理用テンプレート」に並ぶ設定項目は、「どの設定を、どのレジストリキーのどの値に書き込むか」を定義したADMXというXMLファイルから作られています。
 
-今回は、ADMXの役割と仕様、既存のADMXの読み方、Windowsデバイスに設定が適用されるまでのしくみについて紹介します。
-
-この記事では、以下の内容を扱います。
-
-- ADMXとADMLの役割の違い
-- ADMXとADMLのXMLの仕様
-- 簡単なADMXの自作例
-- Windows標準のADMXの読み方
-- ADMXファイルの配置と読み込みの仕様
-- グループポリシーでWindowsデバイスに設定が適用されるしくみ
-
-Windowsの管理を始めたばかりの人を想定しています。
-題材のADMXは、Windows 11 2026 Update（26H2）向けの管理用テンプレートを使います。
+今回は、ADMXの役割と仕様、設定した値がどこに保存されてどのレジストリに書き込まれるのか、既存のADMXの読み方、Windowsデバイスで設定が評価されるしくみについて紹介します。
 
 ## ADMXとは
 
-ADMXは、グループポリシーの管理用テンプレート（Administrative Templates）に表示される設定項目を定義するXMLファイルです。
-グループポリシーの管理エディタやローカルグループポリシーエディタ（`gpedit.msc`）で「管理用テンプレート」を開くと、たくさんの設定項目が並んでいます。
-これらの項目は、すべてADMXの定義から作られています。
+ADMXは、レジストリで制御できる設定の設計図です。
+1つの設定項目について、次の2つを定義します。
+
+- 「有効」「無効」や入力した値を、どのレジストリキーのどの値にどの型で書き込むか
+- グループポリシーの管理エディタやローカルグループポリシーエディタ（`gpedit.msc`）に、どの分類でどのような入力欄を表示するか
 
 ここで大切なのは、**ADMX自体は設定値を持たない**という点です。
-ADMXに書かれているのは、「このポリシーを有効にしたら、どのレジストリキーにどの値を書き込むか」と「エディタでどのように表示するか」の定義だけです。
-管理者がエディタで設定した値はGPO（グループポリシーオブジェクト）に保存され、最終的にWindowsデバイスのレジストリに書き込まれます。
-OSやアプリケーションは、このレジストリの値を読んで動作を変えます。
+管理者がエディタで選んだ状態や入力した値は、ADMXの定義に従って`Registry.pol`というファイルに保存されます。
+Windowsデバイスはこのファイルを読んでレジストリに値を書き込み、OSやアプリケーションはそのレジストリの値を読んで動作を変えます。
+値がどのパスに保存され、どのレジストリに書き込まれるのかは、「ADMX/ADMLファイルの仕様」で具体的に説明します。
 
-```d2 title="ADMXの定義をもとに設定した値が、Windowsデバイスのレジストリに書き込まれるまでの流れ"
+```d2 title="ADMXの定義をもとにエディタで設定した値が、Registry.polを経由してWindowsデバイスのレジストリに書き込まれるまでの流れ"
 grid-columns: 3
 grid-gap: 40
-admin: 管理者のPC {
+admin: 管理者の操作 {
   admx: ADMX（定義） {shape: image; icon: /d2-icons/file-code.svg}
   adml: ADML（表示） {shape: image; icon: /d2-icons/languages.svg}
   editor: エディタ {shape: image; icon: /d2-icons/monitor-cog.svg}
   admx -> editor
   adml -> editor
 }
-dc: ドメインコントローラ {
+gpo: GPO {
   pol: Registry.pol {shape: image; icon: /d2-icons/file-cog.svg}
 }
 client: Windowsデバイス {
@@ -58,8 +47,8 @@ client: Windowsデバイス {
   app: OSやアプリ {shape: image; icon: /d2-icons/app-window.svg}
   app -> reg: 読み取る
 }
-admin.editor -> dc.pol: 保存
-dc.pol -> client.reg: 書き込む
+admin.editor -> gpo.pol: 保存
+gpo.pol -> client.reg: 書き込む
 ```
 
 ### ADMX、ADML、関連ファイルの違い
@@ -71,7 +60,7 @@ dc.pol -> client.reg: 書き込む
 | --- | --- | --- | --- |
 | ADMX（`.admx`） | ポリシーの定義（書き込むレジストリと値、エディタでの分類） | XML | `PolicyDefinitions`フォルダー |
 | ADML（`.adml`） | 表示用の文字列と、入力欄などの画面部品の配置 | XML | `PolicyDefinitions`の下の言語別フォルダー（`ja-JP`など） |
-| ADM（`.adm`） | 旧形式の管理用テンプレート。定義と表示用の文字列を1つのファイルに持つ | 独自のテキスト形式 | GPOごとにSYSVOLへコピーされる |
+| ADM（`.adm`） | 旧形式の管理用テンプレート。定義と表示用の文字列を1つのファイルに持つ | 独自のテキスト形式 | GPOごとのフォルダー |
 | `Registry.pol` | エディタで設定した値そのもの | バイナリ | GPOごとのフォルダー（コンピュータ用とユーザー用） |
 
 ADMXは言語に依存しない定義で、エディタに表示する文字列は`$(string.ID)`のような参照で書かれています。
@@ -87,18 +76,14 @@ ADMLが必要なのは、エディタのように人がポリシーを見て選�
 | グループポリシーを適用するWindowsデバイス | 不要 | 不要 |
 | MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
 
-グループポリシーを適用するWindowsデバイスには、ADMXとADMLのどちらも配布されません。
-配布されるのは、設定値を記録した`Registry.pol`だけです。
-このしくみは、後半の「Windowsデバイスでどのように評価されるのか」で詳しく説明します。
-
 ADMは、Windows Vistaより前に使われていた形式です。
-ADMはGPOを作るたびにSYSVOLの中のGPOのフォルダーへコピーされていたため、ドメインコントローラに同じファイルが大量に保存されていました。
-ADMXではこのしくみがなくなり、ファイルを1つの場所（後述するセントラルストア）にまとめて置けるようになりました。
+ADMはGPOを作るたびにGPOのフォルダーへコピーされていたため、同じファイルが大量に保存されていました。
+ADMXではこのしくみがなくなり、GPOには設定値の`Registry.pol`だけが保存されるようになりました。
 なお、Windows 10以降にはADM形式の管理用テンプレートは含まれていません。
 
 ## ADMX/ADMLファイルの仕様
 
-ここからは、ADMXとADMLのXMLの書き方を見ていきます。
+ここからは、ADMXとADMLのXMLの書き方と、設定した値が保存される場所、書き込まれる場所を見ていきます。
 要素の一覧は、Microsoft Learnの[PolicyDefinitions schema](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/schema-root)にまとまっています。
 
 ### ADMXの構造
@@ -188,8 +173,10 @@ smartscreen.supportedOn -> windows.supportedOn
 
 子要素では、`parentCategory`で所属するカテゴリを、`supportedOn`で対応するバージョンを指定します。
 
-ポリシーの有効時と無効時に書き込む値は、`enabledValue`と`disabledValue`で指定します。
-値には、数値を表す`decimal`、文字列を表す`string`、値を削除する`delete`などを使えます。
+#### 有効、無効のときに書き込む値
+
+ポリシーの有効時と無効時に`valueName`へ書き込む値は、`enabledValue`と`disabledValue`で指定します。
+値には、数値を表す`decimal`、文字列を表す`string`、値を削除する`delete`のいずれかを使います。
 
 ```xml title="有効で1、無効で0を書き込む例"
 <policy name="ExamplePolicy" class="Machine" displayName="$(string.ExamplePolicy)"
@@ -206,6 +193,42 @@ smartscreen.supportedOn -> windows.supportedOn
 ```
 
 1つのポリシーで複数の値を書き込みたい場合は、`enabledList`と`disabledList`を使います。
+`item`要素ごとに`key`と`valueName`を指定できるので、`policy`要素の`key`とは別のキーにも書き込めます。
+
+```xml title="有効にしたときに2つのキーへ書き込み、無効にしたときに片方の値を削除する例"
+<policy name="ExampleListPolicy" class="Machine" displayName="$(string.ExampleListPolicy)"
+  key="Software\Policies\ExampleApp">
+  <parentCategory ref="ExampleCategory" />
+  <supportedOn ref="windows:SUPPORTED_Windows_10_0" />
+  <enabledList>
+    <item key="Software\Policies\ExampleApp" valueName="FeatureEnabled">
+      <value>
+        <decimal value="1" />
+      </value>
+    </item>
+    <item key="Software\Policies\ExampleApp\Feature" valueName="Mode">
+      <value>
+        <string>Strict</string>
+      </value>
+    </item>
+  </enabledList>
+  <disabledList>
+    <item key="Software\Policies\ExampleApp" valueName="FeatureEnabled">
+      <value>
+        <decimal value="0" />
+      </value>
+    </item>
+    <item key="Software\Policies\ExampleApp\Feature" valueName="Mode">
+      <value>
+        <delete />
+      </value>
+    </item>
+  </disabledList>
+</policy>
+```
+
+`enabledValue`と`disabledValue`はどちらも任意ですが、Microsoftのリファレンスは、`enabledValue`を省略するとエディタが有効、無効、未構成の状態を正しく表示できない場合があると注意しています。
+自作のADMXでは、両方を明示しておくのが無難だと思います。
 
 #### elements要素
 
@@ -218,13 +241,18 @@ smartscreen.supportedOn -> windows.supportedOn
 | `boolean` | オンとオフの2択 | `trueValue`と`falseValue`で指定した値 |
 | `decimal` | 数値 | `REG_DWORD`（`storeAsText="true"`の場合は文字列） |
 | `longDecimal` | 64ビットの数値 | `REG_QWORD` |
-| `text` | 1行の文字列 | `REG_SZ` |
+| `text` | 1行の文字列 | `REG_SZ`（`expandable="true"`の場合は`REG_EXPAND_SZ`） |
 | `multiText` | 複数行の文字列 | `REG_MULTI_SZ` |
 | `enum` | 選択肢から1つを選ぶ | 選んだ`item`の`value`で指定した値 |
 | `list` | 複数の項目の一覧 | 指定したキーの下に、項目ごとの値 |
 
 `elements`の各項目には`id`を付けます。
 この`id`は、ADMLの画面部品と対応付けるために使います。
+
+`list`は、1つのキーの下に複数の値を書き込む項目です。
+`valuePrefix`を指定すると、`valuePrefix`に連番を付けた名前の値が作られます。
+`explicitValue="true"`にすると、管理者が値の名前とデータの両方を入力します。
+デフォルトでは、ポリシーの適用時にそのキーの既存の値を削除してから一覧の値を書き込みますが、`additive="true"`にすると既存の値を残したまま追加します。
 
 ### ADMLの構造
 
@@ -293,17 +321,93 @@ admx.presentation -> adml.presentation
 admx.elements -> adml.control
 ```
 
-### classと書き込み先の対応
+### 値が書き込まれるレジストリの場所
 
 `policy`要素の`class`属性によって、ポリシーが表示される場所と、値が書き込まれるレジストリのルートが決まります。
 
-| `class` | エディタでの表示場所 | 書き込み先 |
+| `class` | エディタでの表示場所 | 書き込み先のルート |
 | --- | --- | --- |
-| `Machine` | コンピューターの構成 | `HKEY_LOCAL_MACHINE` |
-| `User` | ユーザーの構成 | `HKEY_CURRENT_USER` |
+| `Machine` | コンピューターの構成 | `HKEY_LOCAL_MACHINE`（`HKLM`） |
+| `User` | ユーザーの構成 | `HKEY_CURRENT_USER`（`HKCU`） |
 | `Both` | 両方 | 設定した側に応じて、どちらか |
 
-`key`属性にはルートを含めないので、同じ`key`でも`class`によって書き込み先が変わります。
+`key`属性にはルートを含めないので、実際に書き込まれる場所は「`class`で決まるルート + `key` + `valueName`」です。
+たとえば、`class="Machine"`で`key="Software\Policies\Microsoft\Windows\System"`、`valueName="EnableSmartScreen"`と定義されているとします。
+この場合は、`HKLM\Software\Policies\Microsoft\Windows\System`キーの`EnableSmartScreen`という値に書き込まれます。
+同じ`key`でも、`class`によって書き込み先は変わります。
+
+ADMXが書き込めるのは、`HKLM`と`HKCU`の配下だけです。
+`HKEY_CLASSES_ROOT`など、ほかのルートの配下は指定できません。
+
+### Software\Policies配下とそれ以外のキー
+
+`key`には、`HKLM`と`HKCU`の配下であればどのキーでも指定できます。
+ただし、Microsoftは次の4つのキーをポリシー用の場所と定めていて、Windows標準のADMXのほとんどはこの配下に書き込みます。
+
+- `HKLM\Software\Policies`（推奨）
+- `HKLM\Software\Microsoft\Windows\CurrentVersion\Policies`
+- `HKCU\Software\Policies`（推奨）
+- `HKCU\Software\Microsoft\Windows\CurrentVersion\Policies`
+
+これらのキーに書き込まれる設定は、「管理されたポリシー（Managed）」として扱われます。
+これらのキーは標準ユーザーには書き換えられないように保護されていて、GPOの適用対象から外れると、グループポリシーのクライアントは値を削除します。
+また、ポリシーの値はアプリケーション自身が保存する通常の設定（Preference）とは別のキーにあるため、ポリシーを外せばもとの設定に戻ります。
+
+一方で、`Software\Policies`以外のキーに書き込むADMXも作れます。
+たとえば、アプリケーションが自分の設定を保存している`HKCU\Software\ExampleApp`に、ADMXから直接値を書き込むこともできます。
+しかし、このようなキーに書き込んだ値は「管理されていないポリシー（Unmanaged）」として扱われ、GPOの適用対象から外れても値が残り続けます。
+レジストリに設定が残り続ける状態は、「入れ墨（tattooing）」と呼ばれることもあります。
+
+エディタは、デフォルトでは管理されていないポリシーも表示します。
+フィルタオプションの「管理」で表示を絞ると、管理されたポリシーだけを表示できます。
+
+自作のADMXでは、書き込み先を`Software\Policies`の配下にしておくのがよいと思います。
+ポリシー用のキー以外に書き込む必要がある場合は、値を戻す手段を用意しておく必要があります。
+
+参考：[Implementing Registry-Based Group Policy for Applications](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb742499(v=technet.10))
+
+### 設定した値が保存される場所
+
+エディタでポリシーを設定しても、その場でレジストリに値が書き込まれるわけではありません。
+エディタはADMXの定義をもとに、書き込むレジストリのキー、値の名前、型、データを`Registry.pol`に記録します。
+
+`Registry.pol`はGPOごとに2つあり、コンピューターの構成は`Machine`フォルダー、ユーザーの構成は`User`フォルダーに保存されます。
+GPOがどこにあるかで、`Registry.pol`のパスは次のように変わります。
+
+- ローカルGPO（`gpedit.msc`で編集）
+  - `C:\Windows\System32\GroupPolicy\Machine\Registry.pol`
+  - `C:\Windows\System32\GroupPolicy\User\Registry.pol`
+- ドメインのGPO
+  - `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Machine\Registry.pol`
+  - `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\User\Registry.pol`
+
+ローカルGPOは、ドメインに参加していないWindowsデバイスにもあります。
+`gpedit.msc`で設定した値は、そのデバイスの`C:\Windows\System32\GroupPolicy`の下に保存されます。
+ドメインのGPOでは、同じ構造のフォルダーがドメインの共有フォルダー（SYSVOL）にあり、適用対象のWindowsデバイスがそこから`Registry.pol`を読み取ります。
+どちらの場合も、`Registry.pol`を読み取ってレジストリに書き込むのはWindowsデバイス自身です。
+
+`Registry.pol`の中身は、`PReg`というシグネチャとバージョンのヘッダに続いて、次の形式のエントリが並んだものです。
+
+```text title="Registry.polのエントリの形式"
+[キー;値の名前;型;サイズ;データ]
+```
+
+キーには`HKLM`などのルートを含めず、ファイルの置き場所（`Machine`または`User`）でルートが決まります。
+エントリは先頭から順に処理されるので、同じ値に対するエントリが複数あれば、後のエントリが優先されます。
+値の名前には、次のような特別な指定もあります。
+
+| 値の名前 | 意味 |
+| --- | --- |
+| `**del.値の名前` | その値を削除する |
+| `**DeleteValues` | データにセミコロン区切りで指定した値を削除する |
+| `**DelVals.` | そのキーの値をすべて削除する |
+| `**DeleteKeys` | データにセミコロン区切りで指定したサブキーを削除する |
+
+ADMXの`delete`要素や、`list`の既存の値の削除は、この削除の指定に対応しています。
+詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
+
+このように、`Registry.pol`には「どのキーにどの値をどの型で書くか」がすでに具体的に記録されています。
+そのため、`Registry.pol`を適用するWindowsデバイスには、ADMXとADMLのどちらも必要ありません。
 
 ## 簡単な例：ADMXを書いてみる
 
@@ -438,10 +542,20 @@ admx.elements -> adml.control
 「起動時のヒント」の`policy`要素には`valueName`がないので、値を書き込むのは`elements`の`boolean`だけです。
 このように、ポリシー自体の有効、無効を値として書き込むかどうかも、ADMXの書き方で決まります。
 
+たとえば、`gpedit.msc`で「自動更新を無効にする」を有効にすると、`C:\Windows\System32\GroupPolicy\Machine\Registry.pol`に次の内容のエントリが記録されます。
+ここでは読みやすいように、型と数値をテキストで表しています。
+
+```text title="Registry.polに記録されるエントリの内容"
+[Software\Policies\ExampleApp;DisableAutoUpdate;REG_DWORD;4;1]
+```
+
+グループポリシーが適用されると、このエントリから`HKLM\Software\Policies\ExampleApp`キーの`DisableAutoUpdate`に`1`が書き込まれます。
+
 ## 既存のADMXの読み方
 
 次に、Windows標準のADMXを読んでみます。
 題材には、ファイルやアプリケーションの安全性を確認するMicrosoft Defender SmartScreenの`SmartScreen.admx`を使います。
+抜粋は、Windows 11 2026 Update（26H2）向けの管理用テンプレートのものです。
 
 Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`にあります。
 最新のものは、Microsoftのダウンロードセンターで配布されている管理用テンプレートからも入手できます。
@@ -456,7 +570,7 @@ direction: down
 name: "1. エディタの表示名\n「Windows Defender SmartScreen を構成します」"
 id: "2. ADMLで文字列のIDを探す\nShellConfigureSmartScreen"
 policy: "3. ADMXでIDを参照するpolicyを探す\ndisplayName属性の参照先"
-reg: "4. key、valueName、elementsを読む\nEnableSmartScreen、ShellSmartScreenLevel"
+reg: "4. class、key、valueName、elementsを読む\nEnableSmartScreen、ShellSmartScreenLevel"
 name -> id -> policy -> reg
 ```
 
@@ -540,7 +654,7 @@ name -> id -> policy -> reg
 
 - 名前空間は`Microsoft.Policies.SmartScreen`で、`Windows.admx`（`windows`）と、Microsoft Edgeの旧版のADMX（`edge`）を参照している
 - カテゴリは「Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」の階層になっている
-- `class="Machine"`のため、「コンピューターの構成」に表示され、`HKEY_LOCAL_MACHINE`に書き込まれる
+- `class="Machine"`のため、「コンピューターの構成」に表示され、`HKLM`に書き込まれる
 - 有効にすると`EnableSmartScreen`に`1`、無効にすると`0`が書き込まれる
 - 有効にしたときは、ドロップダウンリストで選んだ項目に応じて、`ShellSmartScreenLevel`に`Block`か`Warn`の文字列が書き込まれる
 
@@ -556,22 +670,17 @@ name -> id -> policy -> reg
 ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`をたどれば、どのADMXでも同じ手順でレジストリの値を調べられます。
 サードパーティー製アプリケーションのADMXでも、読み方は変わりません。
 
-## ファイルの配置と読み込みの仕様
+## ADMXファイルの配置と読み込み
 
 ADMXとADMLは、エディタが読み込める場所に置く必要があります。
 置き場所には、ローカルストアとセントラルストアの2つがあります。
 
-ローカルストアは各Windowsデバイスにあるデフォルトの置き場所です。
-パスは`C:\Windows\PolicyDefinitions`です。
-セントラルストアはドメインで共有する置き場所です。
-パスは`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`です。
+ローカルストアは、各Windowsデバイスにあるデフォルトの置き場所です。
+パスは`C:\Windows\PolicyDefinitions`で、`gpedit.msc`はここにあるADMXを読み込みます。
+セントラルストアは、ドメインの管理者が同じADMXを共有するための置き場所です。
+パスは`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`で、グループポリシーのツールはセントラルストアがあればそちらのADMXを使います。
 
 どちらの置き場所でも、ADMXはフォルダーの直下に、ADMLは言語別のフォルダー（`ja-JP`、`en-US`など）に置きます。
-
-セントラルストアの実体は、ドメインコントローラのSYSVOLにある`PolicyDefinitions`フォルダーです。
-グループポリシーのツールはデフォルトでセントラルストアを確認し、セントラルストアがある場合は、そこにあるすべてのADMXを使います。
-セントラルストアのファイルは、ドメイン内のすべてのドメインコントローラに複製されます。
-そのため、管理者がどのPCからGPOを編集しても、同じADMXを使って設定できます。
 
 ```d2 title="エディタがADMXとADMLを読み込む場所を決める流れ"
 direction: down
@@ -617,43 +726,23 @@ Microsoftは、新しいバージョン用のフォルダー（`PolicyDefinition
 
 ## Windowsデバイスでどのように評価されるのか
 
-最後に、エディタで設定した値が、Windowsデバイスでどのように適用されるのかを説明します。
-エディタで設定した値は、「ADMXとは」で示した図のとおり、GPOの`Registry.pol`に保存されています。
-Windowsデバイスは、次の流れでこの値をレジストリに書き込みます。
+最後に、`Registry.pol`に保存された値が、Windowsデバイスでどのように評価されてレジストリに書き込まれるのかを説明します。
 
-```d2 title="Windowsデバイスが、ドメインコントローラからRegistry.polを取得してレジストリに書き込むまでのシーケンス"
+Windowsデバイスでは、Group Policyサービス（`gpsvc`）が適用対象のGPOを決め、GPOごとの`Registry.pol`を読み取ります。
+読み取った内容は、レジストリを担当するクライアント側の拡張機能（Registry CSE）に渡され、Registry CSEがレジストリに値を書き込みます。
+ローカルGPOの`Registry.pol`はデバイス自身にあり、ドメインのGPOの`Registry.pol`はSYSVOLから読み取ります。
+
+```d2 title="Group PolicyサービスがRegistry.polを読み取り、Registry CSEがレジストリに書き込むまでのシーケンス"
 shape: sequence_diagram
-dc: ドメインコントローラ
+pol: GPOのRegistry.pol
 gpsvc: Group Policyサービス
 cse: Registry CSE
 reg: レジストリ
-gpsvc -> dc: 適用するGPOを確認
-dc -> gpsvc: GPOの一覧
-gpsvc -> dc: Registry.polを取得
+gpsvc -> pol: 読み取る
+pol -> gpsvc: エントリの一覧
 gpsvc -> cse: 適用を依頼
-cse -> reg: 値を書き込む
+cse -> reg: 順に書き込む
 ```
-
-Group PolicyサービスとRegistry CSEは、Windowsデバイス側で動くしくみです。
-
-### WindowsデバイスにADMXが不要な理由
-
-エディタでポリシーを設定すると、エディタはADMXの定義をもとに、書き込むレジストリの値を`Registry.pol`に記録します。
-`Registry.pol`はGPOごとのフォルダーにあり、コンピューターの構成は`Machine`フォルダー、ユーザーの構成は`User`フォルダーに保存されます。
-
-`Registry.pol`の中身は、次の形式のエントリの並びです。
-
-```text title="Registry.polのエントリーの形式"
-[キー;値の名前;型;サイズ;データ]
-```
-
-キーには`HKEY_LOCAL_MACHINE`などのルートを含めず、ファイルの置き場所（`Machine`または`User`）でルートが決まります。
-値の名前に`**del.値の名前`を指定すると、その値の削除を表します。
-詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
-
-このように、`Registry.pol`には「どのキーにどの値を書くか」がすでに具体的に記録されています。
-WindowsデバイスのGroup Policyサービスは、`Registry.pol`を取得して、レジストリを処理するクライアント側の拡張機能（Registry CSE）に渡します。
-そのため、WindowsデバイスにはADMXとADMLのどちらも必要ありません。
 
 ### 適用のタイミング
 
@@ -664,7 +753,7 @@ WindowsデバイスのGroup Policyサービスは、`Registry.pol`を取得し�
 - 起動中やサインイン中は、バックグラウンドで定期的に更新
 
 バックグラウンドでの更新は、デフォルトで90分ごとに、0〜30分のランダムな時間を加えて行われます。
-多くのWindowsデバイスが同時にドメインコントローラへ問い合わせないように、ランダムな時間を加えています。
+多くのWindowsデバイスが同時に問い合わせないように、ランダムな時間を加えています。
 なお、ドメインコントローラ自身は5分ごとに更新されます。
 これらのデフォルト値は、Windows標準のADMX（`GroupPolicy.admx`）にある「コンピューターのグループ ポリシーの更新間隔を設定する」などのポリシーの説明で確認できます。
 
@@ -676,19 +765,12 @@ gpupdate /force
 
 ### 適用の順序
 
-1台のWindowsデバイスに、複数のGPOを適用できます。
-GPOは次の順序で適用され、後から適用されたGPOの設定が優先されます。
-
-```d2 title="ローカル、サイト、ドメイン、OUの順にGPOが適用され、後から適用されたGPOが優先される流れ"
-local: ローカル {shape: image; icon: /d2-icons/monitor.svg}
-site: サイト {shape: image; icon: /d2-icons/map-pin.svg}
-domain: ドメイン {shape: image; icon: /d2-icons/network.svg}
-ou: OU {shape: image; icon: /d2-icons/folder-tree.svg}
-local -> site -> domain -> ou
-```
-
+1台のWindowsデバイスには、複数のGPOを適用できます。
+GPOはローカル、サイト、ドメイン、OU（組織単位）の順に適用され、後から適用されたGPOの設定が優先されます。
 それぞれの頭文字を取って、LSDOUと呼ばれることもあります。
-OUが入れ子になっている場合は、親のOUから順に適用されます。
+
+ドメインに参加していないWindowsデバイスでは、ローカルGPOだけが適用されます。
+`Registry.pol`の中でも、エントリは先頭から順に処理されるため、同じ値に対する指定が重なった場合は後のものが残ります。
 
 ### 未構成、有効、無効の違い
 
@@ -697,24 +779,13 @@ OUが入れ子になっている場合は、親のOUから順に適用されま�
 | 状態 | `Registry.pol`に記録される内容 |
 | --- | --- |
 | 未構成 | 何も記録しない。このGPOではそのポリシーを管理しない |
-| 有効 | ADMXの`enabledValue`や`elements`で定義した値 |
-| 無効 | ADMXの`disabledValue`で定義した値 |
+| 有効 | ADMXの`enabledValue`、`enabledList`、`elements`で定義した値 |
+| 無効 | ADMXの`disabledValue`や`disabledList`で定義した値 |
 
 「無効」と「未構成」は、同じ意味ではありません。
 「無効」は、無効を表す値（SmartScreenの例では`EnableSmartScreen`に`0`）を明示的に書き込みます。
 一方で「未構成」は何も書き込まないので、ほかのGPOの設定や、OSやアプリケーションのデフォルトの動作がそのまま使われます。
-
-### Software\Policies配下とそれ以外のキー
-
-ADMXのポリシーは、原則として`HKLM\Software\Policies`と`HKCU\Software\Policies`の配下に書き込みます。
-グループポリシーは、これらのキーに書き込んだ値を管理していて、GPOが適用されなくなると値を削除します。
-
-一方で、ADMXでは`Software\Policies`以外のキーにも書き込むことができます。
-ただし、この場合はGPOが適用されなくなっても値が残ります。
-レジストリに設定が残り続ける状態は、「入れ墨（tattooing）」と呼ばれることもあります。
-自作のADMXでは、書き込み先を`Software\Policies`の配下にしておくのがよいと思います。
-
-参考：[Implementing Registry-Based Group Policy for Applications](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb742499(v=technet.10))
+有効や無効にしていたポリシーを未構成に戻すと、`Software\Policies`配下などの管理されたポリシーの値は、次の適用時に削除されます。
 
 ### 適用結果の確認方法
 
@@ -729,21 +800,20 @@ ADMXのポリシーは、原則として`HKLM\Software\Policies`と`HKCU\Softwar
 ### MDMでの評価との違い
 
 ここまではグループポリシーの場合のしくみです。
-Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、評価のしくみが異なります。
+Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、`Registry.pol`とGroup Policyサービスのどちらも使われません。
 
 MDMでは、Windowsデバイス自身がADMXの定義を持っていて、MDMから受け取った「有効」「無効」と入力値を、その定義に従ってレジストリに変換します。
-Windows標準のADMXはOSに組み込まれていて、サードパーティー製アプリケーションのADMXは、MDMからWindowsデバイスに取り込みます。
-このとき、Group Policyサービスは使われません。
+Windows標準のADMXはOSに組み込まれていて、サードパーティー製アプリケーションのADMXは、ADMXのXMLをそのままMDMからWindowsデバイスに取り込みます。
+このとき、ポリシーを指定するのに使うのは、エディタの表示名ではなく、ADMXの`policy`要素の`name`、カテゴリの`name`、`elements`の`id`です。
+今回紹介した読み方は、そのまま役に立ちます。
 
-詳しくは、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
+IntuneでのADMXの使い方については、別の記事で紹介する予定です。
+MDMでのしくみの詳細は、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
 
 ## 終わりに
 
-今回は、ADMXの役割と仕様、既存のADMXの読み方、Windowsデバイスに設定が適用されるまでのしくみについて紹介しました。
-ADMXは設定値を持たない定義書で、設定の実体はレジストリです。
+今回は、ADMXの役割と仕様、設定した値が保存される`Registry.pol`と書き込まれるレジストリの場所、既存のADMXの読み方、Windowsデバイスで設定が評価されるしくみについて紹介しました。
+ADMXは設定値を持たない設計図で、設定の実体はレジストリの値です。
 ADMLは表示のためのファイルで、設定を適用するWindowsデバイスには必要ありません。
 
-ADMXは、グループポリシーだけでなく、Microsoft IntuneでWindowsデバイスを管理するときにも頻繁に登場します。
-Intuneの設定カタログに並ぶ項目の多くはADMXが元になっていて、サードパーティー製アプリケーションのADMXをインポートして使うこともできます。
-今回紹介した読み方を知っていれば、Intuneで目的の設定を探したり、設定がレジストリにどのように反映されるかを確かめたりするときにも役立つと思います。
-IntuneでのADMXの使い方については、別の記事で紹介する予定です。
+次回は、Microsoft IntuneでADMXを使ってWindowsデバイスを管理する方法について紹介する予定です。
