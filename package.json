@@ -84,6 +84,9 @@
       "ignoreGhsas": [
         "GHSA-ch52-4w7c-c8xp"
       ]
+    },
+    "patchedDependencies": {
+      "astro-d2@0.14.0": "patches/astro-d2@0.14.0.patch"
     }
   }
 }

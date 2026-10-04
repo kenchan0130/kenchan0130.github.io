@@ -67,6 +67,11 @@ not retained.
   Fonts and `OFL.txt` from a pinned `google/fonts` commit, verifies their SHA-256 checksums, and
   checks that D2 measures text with them. The fonts are used as-is: D2 cannot read fonts subset by
   HarfBuzz and silently falls back to its default font, which breaks Japanese label sizes.
+- `patches/astro-d2@0.14.0.patch` (applied through `pnpm.patchedDependencies`) makes astro-d2 pass
+  fonts to D2.js as base64 strings instead of number arrays. D2.js serializes each compile request as
+  JSON, and the number arrays of the 5.7 MB fonts made every diagram take about 5 seconds. Re-check
+  the patch when upgrading astro-d2; pnpm fails the install if it no longer applies. The `semibold`
+  font slot is not configured because no diagram uses it, and each slot adds per-diagram cost.
 - `src/assets/d2-icons` contains icons copied from `lucide-static` v1.51.0. Add icons from the same
   version and keep the license file when adding new ones.
 
