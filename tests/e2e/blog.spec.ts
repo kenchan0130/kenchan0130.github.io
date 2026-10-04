@@ -3,6 +3,24 @@ import { expect, test } from "@playwright/test";
 
 const articlePath = "/post/2025-12-14-1";
 
+// E2Eは外部の広告配信や解析サービスに依存させない。
+// AdSenseが読み込む子フレームがメインスレッドを数秒止め、短時間だけ表示される要素の確認が失敗することがある。
+const thirdPartyHosts = [
+  /(^|\.)googlesyndication\.com$/,
+  /(^|\.)googletagmanager\.com$/,
+  /(^|\.)google-analytics\.com$/,
+  /(^|\.)doubleclick\.net$/,
+  /(^|\.)adtrafficquality\.google$/,
+  /^www\.google\.com$/,
+];
+
+test.beforeEach(async ({ page }) => {
+  await page.route(
+    (url) => thirdPartyHosts.some((host) => host.test(url.hostname)),
+    (route) => route.abort(),
+  );
+});
+
 test("主要ページと拡張子なしの記事URLを表示できる", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("kenchan0130 blog");
