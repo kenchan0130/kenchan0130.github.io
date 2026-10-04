@@ -474,6 +474,8 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 [キー;値の名前;型;サイズ;データ]
 ```
 
+1つのエントリは、セミコロンで区切った5つの項目からなります。
+
 たとえば、後半で読むSmartScreenのポリシーを有効にして「警告」を選ぶと、コンピューターの構成の`Registry.pol`に次の2つのエントリが記録されます。
 ここでは読みやすいように、型と数値をテキストで表しています。
 
@@ -482,11 +484,11 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 [Software\Policies\Microsoft\Windows\System;ShellSmartScreenLevel;REG_SZ;10;Warn]
 ```
 
-どちらのエントリも、キーの欄は`Software\Policies\Microsoft\Windows\System`です。
+どちらのエントリも、キーは`Software\Policies\Microsoft\Windows\System`です。
 キーには`HKLM`などのルートを含めず、ファイルの置き場所（`Machine`または`User`）でルートが決まります。
-残りの欄は、次のとおりです。
+残りの項目は、次のとおりです。
 
-| 欄 | 1つ目のエントリ | 2つ目のエントリ |
+| 項目 | 1つ目のエントリ | 2つ目のエントリ |
 | --- | --- | --- |
 | 値の名前 | `EnableSmartScreen` | `ShellSmartScreenLevel` |
 | 型 | `REG_DWORD` | `REG_SZ` |
@@ -499,26 +501,26 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 エントリは先頭から順に処理されるので、同じ値に対する指定が複数あれば後のものが優先されます。
 
 値を削除する指定も、同じ形式のエントリとして記録されます。
-通常のエントリでは、値の名前の欄に`EnableSmartScreen`のような書き込む値の名前が入ります。
-削除のエントリでは、値の名前の欄に`**del.ShellSmartScreenLevel`や`**DelVals.`のような決まった名前が入り、その名前で削除の方法を指定します。
+通常のエントリでは、値の名前に`EnableSmartScreen`のような書き込む値の名前が入ります。
+削除のエントリでは、値の名前に`**del.ShellSmartScreenLevel`や`**DelVals.`のような決まった名前が入り、その名前で削除の方法を指定します。
 
 たとえば、同じポリシーを無効にすると、次の2つのエントリが記録されます。
 
-| 値の名前の欄 | 動作 |
+| 値の名前 | 動作 |
 | --- | --- |
 | `EnableSmartScreen` | `EnableSmartScreen`に`0`を書き込む |
 | `**del.ShellSmartScreenLevel` | 有効時に書き込まれた`ShellSmartScreenLevel`を削除する |
 
-値の名前の欄に入る削除の指定には、次の4種類があります。
+値の名前に入る削除の指定には、次の4種類があります。
 
-| 値の名前の欄 | 削除するもの |
+| 値の名前 | 削除するもの |
 | --- | --- |
 | `**del.`＋値の名前 | `**del.`の後に書いた名前の値 |
-| `**DeleteValues` | データの欄にセミコロン区切りで書いた値 |
-| `**DelVals.` | キーの欄に書いたキーの、すべての値 |
-| `**DeleteKeys` | データの欄にセミコロン区切りで書いたサブキー |
+| `**DeleteValues` | データにセミコロン区切りで書いた値 |
+| `**DelVals.` | キーに書いたキーの、すべての値 |
+| `**DeleteKeys` | データにセミコロン区切りで書いたサブキー |
 
-たとえば、データの欄が`ValueA;ValueB`の`**DeleteValues`は、`ValueA`と`ValueB`を削除します。
+たとえば、データが`ValueA;ValueB`の`**DeleteValues`は、`ValueA`と`ValueB`を削除します。
 
 ADMXの`delete`要素や、`list`が既存の値を削除してから書き込む動作も、これらのエントリで表されます。
 詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
