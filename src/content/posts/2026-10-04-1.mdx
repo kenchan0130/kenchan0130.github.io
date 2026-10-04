@@ -1,0 +1,749 @@
+---
+title: ADMXのしくみと読み方
+description: ADMXとADMLの役割の違いとXMLの仕様、簡単な自作例、Windows標準のADMXの読み方、グループポリシーでWindowsデバイスに設定が適用されるまでのしくみを解説します。
+published: 2026-10-04
+categories:
+  - system-administration
+tags:
+  - ADMX
+  - Windows
+references: []
+draft: true
+---
+
+Windowsの設定を組織でまとめて管理するときは、グループポリシーの「管理用テンプレート」を使うことが多いと思います。
+この管理用テンプレートの正体が、ADMXと呼ばれるXMLファイルです。
+ADMXのしくみを知っておくと、目的の設定がレジストリのどこに書き込まれるのかを自分で調べられます。
+
+今回は、ADMXの役割と仕様、既存のADMXの読み方、Windowsデバイスに設定が適用されるまでのしくみについて紹介します。
+
+この記事では、以下の内容を扱います。
+
+- ADMXとADMLの役割の違い
+- ADMXとADMLのXMLの仕様
+- 簡単なADMXの自作例
+- Windows標準のADMXの読み方
+- ADMXファイルの配置と読み込みの仕様
+- グループポリシーでWindowsデバイスに設定が適用されるしくみ
+
+Windowsの管理を始めたばかりの人を想定しています。
+題材のADMXは、Windows 11 2026 Update（26H2）向けの管理用テンプレートを使います。
+
+## ADMXとは
+
+ADMXは、グループポリシーの管理用テンプレート（Administrative Templates）に表示される設定項目を定義するXMLファイルです。
+グループポリシーの管理エディタやローカルグループポリシーエディタ（`gpedit.msc`）で「管理用テンプレート」を開くと、たくさんの設定項目が並んでいます。
+これらの項目は、すべてADMXの定義から作られています。
+
+ここで大切なのは、**ADMX自体は設定値を持たない**という点です。
+ADMXに書かれているのは、「このポリシーを有効にしたら、どのレジストリキーにどの値を書き込むか」と「エディタでどのように表示するか」の定義だけです。
+管理者がエディタで設定した値はGPO（グループポリシーオブジェクト）に保存され、最終的にWindowsデバイスのレジストリに書き込まれます。
+OSやアプリケーションは、このレジストリの値を読んで動作を変えます。
+
+```d2 title="ADMXの定義をもとに設定した値が、Windowsデバイスのレジストリに書き込まれるまでの流れ"
+grid-columns: 3
+grid-gap: 40
+admin: 管理者のPC {
+  admx: ADMX（定義） {shape: image; icon: /d2-icons/file-code.svg}
+  adml: ADML（表示） {shape: image; icon: /d2-icons/languages.svg}
+  editor: エディタ {shape: image; icon: /d2-icons/monitor-cog.svg}
+  admx -> editor
+  adml -> editor
+}
+dc: ドメインコントローラ {
+  pol: Registry.pol {shape: image; icon: /d2-icons/file-cog.svg}
+}
+client: Windowsデバイス {
+  reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
+  app: OSやアプリ {shape: image; icon: /d2-icons/app-window.svg}
+  app -> reg: 読み取る
+}
+admin.editor -> dc.pol: 保存
+dc.pol -> client.reg: 書き込む
+```
+
+### ADMX、ADML、関連ファイルの違い
+
+管理用テンプレートに関係するファイルは、いくつかあります。
+名前が似ているので、役割の違いを整理します。
+
+| ファイル | 役割 | 形式 | 置き場所 |
+| --- | --- | --- | --- |
+| ADMX（`.admx`） | ポリシーの定義（書き込むレジストリと値、エディタでの分類） | XML | `PolicyDefinitions`フォルダー |
+| ADML（`.adml`） | 表示用の文字列と、入力欄などの画面部品の配置 | XML | `PolicyDefinitions`の下の言語別フォルダー（`ja-JP`など） |
+| ADM（`.adm`） | 旧形式の管理用テンプレート。定義と表示用の文字列を1つのファイルに持つ | 独自のテキスト形式 | GPOごとにSYSVOLへコピーされる |
+| `Registry.pol` | エディタで設定した値そのもの | バイナリ | GPOごとのフォルダー（コンピュータ用とユーザー用） |
+
+ADMXは言語に依存しない定義で、エディタに表示する文字列は`$(string.ID)`のような参照で書かれています。
+この参照先の文字列を持つのが、言語ごとに用意されるADMLです。
+同じADMXに日本語と英語のADMLを用意すれば、管理者は自分の言語で同じポリシーを設定できます。
+
+ADMLが必要なのは、エディタのように人がポリシーを見て選ぶ場面だけです。
+レジストリに書き込む値を決めるのに必要な情報は、すべてADMXにあります。
+
+| 場面 | ADMX | ADML |
+| --- | --- | --- |
+| エディタでポリシーを表示、編集する | 必要 | 必要 |
+| グループポリシーを適用するWindowsデバイス | 不要 | 不要 |
+| MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
+
+グループポリシーを適用するWindowsデバイスには、ADMXとADMLのどちらも配布されません。
+配布されるのは、設定値を記録した`Registry.pol`だけです。
+このしくみは、後半の「Windowsデバイスでどのように評価されるのか」で詳しく説明します。
+
+ADMは、Windows Vistaより前に使われていた形式です。
+ADMはGPOを作るたびにSYSVOLの中のGPOのフォルダーへコピーされていたため、ドメインコントローラに同じファイルが大量に保存されていました。
+ADMXではこのしくみがなくなり、ファイルを1つの場所（後述するセントラルストア）にまとめて置けるようになりました。
+なお、Windows 10以降にはADM形式の管理用テンプレートは含まれていません。
+
+## ADMX/ADMLファイルの仕様
+
+ここからは、ADMXとADMLのXMLの書き方を見ていきます。
+要素の一覧は、Microsoft Learnの[PolicyDefinitions schema](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/schema-root)にまとまっています。
+
+### ADMXの構造
+
+ADMXは、次のような構造になっています。
+
+```xml title="ADMXの基本構造"
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions revision="1.0" schemaVersion="1.0"
+  xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <!-- このファイルの名前空間と、参照する他のファイルの名前空間 -->
+  <policyNamespaces>
+    <target prefix="smartscreen" namespace="Microsoft.Policies.SmartScreen" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
+  </policyNamespaces>
+  <!-- 対応するADMLの最小のリビジョン -->
+  <resources minRequiredRevision="1.0" />
+  <!-- 対応する製品やバージョンの定義（必要な場合だけ） -->
+  <supportedOn>...</supportedOn>
+  <!-- エディタでの分類 -->
+  <categories>...</categories>
+  <!-- ポリシーの定義 -->
+  <policies>
+    <policy>...</policy>
+  </policies>
+</policyDefinitions>
+```
+
+それぞれの要素の役割は次のとおりです。
+
+| 要素 | 役割 |
+| --- | --- |
+| `policyDefinitions` | ルート要素。`revision`はこのファイルのリビジョン、`schemaVersion`はスキーマのバージョン |
+| `policyNamespaces` | このファイルの名前空間（`target`）と、参照するほかのファイルの名前空間（`using`） |
+| `resources` | 対応するADMLに求める最小のリビジョン（`minRequiredRevision`） |
+| `supportedOn` | 「サポートされるバージョン」としてエディタに表示する定義 |
+| `categories` | エディタのツリーに表示する分類（カテゴリ） |
+| `policies` | ポリシーの定義の一覧 |
+
+#### 名前空間とカテゴリ
+
+`target`要素は、このADMXファイルの名前空間を宣言します。
+名前空間はADMXファイルを識別するもので、ファイルごとに一意である必要があります。
+同じ名前空間を持つADMXが2つあると、エディタはエラーを表示します。
+
+`using`要素は、ほかのADMXファイルの定義を参照するときに使います。
+`prefix`で付けた接頭辞を使って、`windows:WindowsComponents`のようにほかのファイルのカテゴリや`supportedOn`の定義を参照できます。
+
+たとえば、Windows標準の`Windows.admx`はポリシーを1つも持たず、「Windows コンポーネント」などのカテゴリと、対応するWindowsのバージョンの定義だけを提供しています。
+多くのADMXは、`Windows.admx`を参照して、自分のカテゴリを「Windows コンポーネント」の下に配置しています。
+
+```d2 title="SmartScreen.admxがWindows.admxの名前空間、カテゴリ、対応バージョンの定義を参照する関係"
+windows: Windows.admx {
+  shape: sql_table
+  target: 'Microsoft.Policies.Windows'
+  category: 'WindowsComponents'
+  supportedOn: 'SUPPORTED_Windows8'
+}
+smartscreen: SmartScreen.admx {
+  shape: sql_table
+  using: 'prefix="windows"'
+  parentCategory: 'windows:WindowsComponents'
+  supportedOn: 'windows:SUPPORTED_Windows8'
+}
+smartscreen.using -> windows.target
+smartscreen.parentCategory -> windows.category
+smartscreen.supportedOn -> windows.supportedOn
+```
+
+カテゴリは`category`要素で定義し、`parentCategory`要素で親のカテゴリを指定して階層を作ります。
+親を指定しないカテゴリは、「管理用テンプレート」の直下に表示されます。
+
+#### policy要素
+
+`policy`要素が、エディタに表示される1つのポリシーです。
+主な属性は次のとおりです。
+
+| 属性 | 内容 |
+| --- | --- |
+| `name`（必須） | ポリシーの名前。ファイル内で一意にする |
+| `class`（必須） | 適用対象。`Machine`、`User`、`Both`のいずれか |
+| `displayName`（必須） | エディタに表示する名前。ADMLの文字列を`$(string.ID)`で参照する |
+| `explainText`（任意） | ポリシーの説明。ADMLの文字列を参照する |
+| `presentation`（任意） | 入力欄などの画面部品。ADMLの`presentation`を`$(presentation.ID)`で参照する |
+| `key`（必須） | 書き込むレジストリキー。`HKEY_LOCAL_MACHINE`などのルートは含めない |
+| `valueName`（任意） | 有効、無効を切り替えたときに書き込むレジストリの値の名前 |
+
+子要素では、`parentCategory`で所属するカテゴリを、`supportedOn`で対応するバージョンを指定します。
+
+ポリシーの有効時と無効時に書き込む値は、`enabledValue`と`disabledValue`で指定します。
+値には、数値を表す`decimal`、文字列を表す`string`、値を削除する`delete`などを使えます。
+
+```xml title="有効で1、無効で0を書き込む例"
+<policy name="ExamplePolicy" class="Machine" displayName="$(string.ExamplePolicy)"
+  key="Software\Policies\ExampleApp" valueName="ExampleValue">
+  <parentCategory ref="ExampleCategory" />
+  <supportedOn ref="windows:SUPPORTED_Windows_10_0" />
+  <enabledValue>
+    <decimal value="1" />
+  </enabledValue>
+  <disabledValue>
+    <decimal value="0" />
+  </disabledValue>
+</policy>
+```
+
+1つのポリシーで複数の値を書き込みたい場合は、`enabledList`と`disabledList`を使います。
+
+#### elements要素
+
+有効にしたポリシーで文字列や数値などの入力を受け付けたい場合は、入力項目を`elements`要素で定義します。
+それぞれの項目は、`valueName`で指定したレジストリの値に書き込まれます。
+`key`を省略すると、`policy`要素の`key`が使われます。
+
+| 要素 | 内容 | 書き込まれる値 |
+| --- | --- | --- |
+| `boolean` | オンとオフの2択 | `trueValue`と`falseValue`で指定した値 |
+| `decimal` | 数値 | `REG_DWORD`（`storeAsText="true"`の場合は文字列） |
+| `longDecimal` | 64ビットの数値 | `REG_QWORD` |
+| `text` | 1行の文字列 | `REG_SZ` |
+| `multiText` | 複数行の文字列 | `REG_MULTI_SZ` |
+| `enum` | 選択肢から1つを選ぶ | 選んだ`item`の`value`で指定した値 |
+| `list` | 複数の項目の一覧 | 指定したキーの下に、項目ごとの値 |
+
+`elements`の各項目には`id`を付けます。
+この`id`は、ADMLの画面部品と対応付けるために使います。
+
+### ADMLの構造
+
+ADMLは、ADMXに対応する言語ごとのファイルです。
+次のような構造になっています。
+
+```xml title="ADMLの基本構造"
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources revision="1.0" schemaVersion="1.0"
+  xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <displayName>表示名</displayName>
+  <description>説明</description>
+  <resources>
+    <!-- displayNameやexplainTextから参照される文字列 -->
+    <stringTable>
+      <string id="ExamplePolicy">ポリシーの表示名</string>
+    </stringTable>
+    <!-- presentation属性から参照される画面部品の配置 -->
+    <presentationTable>
+      <presentation id="ExamplePolicy">
+        <textBox refId="ExampleText">
+          <label>入力欄の説明:</label>
+        </textBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>
+```
+
+`stringTable`には、ADMXの`$(string.ID)`から参照される文字列を定義します。
+`presentationTable`には、ADMXの`$(presentation.ID)`から参照される画面部品の並びを定義します。
+画面部品は`refId`属性で、ADMXの`elements`の`id`と対応付けます。
+
+| ADMLの画面部品 | 対応するADMXの要素 | エディタでの表示 |
+| --- | --- | --- |
+| `checkBox` | `boolean` | チェックボックス |
+| `decimalTextBox` | `decimal` | 数値の入力欄 |
+| `longDecimalTextBox` | `longDecimal` | 数値の入力欄 |
+| `textBox` | `text` | 1行の入力欄 |
+| `comboBox` | `text` | 候補を選べる入力欄 |
+| `multiTextBox` | `multiText` | 複数行の入力欄 |
+| `dropdownList` | `enum` | ドロップダウンリスト |
+| `listBox` | `list` | 一覧を編集する画面を開くボタン |
+| `text` | なし | 説明の文字列だけを表示 |
+
+ADMXとADMLの参照関係をまとめると、次のようになります。
+
+```d2 title="ADMXのpolicy要素の属性とelementsが、ADMLのstringTableとpresentationTableを参照する関係"
+admx: ADMX {
+  shape: sql_table
+  displayName: '$(string.ID)'
+  explainText: '$(string.ID_Help)'
+  presentation: '$(presentation.ID)'
+  elements: 'enum id="List"'
+}
+adml: ADML {
+  shape: sql_table
+  string: 'string id="ID"'
+  help: 'string id="ID_Help"'
+  presentation: 'presentation id="ID"'
+  control: 'dropdownList refId="List"'
+}
+admx.displayName -> adml.string
+admx.explainText -> adml.help
+admx.presentation -> adml.presentation
+admx.elements -> adml.control
+```
+
+### classと書き込み先の対応
+
+`policy`要素の`class`属性によって、ポリシーが表示される場所と、値が書き込まれるレジストリのルートが決まります。
+
+| `class` | エディタでの表示場所 | 書き込み先 |
+| --- | --- | --- |
+| `Machine` | コンピューターの構成 | `HKEY_LOCAL_MACHINE` |
+| `User` | ユーザーの構成 | `HKEY_CURRENT_USER` |
+| `Both` | 両方 | 設定した側に応じて、どちらか |
+
+`key`属性にはルートを含めないので、同じ`key`でも`class`によって書き込み先が変わります。
+
+## 簡単な例：ADMXを書いてみる
+
+ここまでの仕様を使って、架空のアプリケーション「ExampleApp」のADMXを書いてみます。
+次の3つのポリシーを定義します。
+
+- 自動更新を無効にする（コンピューターの構成、有効と無効の切り替えだけ）
+- 更新サーバーを指定する（コンピューターの構成、文字列と数値の入力）
+- 起動時のヒント（ユーザーの構成、チェックボックス）
+
+```xml title="ExampleApp.admx"
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions revision="1.0" schemaVersion="1.0"
+  xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <policyNamespaces>
+    <target prefix="exampleapp" namespace="Example.Policies.ExampleApp" />
+  </policyNamespaces>
+  <resources minRequiredRevision="1.0" />
+  <supportedOn>
+    <definitions>
+      <definition name="SUPPORTED_ExampleApp_1_0"
+        displayName="$(string.SUPPORTED_ExampleApp_1_0)" />
+    </definitions>
+  </supportedOn>
+  <categories>
+    <category name="ExampleApp" displayName="$(string.ExampleApp)" />
+    <category name="Update" displayName="$(string.Update)">
+      <parentCategory ref="ExampleApp" />
+    </category>
+  </categories>
+  <policies>
+    <policy name="DisableAutoUpdate" class="Machine"
+      displayName="$(string.DisableAutoUpdate)"
+      explainText="$(string.DisableAutoUpdate_Help)"
+      key="Software\Policies\ExampleApp" valueName="DisableAutoUpdate">
+      <parentCategory ref="Update" />
+      <supportedOn ref="SUPPORTED_ExampleApp_1_0" />
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
+    </policy>
+    <policy name="UpdateServer" class="Machine"
+      displayName="$(string.UpdateServer)"
+      explainText="$(string.UpdateServer_Help)"
+      presentation="$(presentation.UpdateServer)"
+      key="Software\Policies\ExampleApp">
+      <parentCategory ref="Update" />
+      <supportedOn ref="SUPPORTED_ExampleApp_1_0" />
+      <elements>
+        <text id="UpdateServerUrl" valueName="UpdateServerUrl" required="true" />
+        <decimal id="CheckIntervalHours" valueName="CheckIntervalHours"
+          minValue="1" maxValue="168" />
+      </elements>
+    </policy>
+    <policy name="StartupTips" class="User"
+      displayName="$(string.StartupTips)"
+      explainText="$(string.StartupTips_Help)"
+      presentation="$(presentation.StartupTips)"
+      key="Software\Policies\ExampleApp">
+      <parentCategory ref="ExampleApp" />
+      <supportedOn ref="SUPPORTED_ExampleApp_1_0" />
+      <elements>
+        <boolean id="ShowTips" valueName="ShowTips">
+          <trueValue>
+            <decimal value="1" />
+          </trueValue>
+          <falseValue>
+            <decimal value="0" />
+          </falseValue>
+        </boolean>
+      </elements>
+    </policy>
+  </policies>
+</policyDefinitions>
+```
+
+```xml title="ja-JP/ExampleApp.adml"
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources revision="1.0" schemaVersion="1.0"
+  xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <displayName>ExampleAppのポリシー</displayName>
+  <description>ExampleAppを管理するためのポリシーです。</description>
+  <resources>
+    <stringTable>
+      <string id="SUPPORTED_ExampleApp_1_0">ExampleApp 1.0以降</string>
+      <string id="ExampleApp">ExampleApp</string>
+      <string id="Update">更新</string>
+      <string id="DisableAutoUpdate">自動更新を無効にする</string>
+      <string id="DisableAutoUpdate_Help">有効にすると、ExampleAppは更新を自動で確認しません。</string>
+      <string id="UpdateServer">更新サーバーを指定する</string>
+      <string id="UpdateServer_Help">ExampleAppが更新を確認するサーバーと間隔を指定します。</string>
+      <string id="StartupTips">起動時のヒント</string>
+      <string id="StartupTips_Help">ExampleAppの起動時にヒントを表示するかどうかを指定します。</string>
+    </stringTable>
+    <presentationTable>
+      <presentation id="UpdateServer">
+        <textBox refId="UpdateServerUrl">
+          <label>更新サーバーのURL:</label>
+        </textBox>
+        <decimalTextBox refId="CheckIntervalHours" defaultValue="24">確認する間隔（時間）:</decimalTextBox>
+      </presentation>
+      <presentation id="StartupTips">
+        <checkBox refId="ShowTips" defaultChecked="true">起動時にヒントを表示する</checkBox>
+      </presentation>
+    </presentationTable>
+  </resources>
+</policyDefinitionResources>
+```
+
+`ExampleApp.admx`を`PolicyDefinitions`フォルダーに、`ExampleApp.adml`をその下の`ja-JP`フォルダーに置くと、エディタに次のように表示されます。
+
+- コンピューターの構成 > 管理用テンプレート > ExampleApp > 更新
+  - 自動更新を無効にする
+  - 更新サーバーを指定する
+- ユーザーの構成 > 管理用テンプレート > ExampleApp
+  - 起動時のヒント
+
+書き込み先のキーは、コンピューターの構成のポリシーが`HKLM\Software\Policies\ExampleApp`、ユーザーの構成のポリシーが`HKCU\Software\Policies\ExampleApp`です。
+それぞれのポリシーを設定すると、次の値が書き込まれます。
+
+| ポリシー | 設定 | 値の名前 | 値（型） |
+| --- | --- | --- | --- |
+| 自動更新を無効にする | 有効 | `DisableAutoUpdate` | `1`（`REG_DWORD`） |
+| 自動更新を無効にする | 無効 | `DisableAutoUpdate` | `0`（`REG_DWORD`） |
+| 更新サーバーを指定する | 有効 | `UpdateServerUrl` | 入力したURL（`REG_SZ`） |
+| 更新サーバーを指定する | 有効 | `CheckIntervalHours` | 入力した数値（`REG_DWORD`） |
+| 起動時のヒント | 有効 | `ShowTips` | チェックありは`1`、なしは`0`（`REG_DWORD`） |
+
+「起動時のヒント」の`policy`要素には`valueName`がないので、値を書き込むのは`elements`の`boolean`だけです。
+このように、ポリシー自体の有効、無効を値として書き込むかどうかも、ADMXの書き方で決まります。
+
+## 既存のADMXの読み方
+
+次に、Windows標準のADMXを読んでみます。
+題材には、ファイルやアプリケーションの安全性を確認するMicrosoft Defender SmartScreenの`SmartScreen.admx`を使います。
+
+Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`にあります。
+最新のものは、Microsoftのダウンロードセンターで配布されている管理用テンプレートからも入手できます。
+
+<LinkCard href="https://www.microsoft.com/en-us/download/details.aspx?id=108847" />
+
+ここでは、「Windows Defender SmartScreen を構成します」というポリシーを例に、書き込まれるレジストリの値を調べます。
+このポリシーは、エディタの「コンピューターの構成 > 管理用テンプレート > Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」にあります。
+
+```d2 title="エディタの表示名から、ADML、ADMXを順にたどってレジストリの値を調べる手順"
+direction: down
+name: "1. エディタの表示名\n「Windows Defender SmartScreen を構成します」"
+id: "2. ADMLで文字列のIDを探す\nShellConfigureSmartScreen"
+policy: "3. ADMXでIDを参照するpolicyを探す\ndisplayName属性の参照先"
+reg: "4. key、valueName、elementsを読む\nEnableSmartScreen、ShellSmartScreenLevel"
+name -> id -> policy -> reg
+```
+
+### ADMLで文字列のIDを探す
+
+まず、日本語のADML（`ja-JP\SmartScreen.adml`）から、エディタに表示されている名前を探します。
+該当する部分を抜粋します。
+
+```xml title="ja-JP/SmartScreen.adml（抜粋）" {4,10-13}
+<stringTable>
+  <string id="SmartScreen">Windows Defender SmartScreen</string>
+  <string id="Shell">エクスプローラー</string>
+  <string id="ShellConfigureSmartScreen">Windows Defender SmartScreen を構成します</string>
+  <string id="SmartScreen_PreventBypass">警告してバイパスを回避</string>
+  <string id="SmartScreen_Warn">警告</string>
+  <!-- 省略 -->
+</stringTable>
+<presentationTable>
+  <presentation id="ShellConfigureSmartScreen">
+    <dropdownList refId="ShellConfigureSmartScreen_Dropdown" noSort="true"
+      defaultItem="0">次のいずれかの設定を選択してください。</dropdownList>
+  </presentation>
+</presentationTable>
+```
+
+表示名の文字列のIDは`ShellConfigureSmartScreen`です。
+また、このポリシーには`ShellConfigureSmartScreen`という`presentation`があり、ドロップダウンリスト（`dropdownList`）が1つ配置されていることもわかります。
+
+### ADMXでpolicyを探す
+
+次に、ADMX（`SmartScreen.admx`）から、`$(string.ShellConfigureSmartScreen)`を参照している`policy`要素を探します。
+
+```xml title="SmartScreen.admx（抜粋）" {18,25-38}
+<policyDefinitions revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <policyNamespaces>
+    <target prefix="smartscreen" namespace="Microsoft.Policies.SmartScreen" />
+    <using prefix="windows" namespace="Microsoft.Policies.Windows" />
+    <using prefix="edge" namespace="Microsoft.Policies.MicrosoftEdge" />
+  </policyNamespaces>
+  <resources minRequiredRevision="1.0" />
+  <categories>
+    <category name="SmartScreen" displayName="$(string.SmartScreen)">
+      <parentCategory ref="windows:WindowsComponents" />
+    </category>
+    <category name="Shell" displayName="$(string.Shell)">
+      <parentCategory ref="SmartScreen" />
+    </category>
+    <!-- 省略 -->
+  </categories>
+  <policies>
+    <policy name="ShellConfigureSmartScreen" class="Machine" displayName="$(string.ShellConfigureSmartScreen)" explainText="$(string.ShellConfigureSmartScreen_Help)" key="Software\Policies\Microsoft\Windows\System" valueName="EnableSmartScreen" presentation="$(presentation.ShellConfigureSmartScreen)">
+      <parentCategory ref="Shell" />
+      <supportedOn ref="windows:SUPPORTED_Windows8" />
+      <enabledValue>
+        <decimal value="1" />
+      </enabledValue>
+      <disabledValue>
+        <decimal value="0" />
+      </disabledValue>
+      <elements>
+        <enum id="ShellConfigureSmartScreen_Dropdown" key="Software\Policies\Microsoft\Windows\System" valueName="ShellSmartScreenLevel" required="true">
+          <item displayName="$(string.SmartScreen_PreventBypass)">
+            <value>
+              <string>Block</string>
+            </value>
+          </item>
+          <item displayName="$(string.SmartScreen_Warn)">
+            <value>
+              <string>Warn</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+    </policy>
+    <!-- 省略 -->
+  </policies>
+</policyDefinitions>
+```
+
+この抜粋から、次のことが読み取れます。
+
+- 名前空間は`Microsoft.Policies.SmartScreen`で、`Windows.admx`（`windows`）と、Microsoft Edgeの旧版のADMX（`edge`）を参照している
+- カテゴリは「Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」の階層になっている
+- `class="Machine"`のため、「コンピューターの構成」に表示され、`HKEY_LOCAL_MACHINE`に書き込まれる
+- 有効にすると`EnableSmartScreen`に`1`、無効にすると`0`が書き込まれる
+- 有効にしたときは、ドロップダウンリストで選んだ項目に応じて、`ShellSmartScreenLevel`に`Block`か`Warn`の文字列が書き込まれる
+
+### 書き込まれるレジストリの値
+
+読み取った内容をまとめると、このポリシーを設定したときに書き込まれる値は次のようになります。
+書き込み先のキーは`HKLM\Software\Policies\Microsoft\Windows\System`です。
+
+- 有効にして「警告してバイパスを回避」を選んだ場合は、`EnableSmartScreen`に`1`、`ShellSmartScreenLevel`に`Block`
+- 有効にして「警告」を選んだ場合は、`EnableSmartScreen`に`1`、`ShellSmartScreenLevel`に`Warn`
+- 無効にした場合は、`EnableSmartScreen`に`0`
+
+ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`をたどれば、どのADMXでも同じ手順でレジストリの値を調べられます。
+サードパーティー製アプリケーションのADMXでも、読み方は変わりません。
+
+## ファイルの配置と読み込みの仕様
+
+ADMXとADMLは、エディタが読み込める場所に置く必要があります。
+置き場所には、ローカルストアとセントラルストアの2つがあります。
+
+ローカルストアは各Windowsデバイスにあるデフォルトの置き場所です。
+パスは`C:\Windows\PolicyDefinitions`です。
+セントラルストアはドメインで共有する置き場所です。
+パスは`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`です。
+
+どちらの置き場所でも、ADMXはフォルダーの直下に、ADMLは言語別のフォルダー（`ja-JP`、`en-US`など）に置きます。
+
+セントラルストアの実体は、ドメインコントローラのSYSVOLにある`PolicyDefinitions`フォルダーです。
+グループポリシーのツールはデフォルトでセントラルストアを確認し、セントラルストアがある場合は、そこにあるすべてのADMXを使います。
+セントラルストアのファイルは、ドメイン内のすべてのドメインコントローラに複製されます。
+そのため、管理者がどのPCからGPOを編集しても、同じADMXを使って設定できます。
+
+```d2 title="エディタがADMXとADMLを読み込む場所を決める流れ"
+direction: down
+central: セントラルストアがある {shape: diamond}
+useCentral: セントラルストアのADMXを使う
+useLocal: ローカルストアのADMXを使う
+lang: 表示言語のADMLがある {shape: diamond}
+useLang: 表示言語のADMLで表示
+useFallback: 代替の言語のADMLで表示
+central -> useCentral: はい
+central -> useLocal: いいえ
+useCentral -> lang
+useLocal -> lang
+lang -> useLang: はい
+lang -> useFallback: いいえ
+```
+
+表示言語のADMLがない場合は、代替の言語のADMLが使われます。
+ADMXの`resources`要素には、この代替の言語を指定する`fallbackCulture`属性があり、デフォルト値は`en-US`です。
+日本語のADMLがないサードパーティー製アプリケーションのポリシーが英語で表示されるのは、このためです。
+
+### 読み込み時のエラー
+
+ADMXとADMLの組み合わせに問題があると、エディタを開いたときにエラーが表示されます。
+よく見かけるのは、次の2つです。
+
+- 同じ名前空間のADMXが複数ある：`Namespace '...' is already defined as the target namespace for another file in the store.`
+- ADMXから参照される文字列がADMLにない：`Resource '$(string.ID)' referenced in attribute displayName could not be found.`
+
+前者は、ファイル名を変えた新しいADMXを追加して、古いADMXが残っている場合などに起こります。
+後者は、ADMXとADMLのバージョンが食い違っている場合などに起こります。
+
+### ADMXを更新するときの注意点
+
+新しいWindowsの管理用テンプレートをセントラルストアに反映するときは、既存のフォルダーへ上書きコピーしないほうが安全です。
+Microsoftは、新しいバージョン用のフォルダー（`PolicyDefinitions-26H2`など）を作ってファイルをそろえてから、フォルダー名を入れ替える手順を紹介しています。
+問題が起きた場合も、古いフォルダーに戻せます。
+
+また、ダウンロードセンターで配布されている管理用テンプレートは、セントラルストアで使うためのものです。
+`C:\Windows\PolicyDefinitions`のファイルを置き換える使い方はサポートされていないので注意してください。
+
+<LinkCard href="https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store" />
+
+## Windowsデバイスでどのように評価されるのか
+
+最後に、エディタで設定した値が、Windowsデバイスでどのように適用されるのかを説明します。
+エディタで設定した値は、「ADMXとは」で示した図のとおり、GPOの`Registry.pol`に保存されています。
+Windowsデバイスは、次の流れでこの値をレジストリに書き込みます。
+
+```d2 title="Windowsデバイスが、ドメインコントローラからRegistry.polを取得してレジストリに書き込むまでのシーケンス"
+shape: sequence_diagram
+dc: ドメインコントローラ
+gpsvc: Group Policyサービス
+cse: Registry CSE
+reg: レジストリ
+gpsvc -> dc: 適用するGPOを確認
+dc -> gpsvc: GPOの一覧
+gpsvc -> dc: Registry.polを取得
+gpsvc -> cse: 適用を依頼
+cse -> reg: 値を書き込む
+```
+
+Group PolicyサービスとRegistry CSEは、Windowsデバイス側で動くしくみです。
+
+### WindowsデバイスにADMXが不要な理由
+
+エディタでポリシーを設定すると、エディタはADMXの定義をもとに、書き込むレジストリの値を`Registry.pol`に記録します。
+`Registry.pol`はGPOごとのフォルダーにあり、コンピューターの構成は`Machine`フォルダー、ユーザーの構成は`User`フォルダーに保存されます。
+
+`Registry.pol`の中身は、次の形式のエントリの並びです。
+
+```text title="Registry.polのエントリーの形式"
+[キー;値の名前;型;サイズ;データ]
+```
+
+キーには`HKEY_LOCAL_MACHINE`などのルートを含めず、ファイルの置き場所（`Machine`または`User`）でルートが決まります。
+値の名前に`**del.値の名前`を指定すると、その値の削除を表します。
+詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
+
+このように、`Registry.pol`には「どのキーにどの値を書くか」がすでに具体的に記録されています。
+WindowsデバイスのGroup Policyサービスは、`Registry.pol`を取得して、レジストリを処理するクライアント側の拡張機能（Registry CSE）に渡します。
+そのため、WindowsデバイスにはADMXとADMLのどちらも必要ありません。
+
+### 適用のタイミング
+
+グループポリシーは、次のタイミングで適用されます。
+
+- コンピューターの構成は、Windowsの起動時
+- ユーザーの構成は、ユーザーのサインイン時
+- 起動中やサインイン中は、バックグラウンドで定期的に更新
+
+バックグラウンドでの更新は、デフォルトで90分ごとに、0〜30分のランダムな時間を加えて行われます。
+多くのWindowsデバイスが同時にドメインコントローラへ問い合わせないように、ランダムな時間を加えています。
+なお、ドメインコントローラ自身は5分ごとに更新されます。
+これらのデフォルト値は、Windows標準のADMX（`GroupPolicy.admx`）にある「コンピューターのグループ ポリシーの更新間隔を設定する」などのポリシーの説明で確認できます。
+
+すぐに適用したい場合は、Windowsデバイスで次のコマンドを実行します。
+
+```powershell
+gpupdate /force
+```
+
+### 適用の順序
+
+1台のWindowsデバイスに、複数のGPOを適用できます。
+GPOは次の順序で適用され、後から適用されたGPOの設定が優先されます。
+
+```d2 title="ローカル、サイト、ドメイン、OUの順にGPOが適用され、後から適用されたGPOが優先される流れ"
+local: ローカル {shape: image; icon: /d2-icons/monitor.svg}
+site: サイト {shape: image; icon: /d2-icons/map-pin.svg}
+domain: ドメイン {shape: image; icon: /d2-icons/network.svg}
+ou: OU {shape: image; icon: /d2-icons/folder-tree.svg}
+local -> site -> domain -> ou
+```
+
+それぞれの頭文字を取って、LSDOUと呼ばれることもあります。
+OUが入れ子になっている場合は、親のOUから順に適用されます。
+
+### 未構成、有効、無効の違い
+
+エディタのポリシーには、「未構成」「有効」「無効」の3つの状態があります。
+
+| 状態 | `Registry.pol`に記録される内容 |
+| --- | --- |
+| 未構成 | 何も記録しない。このGPOではそのポリシーを管理しない |
+| 有効 | ADMXの`enabledValue`や`elements`で定義した値 |
+| 無効 | ADMXの`disabledValue`で定義した値 |
+
+「無効」と「未構成」は、同じ意味ではありません。
+「無効」は、無効を表す値（SmartScreenの例では`EnableSmartScreen`に`0`）を明示的に書き込みます。
+一方で「未構成」は何も書き込まないので、ほかのGPOの設定や、OSやアプリケーションのデフォルトの動作がそのまま使われます。
+
+### Software\Policies配下とそれ以外のキー
+
+ADMXのポリシーは、原則として`HKLM\Software\Policies`と`HKCU\Software\Policies`の配下に書き込みます。
+グループポリシーは、これらのキーに書き込んだ値を管理していて、GPOが適用されなくなると値を削除します。
+
+一方で、ADMXでは`Software\Policies`以外のキーにも書き込むことができます。
+ただし、この場合はGPOが適用されなくなっても値が残ります。
+レジストリに設定が残り続ける状態は、「入れ墨（tattooing）」と呼ばれることもあります。
+自作のADMXでは、書き込み先を`Software\Policies`の配下にしておくのがよいと思います。
+
+参考：[Implementing Registry-Based Group Policy for Applications](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb742499(v=technet.10))
+
+### 適用結果の確認方法
+
+ポリシーが期待どおりに適用されているかは、Windowsデバイスで次の方法を使って確認できます。
+
+- `gpresult /h report.html`で、適用されたGPOと設定をHTMLのレポートに出力する
+- `gpresult /r`で、適用されたGPOの一覧をコマンドプロンプトに表示する
+- `regedit`で、ADMXから読み取ったキーと値を直接確認する
+
+既存のADMXの読み方を知っていれば、レポートの設定名から書き込まれるはずのレジストリを特定して、`regedit`で実際の値と照らし合わせられます。
+
+### MDMでの評価との違い
+
+ここまではグループポリシーの場合のしくみです。
+Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、評価のしくみが異なります。
+
+MDMでは、Windowsデバイス自身がADMXの定義を持っていて、MDMから受け取った「有効」「無効」と入力値を、その定義に従ってレジストリに変換します。
+Windows標準のADMXはOSに組み込まれていて、サードパーティー製アプリケーションのADMXは、MDMからWindowsデバイスに取り込みます。
+このとき、Group Policyサービスは使われません。
+
+詳しくは、Microsoft Learnの[Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)を参照してください。
+
+## 終わりに
+
+今回は、ADMXの役割と仕様、既存のADMXの読み方、Windowsデバイスに設定が適用されるまでのしくみについて紹介しました。
+ADMXは設定値を持たない定義書で、設定の実体はレジストリです。
+ADMLは表示のためのファイルで、設定を適用するWindowsデバイスには必要ありません。
+
+ADMXは、グループポリシーだけでなく、Microsoft IntuneでWindowsデバイスを管理するときにも頻繁に登場します。
+Intuneの設定カタログに並ぶ項目の多くはADMXが元になっていて、サードパーティー製アプリケーションのADMXをインポートして使うこともできます。
+今回紹介した読み方を知っていれば、Intuneで目的の設定を探したり、設定がレジストリにどのように反映されるかを確かめたりするときにも役立つと思います。
+IntuneでのADMXの使い方については、別の記事で紹介する予定です。
