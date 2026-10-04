@@ -65,7 +65,7 @@ ADMは旧形式の管理用テンプレートで、定義と表示用の文字�
 
 それぞれのファイルは、次の場所に置かれます。
 
-```d2 title="ADMXとADMLはWindowsデバイスのPolicyDefinitionsフォルダーとその下の言語別フォルダーに、ADMはGPOごとのAdmフォルダーに置かれ、ドメインではSYSVOLのPolicyDefinitionsフォルダーにもADMXとADMLを置ける"
+```d2 title="ADMXとADMLはWindowsデバイスのPolicyDefinitionsフォルダとその下の言語別フォルダに、ADMはGPOごとのAdmフォルダに置かれ、ドメインではSYSVOLのPolicyDefinitionsフォルダにもADMXとADMLを置ける"
 grid-columns: 2
 grid-gap: 32
 local: 'C:\Windows\PolicyDefinitions' {
@@ -85,7 +85,7 @@ gpo: 'SYSVOL\Policies\{GPOのGUID}\Adm' {
 }
 ```
 
-SYSVOLの`PolicyDefinitions`フォルダーは、ドメインの管理者が同じADMXとADMLを共有するための置き場所です。
+SYSVOLの`PolicyDefinitions`フォルダは、ドメインの管理者が同じADMXとADMLを共有するための置き場所です。
 詳しくは、後述の「ADMXファイルの配置と読み込み」で説明します。
 
 ADMXは言語に依存しない定義で、エディタに表示する文字列は`$(string.ID)`のような参照で書かれています。
@@ -102,8 +102,8 @@ ADMLが必要なのは、エディタのように人がポリシーを見て選�
 | MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
 
 ADMは、Windows Vistaより前の形式です。
-ADMはGPO[^gpo]を作るたびにGPOのフォルダーへコピーされるため、同じファイルが大量に保存されていました。
-ADMXはGPOのフォルダーにコピーされず、GPOには設定値の`Registry.pol`だけが保存されます。
+ADMはGPO[^gpo]を作るたびにGPOのフォルダへコピーされるため、同じファイルが大量に保存されていました。
+ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.pol`だけが保存されます。
 
 [^gpo]: グループポリシーオブジェクトの略で、配布する設定のまとまりです。
 
@@ -442,7 +442,7 @@ GPOの適用対象から外れると、値は削除されます。
 
 エディタで設定した値は、まず`Registry.pol`に記録されます。
 レジストリに書き込まれるのは、Windowsデバイスがポリシーを適用したときです。
-`Registry.pol`はGPOの一部で、GPOごとに、コンピューターの構成用の`Machine`フォルダーと、ユーザーの構成用の`User`フォルダーに1つずつあります。
+`Registry.pol`はGPOの一部で、GPOごとに、コンピューターの構成用の`Machine`フォルダと、ユーザーの構成用の`User`フォルダに1つずつあります。
 
 ### GPOの種類とRegistry.polの場所
 
@@ -456,14 +456,14 @@ GPOには、各Windowsデバイスにあるローカルグループポリシー�
 - `C:\Windows\System32\GroupPolicy\User\Registry.pol`
 
 ドメインのGPOは、グループポリシーの管理コンソール（GPMC）から開くグループポリシー管理エディタで編集します。
-GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォルダーとして保存されます。
+GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォルダとして保存されます。
 
 - `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Machine\Registry.pol`
 - `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\User\Registry.pol`
 
 適用対象の各Windowsデバイスは、SYSVOLにある`Registry.pol`をネットワーク越しに読み取ります。
 
-[^sysvol]: ドメインコントローラ間で複製される共有フォルダーです。
+[^sysvol]: ドメインコントローラ間で複製される共有フォルダです。
 
 ### Registry.polの中身
 
@@ -655,7 +655,7 @@ MDMで設定した値は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下に�
 </policyDefinitionResources>
 ```
 
-`ExampleApp.admx`を`PolicyDefinitions`フォルダーに、`ExampleApp.adml`をその下の`ja-JP`フォルダーに置くと、エディタに次のように表示されます。
+`ExampleApp.admx`を`PolicyDefinitions`フォルダに、`ExampleApp.adml`をその下の`ja-JP`フォルダに置くと、エディタに次のように表示されます。
 
 - コンピューターの構成 > 管理用テンプレート > ExampleApp > 更新
   - 自動更新を無効にする
@@ -791,10 +791,10 @@ ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`を
 
 ## ADMXファイルの配置と読み込み
 
-エディタは、決まったフォルダーからADMXとADMLを読み込んでポリシーを表示します。
+エディタは、決まったフォルダからADMXとADMLを読み込んでポリシーを表示します。
 
 各Windowsデバイスには、Windows標準のADMXとADMLが`C:\Windows\PolicyDefinitions`に入っています。
-このフォルダーを**ローカルストア**と呼びます。
+このフォルダを**ローカルストア**と呼びます。
 ドメインに参加していないWindowsデバイスでは、`gpedit.msc`はここのADMXを読み込みます。
 
 ドメインのGPOを編集するときも、何もしなければ、グループポリシー管理エディタを開いたWindowsデバイスのローカルストアが使われます。
@@ -802,10 +802,10 @@ ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`を
 たとえば、古いバージョンのWindowsでエディタを開くと、新しいWindowsで追加されたポリシーは表示されません。
 
 これを避けるために、GPOの保存先と同じSYSVOLの`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`にADMXとADMLを置きます。
-このフォルダーを**セントラルストア**と呼び、管理者全員で共有します。
+このフォルダを**セントラルストア**と呼び、管理者全員で共有します。
 エディタは、セントラルストアがあればローカルストアの代わりにそちらを使います。
 
-どちらの置き場所でも、ADMXはフォルダーの直下に、ADMLは言語別のフォルダー（`ja-JP`、`en-US`など）に置きます。
+どちらの置き場所でも、ADMXはフォルダの直下に、ADMLは言語別のフォルダ（`ja-JP`、`en-US`など）に置きます。
 
 表示言語のADMLがない場合は、ADMXの`resources`要素の`fallbackCulture`属性で指定した言語（デフォルトは`en-US`）のADMLが使われます。
 日本語のADMLがないサードパーティー製アプリケーションのポリシーが英語で表示されるのは、そのためです。
@@ -822,10 +822,10 @@ ADMXとADMLの組み合わせに問題があると、エディタを開いたと
 
 ### ADMXを更新するときの注意点
 
-Windowsの新しい管理用テンプレートをセントラルストアに反映するときは、既存のフォルダーへ上書きコピーしないほうが安全です。
+Windowsの新しい管理用テンプレートをセントラルストアに反映するときは、既存のフォルダへ上書きコピーしないほうが安全です。
 Microsoftは[Create and Manage Central Store](https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store)で、次の手順を紹介しています。
-新しいバージョン用のフォルダー（`PolicyDefinitions-new`など）を作ってファイルをそろえ、最後にフォルダー名を入れ替えます。
-この手順なら、問題が起きたときに古いフォルダーへ戻せます。
+新しいバージョン用のフォルダ（`PolicyDefinitions-new`など）を作ってファイルをそろえ、最後にフォルダ名を入れ替えます。
+この手順なら、問題が起きたときに古いフォルダへ戻せます。
 
 また、ダウンロードセンターで配布されている管理用テンプレートは、セントラルストアで使うためのものです。
 `C:\Windows\PolicyDefinitions`のファイルを置き換える使い方はサポートされていないので注意してください。
