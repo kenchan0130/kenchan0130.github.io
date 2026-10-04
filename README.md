@@ -23,7 +23,7 @@ pnpm dev
 
 記事は `src/content/posts/<YYYY-MM-DD-N>.mdx` に置きます。URLは
 `/post/YYYY-MM-DD-N` です。画像は
-`public/assets/posts/post/<YYYY-MM-DD-N>/` に置き、次を実行します。
+`public/assets/posts/post/<YYYY-MM-DD-N>/` に置き、次を実行して、生成されたWebPもコミットします。
 
 ```sh
 pnpm optimize:images

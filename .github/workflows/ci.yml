@@ -80,10 +80,10 @@ jobs:
       - name: Verify generated article paths
         run: pnpm verify:build
 
-      - name: Install Chromium headless shell
-        run: pnpm exec playwright install --with-deps --only-shell chromium
-
       - name: Run browser and accessibility tests
+        env:
+          # ランナーにプリインストールされたGoogle Chromeを使い、ブラウザのインストールを省く。
+          PLAYWRIGHT_CHROMIUM_CHANNEL: chrome
         run: pnpm test:e2e
 
       - name: Configure Pages

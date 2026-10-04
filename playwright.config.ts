@@ -1,6 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const fullBrowsers = process.env.FULL_BROWSERS === "true";
+// CIではランナーにプリインストールされたGoogle Chrome（channel: "chrome"）を使い、ブラウザのダウンロードを省く。
+// 指定がない場合は、Playwrightのバージョンに対応するブラウザを使う。
+const chromiumChannel = process.env.PLAYWRIGHT_CHROMIUM_CHANNEL || undefined;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -19,8 +22,8 @@ export default defineConfig({
         { name: "webkit", use: { ...devices["Desktop Safari"] } },
       ]
     : [
-        { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-        { name: "mobile-chromium", use: { ...devices["Pixel 7"] } },
+        { name: "chromium", use: { ...devices["Desktop Chrome"], channel: chromiumChannel } },
+        { name: "mobile-chromium", use: { ...devices["Pixel 7"], channel: chromiumChannel } },
       ],
   webServer: {
     command: "pnpm preview --host 127.0.0.1 --port 4321",

@@ -111,6 +111,7 @@
 - CIは `quality` と `build-test` を並列実行する
   - `quality`: audit、format、lint、型チェック
   - `build-test`: build、生成物検証、Playwright
+  - `build-test` のPlaywrightは、`PLAYWRIGHT_CHROMIUM_CHANNEL=chrome` でランナーにプリインストールされたGoogle Chromeを使い、ブラウザをインストールしない。Chromeのバージョンはランナーイメージの更新で変わるため、ブラウザの更新が原因と思われる失敗はローカルの既定のブラウザ（指定なし）でも再現するか確認する
 - `deploy` は `quality` と `build-test` の両方に依存させる
 - matrix化やジョブ分割は、セットアップの重複と総実行時間も考慮し、実測値に基づいて採用する
 - GitHub Actionsは完全なコミットSHAへ固定し、同じ行に正確なリリースバージョンをコメントする
@@ -330,7 +331,9 @@ export const settings = {
 - 記事からは `/assets/posts/post/記事ID/sample.png` のように参照
 - 代替テキストは必須。説明目的を持たない画像だけ明示的に空の代替テキストを使う
 - 画像のMarkdownタイトルは、本文とは別にキャプションが必要な場合だけ指定する
-- 画像追加後は `pnpm optimize:images` を実行し、生成されたWebPもコミットする
+- 画像追加後は `pnpm optimize:images` を実行し、生成されたWebPもコミットする。ビルドやCIではWebPを生成しない
+- 既存の画像を同じファイル名で差し替えた場合は、`pnpm optimize:images --force` でWebPを作り直す
+- `pnpm lint` に含まれる `pnpm verify:images` が、WebPの不足、幅の違い、元画像のないWebPを検出する
 - 本文画像は共通の画像コンポーネントで寸法、遅延読み込み、レスポンシブ画像を補うため、独自の`img`要素を直接記述しない
 
 ```markdown
