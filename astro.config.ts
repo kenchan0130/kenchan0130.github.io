@@ -37,7 +37,6 @@ export default defineConfig({
         regular: "src/assets/fonts/d2/NotoSansJP-Regular.ttf",
         italic: "src/assets/fonts/d2/NotoSansJP-Regular.ttf",
         bold: "src/assets/fonts/d2/NotoSansJP-Bold.ttf",
-        semibold: "src/assets/fonts/d2/NotoSansJP-Bold.ttf",
       },
       inline: true,
       layout: "elk",

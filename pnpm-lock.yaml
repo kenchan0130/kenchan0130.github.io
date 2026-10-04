@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  astro-d2@0.14.0:
+    hash: ff3c89c2eeeb421c43b5d88e9be018e34b803b431ec750b479d2a716366dcf1f
+    path: patches/astro-d2@0.14.0.patch
+
 importers:
 
   .:
@@ -31,7 +36,7 @@ importers:
         version: 7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
       astro-d2:
         specifier: 0.14.0
-        version: 0.14.0(astro@7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))
+        version: 0.14.0(patch_hash=ff3c89c2eeeb421c43b5d88e9be018e34b803b431ec750b479d2a716366dcf1f)(astro@7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))
       astro-expressive-code:
         specifier: 0.44.1
         version: 0.44.1(astro@7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0))
@@ -5677,7 +5682,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro-d2@0.14.0(astro@7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)):
+  astro-d2@0.14.0(patch_hash=ff3c89c2eeeb421c43b5d88e9be018e34b803b431ec750b479d2a716366dcf1f)(astro@7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)):
     dependencies:
       '@d2lang/d2': 0.1.34
       astro: 7.2.8(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.1.1)(yaml@2.9.0)
