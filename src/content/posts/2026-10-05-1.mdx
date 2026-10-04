@@ -380,29 +380,37 @@ admx.elements -> adml.入力欄
 `key`属性にはルートを含めず、ルートは`class`属性から決まります。
 
 ```d2 title="policy要素のclass、key、valueName属性が、書き込み先のルート、キー、値の名前に対応する関係"
-admx: ADMXのpolicy要素 {
-  shape: sql_table
-  "class": Machine
-  key: 'Software\Policies\ExampleApp'
-  valueName: ExampleValue
+admx: ADMX {
+  mark: "" {shape: image; icon: /d2-icons/file-code.svg; width: 40; height: 40}
+  policy: policy要素 {
+    shape: sql_table
+    "class": Machine
+    key: 'Software\Policies\ExampleApp'
+    valueName: ExampleValue
+  }
 }
-reg: レジストリの書き込み先 {
-  shape: sql_table
-  ルート: HKLM
-  キー: 'Software\Policies\ExampleApp'
-  値の名前: ExampleValue
+reg: レジストリ {
+  mark: "" {shape: image; icon: /d2-icons/database.svg; width: 40; height: 40}
+  dest: 書き込み先 {
+    shape: sql_table
+    ルート: HKLM
+    キー: 'Software\Policies\ExampleApp'
+    値の名前: ExampleValue
+  }
 }
-admx."class" -> reg.ルート
-admx.key -> reg.キー
-admx.valueName -> reg.値の名前
+admx.policy."class" -> reg.dest.ルート
+admx.policy.key -> reg.dest.キー
+admx.policy.valueName -> reg.dest.値の名前
 ```
 
 この例の書き込み先は、`HKLM\Software\Policies\ExampleApp`キーの`ExampleValue`です。
 `class`属性の値によって、エディタでの表示場所とルートは次のように変わります。
 
-- `Machine`：「コンピューターの構成」に表示され、`HKEY_LOCAL_MACHINE`（`HKLM`）に書き込む
-- `User`：「ユーザーの構成」に表示され、`HKEY_CURRENT_USER`（`HKCU`）に書き込む
-- `Both`：両方に表示され、設定した側のルートに書き込む
+| `class` | エディタでの表示場所 | 書き込み先のルート |
+| --- | --- | --- |
+| `Machine` | コンピューターの構成 | `HKEY_LOCAL_MACHINE`（`HKLM`） |
+| `User` | ユーザーの構成 | `HKEY_CURRENT_USER`（`HKCU`） |
+| `Both` | 両方 | 設定した側に応じて、どちらか |
 
 ADMXが書き込めるのは、`HKLM`と`HKCU`の配下だけです。
 `HKEY_CLASSES_ROOT`など、ほかのルートの配下は指定できません。
