@@ -24,6 +24,10 @@ export default defineConfig({
       ],
   webServer: {
     command: "pnpm preview --host 127.0.0.1 --port 4321",
+    // Astro 7はAIエージェントからの実行を検出するとプレビューをバックグラウンドで起動し、
+    // コマンドがすぐ終了してしまうため、公式の方法で無効にしてフォアグラウンドで起動する。
+    // https://docs.astro.build/en/guides/build-with-ai/
+    env: { ASTRO_PREVIEW_BACKGROUND: "0" },
     url: "http://127.0.0.1:4321",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
