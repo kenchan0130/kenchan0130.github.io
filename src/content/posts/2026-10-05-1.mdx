@@ -84,7 +84,7 @@ ADMXはGPOのフォルダーにコピーされず、GPOには設定値の`Regist
 
 [^gpo]: グループポリシーオブジェクトの略で、配布する設定のまとまりです。
 
-## ADMX/ADMLファイルの仕様
+## ADMXファイルの仕様
 
 要素の一覧は、Microsoft Learnの[PolicyDefinitions schema](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/schema-root)にまとまっています。
 
@@ -252,7 +252,10 @@ smartscreen.supportedOn -> windows.supportedOn
 デフォルトでは、ポリシーの適用時にそのキーの既存の値を削除してから、一覧の値を書き込みます。
 `additive="true"`にすると、既存の値を残したまま追加します。
 
-### ADMLの構造
+### エディタで表示するためのADML
+
+ADMLは、エディタでADMXのポリシーを表示するためのファイルです。
+MDMでADMXを取り込む場合など、エディタを使わない場面ではADMLは必要ありません。
 
 ```xml title="ADMLの基本構造"
 <?xml version="1.0" encoding="utf-8"?>
@@ -490,6 +493,9 @@ MDMで設定した値は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下に�
   </policies>
 </policyDefinitions>
 ```
+
+ポリシーの定義は、このADMXだけで完成しています。
+グループポリシーのエディタで表示する場合は、ADMXが参照する文字列と画面部品をADMLで用意します。
 
 ```xml title="ja-JP/ExampleApp.adml"
 <?xml version="1.0" encoding="utf-8"?>
