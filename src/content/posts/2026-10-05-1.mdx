@@ -357,23 +357,33 @@ GPOの適用対象から外れると、値は削除されます。
 
 参考：[Implementing Registry-Based Group Policy for Applications](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb742499(v=technet.10))
 
-### 設定した値を保存するRegistry.pol
+## GPOとRegistry.pol
 
 エディタでポリシーを設定しても、その場でレジストリに値が書き込まれるわけではありません。
 エディタはADMXの定義をもとに、書き込むレジストリのキー、値の名前、型、データを`Registry.pol`に記録します。
+`Registry.pol`はGPOの一部で、GPOごとに、コンピューターの構成用の`Machine`フォルダーと、ユーザーの構成用の`User`フォルダーに1つずつあります。
 
-`Registry.pol`はGPOごとに2つあり、コンピューターの構成は`Machine`フォルダー、ユーザーの構成は`User`フォルダーに保存されます。
-GPOがどこにあるかで、`Registry.pol`のパスは次のように変わります。
+### GPOの種類とRegistry.polの場所
 
-- ローカルGPO（`gpedit.msc`で編集）
-  - `C:\Windows\System32\GroupPolicy\Machine\Registry.pol`
-  - `C:\Windows\System32\GroupPolicy\User\Registry.pol`
-- ドメインのGPO
-  - `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Machine\Registry.pol`
-  - `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\User\Registry.pol`
+GPOには、各Windowsデバイスにあるローカルグループポリシー（ローカルGPO）と、ドメインで管理するGPOがあります。
+どちらかによって、編集するツールと`Registry.pol`の保存場所が変わります。
 
-ローカルGPOは、ドメインに参加していないWindowsデバイスにもあり、`gpedit.msc`で設定した値はデバイス自身に保存されます。
-ドメインのGPOでは、同じ構造のフォルダーがドメインの共有フォルダー（SYSVOL）にあり、適用対象のWindowsデバイスがそこから`Registry.pol`を読み取ります。
+ローカルGPOは、ドメインに参加していないWindowsデバイスにもあります。
+`gpedit.msc`で設定した値は、そのデバイスの次の場所に保存されます。
+
+- `C:\Windows\System32\GroupPolicy\Machine\Registry.pol`
+- `C:\Windows\System32\GroupPolicy\User\Registry.pol`
+
+ドメインのGPOは、グループポリシーの管理コンソール（GPMC）で編集します。
+GPOはドメインコントローラのSYSVOL（ドメイン内で複製される共有フォルダー）に、GPOごとのフォルダーとして保存されます。
+
+- `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Machine\Registry.pol`
+- `\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\User\Registry.pol`
+
+適用対象の各Windowsデバイスは、SYSVOLにある`Registry.pol`をネットワーク越しに読み取ります。
+どちらの種類でも、`Registry.pol`を読み取ってレジストリに書き込むのは各Windowsデバイス自身です。
+
+### Registry.polの中身
 
 `Registry.pol`では、`PReg`というシグネチャとバージョンのヘッダに続いて、次の形式のエントリが並びます。
 
@@ -397,6 +407,16 @@ ADMXの`delete`要素や、`list`が既存の値を削除する動作は、こ�
 
 `Registry.pol`には、どのキーにどの値をどの型で書くかがそのまま記録されています。
 そのため、`Registry.pol`を適用するWindowsデバイスには、ADMXとADMLのどちらも必要ありません。
+
+### IntuneではRegistry.polを使わない
+
+Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、`Registry.pol`とGPOのどちらも使われません。
+MDMから届いた設定はWindowsのPolicy CSPというしくみが受け取り、ADMXの定義に従ってレジストリに値を書き込みます。
+
+MDMで設定した値は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下にも記録されます。
+`PolicyManager\current\device`の配下には領域ごとにポリシーの値が記録され、`PolicyManager\providers`の配下からは、どの管理元が値を書き込んだかを確認できます。
+
+参考：[Configure Windows Update client policies](https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb)
 
 ## 簡単な例：ADMXを書いてみる
 
@@ -767,9 +787,7 @@ GPOはローカル、サイト、ドメイン、OU（組織単位）の順に適
 ### MDMでの評価との違い
 
 ここまではグループポリシーのしくみです。
-Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、`Registry.pol`とGroup Policyサービスのどちらも使われません。
-
-MDMでは、Windowsデバイス自身が持つADMXの定義に従って、MDMから受け取った「有効」「無効」と入力値をレジストリの値に変換します。
+MDMでは、`Registry.pol`の代わりに、Windowsデバイス自身が持つADMXの定義に従って、MDMから受け取った「有効」「無効」と入力値をレジストリの値に変換します。
 Windows標準のADMXはOSに組み込まれています。
 サードパーティー製アプリケーションのADMXは、XMLをそのままMDM経由でWindowsデバイスに取り込みます。
 ポリシーの指定には、エディタの表示名ではなく、ADMXの`policy`要素の`name`、カテゴリの`name`、`elements`の`id`を使います。
