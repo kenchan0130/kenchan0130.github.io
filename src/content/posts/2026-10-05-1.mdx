@@ -435,8 +435,36 @@ GPOの適用対象から外れると、値は削除されます。
 
 エディタはデフォルトで管理されていないポリシーも表示しますが、フィルタオプションの「管理」で管理されたポリシーだけに絞れます。
 
-自作のADMXでは、書き込み先を`Software\Policies`の配下にしておくのがよいと思います。
-ポリシー用のキー以外に書き込むなら、値を戻す手段も用意しておきます。
+#### 入れ墨への対策
+
+入れ墨を避けるには、次の3つの方法があります。
+
+1つ目は、書き込み先を`Software\Policies`の配下にすることです。
+自作のアプリケーションなら、この配下の値を通常の設定より優先して読むようにしておけば、入れ墨は起こりません。
+最も確実な方法のため、自作のADMXではまずこの形を検討するのがよいと思います。
+
+2つ目は、「無効」を適用したときに値を削除するよう、ADMXを定義することです。
+`disabledValue`に`delete`要素を指定すると、「無効」を適用したときに値が削除されます。
+
+```xml title="無効にしたときに、ポリシー用以外のキーの値を削除する例"
+<policy name="ExampleTheme" class="User" displayName="$(string.ExampleTheme)"
+  key="Software\ExampleApp" valueName="Theme">
+  <parentCategory ref="ExampleCategory" />
+  <supportedOn ref="windows:SUPPORTED_Windows_10_0" />
+  <enabledValue>
+    <string>Dark</string>
+  </enabledValue>
+  <disabledValue>
+    <delete />
+  </disabledValue>
+</policy>
+```
+
+この場合も、GPOを外したり未構成に戻したりしただけだと、値が残ります。
+GPOを外す前に「無効」を適用し、値が削除されたことを確認してから外します。
+
+3つ目は、ADMXではなく、グループポリシーの基本設定（Group Policy Preferences）のレジストリ項目で書き込むことです。
+レジストリ項目の「共通」タブで「適用されなくなったときにこの項目を削除する」を有効にすると、GPOの適用対象から外れたときに値が削除されます。
 
 ## GPOとRegistry.pol
 
