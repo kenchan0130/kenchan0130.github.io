@@ -1,0 +1,17 @@
+diff --git a/libs/d2.ts b/libs/d2.ts
+index 323e9ac58fc8ec82cd950bc124a853b2418e3a4f..caa6faa6d681cb9fa0031f2c3dc4e4656c8669be 100644
+--- a/libs/d2.ts
++++ b/libs/d2.ts
+@@ -212,8 +212,10 @@ async function getD2jsFont(font: D2Font, root: URL, fontPath: string): Promise<U
+ 
+   const buffer = await fs.readFile(path.join(url.fileURLToPath(root), fontPath))
+ 
+-  // Necessary when crossing the JS/WASM boundary.
+-  jsFonts[font] = [...buffer] as unknown as Uint8Array
++  // D2.js serializes compile requests as JSON before passing them to the WASM module. A base64 string is decoded
++  // natively into Go's []byte, while a plain number array is ~3 times larger and decoded element by element, which
++  // made each diagram take several seconds with large CJK fonts.
++  jsFonts[font] = buffer.toString('base64') as unknown as Uint8Array
+ 
+   return jsFonts[font]
+ }
