@@ -59,21 +59,33 @@ gpo.pol -> client.reg: 適用
 
 ### ADMX、ADML、ADMの違い
 
-管理用テンプレートに関係するファイルは名前が似ているので、役割の違いを表で整理します。
-
-| ファイル | 役割 | 形式 |
-| --- | --- | --- |
-| ADMX（`.admx`） | ポリシーの定義（書き込むレジストリと値、エディタでの分類） | XML |
-| ADML（`.adml`） | 表示用の文字列と、入力欄などの画面部品の配置 | XML |
-| ADM（`.adm`） | 旧形式の管理用テンプレート。定義と表示用の文字列を1つのファイルに持つ | 独自のテキスト形式 |
+管理用テンプレートに関係するファイルには、ADMX、ADML、ADMの3種類があります。
+ADMXはポリシーの定義、ADMLは表示用の文字列と入力欄などの画面部品の配置を持つXMLファイルです。
+ADMは旧形式の管理用テンプレートで、定義と表示用の文字列を1つのテキストファイルに持ちます。
 
 それぞれのファイルは、次の場所に置かれます。
 
-- ADMX：`C:\Windows\PolicyDefinitions`
-- ADML：`C:\Windows\PolicyDefinitions`の下の言語別フォルダー（`C:\Windows\PolicyDefinitions\ja-JP`など）
-- ADM：GPOごとのフォルダーの下の`Adm`フォルダー
+```d2 title="ADMXとADMLはWindowsデバイスのPolicyDefinitionsフォルダーとその下の言語別フォルダーに、ADMはGPOごとのAdmフォルダーに置かれ、ドメインではSYSVOLのPolicyDefinitionsフォルダーにもADMXとADMLを置ける"
+grid-columns: 2
+grid-gap: 32
+local: 'C:\Windows\PolicyDefinitions' {
+  grid-columns: 2
+  grid-gap: 24
+  admx: "SmartScreen.admx\nポリシーの定義" {shape: image; icon: /d2-icons/file-code.svg}
+  adml: "ja-JP\\SmartScreen.adml\n表示用の文字列" {shape: image; icon: /d2-icons/languages.svg}
+}
+central: 'SYSVOL\Policies\PolicyDefinitions' {
+  grid-columns: 2
+  grid-gap: 24
+  admx: "SmartScreen.admx" {shape: image; icon: /d2-icons/file-code.svg}
+  adml: "ja-JP\\SmartScreen.adml" {shape: image; icon: /d2-icons/languages.svg}
+}
+gpo: 'SYSVOL\Policies\{GPOのGUID}\Adm' {
+  adm: "example.adm\n旧形式" {shape: image; icon: /d2-icons/file-cog.svg}
+}
+```
 
-ドメインでは、ADMXとADMLをSYSVOLの`PolicyDefinitions`フォルダーにも置けます。
+SYSVOLの`PolicyDefinitions`フォルダーは、ドメインの管理者が同じADMXとADMLを共有するための置き場所です。
 詳しくは、後述の「ADMXファイルの配置と読み込み」で説明します。
 
 ADMXは言語に依存しない定義で、エディタに表示する文字列は`$(string.ID)`のような参照で書かれています。
@@ -189,15 +201,15 @@ smartscreen.supportedOn -> windows.supportedOn
 `policy`要素は、エディタに表示されるポリシー1つ分の定義です。
 主な属性は次のとおりです。
 
-| 属性 | 内容 |
-| --- | --- |
-| `name`（必須） | ポリシーの名前。ファイル内で一意にする |
-| `class`（必須） | 適用対象。`Machine`、`User`、`Both`のいずれか |
-| `displayName`（必須） | エディタに表示する名前。ADMLの文字列を`$(string.ID)`で参照する |
-| `explainText`（任意） | ポリシーの説明。ADMLの文字列を参照する |
-| `presentation`（任意） | 入力欄などの画面部品。ADMLの`presentation`を`$(presentation.ID)`で参照する |
-| `key`（必須） | 書き込むレジストリキー。`HKEY_LOCAL_MACHINE`などのルートは含めない |
-| `valueName`（任意） | 有効、無効を切り替えたときに書き込むレジストリの値の名前 |
+| 属性 | 必須 | 内容 |
+| --- | :-: | --- |
+| `name` | ○ | ポリシーの名前。ファイル内で一意にする |
+| `class` | ○ | 適用対象。`Machine`、`User`、`Both`のいずれか |
+| `displayName` | ○ | エディタに表示する名前。ADMLの文字列を`$(string.ID)`で参照する |
+| `explainText` |  | ポリシーの説明。ADMLの文字列を参照する |
+| `presentation` |  | 入力欄などの画面部品。ADMLの`presentation`を`$(presentation.ID)`で参照する |
+| `key` | ○ | 書き込むレジストリキー。`HKEY_LOCAL_MACHINE`などのルートは含めない |
+| `valueName` |  | 有効、無効を切り替えたときに書き込むレジストリの値の名前 |
 
 子要素では、`parentCategory`で所属するカテゴリを、`supportedOn`で対応するバージョンを指定します。
 
