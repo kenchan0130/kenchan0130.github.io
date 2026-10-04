@@ -16,17 +16,5 @@
     "description": "",
     "siteName": "speakerdeck.com",
     "image": ""
-  },
-  "https://www.microsoft.com/en-us/download/details.aspx?id=108847": {
-    "title": "Download Administrative Templates (.admx) for Windows 11 2026 Update (26H2) from Official Microsoft Download Center",
-    "description": "This page provides complete set of Administrative Templates (.admx) for Windows 11 2026 Update (26H2)",
-    "siteName": "Microsoft Store - Download Center",
-    "image": ""
-  },
-  "https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store": {
-    "title": "Create and Manage Central Store - Windows Client",
-    "description": "Discusses how to create a Central Store on a domain controller to store and replicate registry-based policies for Windows.",
-    "siteName": "learn.microsoft.com",
-    "image": ""
   }
 }

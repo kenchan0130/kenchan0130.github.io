@@ -354,8 +354,6 @@ GPOの適用対象から外れると、値は削除されます。
 自作のADMXでは、書き込み先を`Software\Policies`の配下にしておくのがよいと思います。
 ポリシー用のキー以外に書き込むなら、値を戻す手段も用意しておきます。
 
-参考：[Implementing Registry-Based Group Policy for Applications](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb742499(v=technet.10))
-
 ## GPOとRegistry.pol
 
 エディタでポリシーを設定しても、その場でレジストリに値が書き込まれるわけではありません。
@@ -414,8 +412,6 @@ MDMから届いた設定はWindowsのPolicy CSPというしくみが受け取り
 
 MDMで設定した値は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下にも記録されます。
 `PolicyManager\current\device`の配下には領域ごとにポリシーの値が記録され、`PolicyManager\providers`の配下からは、どの管理元が値を書き込んだかを確認できます。
-
-参考：[Configure Windows Update client policies](https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb)
 
 ## 簡単な例：ADMXを書いてみる
 
@@ -566,9 +562,7 @@ SmartScreenは、ファイルやアプリケーションの安全性を確認す
 抜粋は、Windows 11 2026 Update（26H2）向けの管理用テンプレートのものです。
 
 Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`にあります。
-最新版は、Microsoftのダウンロードセンターで配布されている管理用テンプレートにも含まれています。
-
-<LinkCard href="https://www.microsoft.com/en-us/download/details.aspx?id=108847" />
+最新版は、Microsoftの[ダウンロードセンター](https://www.microsoft.com/en-us/download/details.aspx?id=108847)で配布されている管理用テンプレートにも含まれています。
 
 このポリシーは、エディタの「コンピューターの構成 > 管理用テンプレート > Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」にあります。
 
@@ -707,13 +701,11 @@ ADMXとADMLの組み合わせに問題があると、エディタを開いたと
 ### ADMXを更新するときの注意点
 
 Windowsの新しい管理用テンプレートをセントラルストアに反映するときは、既存のフォルダーへ上書きコピーしないほうが安全です。
-Microsoftは、新しいバージョン用のフォルダー（`PolicyDefinitions-26H2`など）を作ってファイルをそろえてから、フォルダー名を入れ替える手順を紹介しています。
+Microsoftは[Create and Manage Central Store](https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store)で、新しいバージョン用のフォルダー（`PolicyDefinitions-26H2`など）を作ってファイルをそろえてから、フォルダー名を入れ替える手順を紹介しています。
 この手順なら、問題が起きたときに古いフォルダーへ戻せます。
 
 また、ダウンロードセンターで配布されている管理用テンプレートは、セントラルストアで使うためのものです。
 `C:\Windows\PolicyDefinitions`のファイルを置き換える使い方はサポートされていないので注意してください。
-
-<LinkCard href="https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store" />
 
 ## Windowsデバイスでどのように評価されるのか
 
@@ -802,3 +794,18 @@ ADMXが決めているのは、エディタに何を表示し、どのレジス�
 この構造がわかっていれば、エディタの表示名からADML、ADMXとたどって、どのポリシーがどのレジストリの値を変えるのかを自分で確かめられます。
 
 次回は、Microsoft IntuneでADMXを使ってWindowsデバイスを管理する方法について紹介する予定です。
+
+## 参考資料
+
+- [PolicyDefinitions schema](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/schema-root)
+- [enabledValue Element](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc771515(v=ws.10))
+- [list Element](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc725892(v=ws.10))
+- [policyDefinitions Element](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/cc772138(v=ws.10))
+- [Implementing Registry-Based Group Policy for Applications](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-2000-server/bb742499(v=technet.10))
+- [Working with the Administrative Template policy settings using the Local Group Policy Editor](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-r2-and-2012/dn789184(v=ws.11))
+- [Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)
+- [\[MS-GPREG\]: New or Changed GPO List Processing](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-gpreg/57226664-ce00-4487-994e-a6b3820f3e49)
+- [Create and Manage Central Store](https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/create-and-manage-central-store)
+- [Administrative Templates (.admx) for Windows 11 2026 Update (26H2)](https://www.microsoft.com/en-us/download/details.aspx?id=108847)
+- [Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)
+- [Configure Windows Update client policies](https://learn.microsoft.com/en-us/windows/deployment/update/waas-configure-wufb)
