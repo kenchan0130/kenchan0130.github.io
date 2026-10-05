@@ -206,6 +206,18 @@ admx: policyDefinitions {
 `policies`の各ポリシーは、所属する分類を`categories`から、対応するバージョンを`supportedOn`から参照します。
 `policyNamespaces`と`resources`は、ファイル全体に関する情報です。
 
+必須の属性は、要素ごとに異なります。
+たとえば、`class`と`key`は`policy`要素だけの属性で、ほかの要素には書きません。
+
+| 要素 | 必須の属性 | 任意の属性 |
+| --- | --- | --- |
+| `policyDefinitions` | `revision`、`schemaVersion` | なし |
+| `target`、`using` | `prefix`、`namespace` | なし |
+| `resources` | `minRequiredRevision` | `fallbackCulture` |
+| `definition`（`supportedOn`の中） | `name`、`displayName` | なし |
+| `category` | `name`、`displayName` | `explainText` |
+| `policy` | `name`、`class`、`displayName`、`key` | `explainText`、`presentation`、`valueName` |
+
 #### 名前空間とカテゴリ
 
 `target`要素では、このADMXファイルの名前空間を宣言します。
@@ -256,15 +268,23 @@ smartscreen.supportedOn -> windows.supportedOn
 
 子要素では、`parentCategory`で所属するカテゴリを、`supportedOn`で対応するバージョンを指定します。
 
-対応するバージョンは、`supportedOn`要素の`definition`で定義します。
+対応するバージョンは、`supportedOn`要素の`definition`で定義し、`policy`要素から`name`で参照します。
+`definition`要素の必須の属性は`name`と`displayName`の2つで、`policy`要素とは異なります。
 
-```xml title="supportedOnの定義の例"
+```xml title="supportedOnの定義と、それを参照するpolicy要素の例" {3-4,8-9,11}
 <supportedOn>
   <definitions>
     <definition name="SUPPORTED_ExampleApp_1_0"
       displayName="$(string.SUPPORTED_ExampleApp_1_0)" />
   </definitions>
 </supportedOn>
+<policies>
+  <policy name="ExamplePolicy" class="Machine" displayName="$(string.ExamplePolicy)"
+    key="Software\Policies\ExampleApp" valueName="ExampleValue">
+    <parentCategory ref="ExampleCategory" />
+    <supportedOn ref="SUPPORTED_ExampleApp_1_0" />
+  </policy>
+</policies>
 ```
 
 ADMLでこの文字列を「ExampleApp 1.0以降」と定義すると、エディタの「サポートされるバージョン」欄にそのまま表示されます。
