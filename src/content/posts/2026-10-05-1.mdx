@@ -115,23 +115,38 @@ ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.
 ADMXの仕様を読む前に、書き込み先であるレジストリの構造を確認しておきます。
 レジストリは、フォルダのような「キー」の階層と、キーの中に入る「値」からなります。
 値は、名前、型、データの3つを持ちます。
+キーの階層の一番上にあるキーをルートキーと呼び、ADMXでは次の2つを使います。
 
-たとえば、SmartScreenのポリシーを有効にしたWindowsデバイスで`regedit`を開くと、次のキーと値を確認できます。
+```d2 title="HKEY_LOCAL_MACHINEはWindowsデバイス全体、HKEY_CURRENT_USERはサインインしているユーザーの設定を持ち、どちらもキーの階層をたどった先に値がある"
+grid-columns: 2
+grid-gap: 64
+hklm: 'HKEY_LOCAL_MACHINE（HKLM）' {
+  grid-rows: 5
+  vertical-gap: 32
+  owner: "Windowsデバイス全体の設定" {shape: image; icon: /d2-icons/laptop.svg}
+  software: Software {shape: image; icon: /d2-icons/folder.svg}
+  policies: Policies {shape: image; icon: /d2-icons/folder.svg}
+  system: 'Microsoft\Windows\System' {shape: image; icon: /d2-icons/folder.svg}
+  value: "EnableSmartScreen\nREG_DWORD = 1" {shape: image; icon: /d2-icons/file-digit.svg}
+  software -> policies -> system -> value
+}
+hkcu: 'HKEY_CURRENT_USER（HKCU）' {
+  grid-rows: 5
+  vertical-gap: 32
+  owner: "サインインしているユーザーの設定" {shape: image; icon: /d2-icons/user.svg}
+  software: Software {shape: image; icon: /d2-icons/folder.svg}
+  policies: Policies {shape: image; icon: /d2-icons/folder.svg}
+  app: ExampleApp {shape: image; icon: /d2-icons/folder.svg}
+  value: "ShowTips\nREG_DWORD = 1" {shape: image; icon: /d2-icons/file-digit.svg}
+  software -> policies -> app -> value
+}
+```
 
-- キー：`HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\System`
-- 値の名前：`EnableSmartScreen`
-- 型：`REG_DWORD`（32ビットの数値）
-- データ：`1`
+`HKEY_LOCAL_MACHINE`（`HKLM`）はWindowsデバイス全体の設定で、どのユーザーでも同じ値が使われます。
+`HKEY_CURRENT_USER`（`HKCU`）はサインインしているユーザーの設定で、ユーザーごとに別の値を持ちます。
 
+たとえば、SmartScreenのポリシーを有効にすると、`HKLM\Software\Policies\Microsoft\Windows\System`キーに、名前が`EnableSmartScreen`、型が`REG_DWORD`（32ビットの数値）、データが`1`の値が書き込まれます。
 型には、ほかに文字列を表す`REG_SZ`などがあります。
-
-キーの階層の一番上にあるキーを、ルートキーと呼びます。
-ADMXで使うルートキーは、次の2つです。
-
-| ルートキー | 略称 | 保存する設定 |
-| --- | --- | --- |
-| `HKEY_LOCAL_MACHINE` | `HKLM` | Windowsデバイス全体の設定。どのユーザーでも同じ値が使われる |
-| `HKEY_CURRENT_USER` | `HKCU` | サインインしているユーザーの設定。ユーザーごとに別の値を持つ |
 
 グループポリシーの「コンピューターの構成」は`HKLM`に、「ユーザーの構成」は`HKCU`に書き込まれます。
 
