@@ -5,7 +5,8 @@ import { defineConfig } from "astro/config";
 import astroD2 from "astro-d2";
 import expressiveCode from "astro-expressive-code";
 import type { ExpressiveCodePlugin } from "astro-expressive-code";
-import { d2DiagramMarkup, d2DiagramSources } from "./src/lib/d2-diagrams";
+import { centerD2Containers, d2DiagramMarkup, d2DiagramSources } from "./src/lib/d2-diagrams";
+import { scrollableTables } from "./src/lib/scrollable-tables";
 
 const focusableCodeBlocks: ExpressiveCodePlugin = {
   name: "Focusable code blocks",
@@ -32,7 +33,7 @@ export default defineConfig({
   },
   integrations: [
     astroD2({
-      experimental: { useD2js: true },
+      experimental: { useD2js: true, transformDiagram: centerD2Containers },
       fonts: {
         regular: "src/assets/fonts/d2/NotoSansJP-Regular.ttf",
         italic: "src/assets/fonts/d2/NotoSansJP-Regular.ttf",
@@ -69,7 +70,7 @@ export default defineConfig({
   markdown: {
     processor: satteri({
       mdastPlugins: [d2DiagramSources],
-      hastPlugins: [d2DiagramMarkup],
+      hastPlugins: [d2DiagramMarkup, scrollableTables],
     }),
     shikiConfig: {
       wrap: false,

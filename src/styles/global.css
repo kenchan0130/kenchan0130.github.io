@@ -110,7 +110,7 @@ p,
 ul,
 ol,
 blockquote,
-table,
+.table-scroll,
 pre {
   margin-block: 1.15rem;
 }
@@ -135,11 +135,15 @@ blockquote {
   margin-inline: 0;
   padding: 0.25rem 1.2rem;
 }
-table {
-  border-collapse: collapse;
-  display: block;
+.table-scroll {
   max-width: 100%;
   overflow-x: auto;
+}
+.table-scroll > table {
+  margin-block: 0;
+}
+table {
+  border-collapse: collapse;
 }
 th,
 td {
@@ -219,6 +223,10 @@ svg.d2-svg .stroke-N6 {
 }
 svg.d2-svg .fill-N7 {
   fill: var(--bg);
+}
+/* D2は4階層目以降のグループに背景色（N7）を割り当てるため、3階層目の白いグループの中で見えなくなる。グループだけ淡い色にする。 */
+svg.d2-svg rect.stroke-B1.fill-N7 {
+  fill: color-mix(in srgb, var(--accent) 6%, var(--bg));
 }
 svg.d2-svg .stroke-N7 {
   stroke: var(--bg);

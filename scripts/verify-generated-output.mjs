@@ -55,6 +55,16 @@ for (const file of await collectHtmlFiles(distDirectory)) {
       `D2図が描画されずにコードブロックとして出力されています: ${path.relative(root, file)}`,
     );
   }
+  if (path.relative(distDirectory, file).startsWith(`post${path.sep}`)) {
+    const tables = html.match(/<table\b/g)?.length ?? 0;
+    const wrappedTables =
+      html.match(/<div class="table-scroll" tabindex="0"><table\b/g)?.length ?? 0;
+    if (tables !== wrappedTables) {
+      errors.push(
+        `記事の表がスクロール用のラッパーで包まれていません: ${path.relative(root, file)}`,
+      );
+    }
+  }
   for (const [svg] of html.matchAll(/<svg\b(?:[^>"]|"[^"]*")*>/g)) {
     if (!svg.includes(" data-d2-version=")) continue;
     if (!/\srole="img"/.test(svg) || !/\saria-label="[^"]+"/.test(svg)) {
