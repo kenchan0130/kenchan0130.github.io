@@ -32,8 +32,10 @@ ADMXは、レジストリで制御できる設定の設計図です。
 ここでのエディタは、ドメインのGPOを編集するグループポリシー管理エディタと、ローカルグループポリシーエディタ（`gpedit.msc`）を指します。
 
 ADMX自体は、**設定値を持ちません**。
-管理者がエディタで選んだ状態や入力した値は、ADMXの定義に従って`Registry.pol`というファイルに保存されます。
+ADMXが持つのは、「有効なら`DisableAutoUpdate`を`1`にする」のような規則だけです。
+管理者がエディタで選んだ状態や入力した値は、この規則に従って`Registry.pol`というファイルに保存されます。
 Windowsデバイスはこのファイルを読んでレジストリに値を書き込み、OSやアプリケーションはそのレジストリの値を読んで動作を変えます。
+まとめると、ADMXとADMLはエディタのための定義、`Registry.pol`は管理者が選んだ値、レジストリはWindowsデバイスで適用された結果です。
 
 ```d2 title="ADMXの定義をもとにエディタで設定した値が、Registry.polを経由してWindowsデバイスのレジストリに書き込まれるまでの流れ"
 grid-columns: 3
@@ -148,8 +150,8 @@ admx: policyDefinitions {
     pol: "policies\nポリシーの定義"
     cat: "categories\nエディタでの分類"
     sup: "supportedOn\n対応バージョン"
-    pol -> cat: 所属する分類
-    pol -> sup: 対応バージョン
+    pol -> cat
+    pol -> sup
   }
   meta: ファイル全体の情報 {
     grid-rows: 2
@@ -951,6 +953,8 @@ GPOは、通常は次の順に適用され、後から適用されたGPOの設�
 - `regedit`で、ADMXから読み取ったキーと値を直接確認する
 
 既存のADMXの読み方を知っていれば、レポートの設定名から書き込み先のキーと値を特定し、`regedit`で実際の値と照らし合わせられます。
+SmartScreenの場合は、まず`gpresult /h report.html`のレポートで「Windows Defender SmartScreen を構成します」がどのGPOで有効になっているかを確認します。
+次に、`regedit`で`HKLM\Software\Policies\Microsoft\Windows\System`キーを開き、`EnableSmartScreen`と`ShellSmartScreenLevel`の値を確かめます。
 
 ### MDMでの評価との違い
 
