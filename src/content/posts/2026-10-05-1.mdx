@@ -823,7 +823,7 @@ Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`�
 
 次に、ADMX（`SmartScreen.admx`）から、`$(string.ShellConfigureSmartScreen)`を参照している`policy`要素を探します。
 
-```xml title="SmartScreen.admx（抜粋）" {18,25-38}
+```xml title="SmartScreen.admx（抜粋）" {18,21-26,28-39}
 <policyDefinitions revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
   <policyNamespaces>
     <target prefix="smartscreen" namespace="Microsoft.Policies.SmartScreen" />
