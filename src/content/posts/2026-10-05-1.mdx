@@ -48,7 +48,6 @@ admin: 管理者の操作 {
   adml -> editor
 }
 gpo: GPO {
-  height: 400
   pol: Registry.pol {shape: image; icon: /d2-icons/file-cog.svg}
 }
 client: Windowsデバイス {
@@ -73,14 +72,12 @@ ADMXとADMLは、次のどちらかのフォルダに置きます。
 grid-rows: 2
 grid-gap: 32
 local: 'ローカルストア（各Windowsデバイスの C:\Windows\PolicyDefinitions）' {
-  width: 560
   grid-columns: 2
   grid-gap: 48
   admx: "SmartScreen.admx\nポリシーの定義" {shape: image; icon: /d2-icons/file-code.svg}
   adml: "ja-JP\\SmartScreen.adml\n表示用の文字列" {shape: image; icon: /d2-icons/languages.svg}
 }
 central: 'セントラルストア（ドメインのSYSVOLの PolicyDefinitions）' {
-  width: 560
   grid-columns: 2
   grid-gap: 48
   admx: "SmartScreen.admx\nポリシーの定義" {shape: image; icon: /d2-icons/file-code.svg}
@@ -136,7 +133,6 @@ hklm: HKEY_LOCAL_MACHINE {
   }
 }
 hkcu: HKEY_CURRENT_USER {
-  height: 525
   grid-rows: 2
   vertical-gap: 24
   owner: "ユーザーごとの設定" {shape: image; icon: /d2-icons/user.svg}
@@ -198,7 +194,6 @@ admx: policyDefinitions {
     pol -> sup
   }
   meta: ファイル全体の情報 {
-    height: 350
     grid-rows: 2
     grid-gap: 32
     ns: "policyNamespaces\n名前空間"
@@ -944,7 +939,6 @@ CSEは、GPOの設定の種類ごとに適用を担当するコンポーネン�
 grid-columns: 2
 grid-gap: 48
 gpo: GPO {
-  height: 310
   pol: Registry.pol {shape: image; icon: /d2-icons/file-cog.svg}
 }
 client: Windowsデバイス {
