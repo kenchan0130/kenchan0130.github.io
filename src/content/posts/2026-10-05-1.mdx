@@ -35,7 +35,7 @@ ADMX自体は、**設定値を持ちません**。
 ADMXが持つのは、「有効なら`DisableAutoUpdate`を`1`にする」のような規則だけです。
 管理者がエディタで選んだ状態や入力した値は、この規則に従って`Registry.pol`というファイルに保存されます。
 Windowsデバイスはこのファイルを読んでレジストリに値を書き込み、OSやアプリケーションはそのレジストリの値を読んで動作を変えます。
-まとめると、ADMXとADMLはエディタのための定義、`Registry.pol`は管理者が選んだ値、レジストリはWindowsデバイスで適用された結果です。
+つまり、ADMXとADMLはエディタのための定義、`Registry.pol`は管理者が選んだ値、レジストリはWindowsデバイスで適用された結果です。
 
 ```d2 title="ADMXの定義をもとにエディタで設定した値が、Registry.polを経由してWindowsデバイスのレジストリに書き込まれるまでの流れ"
 grid-columns: 3
@@ -53,10 +53,10 @@ gpo: GPO {
 client: Windowsデバイス {
   reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
   app: OSやアプリ {shape: image; icon: /d2-icons/app-window.svg}
-  reg -> app: 値を参照
+  app -> reg: 読み取る
 }
 admin.editor -> gpo.pol: 保存
-gpo.pol -> client.reg: 適用
+gpo.pol -> client.reg: 設定値
 ```
 
 ### ADMX、ADML、ADMの違い
@@ -66,7 +66,7 @@ ADMXはポリシーの定義、ADMLは表示用の文字列と入力欄などの
 ADMは旧形式の管理用テンプレートで、定義と表示用の文字列を1つのテキストファイルに持ちます。
 
 ADMXとADMLは、次のどちらかのフォルダに置きます。
-どちらのフォルダも構成は同じで、ADMXはフォルダの直下に、ADMLは言語別のフォルダ（`ja-JP`など）に置きます。
+どちらのフォルダも構成は同じで、ADMXはフォルダの直下に、ADMLは言語別のフォルダ（`ja-JP`、`en-US`など）に置きます。
 
 ```d2 title="ADMXとADMLは、各WindowsデバイスのローカルストアとドメインのSYSVOLにあるセントラルストアのどちらにも、同じ構成で置かれる"
 grid-rows: 2
@@ -86,21 +86,22 @@ central: 'セントラルストア（ドメインのSYSVOLの PolicyDefinitions�
 ```
 
 通常はローカルストアが使われます。
-ドメインでは、管理者全員が同じADMXとADMLを使えるようにセントラルストアを作ることができ、セントラルストアがあればそちらが優先されます。
+ドメインでは、管理者全員が同じADMXとADMLを使えるようにセントラルストアを作れます。
+セントラルストアがあれば、そちらが優先されます。
 詳しくは、後述の「ADMXファイルの配置と読み込み」で説明します。
 
 ADMXは言語に依存しない定義で、エディタに表示する文字列は`$(string.ID)`のような参照で書かれています。
 この参照先の文字列は、言語ごとのADMLで定義します。
 同じADMXに日本語と英語のADMLを用意すれば、管理者は自分の言語で同じポリシーを設定できます。
 
-ADMLが必要なのは、エディタやレポートのように、人がポリシーの名前を読む場面だけです。
+ADMLが必要なのは、エディタや`gpresult`のレポート（後述）のように、人がポリシーの名前を読む場面だけです。
 レジストリに書き込む値を決めるのに必要な情報は、すべてADMXにあります。
 
 | 場面 | ADMX | ADML |
 | --- | --- | --- |
 | エディタでポリシーを表示、編集する | 必要 | 必要 |
 | グループポリシーを適用するWindowsデバイス | 不要 | 不要 |
-| MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
+| MDM[^mdm]でADMXをWindowsデバイスに取り込む | 必要 | 不要 |
 
 ADMは、Windows Vistaより前の形式です。
 ADMは、ローカルストアやセントラルストアではなく、GPO[^gpo]ごとのフォルダ（`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Adm`）に置かれていました。
@@ -109,6 +110,7 @@ GPOを作成して最初に編集した時点で、ADMがそのGPOのフォル�
 ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.pol`だけが保存されます。
 
 [^gpo]: グループポリシーオブジェクトの略で、配布する設定のまとまりです。
+[^mdm]: Microsoft Intuneなどのモバイルデバイス管理（Mobile Device Management）です。
 
 ## レジストリの基本
 
@@ -148,7 +150,8 @@ hkcu: HKEY_CURRENT_USER {
 `HKEY_LOCAL_MACHINE`（`HKLM`）はWindowsデバイス全体の設定で、どのユーザーでも同じ値が使われます。
 `HKEY_CURRENT_USER`（`HKCU`）はサインインしているユーザーの設定で、ユーザーごとに別の値を持ちます。
 
-たとえば、SmartScreenのポリシーを有効にすると、`HKLM\Software\Policies\Microsoft\Windows\System`キーに、名前が`EnableSmartScreen`、型が`REG_DWORD`（32ビットの数値）、データが`1`の値が書き込まれます。
+図の左側は、後述する例の「自動更新を無効にする」ポリシーを有効にしたときの値です。
+`HKLM\Software\Policies\ExampleApp`キーに、名前が`DisableAutoUpdate`、型が`REG_DWORD`（32ビットの数値）、データが`1`の値が書き込まれます。
 型には、ほかに文字列を表す`REG_SZ`などがあります。
 
 グループポリシーの「コンピューターの構成」は`HKLM`に、「ユーザーの構成」は`HKCU`に書き込まれます。
@@ -210,7 +213,8 @@ admx: 'ADMXファイル（<policyDefinitions>）' {
 `policyNamespaces`と`resources`は、ファイル全体に関する情報です。
 
 必須の属性は、要素ごとに異なります。
-たとえば、`class`と`key`は`policy`要素だけの属性で、ほかの要素には書きません。
+`class`は`policy`要素だけの属性です。
+`key`は`policy`要素のほか、後述する`item`要素や`elements`の各項目にも指定できます。
 
 | 要素 | 必須の属性 | 任意の属性 |
 | --- | --- | --- |
@@ -228,7 +232,8 @@ admx: 'ADMXファイル（<policyDefinitions>）' {
 `Windows.admx`にはポリシーが1つもなく、共通のカテゴリと対応バージョンの定義だけがあります。
 
 ほかのADMXは、これらを自分で定義せずに`Windows.admx`の定義を参照します。
-たとえば、SmartScreenのポリシーがエディタで「Windows コンポーネント」の下に表示されるのは、`SmartScreen.admx`が親のカテゴリとして`Windows.admx`の「Windows コンポーネント」を指定しているためです。
+たとえば、SmartScreenのポリシーは、エディタで「Windows コンポーネント」の下に表示されます。
+`SmartScreen.admx`が、親のカテゴリとして`Windows.admx`の「Windows コンポーネント」を指定しているためです。
 
 ほかのADMXの定義を参照するには、名前空間を使います。
 
@@ -258,7 +263,7 @@ smartscreen.supportedOn -> windows.supportedOn: バージョン
 同じ名前空間のADMXが2つあると、エディタはエラーを表示します（後述の「読み込み時のエラー」を参照）。
 
 カテゴリは`category`要素で定義し、`parentCategory`要素で親のカテゴリを指定して階層を作ります。
-親を指定しないカテゴリは、「管理用テンプレート」の直下に表示されます。
+親を指定しないカテゴリは、「管理用テンプレート」の直下に表示されます（後述の例の`ExampleApp`カテゴリがこれにあたります）。
 
 #### policy要素
 
@@ -278,7 +283,6 @@ smartscreen.supportedOn -> windows.supportedOn: バージョン
 子要素では、`parentCategory`で所属するカテゴリを、`supportedOn`で対応するバージョンを指定します。
 
 対応するバージョンは、`supportedOn`要素の`definition`で定義し、`policy`要素から`name`で参照します。
-`definition`要素の必須の属性は`name`と`displayName`の2つで、`policy`要素とは異なります。
 
 ```xml title="supportedOnの定義と、それを参照するpolicy要素の例" {3-4,8-9,11}
 <supportedOn>
@@ -382,7 +386,7 @@ ADMLでこの文字列を「ExampleApp 1.0以降」と定義すると、エデ�
 ### エディタで表示するためのADML
 
 ADMLは、エディタでADMXのポリシーを表示するためのファイルです。
-MDM（Intuneなどのモバイルデバイス管理）でADMXを取り込む場合など、エディタを使わない場面ではADMLは必要ありません。
+MDMでADMXを取り込む場合など、エディタを使わない場面ではADMLは必要ありません。
 
 ```xml title="ADMLの基本構造"
 <?xml version="1.0" encoding="utf-8"?>
@@ -506,7 +510,7 @@ GPOの適用対象から外れると、値は削除されます。
 一方で、アプリケーションが自分の設定を保存している`HKCU\Software\ExampleApp`のようなキーに、ADMXから直接書き込むこともできます。
 ただし、こうしたキーの値は「管理されていないポリシー（Unmanaged）」として扱われ、GPOの適用対象から外れても残り続けます。
 この状態は「入れ墨（tattooing）」と呼ばれます。
-たとえば、`HKCU\Software\ExampleApp`の`Theme`に`Dark`を書き込むポリシーを配布した後でGPOを外しても、`Theme`は`Dark`のまま残ります。
+`HKCU\Software\ExampleApp`の`Theme`に`Dark`を書き込むポリシーを配布した後でGPOを外しても、`Theme`は`Dark`のまま残ります。
 
 エディタはデフォルトで管理されていないポリシーも表示しますが、フィルタオプションの「管理」で管理されたポリシーだけに絞れます。
 
@@ -538,7 +542,10 @@ GPOの適用対象から外れると、値は削除されます。
 GPOを外す前に「無効」を適用し、値が削除されたことを確認してから外します。
 
 3つ目は、ADMXではなく、グループポリシーの基本設定（Group Policy Preferences）のレジストリ項目で書き込むことです。
-レジストリ項目の共通オプションには、「Remove this item when it is no longer applied」（適用されなくなったときにこの項目を削除する）があります。
+レジストリ項目の共通オプションには、次のオプションがあります。
+
+- Remove this item when it is no longer applied（適用されなくなったときにこの項目を削除する）
+
 このオプションを有効にすると、GPOの適用対象から外れたときに値が削除されます。
 なお、有効にすると、項目の操作は「置換」になります。
 
@@ -551,7 +558,7 @@ GPOを外す前に「無効」を適用し、値が削除されたことを確�
 ### GPOの種類とRegistry.polの場所
 
 GPOには、各Windowsデバイスにあるローカルグループポリシー（ローカルGPO）と、ドメインで管理するGPOがあります。
-どちらかによって、編集するツールと`Registry.pol`の保存場所が変わります。
+どちらのGPOかによって、編集するツールと`Registry.pol`の保存場所が変わります。
 
 ローカルGPOは、ドメインに参加していないWindowsデバイスにもあります。
 `gpedit.msc`で設定した値は、そのデバイスの次の場所に保存されます。
@@ -608,7 +615,7 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 通常のエントリでは、値の名前に`EnableSmartScreen`のような書き込む値の名前が入ります。
 削除のエントリでは、値の名前がアスタリスク2つ（`**`）で始まる決まった名前になり、その名前で削除の方法を指定します。
 
-たとえば、同じポリシーを無効にすると、コンピューターの構成の`Registry.pol`のエントリは次のように置き換わります。
+同じポリシーを無効にすると、コンピューターの構成の`Registry.pol`のエントリは次のように置き換わります。
 
 ```text title="SmartScreenのポリシーを無効にしたときのエントリ"
 [Software\Policies\Microsoft\Windows\System;EnableSmartScreen;REG_DWORD;4;0]
@@ -631,8 +638,6 @@ GPOはドメインコントローラのSYSVOL[^sysvol]に、GPOごとのフォ�
 ADMXの`delete`要素や、`list`が既存の値を削除してから書き込む動作も、これらのエントリで表されます。
 詳しくは、Microsoft Learnの[Registry Policy File Format](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/registry-policy-file-format)を参照してください。
 
-`Registry.pol`には、どのキーにどの値をどの型で書くかがそのまま記録されています。
-そのため、`Registry.pol`を適用するWindowsデバイスには、ADMXとADMLのどちらも必要ありません。
 
 ### IntuneではRegistry.polを使わない
 
@@ -640,7 +645,7 @@ Microsoft IntuneなどのMDMでADMXのポリシーを配布する場合は、`Re
 MDMから届いた設定はWindowsのPolicy CSPというしくみが受け取り、ADMXの定義に従ってレジストリに値を書き込みます。
 
 MDMで設定した値の状態は、`HKLM\SOFTWARE\Microsoft\PolicyManager`の配下でも調べられます。
-たとえば、デバイス向けの設定では、`PolicyManager\current\device`の配下に有効な値が、`PolicyManager\providers`の配下に管理元ごとの値が記録されます。
+デバイス向けの設定では、`PolicyManager\current\device`の配下に有効な値が、`PolicyManager\providers`の配下に管理元ごとの値が記録されます。
 ただし、記録される場所は設定によって異なります。
 
 ## 簡単な例：ADMXを書いてみる
@@ -810,7 +815,7 @@ Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`�
   <policyNamespaces>
     <target prefix="smartscreen" namespace="Microsoft.Policies.SmartScreen" />
     <using prefix="windows" namespace="Microsoft.Policies.Windows" />
-    <using prefix="edge" namespace="Microsoft.Policies.MicrosoftEdge" />
+    <!-- 省略 -->
   </policyNamespaces>
   <resources minRequiredRevision="1.0" />
   <categories>
@@ -854,7 +859,7 @@ Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`�
 
 この抜粋から、次のことが読み取れます。
 
-- 名前空間は`Microsoft.Policies.SmartScreen`で、`Windows.admx`（`windows`）と、Microsoft Edgeの旧版のADMX（`edge`）を参照している
+- 名前空間は`Microsoft.Policies.SmartScreen`で、`Windows.admx`（`windows`）を参照している
 - カテゴリは「Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー」の階層になっている
 - `class="Machine"`のため、「コンピューターの構成」に表示され、`HKLM`に書き込まれる
 - 有効、無効で書き込む値は`valueName`の`EnableSmartScreen`、ドロップダウンリストで選んだ項目は`ShellSmartScreenLevel`に書き込まれる
@@ -913,8 +918,6 @@ ADMXの`policy`要素から書き込み先を読み、表示名から探すと�
 これを避けるために、GPOの保存先と同じSYSVOLの`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\PolicyDefinitions`にADMXとADMLを置きます。
 このフォルダを**セントラルストア**と呼び、管理者全員で共有します。
 `gpedit.msc`を含むエディタは、ドメインにセントラルストアがあればローカルストアの代わりにそちらを使います。
-
-どちらの置き場所でも、ADMXはフォルダの直下に、ADMLは言語別のフォルダ（`ja-JP`、`en-US`など）に置きます。
 
 表示言語のADMLがない場合は、ADMXの`resources`要素の`fallbackCulture`属性で指定した言語（デフォルトは`en-US`）のADMLを探します。
 日本語のADMLがなく英語のADMLだけを置いたサードパーティー製アプリケーションのポリシーが、英語で表示されるのはそのためです。
@@ -979,7 +982,7 @@ client.cse -> gpo.pol: 読み取る
 多くのWindowsデバイスが同時に問い合わせないように、0〜30分のランダムな時間が加えられます。
 なお、ドメインコントローラ自身のコンピューターの構成は、5分ごとに更新されます。
 これらのデフォルト値は、`GroupPolicy.admx`のポリシーの説明に書かれています。
-たとえば、「コンピューターのグループ ポリシーの更新間隔を設定する」の説明で確認できます。
+「コンピューターのグループ ポリシーの更新間隔を設定する」の説明などで確認できます。
 
 すぐに適用したい場合は、Windowsデバイスで次のコマンドを実行します。
 
