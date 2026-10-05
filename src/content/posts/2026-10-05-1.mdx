@@ -110,6 +110,31 @@ ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.
 
 [^gpo]: グループポリシーオブジェクトの略で、配布する設定のまとまりです。
 
+## レジストリの基本
+
+ADMXの仕様を読む前に、書き込み先であるレジストリの構造を確認しておきます。
+レジストリは、フォルダのような「キー」の階層と、キーの中に入る「値」からなります。
+値は、名前、型、データの3つを持ちます。
+
+たとえば、SmartScreenのポリシーを有効にしたWindowsデバイスで`regedit`を開くと、次のキーと値を確認できます。
+
+- キー：`HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\System`
+- 値の名前：`EnableSmartScreen`
+- 型：`REG_DWORD`（32ビットの数値）
+- データ：`1`
+
+型には、ほかに文字列を表す`REG_SZ`などがあります。
+
+キーの階層の一番上にあるキーを、ルートキーと呼びます。
+ADMXで使うルートキーは、次の2つです。
+
+| ルートキー | 略称 | 保存する設定 |
+| --- | --- | --- |
+| `HKEY_LOCAL_MACHINE` | `HKLM` | Windowsデバイス全体の設定。どのユーザーでも同じ値が使われる |
+| `HKEY_CURRENT_USER` | `HKCU` | サインインしているユーザーの設定。ユーザーごとに別の値を持つ |
+
+グループポリシーの「コンピューターの構成」は`HKLM`に、「ユーザーの構成」は`HKCU`に書き込まれます。
+
 ## ADMXファイルの仕様
 
 要素の一覧は、Microsoft Learnの[PolicyDefinitions schema](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/policy/schema-root)にまとまっています。
