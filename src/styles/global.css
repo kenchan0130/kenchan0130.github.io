@@ -110,7 +110,7 @@ p,
 ul,
 ol,
 blockquote,
-table,
+.table-scroll,
 pre {
   margin-block: 1.15rem;
 }
@@ -135,11 +135,15 @@ blockquote {
   margin-inline: 0;
   padding: 0.25rem 1.2rem;
 }
-table {
-  border-collapse: collapse;
-  display: block;
+.table-scroll {
   max-width: 100%;
   overflow-x: auto;
+}
+.table-scroll > table {
+  margin-block: 0;
+}
+table {
+  border-collapse: collapse;
 }
 th,
 td {
