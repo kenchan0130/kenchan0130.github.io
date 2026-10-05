@@ -800,34 +800,10 @@ Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`�
 
 - コンピューターの構成 > 管理用テンプレート > Windows コンポーネント > Windows Defender SmartScreen > エクスプローラー
 
-### ADMLで文字列のIDを探す
+### ADMXでpolicy要素を読む
 
-まず、日本語のADML（`ja-JP\SmartScreen.adml`）から、エディタに表示されている名前を探します。
-該当する部分を抜粋します。
-
-```xml title="ja-JP/SmartScreen.adml（抜粋）" {4,10-13}
-<stringTable>
-  <string id="SmartScreen">Windows Defender SmartScreen</string>
-  <string id="Shell">エクスプローラー</string>
-  <string id="ShellConfigureSmartScreen">Windows Defender SmartScreen を構成します</string>
-  <string id="SmartScreen_PreventBypass">警告してバイパスを回避</string>
-  <string id="SmartScreen_Warn">警告</string>
-  <!-- 省略 -->
-</stringTable>
-<presentationTable>
-  <presentation id="ShellConfigureSmartScreen">
-    <dropdownList refId="ShellConfigureSmartScreen_Dropdown" noSort="true"
-      defaultItem="0">次のいずれかの設定を選択してください。</dropdownList>
-  </presentation>
-</presentationTable>
-```
-
-表示名の文字列のIDは`ShellConfigureSmartScreen`です。
-同じIDの`presentation`もあり、ドロップダウンリスト（`dropdownList`）が1つ置かれています。
-
-### ADMXでpolicyを探す
-
-次に、ADMX（`SmartScreen.admx`）から、`$(string.ShellConfigureSmartScreen)`を参照している`policy`要素を探します。
+書き込み先は、ADMX（`SmartScreen.admx`）の`policy`要素だけで読み取れます。
+このポリシーは、`name`属性が`ShellConfigureSmartScreen`の`policy`要素です。
 
 ```xml title="SmartScreen.admx（抜粋）" {18,21-26,28-39}
 <policyDefinitions revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
@@ -891,7 +867,36 @@ Windows標準のADMXは、Windowsデバイスの`C:\Windows\PolicyDefinitions`�
 - 有効にして「警告」を選んだ場合は、`EnableSmartScreen`に`1`、`ShellSmartScreenLevel`に`Warn`
 - 無効にした場合は、`EnableSmartScreen`に`0`
 
-ADMLで表示名からIDを見つけ、ADMXでそのIDを参照する`policy`をたどる手順は、サードパーティー製アプリケーションのADMXでも同じです。
+### エディタの表示名から探すとき
+
+エディタに表示されている名前しかわからない場合は、ADMLで表示名から文字列のIDを調べます。
+ADMLは表示に使うファイルです。
+ADMXだけで目的の`policy`要素を見つけられる場合は、ADMLを開く必要はありません。
+
+日本語のADML（`ja-JP\SmartScreen.adml`）から、エディタに表示されている名前を探します。
+
+```xml title="ja-JP/SmartScreen.adml（抜粋）" {4,10-13}
+<stringTable>
+  <string id="SmartScreen">Windows Defender SmartScreen</string>
+  <string id="Shell">エクスプローラー</string>
+  <string id="ShellConfigureSmartScreen">Windows Defender SmartScreen を構成します</string>
+  <string id="SmartScreen_PreventBypass">警告してバイパスを回避</string>
+  <string id="SmartScreen_Warn">警告</string>
+  <!-- 省略 -->
+</stringTable>
+<presentationTable>
+  <presentation id="ShellConfigureSmartScreen">
+    <dropdownList refId="ShellConfigureSmartScreen_Dropdown" noSort="true"
+      defaultItem="0">次のいずれかの設定を選択してください。</dropdownList>
+  </presentation>
+</presentationTable>
+```
+
+表示名の文字列のIDは`ShellConfigureSmartScreen`です。
+ADMXで`displayName="$(string.ShellConfigureSmartScreen)"`を検索すると、先ほどの`policy`要素が見つかります。
+同じIDの`presentation`には、ドロップダウンリスト（`dropdownList`）が1つ置かれています。
+
+ADMXの`policy`要素から書き込み先を読み、表示名から探すときだけADMLを使う手順は、サードパーティー製アプリケーションのADMXでも同じです。
 
 ## ADMXファイルの配置と読み込み
 
@@ -1045,7 +1050,7 @@ MDMでのしくみの詳細は、Microsoft Learnの[Understanding ADMX policies]
 
 ADMXが決めているのは、エディタに何を表示し、どのレジストリの値に何を書き込むかです。
 設定値そのものは`Registry.pol`とレジストリにあります。
-この構造がわかっていれば、エディタの表示名からADML、ADMXとたどって、どのポリシーがどのレジストリの値を変えるのかを自分で確かめられます。
+この構造がわかっていれば、ADMXの`policy`要素を読んで、どのポリシーがどのレジストリの値を変えるのかを自分で確かめられます。
 
 次回は、Microsoft IntuneでADMXを使ってWindowsデバイスを管理する方法について紹介する予定です。
 
