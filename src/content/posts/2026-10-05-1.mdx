@@ -6,7 +6,10 @@ categories:
   - system-administration
 tags:
   - ADMX
+  - ADML
   - Windows
+  - Microsoft Intune
+  - MDM
 references: []
 draft: false
 ---
@@ -101,7 +104,7 @@ ADMLが必要なのは、エディタや`gpresult`のレポート（後述）の
 | --- | --- | --- |
 | エディタでポリシーを表示、編集する | 必要 | 必要 |
 | グループポリシーを適用するWindowsデバイス | 不要 | 不要 |
-| MDM[^mdm]でADMXをWindowsデバイスに取り込む | 必要 | 不要 |
+| MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
 
 ADMは、Windows Vistaより前の形式です。
 ADMは、ローカルストアやセントラルストアではなく、GPO[^gpo]ごとのフォルダ（`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Adm`）に置かれていました。
@@ -110,7 +113,6 @@ GPOを作成して最初に編集した時点で、ADMがそのGPOのフォル�
 ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.pol`だけが保存されます。
 
 [^gpo]: グループポリシーオブジェクトの略で、配布する設定のまとまりです。
-[^mdm]: Microsoft Intuneなどのモバイルデバイス管理（Mobile Device Management）です。
 
 ## レジストリの基本
 
