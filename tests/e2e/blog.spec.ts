@@ -2,6 +2,8 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
 const articlePath = "/post/2025-12-14-1";
+// 狭い画面で横にスクロールする表があり、表のキーボード操作を検証できる記事
+const tableArticlePath = "/post/2024-12-09-1";
 
 // E2Eは外部の広告配信や解析サービスに依存させない。
 // AdSenseが読み込む子フレームがメインスレッドを数秒止め、短時間だけ表示される要素の確認が失敗することがある。
@@ -92,7 +94,7 @@ test("ダークテーマのコードブロックに十分なコントラスト�
   expect(results.violations).toEqual([]);
 });
 
-for (const path of ["/", articlePath]) {
+for (const path of ["/", articlePath, tableArticlePath]) {
   test(`axeで重大なアクセシビリティ違反がない: ${path}`, async ({ page }) => {
     await page.goto(path);
     const results = await new AxeBuilder({ page })
