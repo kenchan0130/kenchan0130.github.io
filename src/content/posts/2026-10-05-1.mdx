@@ -65,29 +65,28 @@ gpo.pol -> client.reg: 適用
 ADMXはポリシーの定義、ADMLは表示用の文字列と入力欄などの画面部品の配置を持つXMLファイルです。
 ADMは旧形式の管理用テンプレートで、定義と表示用の文字列を1つのテキストファイルに持ちます。
 
-それぞれのファイルは、次の場所に置かれます。
+ADMXとADMLは、次のどちらかのフォルダに置きます。
+どちらのフォルダも構成は同じで、ADMXはフォルダの直下に、ADMLは言語別のフォルダ（`ja-JP`など）に置きます。
 
-```d2 title="ADMXとADMLはWindowsデバイスのPolicyDefinitionsフォルダとその下の言語別フォルダに、ADMはGPOごとのAdmフォルダに置かれ、ドメインではSYSVOLのPolicyDefinitionsフォルダにもADMXとADMLを置ける"
-grid-columns: 2
+```d2 title="ADMXとADMLは、各WindowsデバイスのローカルストアとドメインのSYSVOLにあるセントラルストアのどちらにも、同じ構成で置かれる"
+grid-rows: 2
 grid-gap: 32
-local: 'C:\Windows\PolicyDefinitions' {
+local: 'ローカルストア（各Windowsデバイスの C:\Windows\PolicyDefinitions）' {
   grid-columns: 2
-  grid-gap: 24
+  grid-gap: 48
   admx: "SmartScreen.admx\nポリシーの定義" {shape: image; icon: /d2-icons/file-code.svg}
   adml: "ja-JP\\SmartScreen.adml\n表示用の文字列" {shape: image; icon: /d2-icons/languages.svg}
 }
-central: 'SYSVOL\Policies\PolicyDefinitions（セントラルストア）' {
+central: 'セントラルストア（ドメインのSYSVOLの PolicyDefinitions）' {
   grid-columns: 2
-  grid-gap: 24
-  admx: "SmartScreen.admx" {shape: image; icon: /d2-icons/file-code.svg}
-  adml: "ja-JP\\SmartScreen.adml" {shape: image; icon: /d2-icons/languages.svg}
-}
-gpo: 'SYSVOL\Policies\{GPOのGUID}\Adm' {
-  adm: "example.adm\n旧形式" {shape: image; icon: /d2-icons/file-cog.svg}
+  grid-gap: 48
+  admx: "SmartScreen.admx\nポリシーの定義" {shape: image; icon: /d2-icons/file-code.svg}
+  adml: "ja-JP\\SmartScreen.adml\n表示用の文字列" {shape: image; icon: /d2-icons/languages.svg}
 }
 ```
 
-SYSVOLの`PolicyDefinitions`フォルダは、ドメインの管理者が同じADMXとADMLを共有するための置き場所です。
+通常はローカルストアが使われます。
+ドメインでは、管理者全員が同じADMXとADMLを使えるようにセントラルストアを作ることができ、セントラルストアがあればそちらが優先されます。
 詳しくは、後述の「ADMXファイルの配置と読み込み」で説明します。
 
 ADMXは言語に依存しない定義で、エディタに表示する文字列は`$(string.ID)`のような参照で書かれています。
@@ -104,7 +103,8 @@ ADMLが必要なのは、エディタやレポートのように、人がポリ�
 | MDMでADMXをWindowsデバイスに取り込む | 必要 | 不要 |
 
 ADMは、Windows Vistaより前の形式です。
-ADMは、GPO[^gpo]を作成して最初に編集した時点で、そのGPOのフォルダへコピーされていました。
+ADMは、ローカルストアやセントラルストアではなく、GPO[^gpo]ごとのフォルダ（`\\<ドメイン名>\SYSVOL\<ドメイン名>\Policies\{GPOのGUID}\Adm`）に置かれていました。
+GPOを作成して最初に編集した時点で、ADMがそのGPOのフォルダへコピーされるためです。
 そのため、同じファイルがGPOの数だけ保存されていました。
 ADMXはGPOのフォルダにコピーされず、GPOには設定値の`Registry.pol`だけが保存されます。
 
