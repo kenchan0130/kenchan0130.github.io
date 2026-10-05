@@ -961,7 +961,7 @@ client: Windowsデバイス {
   spacer: "" {style.opacity: 0}
   cse: Registry CSE {shape: image; icon: /d2-icons/cog.svg}
   reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
-  gpsvc -> cse: 対象のGPO
+  gpsvc -> cse: 呼び出す
   cse -> reg: 書き込む
 }
 client.cse -> gpo.pol: 読み取る
