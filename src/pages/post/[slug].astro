@@ -178,11 +178,12 @@ const jsonLd = {
   .post-content :global(ul),
   .post-content :global(ol),
   .post-content :global(blockquote),
-  .post-content :global(table),
+  .post-content :global(.table-scroll),
   .post-content :global(pre) {
     margin-block: 1.4rem;
   }
-  .post-content :global(figure.frame > pre) {
+  .post-content :global(figure.frame > pre),
+  .post-content :global(.table-scroll > table) {
     margin-block: 0;
   }
   .post-content :global(h2) {
