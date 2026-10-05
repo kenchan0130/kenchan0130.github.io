@@ -117,28 +117,28 @@ ADMXの仕様を読む前に、書き込み先であるレジストリの構造�
 値は、名前、型、データの3つを持ちます。
 キーの階層の一番上にあるキーをルートキーと呼び、ADMXでは次の2つを使います。
 
-```d2 title="HKEY_LOCAL_MACHINEはWindowsデバイス全体、HKEY_CURRENT_USERはサインインしているユーザーの設定を持ち、どちらもキーの階層をたどった先に値がある"
+```d2 title="HKEY_LOCAL_MACHINEはWindowsデバイス全体、HKEY_CURRENT_USERはサインインしているユーザーの設定を持ち、どちらもキーの中にキーが入る階層の先に値がある"
 grid-columns: 2
-grid-gap: 64
-hklm: 'HKEY_LOCAL_MACHINE（HKLM）' {
-  grid-rows: 5
-  vertical-gap: 32
+grid-gap: 16
+hklm: HKEY_LOCAL_MACHINE {
+  grid-rows: 2
+  vertical-gap: 24
   owner: "Windowsデバイス全体の設定" {shape: image; icon: /d2-icons/laptop.svg}
-  software: Software {shape: image; icon: /d2-icons/folder.svg}
-  policies: Policies {shape: image; icon: /d2-icons/folder.svg}
-  system: 'Microsoft\Windows\System' {shape: image; icon: /d2-icons/folder.svg}
-  value: "EnableSmartScreen\nREG_DWORD = 1" {shape: image; icon: /d2-icons/file-digit.svg}
-  software -> policies -> system -> value
+  software: Software {
+    policies: Policies {
+      app: ExampleApp {
+        value: "DisableAutoUpdate\nREG_DWORD = 1" {shape: image; icon: /d2-icons/file-digit.svg}
+      }
+    }
+  }
 }
-hkcu: 'HKEY_CURRENT_USER（HKCU）' {
-  grid-rows: 5
-  vertical-gap: 32
-  owner: "サインインしているユーザーの設定" {shape: image; icon: /d2-icons/user.svg}
-  software: Software {shape: image; icon: /d2-icons/folder.svg}
-  policies: Policies {shape: image; icon: /d2-icons/folder.svg}
-  app: ExampleApp {shape: image; icon: /d2-icons/folder.svg}
-  value: "ShowTips\nREG_DWORD = 1" {shape: image; icon: /d2-icons/file-digit.svg}
-  software -> policies -> app -> value
+hkcu: HKEY_CURRENT_USER {
+  grid-rows: 2
+  vertical-gap: 24
+  owner: "ユーザーごとの設定" {shape: image; icon: /d2-icons/user.svg}
+  app: 'Software\ExampleApp' {
+    value: "Theme\nREG_SZ = Dark" {shape: image; icon: /d2-icons/file-digit.svg}
+  }
 }
 ```
 
