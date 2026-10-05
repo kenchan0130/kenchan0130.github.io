@@ -180,22 +180,22 @@ hkcu: HKEY_CURRENT_USER {
 その下に、主に次の5つの要素を置きます（旧形式のADMを置き換えるときに使う`supersededAdm`は省略します）。
 
 ```d2 title="policyDefinitionsの5つの子要素。policiesの各ポリシーがcategoriesの分類とsupportedOnの対応バージョンを参照し、policyNamespacesとresourcesはファイル全体の情報を持つ"
-admx: 'ADMXファイル（policyDefinitions）' {
+admx: 'ADMXファイル（<policyDefinitions>）' {
   grid-columns: 2
   grid-gap: 24
-  defs: ポリシーと参照先 {
-    direction: down
-    pol: "policies\nポリシーの定義"
-    cat: "categories\nエディタでの分類"
-    sup: "supportedOn\n対応バージョン"
-    pol -> cat
-    pol -> sup
-  }
   meta: ファイル全体の情報 {
     grid-rows: 2
     grid-gap: 32
-    ns: "policyNamespaces\n名前空間"
-    res: "resources\nADMLのリビジョン"
+    ns: "<policyNamespaces>\n名前空間"
+    res: "<resources>\nADMLのリビジョン"
+  }
+  defs: ポリシーと参照先 {
+    direction: down
+    pol: "<policies>\nポリシーの定義"
+    cat: "<categories>\nエディタでの分類"
+    sup: "<supportedOn>\n対応バージョン"
+    pol -> cat
+    pol -> sup
   }
 }
 ```
