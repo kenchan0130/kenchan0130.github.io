@@ -73,6 +73,21 @@ for (const file of await collectHtmlFiles(distDirectory)) {
   }
 }
 
+const feedXml = await readFile(path.join(distDirectory, "feed.xml"), "utf8");
+for (const [, url] of feedXml.matchAll(/<(?:link|guid[^>]*)>([^<]+)<\/(?:link|guid)>/g)) {
+  const { pathname } = new URL(url);
+  if (pathname === "/") continue;
+  if (pathname.endsWith("/")) {
+    errors.push(`RSSのリンクの末尾にスラッシュがあります: ${url}`);
+    continue;
+  }
+  try {
+    await access(path.join(distDirectory, `${pathname}.html`));
+  } catch {
+    errors.push(`RSSのリンク先のページが生成されていません: ${url}`);
+  }
+}
+
 const resumeHtml = await readFile(path.join(distDirectory, "profile", "resume.html"), "utf8");
 if (!resumeHtml.includes('<meta name="format-detection" content="telephone=no">')) {
   errors.push("Resumeページで電話番号の自動検出が無効になっていません");

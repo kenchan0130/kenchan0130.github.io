@@ -8,6 +8,8 @@ export async function GET(context: { site?: URL }) {
     title: SITE.title,
     description: SITE.description,
     site: context.site ?? new URL(SITE.url),
+    // 記事は`/post/YYYY-MM-DD-N`で公開しており、末尾にスラッシュを付けたURLは404になる。
+    trailingSlash: false,
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
