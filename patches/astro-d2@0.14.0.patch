@@ -1,8 +1,40 @@
+diff --git a/config.ts b/config.ts
+index 3dcac4a0ac3b9f7781e5ee26b83e24190027fefa..ae88dbe51c3b6e2ad83d84e64a5a89fe023d67c7 100644
+--- a/config.ts
++++ b/config.ts
+@@ -1,5 +1,7 @@
+ import { z } from 'astro/zod'
+ 
++import type { Diagram } from '@d2lang/d2'
++
+ export const AstroD2ConfigSchema = z
+   .object({
+     /**
+@@ -26,6 +28,11 @@ export const AstroD2ConfigSchema = z
+          * @default false
+          */
+         useD2js: z.boolean().default(false),
++        /**
++         * A function called with the compiled D2.js diagram before it is rendered to SVG, which can mutate shape
++         * positions and connection routes. Only used when `useD2js` is enabled.
++         */
++        transformDiagram: z.custom<(diagram: Diagram) => void>((value) => typeof value === 'function').optional(),
+       })
+       .prefault({}),
+     /**
 diff --git a/libs/d2.ts b/libs/d2.ts
-index 323e9ac58fc8ec82cd950bc124a853b2418e3a4f..caa6faa6d681cb9fa0031f2c3dc4e4656c8669be 100644
+index 323e9ac58fc8ec82cd950bc124a853b2418e3a4f..090891e78052000cd3634dda05869af5a7007d95 100644
 --- a/libs/d2.ts
 +++ b/libs/d2.ts
-@@ -212,8 +212,10 @@ async function getD2jsFont(font: D2Font, root: URL, fontPath: string): Promise<U
+@@ -159,6 +159,7 @@ async function generateD2jsDiagram(
+ 
+     const d2 = (config.d2js ??= new D2())
+     const response = await d2.compile(request)
++    config.experimental.transformDiagram?.(response.diagram)
+     const content = await d2.render(response.diagram, response.renderOptions)
+ 
+     await fs.mkdir(path.dirname(outputPath), { recursive: true })
+@@ -212,8 +213,10 @@ async function getD2jsFont(font: D2Font, root: URL, fontPath: string): Promise<U
  
    const buffer = await fs.readFile(path.join(url.fileURLToPath(root), fontPath))
  
