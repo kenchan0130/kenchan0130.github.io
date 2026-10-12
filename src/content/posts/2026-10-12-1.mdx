@@ -27,7 +27,7 @@ ADMXの版の更新やTerraformでの管理など、運用の話題は[Intuneで
 
 検証した環境は次のとおりです。
 
-- Windows 11 Business 25H2（ビルド26200.9457）、Microsoft Entra参加、Intuneに登録済み
+- Windows 11 Business 25H2（ビルド26200.9457、ARM64の仮想マシン）、Microsoft Entra参加、Intuneに登録済み
 - ZoomのADMX 7.2.0（`ZoomMeetings_HKLM.admx`）
 
 ## IntuneでADMXの設定を配布する3つの方法
@@ -42,7 +42,7 @@ Intuneで、ADMXで定義された設定を配布する方法は次の3つです
 
 Microsoftがまず勧めているのは設定カタログです。
 設定カタログにないアプリケーションでは、ADMXのインポートか、カスタムプロファイルを使います。
-ADMXのインポートのドキュメントにも、Google Chromeのように設定カタログに組み込まれているアプリケーションは設定カタログを使うよう書かれています。
+ADMXのインポートのドキュメントでも、Google Chromeなどの設定が設定カタログに組み込まれていることが案内されています。
 
 どの方法でも、Windowsデバイス側のしくみは同じです。
 そこで、まずはWindowsデバイスで何が起きるのかを説明します。
@@ -223,9 +223,10 @@ ADMX file referenced not found NamespaceMissing:Microsoft.Policies.Windows. Plea
 ```
 
 先に`Windows.admx`と英語の`Windows.adml`をアップロードします。
-ただし、日本語版のWindowsの`C:\Windows\PolicyDefinitions\en-US`には、`Windows.adml`がありません。
+ただし、筆者の日本語版のWindows 11では、`C:\Windows\PolicyDefinitions\en-US`が空で、英語の`Windows.adml`がありませんでした。
 英語の`Windows.adml`は、Microsoftのダウンロードセンターで配布されている[Administrative Templates (.admx) for Windows 11 2025 Update (25H2)](https://www.microsoft.com/en-us/download/details.aspx?id=108394)から入手できます。
-このMSIを展開すると、`Windows.admx`と`en-US\Windows.adml`が含まれています。
+このMSIには、`Windows.admx`と`en-US\Windows.adml`が含まれています。
+筆者はMacでMSIを展開したため、`staging_Windows.admx`と`staging_en_US_Windows.adml`という名前で取り出されたファイルを、`Windows.admx`と`en-US\Windows.adml`にリネームして使いました。
 
 アップロードは、Intune管理センターの「デバイス > 構成 > ADMX のインポート」から行います。
 `Windows.admx`、続いて`ZoomMeetings_HKLM.admx`をアップロードし、どちらも状態が「Available」になれば完了です。
@@ -301,6 +302,7 @@ AppNameは値を設定するOMA-URIにも使うため、短くわかりやすい
 
 値の大きさには上限があります。
 Microsoft Learnの[App Control for Businessのドキュメント](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-using-intune)には、カスタムのOMA-URIで配布する値は350,000バイトまでと書かれています。
+App Controlのドキュメントですが、この制限はカスタムのOMA-URI全般に当てはまるものとして書かれています。
 Zoom 7.2.0の`ZoomMeetings_HKLM.admx`は335,280バイトで、上限に近い大きさです。
 Google Chromeの`chrome.admx`のように、上限を超えるADMXもあります。
 
@@ -351,7 +353,7 @@ Policy CSPのドキュメントでは、ADMXInstallは`Delete`で削除できる
 今回の検証では、最初の同期で取り込みと2つの値の設定が同じ秒に処理され、エラーもありませんでした。
 ただし、プロファイルの中の行が上から順に処理されることは、ドキュメントでは保証されていません。
 値の設定が取り込みより先に処理されると、その同期では値の設定がエラーになる可能性があります。
-その場合でも、多くは次の同期で、取り込み済みのADMXのポリシーとして値が設定されるようです。
+その場合は、次の同期で、取り込み済みのADMXのポリシーとして値が設定されると考えられます（今回は再現していません）。
 
 1つのプロファイルにまとめると、ADMXと値の組み合わせを1ヵ所で管理できます。
 AppNameを変えた場合に、値の行のOMA-URIを直し忘れることもありません。
@@ -363,10 +365,10 @@ AppNameを変えた場合に、値の行のOMA-URIを直し忘れることもあ
 | | 設定カタログ | ADMXのインポート | OMA-URI |
 | --- | --- | --- | --- |
 | ADMXの用意 | 不要 | アップロード（`en-US`のADMLも必要） | プロファイルに全文を貼り付け |
-| ADMXの大きさ | 制限なし | 1 MBまで | 350,000バイトまで |
+| ADMXの大きさ | 該当なし（Intuneが用意） | 1 MBまで | 350,000バイトまで |
 | AppName | Intuneが決める | `prefix`＋GUID | 自分で決める |
 | 値の設定 | 画面で選ぶ | 画面で選ぶ | OMA-URIと値を自分で書く |
-| プロファイルの削除 | 値と取り込みが消える | 値と取り込みが消える | 値は消える。取り込みは残る |
+| プロファイルの削除 | 未検証 | 値と取り込みが消える | 値は消える。取り込みは残る |
 
 配布したい設定が設定カタログにあれば、設定カタログを使います。
 設定カタログにない場合は、画面で設定を選べるADMXのインポートが扱いやすいと思います。

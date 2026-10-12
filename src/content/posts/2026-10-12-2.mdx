@@ -29,7 +29,7 @@ draft: true
 - Terraformでの管理
 - ADMXで書き込めないレジストリへの対処
 
-検証した環境は、前回と同じWindows 11 Business 25H2（ビルド26200.9457）です。
+検証した環境は、前回と同じWindows 11 Business 25H2（ビルド26200.9457、ARM64の仮想マシン）です。
 Terraformのプロバイダは、deploymenttheory/microsoft365の1.4.0を使いました。
 
 ## ADMXの版を更新する
@@ -63,7 +63,8 @@ ZoomのADMXは、版ごとに名前空間が違います（6.6.5は`ZoomMeetings
 
 さらに、Intune管理センターでは、7.2.0のプロファイルの状態は「成功」のままでした。
 その後の同期でも、値は戻りませんでした。
-プロファイルを変更せずに保存し直したり、同じ値で設定を削除して追加し直したりしても、値は再送されませんでした。
+管理センターでプロファイルを変更せずに保存しても、実際には保存されませんでした。
+同じ値で設定を削除して追加し直しても、値は再送されませんでした。
 
 値を戻せたのは、次の手順です。
 
@@ -85,7 +86,7 @@ OMA-URIでは、AppNameとFileUidを変えずに、取り込みの行の値だ�
 ./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomUpg/Policy/ZoomMeetings_HKLM
 ```
 
-6.6.5のADMXで取り込み、3つの値を設定しておきます。
+6.6.5のADMXで取り込み、クラウドレコーディングの無効化、更新チャネル、7.2.0ではなくなった`HideSelfView_Policy`の3つの値を設定しておきます。
 その後で、取り込みの行の値を7.2.0のADMXに差し替えて同期すると、イベントID 872が記録されました。
 
 ```text title="取り込み済みのADMXの更新（イベントID 872）"
@@ -114,6 +115,8 @@ IntuneのPolicy CSPで書き込んだ値でも入れ墨が起きるのかを、�
 | プロファイルから値の行を外す | 有効、無効、数値の入力欄の値 |
 | プロファイルの割り当てを外す | ADMXのインポート |
 | `HKCU`のポリシーの値の行を外す | OMA-URI（`./User`） |
+
+`HKCU`のポリシーでも、ADMXの取り込みは`./Device`の`ADMXInstall`で行い、値の設定だけを`./User`にします。
 
 どの条件でも、値は819で削除され、入れ墨は起きませんでした。
 `Software\Policies`の配下に書き込むポリシーで、Policy CSPが自分で書き込んだ値であれば、外したときに削除されるようです。
@@ -270,10 +273,62 @@ Learnのドキュメントには、取り込んだADMXで設定できない場�
 Intuneでは、PowerShellのスクリプトをプラットフォームスクリプトとして配布できます。
 スクリプトは、Windowsデバイスに自動でインストールされるIntune管理拡張機能（IME: Intune Management Extension）が実行します。
 
+### プラットフォームスクリプトのしくみ
+
+プラットフォームスクリプトは、構成プロファイルとは別のしくみで動きます。
+構成プロファイルはWindowsのMDMの機能がOMA-DMで受け取りますが、プラットフォームスクリプトはIMEがIntuneに問い合わせて受け取ります。
+
+IMEは、プラットフォームスクリプトやWin32アプリなどを割り当てると、Windowsデバイスに自動でインストールされます。
+Microsoft Entra参加などの条件を満たすWindowsデバイスが対象で、Windows Homeエディションと、Sモードでは動きません。
+IMEは、Windowsのサービス（`IntuneManagementExtension`）として常駐します。
+
+IMEがIntuneに問い合わせるのは、次のタイミングです。
+
+- 8時間ごと
+- Windowsデバイスの再起動や、IMEのサービスの再起動の後
+- Windowsの「設定」やIntune管理センターから同期したとき
+
+問い合わせで割り当てられたスクリプトを受け取ると、IMEは次のように実行します。
+
+1. スクリプトを`C:\Program Files (x86)\Microsoft Intune Management Extension\Policies\Scripts`に保存する
+2. `AgentExecutor.exe`が、Windows PowerShell（`powershell.exe`）を`-NoProfile -executionPolicy bypass -file <スクリプト>`で起動して実行する
+3. 終了コードと出力をIntuneに報告する
+
+今回の環境では、スクリプトのファイル名は`<ユーザーのID>_<スクリプトのID>.ps1`でした。
+すべてのユーザーに割り当てたため、ユーザーごとに管理されているようです。
+署名の確認を有効にしない場合は、実行ポリシーが`bypass`になるため、署名のないスクリプトも実行できます。
+
+スクリプトの設定によって、実行のしかたが変わります。
+
+| 設定（Terraformの属性） | 内容 |
+| --- | --- |
+| サインインしたユーザーの資格情報で実行する（`run_as_account`） | 画面のデフォルトは`user`（サインインしたユーザー）。`system`はSYSTEMとして実行する。`HKLM`に書き込むには`system`にする |
+| 64ビットのPowerShellで実行する（`run_as_32_bit`） | 画面のデフォルトは32ビット。64ビットのWindowsで32ビットのPowerShellを使うと、`HKLM:\SOFTWARE`への書き込みが`WOW6432Node`に振り替えられる |
+| 署名の確認を強制する（`enforce_signature_check`） | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。署名しないスクリプトでは無効にする |
+
+最も重要なのは、一度実行に成功したスクリプトが再実行されない点です。
+IMEは、実行に成功したスクリプトを、スクリプトやポリシーが変わるまで再実行しません。
+変わったかどうかは、スクリプトのハッシュで判断しているようです。
+今回の検証でも、スクリプトの内容を変えてアップロードし直すと、IMEのログに次のように記録され、スクリプトが再実行されました。
+
+```text title="IntuneManagementExtension.log（抜粋）"
+[PowerShell] Policy id <スクリプトのID> for user <ユーザーのID> has different hash, reset download count. …
+```
+
+ハッシュが変わるため、コメントを一文字直しただけでも、割り当て先のすべてのWindowsデバイスで再実行されると考えられます。
+反対に、内容を変えない限り、Windowsデバイスの値が書き換えられても再実行されません。
+再実行されても問題がないように、スクリプトは何度実行しても同じ結果になるように書いておく必要があります。
+
+失敗した場合（終了コードが0以外など）は、続く3回の問い合わせで再実行されます。
+3回とも失敗すると、スクリプトが変わるまで実行されません。
+また、スクリプトは200 KB未満にする必要があり、30分でタイムアウトします。
+
+### スクリプトでレジストリに書き込む方法の弱点
+
 スクリプトでレジストリに書き込む方法には、Policy CSPと比べて次の弱点があります。
 
 - 配布をやめても、書き込んだ値は残る（入れ墨になる）
-- 一度実行に成功すると、スクリプトが変わるまで再実行されない。利用者が値を書き換えても元に戻らない
+- 前述のとおり再実行されないため、利用者が値を書き換えても元に戻らない
 
 1つ目は、スクリプトの中で対策できます。
 2つ目は、後述する修復スクリプトで補えます。
@@ -572,11 +627,7 @@ locals {
 }
 ```
 
-Windowsデバイスを再起動すると、IMEはスクリプトの内容が変わったことを検出し、スクリプトを再実行しました。
-
-```text title="IntuneManagementExtension.log（抜粋）"
-[PowerShell] Policy id <スクリプトのID> for user <ユーザーのID> has different hash, reset download count. …
-```
+Windowsデバイスを再起動すると、前述のとおり、IMEはスクリプトのハッシュが変わったことを検出し、スクリプトを再実行しました。
 
 ```text title="AgentExecutor.log（抜粋）"
 [vscode] Set: HKLM:\SOFTWARE\Policies\Microsoft\VSCode\UpdateMode
@@ -587,11 +638,10 @@ Windowsデバイスを再起動すると、IMEはスクリプトの内容が変�
 `UpdateMode`は`none`に変わり、一覧から外した`TelemetryLevel`は削除されました。
 値の一覧を変えると、`templatefile()`で埋め込んだスクリプトの内容が変わるため、IMEが再実行します。
 
-一方で、内容が変わらない限り、スクリプトは再実行されません。
-IMEがIntuneに問い合わせるのは8時間ごとで、Windowsデバイスの再起動や、IMEのサービスの再起動、「同期」の操作でも問い合わせます。
-今回は、Windowsデバイスを再起動して同期した後、約2分で再実行されました。
+今回は、`apply`から約5分後に、Windowsデバイスを再起動して同期したところで再実行されました。
 
-また、プラットフォームスクリプトの割り当てを外したり、削除したりしても、書き込んだ値は残ります。
+また、プラットフォームスクリプトの割り当てを外したり削除したりしても、IMEは値を戻す処理を実行しません。
+そのため、書き込んだ値は残ると考えられます（今回は確認していません）。
 値を消したいときは、スクリプトを削除する前に一覧から外して`apply`し、Windowsデバイスで削除されたことを確認します。
 
 ## 修復スクリプトで値を保つ
@@ -625,7 +675,7 @@ resource "microsoft365_graph_beta_device_management_windows_remediation_script" 
 
   assignments = [
     {
-      type = "allDevicesAssignmentTarget"
+      type = "allLicensedUsersAssignmentTarget"
       daily_schedule = {
         interval = 1
         time     = "09:00:00"
