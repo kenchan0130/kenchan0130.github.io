@@ -404,9 +404,29 @@ ADMXのインポートは、IntuneにADMXとADMLをアップロードし、そ�
 - 入力欄に`comboBox`を使うADMXはインポートできない
 - 別のADMXの名前空間を参照している場合は、参照先のADMXを先にアップロードする
 
-名前空間は、ADMXがほかのADMXの定義を参照するときに使う名前です（[ADMXのしくみと読み方の「名前空間とカテゴリ」](/post/2026-10-05-1#名前空間とカテゴリ)を参照）。
-ZoomのADMXは、`using`要素で`Windows.admx`の名前空間（`Microsoft.Policies.Windows`）を参照しています。
+ZoomのADMXは、`using`要素で`Windows.admx`の名前空間（`Microsoft.Policies.Windows`）を宣言しています。
 そのため、`Windows.admx`を先にアップロードする必要があります。
+
+```xml title="ZoomMeetings_HKLM.admx（抜粋）" {3}
+<policyNamespaces>
+  <target prefix="fullarmor" namespace="ZoomMeetings_HKLM_7_2" />
+  <using prefix="windows" namespace="Microsoft.Policies.Windows" />
+</policyNamespaces>
+```
+
+ただし、ZoomのADMXは`Windows.admx`の定義を実際には使っていません。
+`using`要素で宣言した名前空間の定義は、`windows:SUPPORTED_Windows8`のように接頭辞を付けて参照します。
+しかし、ZoomのADMXには`windows:`で始まる参照が1つもありません。
+対応バージョン（`SUPPORTED_WINXPSP2`）とカテゴリは、どちらもZoomのADMXの中で定義されています。
+7.2.0と6.6.5の`ZoomMeetings_HKLM.admx`、`ZoomMeetings_HKCU.admx`を調べましたが、どれも同じでした。
+
+`using`要素が残っているのは、ZoomのADMXが旧形式のADMから変換ツールで作られたためだと考えられます。
+ADMLに`ADMXMigrator_NoSupportedOn`という文字列があり、変換ツールのFullArmor ADMX Migratorが付けたものと思われます。
+
+それでも、ADMXのインポートは、宣言されている名前空間がすべてアップロード済みであることを確認します。
+そのため、使われていない`Windows.admx`も用意する必要があります。
+後述するカスタムプロファイルでは、`Windows.admx`を用意しなくても取り込めました。
+Microsoft Learnには、`Windows.admx`は将来自動で含まれるようになり、アップロードが不要になる予定と書かれています（時期は未定）。
 
 ### ZoomのADMXをアップロードする
 
