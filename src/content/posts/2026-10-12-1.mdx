@@ -67,9 +67,40 @@ intune.server -> client.mdm: "OMA-URIと値"
 OMA-URIは、ファイルシステムのパスのように、CSPの中の設定の住所を表します。
 サードパーティーのADMXでは、ADMXの取り込みも、取り込んだポリシーへの値の設定も、OMA-URIで指定します。
 後述するZoomの例では、次の2つのOMA-URIを使います。
-図では、1つのOMA-URIを途中で折り返しています。
 
-![ADMXの取り込みと値の設定のOMA-URIを、対象、Policy CSP、ADMXの取り込みまたはポリシーの設定、AppName、種類、FileUid、カテゴリのパス、ポリシーの名前に分けた図](/assets/posts/post/2026-10-12-1/oma-uri.png)
+```text title="ZoomのADMXの取り込みと、取り込んだポリシーへの値の設定に使うOMA-URI"
+./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2
+./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy
+```
+
+それぞれのOMA-URIを区切りごとに分けると、次のようになります。
+
+```d2 title="ADMXの取り込みのOMA-URIと、取り込んだADMXのポリシーに値を設定するOMA-URIを、区切りごとに分けてそれぞれの意味を示した図"
+grid-rows: 2
+grid-gap: 32
+admx: ADMXの取り込み {
+  shape: sql_table
+  "./Device": 対象
+  "/Vendor/MSFT/Policy": Policy CSP
+  "/ConfigOperations/ADMXInstall": ADMXの取り込み
+  "/ZoomMeetings": AppName
+  "/Policy": 種類
+  "/ZoomMeetings_HKLM_7_2": FileUid
+}
+value: 取り込んだADMXのポリシーへの値の設定 {
+  shape: sql_table
+  "./Device": 対象
+  "/Vendor/MSFT/Policy": Policy CSP
+  "/Config": ポリシーの設定
+  "/ZoomMeetings": AppName
+  "~Policy": 種類
+  "~ZoomUsCommunication~zoommeetings": カテゴリのパス
+  "/DisableCloudRecording_Policy": ポリシーの名前
+}
+```
+
+図の区切りを上から順につなげると、元のOMA-URIになります。
+値の設定のOMA-URIには、値として`<enabled/>`を送ります。
 
 後述する設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
 カスタムプロファイルでは、OMA-URIと値の組を自分で書きます。
