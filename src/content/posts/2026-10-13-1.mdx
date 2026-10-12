@@ -66,8 +66,59 @@ client: Windowsデバイス {
 intune.server -> client.mdm: "OMA-URIと値"
 ```
 
+### OMA-URIの読み方
+
 どのCSPのどの設定に渡すかは、OMA-URIというパスで決まります。
-OMA-URIは、ファイルシステムのパスのように、CSP内の設定の住所を表します。
+OMA-URIは、ファイルのパスのように`/`で区切った、設定の住所です。
+
+```d2 title="OMA-URIの形式を、対象、ベンダー、CSPの名前、CSPの中の設定に分けて示した図"
+classes: {
+  seg: {shape: text; style.font: mono; style.font-size: 16}
+  bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
+  lab: {shape: text; style.font-size: 14; style.bold: true}
+  line: {horizontal-gap: 10; vertical-gap: 4; style.fill: transparent}
+  align-left: {}
+}
+uri: "" {
+  class: align-left
+  grid-rows: 2
+  grid-gap: 8
+  style.fill: transparent
+  r0: "" {
+    class: [line; align-left]
+    grid-rows: 3
+    grid-columns: 2
+    s0: "./{対象}" {class: seg}
+    s1: "/Vendor/MSFT" {class: seg}
+    b0: {class: bar; style.fill: "#9333ea"}
+    b1: {class: bar; style.fill: "#64748b"}
+    l0: "Device か User" {class: lab; style.font-color: "#9333ea"}
+    l1: "ベンダー（Microsoft）" {class: lab; style.font-color: "#64748b"}
+  }
+  r1: "" {
+    class: [line; align-left]
+    grid-rows: 3
+    grid-columns: 2
+    s0: "/{CSPの名前}" {class: seg}
+    s1: "/{CSPの中の設定}" {class: seg}
+    b0: {class: bar; style.fill: "#3b82f6"}
+    b1: {class: bar; style.fill: "#0d9488"}
+    l0: "Policy、BitLockerなど" {class: lab; style.font-color: "#3b82f6"}
+    l1: "設定の場所" {class: lab; style.font-color: "#0d9488"}
+  }
+}
+```
+
+先頭の`{対象}`は、設定をWindowsデバイス全体に効かせるか、ユーザーごとに効かせるかを表し、次の2つから選びます。
+
+| 対象 | 設定が効く範囲 | ADMXのポリシーの書き込み先 |
+| --- | --- | --- |
+| `Device` | Windowsデバイス全体 | `HKLM` |
+| `User` | サインインしているユーザー | `HKCU` |
+
+ADMXのポリシーでは、[前回の記事](/post/2026-10-05-1#レジストリのパス)で紹介した`class`属性に合わせて選びます。
+`class="Machine"`のポリシーは`Device`、`class="User"`のポリシーは`User`です。
+
 カスタムプロファイルでは、OMA-URIと値の組を自分で書きます。
 設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
 
@@ -111,7 +162,7 @@ ADMXの取り込みには、次の形式のOMA-URIを使います。
 ```
 
 `{AppName}`はアプリケーションの名前、`{FileUid}`はADMXファイルの識別子で、どちらも取り込む側が決めます。
-取り込みのOMA-URIは、ユーザー向け（`class="User"`）のポリシーを含むADMXでも`./Device`です。
+ADMXの取り込みはWindowsデバイスへの操作のため、ユーザー向け（`class="User"`）のポリシーを含むADMXでも、対象は`Device`です。
 たとえば、ZoomのADMXを、AppNameを`ZoomMeetings`、FileUidを`ZoomMeetings_HKLM_7_2`として取り込むOMA-URIは次のとおりです。
 
 ```text title="ZoomのADMXを取り込むOMA-URI"
@@ -194,7 +245,7 @@ uri: "" {
 ```
 
 `{AppName}`には、取り込むときに決めたAppNameを使います。
-値を設定するOMA-URIでは、`./Device`は`class="Machine"`のポリシーに使い、`class="User"`のポリシーでは`./User`にします。
+対象は、前述のとおりポリシーの`class`属性に合わせて`Device`か`User`を選びます。
 `{カテゴリのパス}`は、ポリシーが属するカテゴリから`parentCategory`を親へたどり、親から順に`~`でつないだものです。
 `{ポリシーの名前}`は、`policy`要素の`name`属性です。
 どちらもエディタの表示名ではなく、ADMXの`name`を使います。
