@@ -510,12 +510,14 @@ ADMXのインポートの制限にあたる場合や、AppNameなどを自分で
 ### ADMXを取り込む
 
 「Windows 10 以降」の「テンプレート > カスタム」のプロファイルを作成し、OMA-URIの設定を追加します。
+設定ごとに、名前、OMA-URI、データ型、値を入力します。
 
-| 項目 | 値 |
-| --- | --- |
-| OMA-URI | `./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2` |
-| データ型 | 文字列 |
-| 値 | `ZoomMeetings_HKLM.admx`の全文 |
+```text title="ADMXを取り込むOMA-URIの設定"
+名前：Zoom ADMX
+OMA-URI：./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2
+データ型：文字列
+値：（ZoomMeetings_HKLM.admxの全文を貼り付け）
+```
 
 AppNameは`ZoomMeetings`、FileUidは`ZoomMeetings_HKLM_7_2`としました。
 AppNameは値を設定するOMA-URIにも使うため、短くわかりやすい名前がよいと思います。
@@ -538,13 +540,21 @@ ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXの
 
 ### 値を設定する
 
-値は、別のカスタムプロファイルに次の2行を追加しました。
-データ型はどちらも「文字列」です。
+値は、別のカスタムプロファイルに次の2つのOMA-URIの設定を追加しました。
 
-| OMA-URI | 値 |
-| --- | --- |
-| `./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy` | `<enabled/>` |
-| `./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy` | `<enabled/><data id="SetUpdatingChannel_Part" value="1"/>` |
+```text title="クラウドレコーディングを無効にする設定"
+名前：Disable cloud recording
+OMA-URI：./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy
+データ型：文字列
+値：<enabled/>
+```
+
+```text title="更新チャネルを指定する設定"
+名前：Update channel
+OMA-URI：./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy
+データ型：文字列
+値：<enabled/><data id="SetUpdatingChannel_Part" value="1"/>
+```
 
 同期すると、ADMXのインポートと同じ2つの値がレジストリに書き込まれました。
 
@@ -569,13 +579,29 @@ Policy CSPのドキュメントでは、ADMXInstallは`Delete`で削除できる
 ### 取り込みと値を1つのプロファイルにまとめる
 
 カスタムプロファイルでは、ADMXの取り込みと値の設定を1つのプロファイルにまとめることもできます。
-取り込みの行を先頭に置き、その後ろに値の行を並べます。
+取り込みの設定を先頭に置き、その後ろに値の設定を並べます。
+AppNameは`ZoomMeetingsAll`としました。
 
-| OMA-URI | 値 |
-| --- | --- |
-| `./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetingsAll/Policy/ZoomMeetings_HKLM_7_2` | `ZoomMeetings_HKLM.admx`の全文 |
-| `./Device/Vendor/MSFT/Policy/Config/ZoomMeetingsAll~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy` | `<enabled/>` |
-| `./Device/Vendor/MSFT/Policy/Config/ZoomMeetingsAll~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy` | `<enabled/><data id="SetUpdatingChannel_Part" value="1"/>` |
+```text title="1つ目：ADMXの取り込み"
+名前：Zoom ADMX
+OMA-URI：./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetingsAll/Policy/ZoomMeetings_HKLM_7_2
+データ型：文字列
+値：（ZoomMeetings_HKLM.admxの全文を貼り付け）
+```
+
+```text title="2つ目：クラウドレコーディングを無効にする設定"
+名前：Disable cloud recording
+OMA-URI：./Device/Vendor/MSFT/Policy/Config/ZoomMeetingsAll~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy
+データ型：文字列
+値：<enabled/>
+```
+
+```text title="3つ目：更新チャネルを指定する設定"
+名前：Update channel
+OMA-URI：./Device/Vendor/MSFT/Policy/Config/ZoomMeetingsAll~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy
+データ型：文字列
+値：<enabled/><data id="SetUpdatingChannel_Part" value="1"/>
+```
 
 今回の検証では、最初の同期で取り込みと2つの値の設定が同じ秒に処理され、エラーもありませんでした。
 ただし、プロファイルの中の行が上から順に処理されることは、ドキュメントでは保証されていません。
