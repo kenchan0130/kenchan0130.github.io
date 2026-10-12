@@ -15,10 +15,8 @@ references:
 draft: true
 ---
 
-前回の[ADMXのしくみと読み方](/post/2026-10-05-1)では、ADMXがレジストリのどこに何を書き込むかを定義するファイルであることを紹介しました。
-ADMXは、もともとActive Directoryのグループポリシーで使われてきたしくみです。
-現在は、ADMXの設定を、Microsoft Intune（以下、Intune）のようなMDMからも配布できます。
-Windowsに組み込まれていないサードパーティ製アプリケーションのADMXも、Windowsデバイスに取り込んで使えます。
+前回の[ADMXのしくみと読み方](/post/2026-10-05-1)では、Active Directoryのグループポリシーで使われてきたADMXのしくみを紹介しました。
+ADMXの設定は、Microsoft Intune（以下、Intune）のようなMDMからも配布できます。
 
 今回は、IntuneでサードパーティのADMXの設定をWindowsデバイスに配布する方法を紹介します。
 それぞれの方法でWindowsデバイスに何が届き、レジストリに値が書き込まれるまでに何が起きるのかを、実機で確かめた結果とともに説明します。
