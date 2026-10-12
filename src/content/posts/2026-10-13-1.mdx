@@ -26,7 +26,7 @@ ADMXの設定は、Microsoft Intune（以下、Intune）のようなMDMからも
 検証した環境は次のとおりです。
 
 - Windows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン）。Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではWindows 11 Businessと表示されます。Microsoft Entraに参加し、Intuneに登録しています
-- ZoomのADMX 7.2.0の`ZoomMeetings_HKLM.admx`（Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)で、バージョンごとに配布されているもの）
+- Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)で配布されている、ZoomのADMX 7.2.0の`ZoomMeetings_HKLM.admx`
 
 ## Windowsデバイスで何が起きるのか
 
@@ -370,7 +370,7 @@ uri: "" {
 | 設定された値の状態 | `HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\<エリア名>` |
 
 `<登録ID>`は、WindowsデバイスがIntuneに登録されたときのIDです。
-`<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分です（イベントビューアでは「領域」と表示されます）。
+`<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分で、イベントビューアでは「領域」と表示されます。
 
 処理の記録は、イベントビューアの「アプリケーションとサービス ログ > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider > Admin」で確認できます。
 
@@ -394,7 +394,7 @@ uri: "" {
 Windowsのバージョンによって変わる可能性もあります。
 
 次の画像は、イベントビューアで814のイベントを表示したところです。
-別の検証でAppNameを`ZoomTf`として取り込んだときの記録です（AppName以外は本文の例と同じです）。
+AppNameを`ZoomTf`として取り込んだときの記録です。
 ポリシーの名前（`DisableCloudRecording_Policy`）、エリア名（`ZoomTf~Policy~ZoomUsCommunication~zoommeetings`）、設定した文字列（`<enabled/>`）が記録されています。
 登録IDとコンピュータ名は伏せています。
 
@@ -603,11 +603,11 @@ AppNameは値を設定するOMA-URIにも使うため、短くわかりやすい
 Microsoft Learnの[App Control for Businessのドキュメント](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-using-intune)には、カスタムのOMA-URIで配布する値は350,000バイトまでと書かれています。
 App Controlのドキュメントですが、この制限はカスタムのOMA-URI全般に当てはまるものとして書かれています。
 
-Graph APIでプロファイルを作成して試したところ、350,000文字の値は作成でき、それより長い値ではエラーになりました（英数字だけの値で確認）。
+Graph APIでプロファイルを作成して試したところ、350,000文字の値は作成でき、それより長い値ではエラーになりました。
 データ型をXMLファイルにしてファイルでアップロードしても、上限は同じでした。
 なお、このデータ型で選べるファイルの拡張子は`.xml`か`.txt`だけです。
 
-Zoom 7.2.0の`ZoomMeetings_HKLM.admx`は330,066文字（ほぼ英数字のため、バイト数もほぼ同じ）で、上限に近い大きさです。
+Zoom 7.2.0の`ZoomMeetings_HKLM.admx`は330,066文字で、上限に近い大きさです。
 
 同期すると、ADMXは指定したAppNameとFileUidで取り込まれました。
 ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXのインポートと違い、`Windows.admx`を用意する必要はありませんでした。
@@ -662,19 +662,18 @@ Intuneが送ったコマンドは確認していませんが、イベントに�
 
 ここまでは取り込みと値の設定を別々のプロファイルに分けましたが、1つのプロファイルにまとめることもできます。
 取り込みの設定を先頭に置き、その後ろに値の設定を並べます。
-次の画像は、取り込みと値の設定を1つずつ入れたプロファイルです（別の検証で作ったもので、AppNameは`ZoomTf`です）。
-
-![カスタムプロファイルのOMA-URIの設定の一覧に、Zoom ADMXとDisable cloud recordingの2行が並んでいる画面](/assets/posts/post/2026-10-13-1/custom-profile-list.png)
-
 この記事の例では、次の3つの設定を1つのプロファイルに入れました。
-データ型はすべて「文字列」です。
-AppNameは`ZoomMeetingsAll`としました。
+データ型はすべて「文字列」で、AppNameは`ZoomMeetingsAll`としました。
 
 | 名前 | OMA-URI | 値 |
 | --- | --- | --- |
 | Zoom ADMX | `./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetingsAll/Policy/ZoomMeetings_HKLM_7_2` | `ZoomMeetings_HKLM.admx`の全文 |
 | Disable cloud recording | `./Device/Vendor/MSFT/Policy/Config/ZoomMeetingsAll~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy` | `<enabled/>` |
 | Update channel | `./Device/Vendor/MSFT/Policy/Config/ZoomMeetingsAll~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy` | `<enabled/><data id="SetUpdatingChannel_Part" value="1"/>` |
+
+3つの設定を追加すると、プロファイルの一覧は次のようになります。
+
+![カスタムプロファイルのOMA-URIの設定の一覧に、Zoom ADMX、Disable cloud recording、Update channelの3行が並んでいる画面](/assets/posts/post/2026-10-13-1/custom-profile-list.png)
 
 今回の検証では、最初の同期で取り込みと2つの値の設定が同じ秒に処理され、エラーもありませんでした。
 ただし、プロファイルの中の行が上から順に処理されることは、ドキュメントでは保証されていません。
@@ -746,9 +745,9 @@ ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちら�
 - ADMXは1 MB、20個まで。ADMLは`en-US`だけで、`comboBox`は使えない
 - 参照先の`Windows.admx`も、英語のADMLと一緒にアップロードが必要
 - ADMXを入れ替える手順では、使っているプロファイルを先に削除する
-- バージョンを並べて登録すると、プロファイルでは同じ名前の設定が並び、どのバージョンの設定か見分けにくい（筆者が画面で確認）
+- バージョンを並べて登録すると、プロファイルでは同じ名前の設定が並び、どのバージョンの設定か見分けにくい
 - 値は、取り込みの次の同期で届いた
-- 新旧のバージョンのプロファイルを同時に割り当てていると、古いバージョンのプロファイルを削除したときに、新しいバージョンで設定した同じレジストリの値も消えることがある（詳しくは次回の記事で紹介します）
+- 新旧のバージョンのプロファイルを同時に割り当てていると、古いバージョンのプロファイルを削除したときに、新しいバージョンで設定した同じレジストリの値も消えることがある
 
 ### カスタムプロファイル（OMA-URI）のメリットとデメリット
 
