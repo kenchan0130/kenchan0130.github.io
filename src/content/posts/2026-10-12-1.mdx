@@ -358,6 +358,25 @@ Policy CSPのドキュメントでは、ADMXInstallは`Delete`で削除できる
 1つのプロファイルにまとめると、ADMXと値の組み合わせを1ヵ所で管理できます。
 AppNameを変えた場合に、値の行のOMA-URIを直し忘れることもありません。
 
+## ADMXのインポートとOMA-URIを併用しない
+
+ADMXのインポートでADMXを用意し、値だけをOMA-URIで設定することも考えられます。
+インポートしたADMXは、Windowsデバイスでは`fullarmor<GUID>`というAppNameで取り込まれるため、次のようなOMA-URIで値を設定できる可能性があります。
+
+```text
+./Device/Vendor/MSFT/Policy/Config/fullarmor<GUID>~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy
+```
+
+しかし、この併用は避けたほうがよいと考えています（今回は試していません）。
+理由は次の3つです。
+
+- ADMXをアップロードしただけでは、Windowsデバイスに取り込まれない。取り込まれるのは、そのADMXを使う「インポートされた管理用テンプレート」のプロファイルが割り当てられたときだけ
+- 取り込みが別のプロファイルに依存する。インポートの機能のプロファイルを外すと取り込みが削除され、OMA-URIで設定した値も効かなくなると考えられる
+- AppNameのGUIDはアップロードのIDのため、版の更新などでADMXをアップロードし直すと変わる。そのたびにOMA-URIを書き直す必要がある
+
+この使い方はドキュメントにもありません。
+ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちらか一方にそろえるのが安全だと思います。
+
 ## どの方法を選ぶか
 
 ここまでの結果をまとめると、次のようになります。
