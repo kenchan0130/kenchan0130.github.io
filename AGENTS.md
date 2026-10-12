@@ -96,7 +96,7 @@
 
 ## 検証方針
 
-- 記事変更: `pnpm lint`
+- 記事変更: `pnpm lint`、`natural-japanese`スキルの`lint.py`（後述の「文章推敲スキル」を参照）
 - Astro・TypeScript変更: `pnpm lint`、`pnpm check`
 - レイアウト・生成HTML変更: `pnpm build`、`pnpm verify:build`
 - UI・操作変更: `pnpm test:e2e`
@@ -404,7 +404,7 @@ editor -> server: 検証後に公開
 
 ## 文章推敲スキル
 
-- 記事の執筆・推敲には `natural-japanese` スキルを使用できる
+- 記事を追加・変更したときは、コミットする前に必ず `natural-japanese` スキルで確認する。少なくとも `lint.py` を `--genre tech` で実行し、検出された箇所を直すか、直さない理由を判断する
 - スキル本体は `.agents/skills/natural-japanese` に [coji/natural-japanese](https://github.com/coji/natural-japanese) の v1.5.0（`21e632661a910bf97289c501089ad11eb8b4d85f`）を配置し、`.claude/skills/natural-japanese` からシンボリックリンクしている
 - 配置したスキルのファイルは直接編集せず、更新するときはリリースタグとコミットSHAを確認して丸ごと置き換え、この項目のバージョンも更新する
 - 検査スクリプトは `uv run` での実行を前提としているが、Python 3.10以上の仮想環境に `sudachipy` と `sudachidict-core` を入れれば `uv` なしでも実行できる。技術記事では `--genre tech` を指定する
@@ -427,4 +427,5 @@ python3 -m venv .venv
 - [ ] スクリーンショットは最新か
 - [ ] 参考リンクは有効か
 - [ ] textlint のチェックは通るか
+- [ ] `natural-japanese` スキルで確認したか
 - [ ] 機密情報は含まれていないか
