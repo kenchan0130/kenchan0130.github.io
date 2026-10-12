@@ -148,16 +148,21 @@ table {
 th,
 td {
   border: 1px solid var(--border);
+  /* 長いコードがある列に幅を取られても、日本語の短いラベルが1文字ずつ折り返されないようにする */
+  min-width: 5.5em;
   padding: 0.5rem 0.7rem;
   text-align: left;
 }
 th {
   background: var(--surface);
+  /* 見出しは短い語句なので、日本語を途中で折り返さず列幅を確保する */
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
+/* セル内のコードは、区切り文字の直後に入れたwbr要素と空白でだけ折り返す（src/lib/table-code-breaks.ts） */
 th code,
 td code {
   overflow-wrap: normal;
-  white-space: nowrap;
   word-break: normal;
 }
 hr {
