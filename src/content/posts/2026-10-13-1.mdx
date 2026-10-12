@@ -583,11 +583,7 @@ ADMXのインポートの制限にあたる場合や、AppNameなどを自分で
 ### ADMXを取り込む
 
 「Windows 10 以降」の「テンプレート > カスタム」のプロファイルを作成し、OMA-URIの設定を追加します。
-設定ごとに、名前、OMA-URI、データ型、値を入力します。
-次の画像は、値の設定を1つ編集しているところです。
-
-![カスタムプロファイルのOMA-URIの設定で、名前、説明、OMA-URI、データ型、値を入力する行の編集画面](/assets/posts/post/2026-10-13-1/custom-profile-row.png)
-
+ADMXを取り込むために追加する設定は、次の1つです。
 データ型は「文字列」です。
 
 | 名前 | OMA-URI | 値 |
@@ -621,6 +617,11 @@ ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXの
 | --- | --- | --- |
 | Disable cloud recording | `./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy` | `<enabled/>` |
 | Update channel | `./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy` | `<enabled/><data id="SetUpdatingChannel_Part" value="1"/>` |
+
+設定は、1つずつ「行の編集」の画面で、名前、OMA-URI、データ型、値を入力して追加します。
+次の画像は、1つ目の設定を入力したところです。
+
+![カスタムプロファイルのOMA-URIの設定で、Disable cloud recordingの名前、OMA-URI、データ型、値を入力した行の編集画面](/assets/posts/post/2026-10-13-1/custom-profile-row.png)
 
 同期すると、ADMXのインポートと同じ2つの値がレジストリに書き込まれました。
 
