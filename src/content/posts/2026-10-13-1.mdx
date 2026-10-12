@@ -569,11 +569,14 @@ ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXの
 値のプロファイルを削除すると、ADMXのインポートと同じように、819で値が削除されました。
 
 一方で、取り込みのプロファイルを削除しても、取り込んだADMXはWindowsデバイスから削除されませんでした。
-同期のたびに、次のエラーが記録されます。
+同期のたびに、イベントID 454（コマンドのエラー状態）が次の内容で記録されます。
 
-```text title="取り込みの削除のエラー（イベントID 454）"
-コマンドのエラー状態。…、CSP名: (Policy)、コマンドの種類: (Clear: first phase of Delete)、CSP URI: (./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2)、結果: (Unknown Win32 Error code: 0x86000011)
-```
+| 項目 | 内容 |
+| --- | --- |
+| CSP名 | `Policy` |
+| コマンドの種類 | `Clear: first phase of Delete` |
+| CSP URI | `./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2` |
+| 結果 | `Unknown Win32 Error code: 0x86000011` |
 
 `0x86000011`は、そのノードではコマンドが許可されていないことを表すエラーです。
 Policy CSPのドキュメントでは、ADMXInstallは`Delete`で削除できることになっています。
