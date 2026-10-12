@@ -372,8 +372,8 @@ Microsoftのドキュメントからは、設定カタログを優先するよ�
 設定カタログは、Intuneにあらかじめ組み込まれた設定から選んで配布する方法です。
 Microsoft Edgeのように、ADMXで管理するアプリケーションの設定も含まれています。
 
-設定カタログのEdgeの設定も、Windowsデバイスでは同じようにADMXを取り込んでから値を設定していました。
-次の画像は、Microsoft Edgeの「Hide the First-run experience and splash screen」（`HideFirstRunExperience`）を有効にした設定カタログのプロファイルです。
+Edgeの設定も、Windowsデバイスでは同じようにADMXを取り込んでから値が設定されていました。
+次の画像は、Microsoft Edgeの「Hide the First-run experience and splash screen」（`HideFirstRunExperience`）を有効にしたプロファイルです。
 
 ![設定カタログのプロファイルの編集画面で、Microsoft EdgeのHide the First-run experience and splash screenを有効にした状態](/assets/posts/post/2026-10-13-1/settings-catalog.png)
 
@@ -388,7 +388,7 @@ Microsoft Edgeのように、ADMXで管理するアプリケーションの設�
 Intuneは、Edgeの大きなADMXから必要な設定だけを切り出して、取り込ませていることがわかります。
 値は`HKLM\SOFTWARE\Policies\Microsoft\Edge\HideFirstRunExperience`に`1`として書き込まれました。
 
-設定カタログにある設定は、ADMXの用意も取り込みの管理も不要です。
+Intuneに組み込まれている設定であれば、ADMXの用意も取り込みの管理も不要です。
 
 ## 方法2：ADMXのインポート
 
@@ -427,7 +427,8 @@ Zoomの例では、宣言した名前空間の定義を実際には使ってい�
 宣言した名前空間の定義は`windows:SUPPORTED_Windows8`のように接頭辞を付けて参照しますが、ZoomのADMXには`windows:`で始まる参照が1つもありません。
 対応バージョン（`SUPPORTED_WINXPSP2`）とカテゴリは、どちらもZoomのADMXの中で定義されています。
 7.2.0と6.6.5の`ZoomMeetings_HKLM.admx`、`ZoomMeetings_HKCU.admx`は、どれも同じでした。
-`using`要素が残っているのは、旧形式のADMから変換ツールで作られたためだと考えられます（ADMLに、変換ツールのFullArmor ADMX Migratorが付けたと思われる`ADMXMigrator_NoSupportedOn`という文字列があります）。
+`using`要素が残っているのは、旧形式のADMから変換ツールで作られたためだと考えられます。
+ADMLには`ADMXMigrator_NoSupportedOn`という文字列があり、変換ツールのFullArmor ADMX Migratorが付けたものと思われます。
 
 それでも、ZoomのADMXをアップロードするには、`Windows.admx`を先にアップロードする必要がありました。
 一方で、後述するカスタムプロファイルでは、`Windows.admx`を用意しなくても取り込めました。
@@ -581,7 +582,8 @@ ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXの
 
 `0x86000011`は、そのノードではコマンドが許可されていないことを表すエラーです。
 Policy CSPのドキュメントでは、ADMXInstallは`Delete`で削除できることになっています。
-Intuneが送ったコマンドは確認していませんが、イベントには「Clear: first phase of Delete」と記録されており、削除の最初の段階の`Clear`がこのノードで拒否されています。
+Intuneが送ったコマンドは確認していませんが、イベントには「Clear: first phase of Delete」と記録されています。
+削除は`Clear`から始まり、このノードではその`Clear`が拒否されています。
 そのため、ドキュメントどおりには削除されないようです。
 
 取り込んだADMXが残っても、値がなければレジストリには何も書き込まれません。
