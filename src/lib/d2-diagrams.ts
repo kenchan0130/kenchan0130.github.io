@@ -280,7 +280,9 @@ export function centerD2Containers(diagram: Diagram) {
       bottom = c.pos.y + c.height,
       left = c.pos.x,
       right = c.pos.x + c.width;
-    const dx = Math.round((left + right) / 2 - (box.x1 + box.x2) / 2);
+    // 行の先頭をそろえたい場合は、`class: align-left`で左右方向の中央寄せを止める。
+    const alignLeft = c.classes?.includes("align-left") ?? false;
+    const dx = alignLeft ? 0 : Math.round((left + right) / 2 - (box.x1 + box.x2) / 2);
     // 並べたコンテナの上端に見出しのような要素をそろえたい場合は、`class: align-top`で上下方向の中央寄せを止める。
     const alignTop = c.classes?.includes("align-top") ?? false;
     let dy = alignTop ? 0 : Math.round((top + bottom) / 2 - (box.y1 + box.y2) / 2);
