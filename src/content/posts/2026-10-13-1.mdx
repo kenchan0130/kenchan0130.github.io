@@ -72,31 +72,86 @@ OMA-URIは、ファイルシステムのパスのように、CSP内の設定の�
 
 それぞれのOMA-URIを区切りごとに分けると、次のようになります。
 
-```d2 title="ADMXの取り込みのOMA-URIと、取り込んだADMXのポリシーに値を設定するOMA-URIを、区切りごとに分けてそれぞれの意味を示した図"
+```d2 title="ADMXの取り込みのOMA-URIと、取り込んだADMXのポリシーに値を設定するOMA-URIを、区切りごとに下線を引いてそれぞれの意味を示した図"
+classes: {
+  seg: {shape: text; style.font: mono; style.underline: true; style.font-size: 13}
+  lab: {shape: text; style.font-size: 12}
+  line: {horizontal-gap: 10; vertical-gap: 4; style.fill: transparent}
+}
 grid-rows: 2
 grid-gap: 32
 admx: ADMXの取り込み {
-  shape: sql_table
-  "./Device": 対象
-  "/Vendor/MSFT/Policy": Policy CSP
-  "/ConfigOperations/ADMXInstall": ADMXの取り込み
-  "/ZoomMeetings": AppName
-  "/Policy": 種類
-  "/ZoomMeetings_HKLM_7_2": FileUid
+  grid-rows: 3
+  grid-gap: 8
+  r0: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 2
+    s0: "./Device" {class: seg}
+    s1: "/Vendor/MSFT/Policy" {class: seg}
+    l0: "対象" {class: lab}
+    l1: "Policy CSP" {class: lab}
+  }
+  r1: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 1
+    s0: "/ConfigOperations/ADMXInstall" {class: seg}
+    l0: "ADMXの取り込み" {class: lab}
+  }
+  r2: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 3
+    s0: "/ZoomMeetings" {class: seg}
+    s1: "/Policy" {class: seg}
+    s2: "/ZoomMeetings_HKLM_7_2" {class: seg}
+    l0: "AppName" {class: lab}
+    l1: "種類" {class: lab}
+    l2: "FileUid" {class: lab}
+  }
 }
 value: 取り込んだADMXのポリシーへの値の設定 {
-  shape: sql_table
-  "./Device": 対象
-  "/Vendor/MSFT/Policy": Policy CSP
-  "/Config": ポリシーの設定
-  "/ZoomMeetings": AppName
-  "~Policy": 種類
-  "~ZoomUsCommunication~zoommeetings": カテゴリのパス
-  "/DisableCloudRecording_Policy": ポリシーの名前
+  grid-rows: 4
+  grid-gap: 8
+  r0: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 2
+    s0: "./Device" {class: seg}
+    s1: "/Vendor/MSFT/Policy" {class: seg}
+    l0: "対象" {class: lab}
+    l1: "Policy CSP" {class: lab}
+  }
+  r1: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 3
+    s0: "/Config" {class: seg}
+    s1: "/ZoomMeetings" {class: seg}
+    s2: "~Policy" {class: seg}
+    l0: "ポリシーの設定" {class: lab}
+    l1: "AppName" {class: lab}
+    l2: "種類" {class: lab}
+  }
+  r2: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 1
+    s0: "~ZoomUsCommunication~zoommeetings" {class: seg}
+    l0: "カテゴリのパス" {class: lab}
+  }
+  r3: "" {
+    class: line
+    grid-rows: 2
+    grid-columns: 1
+    s0: "/DisableCloudRecording_Policy" {class: seg}
+    l0: "ポリシーの名前" {class: lab}
+  }
 }
 ```
 
-図の区切りを上から順につなげると、元のOMA-URIになります。
+図の区切りを、各行の左から右へ、上の行から順につなげると、元のOMA-URIになります。
 値の設定のOMA-URIには、値として`<enabled/>`を送ります。
 
 後述する設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
