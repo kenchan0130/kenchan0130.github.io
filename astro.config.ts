@@ -7,6 +7,7 @@ import expressiveCode from "astro-expressive-code";
 import type { ExpressiveCodePlugin } from "astro-expressive-code";
 import { centerD2Containers, d2DiagramMarkup, d2DiagramSources } from "./src/lib/d2-diagrams";
 import { scrollableTables } from "./src/lib/scrollable-tables";
+import { tableCodeBreaks } from "./src/lib/table-code-breaks";
 
 const focusableCodeBlocks: ExpressiveCodePlugin = {
   name: "Focusable code blocks",
@@ -70,7 +71,7 @@ export default defineConfig({
   markdown: {
     processor: satteri({
       mdastPlugins: [d2DiagramSources],
-      hastPlugins: [d2DiagramMarkup, scrollableTables],
+      hastPlugins: [d2DiagramMarkup, scrollableTables, tableCodeBreaks],
     }),
     shikiConfig: {
       wrap: false,
