@@ -312,17 +312,11 @@ uri: "" {
 
 取り込みと値の設定は、Windowsデバイスの次の場所で確認できます。
 
-```text title="取り込んだADMXのファイル"
-C:\ProgramData\Microsoft\PolicyManager\ADMXIngestion\<登録ID>\<AppName>\Policy\<FileUid>.admx
-```
-
-```text title="取り込んだポリシーの一覧（レジストリ）"
-HKLM\SOFTWARE\Microsoft\PolicyManager\AdmxDefault\<登録ID>\<エリア名>
-```
-
-```text title="設定された値の状態（レジストリ）"
-HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\<エリア名>
-```
+| 確認できるもの | 場所 |
+| --- | --- |
+| 取り込んだADMXのファイル | `C:\ProgramData\Microsoft\PolicyManager\ADMXIngestion\<登録ID>\<AppName>\Policy\<FileUid>.admx` |
+| 取り込んだポリシーの一覧 | `HKLM\SOFTWARE\Microsoft\PolicyManager\AdmxDefault\<登録ID>\<エリア名>` |
+| 設定された値の状態 | `HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\<エリア名>` |
 
 `<登録ID>`は、WindowsデバイスがIntuneに登録されたときのIDです。
 `<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分です。
@@ -478,12 +472,12 @@ GUIDは、Graph APIで確認したアップロードのIDと一致しました�
 Windowsに組み込まれているためだと考えられます。
 
 値は、取り込みと同じ同期では届かず、次の同期で届きました。
-イベントログには、OMA-URIで値を設定したときと同じ形式の814が記録されています。
+イベントログには、OMA-URIで値を設定したときと同じ形式の814（ポリシー文字列の設定）が、次の内容で記録されています。
 
-```text title="値の設定（イベントID 814）"
-ポリシー文字列の設定、ポリシー: (DisableCloudRecording_Policy)、領域: (fullarmor<GUID>~Policy~ZoomUsCommunication~zoommeetings)、…、文字列: (<enabled/>)
-ポリシー文字列の設定、ポリシー: (SetUpdatingChannel_Policy)、領域: (fullarmor<GUID>~Policy~ZoomUsCommunication~zoomgeneral)、…、文字列: (<enabled/><data id="SetUpdatingChannel_Part" value="1" />)
-```
+| ポリシー | 領域 | 文字列 |
+| --- | --- | --- |
+| `DisableCloudRecording_Policy` | `fullarmor<GUID>~Policy~ZoomUsCommunication~zoommeetings` | `<enabled/>` |
+| `SetUpdatingChannel_Policy` | `fullarmor<GUID>~Policy~ZoomUsCommunication~zoomgeneral` | `<enabled/><data id="SetUpdatingChannel_Part" value="1" />` |
 
 レジストリには、次の値が書き込まれました。
 
