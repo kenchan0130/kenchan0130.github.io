@@ -42,3 +42,8 @@ rules:
     specs:
       - from: フォルダー
         to:   フォルダ
+  - expected: サードパーティ
+    pattern: /サードパーティー/
+    specs:
+      - from: サードパーティー
+        to:   サードパーティ
