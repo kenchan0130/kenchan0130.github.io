@@ -122,7 +122,8 @@ ADMXの取り込みには、次の形式のOMA-URIを使います。
 
 ```d2 title="ADMXを取り込むOMA-URIを区切りごとに分け、対象、Policy CSP、ADMXの取り込み、AppName、種類、FileUidの意味を示した図"
 classes: {
-  seg: {shape: text; style.font: mono; style.underline: true; style.font-size: 13}
+  seg: {shape: text; style.font: mono; style.font-size: 13}
+  bar: {shape: rectangle; label: ""; height: 3; style.stroke-width: 0}
   lab: {shape: text; style.font-size: 12; style.bold: true}
   t-target: {style.font-color: "#9333ea"}
   t-csp: {style.font-color: "#3b82f6"}
@@ -142,27 +143,33 @@ uri: "" {
   style.fill: transparent
   r0: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 2
-    s0: "./Device" {class: [seg; t-target]}
-    s1: "/Vendor/MSFT/Policy" {class: [seg; t-csp]}
+    s0: "./Device" {class: seg}
+    s1: "/Vendor/MSFT/Policy" {class: seg}
+    b0: {class: bar; style.fill: "#9333ea"}
+    b1: {class: bar; style.fill: "#3b82f6"}
     l0: "対象" {class: [lab; t-target]}
     l1: "Policy CSP" {class: [lab; t-csp]}
   }
   r1: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 1
-    s0: "/ConfigOperations/ADMXInstall" {class: [seg; t-op]}
+    s0: "/ConfigOperations/ADMXInstall" {class: seg}
+    b0: {class: bar; style.fill: "#ea580c"}
     l0: "ADMXの取り込み" {class: [lab; t-op]}
   }
   r2: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 3
-    s0: "/ZoomMeetings" {class: [seg; t-app]}
-    s1: "/Policy" {class: [seg; t-type]}
-    s2: "/ZoomMeetings_HKLM_7_2" {class: [seg; t-file]}
+    s0: "/ZoomMeetings" {class: seg}
+    s1: "/Policy" {class: seg}
+    s2: "/ZoomMeetings_HKLM_7_2" {class: seg}
+    b0: {class: bar; style.fill: "#16a34a"}
+    b1: {class: bar; style.fill: "#64748b"}
+    b2: {class: bar; style.fill: "#db2777"}
     l0: "AppName" {class: [lab; t-app]}
     l1: "種類" {class: [lab; t-type]}
     l2: "FileUid" {class: [lab; t-file]}
@@ -220,7 +227,8 @@ ZoomのADMXで、クラウドレコーディングを無効にするポリシー
 
 ```d2 title="取り込んだADMXのポリシーに値を設定するOMA-URIを区切りごとに分け、対象、Policy CSP、ポリシーの設定、AppName、種類、カテゴリのパス、ポリシーの名前の意味を示した図"
 classes: {
-  seg: {shape: text; style.font: mono; style.underline: true; style.font-size: 13}
+  seg: {shape: text; style.font: mono; style.font-size: 13}
+  bar: {shape: rectangle; label: ""; height: 3; style.stroke-width: 0}
   lab: {shape: text; style.font-size: 12; style.bold: true}
   t-target: {style.font-color: "#9333ea"}
   t-csp: {style.font-color: "#3b82f6"}
@@ -240,36 +248,43 @@ uri: "" {
   style.fill: transparent
   r0: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 2
-    s0: "./Device" {class: [seg; t-target]}
-    s1: "/Vendor/MSFT/Policy" {class: [seg; t-csp]}
+    s0: "./Device" {class: seg}
+    s1: "/Vendor/MSFT/Policy" {class: seg}
+    b0: {class: bar; style.fill: "#9333ea"}
+    b1: {class: bar; style.fill: "#3b82f6"}
     l0: "対象" {class: [lab; t-target]}
     l1: "Policy CSP" {class: [lab; t-csp]}
   }
   r1: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 3
-    s0: "/Config" {class: [seg; t-op]}
-    s1: "/ZoomMeetings" {class: [seg; t-app]}
-    s2: "~Policy" {class: [seg; t-type]}
+    s0: "/Config" {class: seg}
+    s1: "/ZoomMeetings" {class: seg}
+    s2: "~Policy" {class: seg}
+    b0: {class: bar; style.fill: "#ea580c"}
+    b1: {class: bar; style.fill: "#16a34a"}
+    b2: {class: bar; style.fill: "#64748b"}
     l0: "ポリシーの設定" {class: [lab; t-op]}
     l1: "AppName" {class: [lab; t-app]}
     l2: "種類" {class: [lab; t-type]}
   }
   r2: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 1
-    s0: "~ZoomUsCommunication~zoommeetings" {class: [seg; t-cat]}
+    s0: "~ZoomUsCommunication~zoommeetings" {class: seg}
+    b0: {class: bar; style.fill: "#dc2626"}
     l0: "カテゴリのパス" {class: [lab; t-cat]}
   }
   r3: "" {
     class: [line; align-left]
-    grid-rows: 2
+    grid-rows: 3
     grid-columns: 1
-    s0: "/DisableCloudRecording_Policy" {class: [seg; t-name]}
+    s0: "/DisableCloudRecording_Policy" {class: seg}
+    b0: {class: bar; style.fill: "#0d9488"}
     l0: "ポリシーの名前" {class: [lab; t-name]}
   }
 }
