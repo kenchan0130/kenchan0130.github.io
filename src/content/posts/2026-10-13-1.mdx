@@ -123,9 +123,9 @@ ADMXの取り込みには、次の形式のOMA-URIを使います。
 
 ```d2 title="ADMXを取り込むOMA-URIを区切りごとに分け、対象、Policy CSP、ADMXの取り込み、AppName、種類、FileUidの意味を示した図"
 classes: {
-  seg: {shape: text; style.font: mono; style.font-size: 13}
-  bar: {shape: rectangle; label: ""; height: 3; style.stroke-width: 0}
-  lab: {shape: text; style.font-size: 12; style.bold: true}
+  seg: {shape: text; style.font: mono; style.font-size: 16}
+  bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
+  lab: {shape: text; style.font-size: 14; style.bold: true}
   t-target: {style.font-color: "#9333ea"}
   t-csp: {style.font-color: "#3b82f6"}
   t-op: {style.font-color: "#ea580c"}
@@ -139,7 +139,7 @@ classes: {
 }
 uri: "" {
   class: align-left
-  grid-rows: 3
+  grid-rows: 4
   grid-gap: 8
   style.fill: transparent
   r0: "" {
@@ -164,16 +164,21 @@ uri: "" {
   r2: "" {
     class: [line; align-left]
     grid-rows: 3
-    grid-columns: 3
+    grid-columns: 2
     s0: "/ZoomMeetings" {class: seg}
     s1: "/Policy" {class: seg}
-    s2: "/ZoomMeetings_HKLM_7_2" {class: seg}
     b0: {class: bar; style.fill: "#16a34a"}
     b1: {class: bar; style.fill: "#64748b"}
-    b2: {class: bar; style.fill: "#db2777"}
     l0: "AppName" {class: [lab; t-app]}
     l1: "種類" {class: [lab; t-type]}
-    l2: "FileUid" {class: [lab; t-file]}
+  }
+  r3: "" {
+    class: [line; align-left]
+    grid-rows: 3
+    grid-columns: 1
+    s0: "/ZoomMeetings_HKLM_7_2" {class: seg}
+    b0: {class: bar; style.fill: "#db2777"}
+    l0: "FileUid" {class: [lab; t-file]}
   }
 }
 ```
@@ -228,9 +233,9 @@ ZoomのADMXで、クラウドレコーディングを無効にするポリシー
 
 ```d2 title="取り込んだADMXのポリシーに値を設定するOMA-URIを区切りごとに分け、対象、Policy CSP、ポリシーの設定、AppName、種類、カテゴリのパス、ポリシーの名前の意味を示した図"
 classes: {
-  seg: {shape: text; style.font: mono; style.font-size: 13}
-  bar: {shape: rectangle; label: ""; height: 3; style.stroke-width: 0}
-  lab: {shape: text; style.font-size: 12; style.bold: true}
+  seg: {shape: text; style.font: mono; style.font-size: 16}
+  bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
+  lab: {shape: text; style.font-size: 14; style.bold: true}
   t-target: {style.font-color: "#9333ea"}
   t-csp: {style.font-color: "#3b82f6"}
   t-op: {style.font-color: "#ea580c"}
@@ -319,12 +324,10 @@ HKLM\SOFTWARE\Microsoft\PolicyManager\AdmxDefault\<登録ID>\<エリア名>
 HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\<エリア名>
 ```
 
-```text title="処理の記録（イベントビューア）"
-アプリケーションとサービス ログ > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider > Admin
-```
-
 `<登録ID>`は、WindowsデバイスがIntuneに登録されたときのIDです。
 `<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分です。
+
+処理の記録は、イベントビューアの「アプリケーションとサービス ログ > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider > Admin」で確認できます。
 
 イベントログには、処理の種類ごとに決まったイベントIDが記録されます。
 今回の検証で、ADMXの取り込みと値の設定に関係して記録されたのは、次のイベントIDです。
