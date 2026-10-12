@@ -30,28 +30,10 @@ Windowsに組み込まれていないサードパーティー製アプリケー�
 - Windows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン）。Microsoft 365 Business Premiumのライセンスにより、Windows 11 Businessとして表示される。Microsoft Entra参加、Intuneに登録済み
 - ZoomのADMX 7.2.0（[Zoom_7.2.0.zip](https://assets.zoom.us/docs/msi-templates/Zoom_7.2.0.zip)に含まれる`ZoomMeetings_HKLM.admx`）
 
-## IntuneでADMXの設定を配布する3つの方法
-
-Intuneで、ADMXで定義された設定を配布する方法は次の3つです。
-
-| 方法 | ADMXの用意 | 向いている場面 |
-| --- | --- | --- |
-| 設定カタログ | 不要（Intuneに組込み） | Microsoft EdgeやGoogle Chromeなど、Intuneがサポートしているアプリケーション |
-| ADMXのインポート | Intuneの画面からアップロード | 設定カタログにないアプリケーション |
-| カスタムプロファイル（OMA-URI） | プロファイルにADMXの全文を貼り付け | インポートの制限にあたる場合や、取り込みを細かく制御したい場合 |
-
-Microsoftのドキュメントは、まず設定カタログを使うよう案内しています。
-
-- [Use ADMX templates on Windows devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-admx-templates-windows)の冒頭では、設定カタログの管理用テンプレートはIntuneに組み込まれており、ダウンロードやOMA-URIは不要と説明されています
-- [Add custom settings for Windows devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/templates/configure-custom-settings-windows)の冒頭の注記では、設定できる項目は設定カタログで確認するよう案内されています
-- [Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates)の冒頭のヒントでも、Google Chromeなどの設定が設定カタログに組み込まれていると案内されています
-
-設定カタログにないアプリケーションでは、ADMXのインポートか、カスタムプロファイルを使います。
-
-どの方法でも、Windowsデバイス側のしくみは同じです。
-そこで、まずはWindowsデバイスで何が起きるのかを説明します。
-
 ## Windowsデバイスで何が起きるのか
+
+IntuneでADMXの設定を配布する方法は3つありますが、どの方法でも、Windowsデバイス側のしくみは同じです。
+そこで、まずはWindowsデバイスで何が起きるのかを説明します。
 
 ### MDMクライアントとPolicy CSP
 
@@ -84,18 +66,12 @@ intune.server -> client.mdm: "OMA-URIと値"
 OMA-URIは、ファイルシステムのパスのように、CSPの中の設定の住所を表します。
 サードパーティーのADMXでは、ADMXの取り込みも、取り込んだポリシーへの値の設定も、OMA-URIで指定します。
 後述するZoomの例では、次の2つのOMA-URIを使います。
+図では、1つのOMA-URIを途中で折り返しています。
 
-| 部分 | ADMXの取り込み | 値の設定 |
-| --- | --- | --- |
-| 対象 | `./Device`（デバイス） | `./Device`（デバイス） |
-| CSP | `Vendor/MSFT/Policy`（Policy CSP） | `Vendor/MSFT/Policy`（Policy CSP） |
-| 操作 | `ConfigOperations/ADMXInstall`（ADMXの取り込み） | `Config`（ポリシーの設定） |
-| 宛先 | `ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2` | `ZoomMeetings~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy` |
-| 値 | ADMXの全文 | `<enabled/>` |
+![ADMXの取り込みと値の設定のOMA-URIを、対象、Policy CSP、操作、AppName、種類、FileUid、カテゴリのパス、ポリシーの名前に分けた図](/assets/posts/post/2026-10-12-1/oma-uri.png)
 
-設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
+後述する設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
 カスタムプロファイルでは、OMA-URIと値の組を自分で書きます。
-宛先の書き方は、次の節で説明します。
 
 ### ADMXの取り込みと値の設定
 
@@ -212,6 +188,24 @@ AppNameを`ZoomMeetings`として取り込んだ場合、このポリシーのOM
 
 以降の検証結果は、これらの記録をもとにしています。
 
+## IntuneでADMXの設定を配布する3つの方法
+
+Intuneで、ADMXで定義された設定を配布する方法は次の3つです。
+
+| 方法 | ADMXの用意 | 向いている場面 |
+| --- | --- | --- |
+| 設定カタログ | 不要（Intuneに組込み） | Microsoft EdgeやGoogle Chromeなど、Intuneがサポートしているアプリケーション |
+| ADMXのインポート | Intuneの画面からアップロード | 設定カタログにないアプリケーション |
+| カスタムプロファイル（OMA-URI） | プロファイルにADMXの全文を貼り付け | インポートの制限にあたる場合や、取り込みを細かく制御したい場合 |
+
+Microsoftのドキュメントは、まず設定カタログを使うよう案内しています。
+
+- [Use ADMX templates on Windows devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-admx-templates-windows)の冒頭では、設定カタログの管理用テンプレートはIntuneに組み込まれており、ダウンロードやOMA-URIは不要と説明されています
+- [Add custom settings for Windows devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/templates/configure-custom-settings-windows)の冒頭の注記では、設定できる項目は設定カタログで確認するよう案内されています
+- [Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates)の冒頭のヒントでも、Google Chromeなどの設定が設定カタログに組み込まれていると案内されています
+
+設定カタログにないアプリケーションでは、ADMXのインポートか、カスタムプロファイルを使います。
+
 ## 設定カタログ
 
 設定カタログは、Intuneにあらかじめ組み込まれた設定から選んで配布する方法です。
@@ -230,23 +224,24 @@ Intuneは、Edgeの大きなADMXを丸ごと送るのではなく、必要な設
 値は`HKLM\SOFTWARE\Policies\Microsoft\Edge\HideFirstRunExperience`に`1`として書き込まれました。
 
 設定カタログにある設定は、ADMXの用意も取り込みの管理も不要です。
-配布したい設定が設定カタログにあれば、設定カタログを使うのがよいと思います。
 
 ## ADMXのインポート
 
 ADMXのインポートは、IntuneにADMXとADMLをアップロードし、その設定を「インポートされた管理用テンプレート」のプロファイルで配布する方法です。
-2026-10-12時点では、まだプレビューの機能です。
+執筆時点では、まだプレビューの機能です。
 
 ### 制限事項
 
-Microsoft Learnには、次の制限が書かれています。
+[Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#what-you-need-to-know)の「What you need to know」には、次の制限が書かれています。
 
 - アップロードできるADMXは20個まで。1ファイル1 MBまで
 - 1つのADMXにつき、ADMLは1つ。言語は`en-US`だけ
 - 入力欄に`comboBox`を使うADMXはインポートできない
 - 別のADMXの名前空間を参照している場合は、参照先のADMXを先にアップロードする
 
-ZoomのADMXは`Windows.admx`の名前空間（`Microsoft.Policies.Windows`）を参照しているため、`Windows.admx`を先にアップロードする必要があります。
+名前空間は、ADMXがほかのADMXの定義を参照するときに使う名前です（[ADMXのしくみと読み方の「名前空間とカテゴリ」](/post/2026-10-05-1#名前空間とカテゴリ)を参照）。
+ZoomのADMXは、`using`要素で`Windows.admx`の名前空間（`Microsoft.Policies.Windows`）を参照しています。
+そのため、`Windows.admx`を先にアップロードする必要があります。
 
 ### ZoomのADMXをアップロードする
 
@@ -407,7 +402,7 @@ ADMXのインポートでADMXを用意し、値だけをOMA-URIで設定する�
 ./Device/Vendor/MSFT/Policy/Config/fullarmor<GUID>~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy
 ```
 
-しかし、この併用は避けたほうがよいと考えています（今回は試していません）。
+しかし、この併用は避けたほうがよいと考えています。
 理由は次の3つです。
 
 - ADMXをアップロードしただけでは、Windowsデバイスに取り込まれないと考えられる。プロファイルを削除すると取り込みも消えたことから、取り込まれるのは、そのADMXを使う「インポートされた管理用テンプレート」のプロファイルが割り当てられたときだけと思われる
