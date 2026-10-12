@@ -1,6 +1,6 @@
 ---
-title: IntuneでADMXを運用する
-description: Microsoft IntuneでサードパーティのADMXを運用するときの注意点として、ADMXのバージョンの更新、入れ墨、Terraformでの管理、ADMXで書き込めないレジストリへの対処を、実機で確かめた結果とともに紹介します。
+title: Intuneでレジストリの設定を運用する
+description: Microsoft IntuneでWindowsのレジストリの設定を運用するときの注意点として、ADMXのバージョンの更新、入れ墨、Terraformでの管理、ADMXで書き込めないレジストリをスクリプトで設定する方法を、実機で確かめた結果とともに紹介します。
 published: 2026-10-13
 categories:
   - system-administration
@@ -22,12 +22,14 @@ draft: true
 配布できるようになると、次に困るのは運用です。
 アプリケーションの新しいバージョンでADMXが更新されたり、配布をやめた設定の値が残ったりします。
 
-今回は、IntuneでADMXを運用するときの次の話題を、実機で確かめた結果とともに紹介します。
+ADMXのポリシーも、最終的にはレジストリの値を設定するしくみです。
+ADMXで書き込めない場所は、スクリプトでレジストリに直接書き込むこともあります。
+今回は、Intuneでレジストリの設定を運用するときの次の話題を、実機で確かめた結果とともに紹介します。
 
 - ADMXのバージョンの更新
 - 入れ墨（設定をやめた値が残る問題）
 - Terraformでの管理
-- ADMXで書き込めないレジストリへの対処
+- ADMXで書き込めないレジストリをスクリプトで設定する方法
 
 検証した環境は、前回と同じ次の環境です。
 
@@ -699,7 +701,7 @@ resource "microsoft365_graph_beta_device_management_windows_remediation_script" 
 
 ## 終わりに
 
-今回は、IntuneでADMXを運用するときの注意点を紹介しました。
+今回は、Intuneでレジストリの設定を運用するときの注意点を紹介しました。
 
 ADMXのバージョンの更新では、新旧のポリシーが同じレジストリの値を書き込む状態を作らないことが大切です。
 OMA-URIなら、AppNameとFileUidを固定して中身だけを差し替えると、安全に更新できました。
