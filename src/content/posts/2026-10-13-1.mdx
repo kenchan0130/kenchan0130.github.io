@@ -590,6 +590,12 @@ ADMXを取り込むために追加する設定は、次の1つです。
 | --- | --- | --- |
 | Zoom ADMX | `./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomMeetings/Policy/ZoomMeetings_HKLM_7_2` | `ZoomMeetings_HKLM.admx`の全文 |
 
+設定は、「行の編集」の画面で、名前、OMA-URI、データ型、値を入力して追加します。
+次の画像は、「Zoom ADMX」を入力したところです。
+値には、ADMXのファイルの中身をそのまま貼り付けます。
+
+![カスタムプロファイルのOMA-URIの設定で、Zoom ADMXの名前、OMA-URI、データ型、値（ADMXの全文）を入力した行の編集画面](/assets/posts/post/2026-10-13-1/custom-profile-admx-row.png)
+
 AppNameは`ZoomMeetings`、FileUidは`ZoomMeetings_HKLM_7_2`としました。
 AppNameは値を設定するOMA-URIにも使うため、短くわかりやすい名前がよいと思います。
 
@@ -618,10 +624,14 @@ ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXの
 | Disable cloud recording | `./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy` | `<enabled/>` |
 | Update channel | `./Device/Vendor/MSFT/Policy/Config/ZoomMeetings~Policy~ZoomUsCommunication~zoomgeneral/SetUpdatingChannel_Policy` | `<enabled/><data id="SetUpdatingChannel_Part" value="1"/>` |
 
-設定は、1つずつ「行の編集」の画面で、名前、OMA-URI、データ型、値を入力して追加します。
-次の画像は、1つ目の設定を入力したところです。
+取り込みと同じように、1つずつ「行の編集」の画面で入力します。
+次の画像は、「Disable cloud recording」を入力したところです。
 
 ![カスタムプロファイルのOMA-URIの設定で、Disable cloud recordingの名前、OMA-URI、データ型、値を入力した行の編集画面](/assets/posts/post/2026-10-13-1/custom-profile-row.png)
+
+2つの設定を追加すると、プロファイルの一覧は次のようになります。
+
+![カスタムプロファイルのOMA-URIの設定の一覧に、Disable cloud recordingとUpdate channelの2行が並んでいる画面](/assets/posts/post/2026-10-13-1/custom-profile-settings-list.png)
 
 同期すると、ADMXのインポートと同じ2つの値がレジストリに書き込まれました。
 
