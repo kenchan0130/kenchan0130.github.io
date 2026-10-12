@@ -64,7 +64,7 @@ intune.server -> client.mdm: "OMA-URIと値"
 ```
 
 どのCSPのどの設定に渡すかは、OMA-URIというパスで決まります。
-OMA-URIは、ファイルシステムのパスのように、CSPの中の設定の住所を表します。
+OMA-URIは、ファイルシステムのパスのように、CSP内の設定の住所を表します。
 サードパーティのADMXでは、ADMXの取り込みも、取り込んだポリシーへの値の設定も、OMA-URIで指定します。
 後述するZoomの例では、次の2つのOMA-URIを使います。
 
@@ -267,7 +267,7 @@ Microsoft Edgeのように、ADMXで管理するアプリケーションの設�
 | `microsoft_edgev80diff` | `microsoft_edgev80diff` | 18個のポリシーを含むADMX |
 
 1つ目は、Edgeの`msedge.admx`から、配布した設定だけを切り出したADMXでした。
-Intuneは、Edgeの大きなADMXを丸ごと送るのではなく、必要な設定だけを取り込ませていることがわかります。
+Intuneは、Edgeの大きなADMXから必要な設定だけを切り出して、取り込ませていることがわかります。
 値は`HKLM\SOFTWARE\Policies\Microsoft\Edge\HideFirstRunExperience`に`1`として書き込まれました。
 
 設定カタログにある設定は、ADMXの用意も取り込みの管理も不要です。
@@ -461,7 +461,7 @@ ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちら�
 
 ## どの方法を選ぶか
 
-ここまでの結果をまとめると、次のようになります。
+ここまでの結果を比べると、次の表のようになります。
 
 | | 設定カタログ | ADMXのインポート | OMA-URI |
 | --- | --- | --- | --- |
