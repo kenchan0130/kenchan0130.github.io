@@ -18,7 +18,7 @@ draft: true
 
 前回の[ADMXのしくみと読み方](/post/2026-10-05-1)では、ADMXがレジストリのどこに何を書き込むかを定義するファイルであることを紹介しました。
 ADMXは、もともとActive Directoryのグループポリシーで使われてきたしくみです。
-しかし、ADMXの設定は、Microsoft Intune（以下、Intune）のようなMDMからも配布できます。
+現在は、ADMXの設定を、Microsoft Intune（以下、Intune）のようなMDMからも配布できます。
 Windowsに組み込まれていないサードパーティー製アプリケーションのADMXも、Windowsデバイスに取り込んで使えます。
 
 今回は、IntuneでサードパーティーのADMXの設定をWindowsデバイスに配布する方法を紹介します。
@@ -27,19 +27,20 @@ Windowsに組み込まれていないサードパーティー製アプリケー�
 
 検証した環境は次のとおりです。
 
-- Windows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン）。Microsoft 365 Business Premiumのライセンスにより、Windows 11 Businessとして表示される。Microsoft Entra参加、Intuneに登録済み
+- Windows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン）。Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではWindows 11 Businessと表示される。Microsoft Entra参加、Intuneに登録済み
 - ZoomのADMX 7.2.0（[Zoom_7.2.0.zip](https://assets.zoom.us/docs/msi-templates/Zoom_7.2.0.zip)に含まれる`ZoomMeetings_HKLM.admx`）
 
 ## Windowsデバイスで何が起きるのか
 
-IntuneでADMXの設定を配布する方法は3つありますが、どの方法でも、Windowsデバイス側のしくみは同じです。
+IntuneでADMXの設定を配布する方法には、設定カタログ、ADMXのインポート、カスタムプロファイル（OMA-URI）の3つがあります。
+どの方法でも、Windowsデバイス側のしくみは同じです。
 そこで、まずはWindowsデバイスで何が起きるのかを説明します。
 
 ### MDMクライアントとPolicy CSP
 
 IntuneからWindowsデバイスへの設定は、OMA-DMというプロトコルで届きます。
 受け取るのは、Windowsに組み込まれているMDMクライアントです。
-Intuneに登録したWindowsデバイスであれば、エージェントを別にインストールしなくても動きます。
+[Mobile Device Management overview](https://learn.microsoft.com/en-us/windows/client-management/mdm-overview)にあるとおり、MDMサーバーがWindowsを管理するために、クライアントを別にインストールする必要はありません（構成プロファイルの場合。スクリプトの実行などには、別のエージェントが使われます）。
 
 MDMクライアントは、受け取った設定を構成サービスプロバイダ（CSP: Configuration Service Provider）に渡します。
 CSPも、Windowsに組み込まれている、設定の種類ごとの受け口です。
@@ -68,7 +69,7 @@ OMA-URIは、ファイルシステムのパスのように、CSPの中の設定�
 後述するZoomの例では、次の2つのOMA-URIを使います。
 図では、1つのOMA-URIを途中で折り返しています。
 
-![ADMXの取り込みと値の設定のOMA-URIを、対象、Policy CSP、操作、AppName、種類、FileUid、カテゴリのパス、ポリシーの名前に分けた図](/assets/posts/post/2026-10-12-1/oma-uri.png)
+![ADMXの取り込みと値の設定のOMA-URIを、対象、Policy CSP、ADMXの取り込みまたはポリシーの設定、AppName、種類、FileUid、カテゴリのパス、ポリシーの名前に分けた図](/assets/posts/post/2026-10-12-1/oma-uri.png)
 
 後述する設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
 カスタムプロファイルでは、OMA-URIと値の組を自分で書きます。
@@ -175,7 +176,8 @@ AppNameを`ZoomMeetings`として取り込んだ場合、このポリシーのOM
 `<登録ID>`は、WindowsデバイスがIntuneに登録されたときのIDです。
 `<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分です。
 
-イベントログには、主に次のイベントIDが記録されます。
+イベントログには、処理の種類ごとに決まったイベントIDが記録されます。
+今回の検証で、ADMXの取り込みと値の設定に関係して記録されたのは、次のイベントIDです。
 
 | イベントID | 内容 |
 | --- | --- |
@@ -186,7 +188,15 @@ AppNameを`ZoomMeetings`として取り込んだ場合、このポリシーのOM
 | 819 | ポリシーの値を削除 |
 | 454 | コマンドのエラー |
 
+イベントIDは、Intuneの設定ごとに決まるものではなく、Windows側で処理の種類ごとに決まっているようです。
+そのため、Intune以外のMDMから配布しても、同じ処理なら同じイベントIDが記録されると考えられます。
+一方で、値の種類が違えば別のイベントIDになります。
+たとえば、ADMXのポリシーのように文字列で設定する値は814ですが、整数で設定するWindows Updateのポリシーなどは813として記録されていました。
+また、筆者が探した範囲では、Microsoftはこれらのイベントの一覧を公開していません。
+Windowsのバージョンによって変わる可能性もあります。
+
 次の画像は、イベントビューアで814のイベントを表示したところです。
+AppNameを`ZoomTf`として取り込んだときの記録です。
 ポリシーの名前（`DisableCloudRecording_Policy`）、エリア名（`ZoomTf~Policy~ZoomUsCommunication~zoommeetings`）、設定した文字列（`<enabled/>`）が記録されています。
 登録IDとコンピュータ名は伏せています。
 
@@ -204,7 +214,7 @@ Intuneで、ADMXで定義された設定を配布する方法は次の3つです
 | ADMXのインポート | Intuneの画面からアップロード | 設定カタログにないアプリケーション |
 | カスタムプロファイル（OMA-URI） | プロファイルにADMXの全文を貼り付け | インポートの制限にあたる場合や、取り込みを細かく制御したい場合 |
 
-Microsoftのドキュメントは、まず設定カタログを使うよう案内しています。
+Microsoftのドキュメントからは、設定カタログを優先するよう読み取れます。
 
 - [Use ADMX templates on Windows devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-admx-templates-windows)の冒頭では、設定カタログの管理用テンプレートはIntuneに組み込まれており、ダウンロードやOMA-URIは不要と説明されています
 - [Add custom settings for Windows devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/templates/configure-custom-settings-windows)の冒頭の注記では、設定できる項目は設定カタログで確認するよう案内されています
@@ -251,7 +261,7 @@ ZoomのADMXは、`using`要素で`Windows.admx`の名前空間（`Microsoft.Poli
 
 ### ZoomのADMXをアップロードする
 
-ZoomのADMXは、Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)から、版ごとのZIPファイルとしてダウンロードできます。
+ZoomのADMXは、Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)から、バージョンごとのZIPファイルとしてダウンロードできます。
 ZIPファイルの中の`ZoomMeetings_HKLM.admx`と`en-US\ZoomMeetings_HKLM.adml`を使います。
 
 最初に`ZoomMeetings_HKLM.admx`をアップロードすると、次のエラーになりました。
@@ -413,7 +423,7 @@ ADMXのインポートでADMXを用意し、値だけをOMA-URIで設定する�
 
 - ADMXをアップロードしただけでは、Windowsデバイスに取り込まれないと考えられる。プロファイルを削除すると取り込みも消えたことから、取り込まれるのは、そのADMXを使う「インポートされた管理用テンプレート」のプロファイルが割り当てられたときだけと思われる
 - 取り込みが別のプロファイルに依存する。インポートの機能のプロファイルを外すと取り込みが削除され、OMA-URIで設定した値も効かなくなると考えられる
-- AppNameのGUIDはアップロードのIDのため、版の更新などでADMXをアップロードし直すと変わる。そのたびにOMA-URIを書き直す必要があると考えられる
+- AppNameのGUIDはアップロードのIDのため、バージョンの更新などでADMXをアップロードし直すと変わる。そのたびにOMA-URIを書き直す必要があると考えられる
 
 この使い方はドキュメントにもありません。
 ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちらか一方にそろえるのが安全だと思います。
@@ -430,20 +440,19 @@ ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちら�
 | 値の設定 | 画面で選ぶ | 画面で選ぶ | OMA-URIと値を自分で書く |
 | 参照先のADMX（`Windows.admx`など） | 不要 | 先にアップロードが必要 | 不要 |
 | プロファイルの削除 | 未検証 | 値と取り込みが消える | 値は消える。取り込みは残る |
-| 版の更新 | Intuneの更新を待つ | プロファイルを削除してから入れ替えるか、別の版として追加する | 取り込みの行の中身を差し替える |
+| バージョンの更新 | Intuneの更新を待つ | プロファイルを削除してから入れ替えるか、別のバージョンとして追加する | 取り込みの行の中身を差し替える |
 
 それぞれのメリットとデメリットは次のとおりです。
 
 | 方法 | メリット | デメリット |
 | --- | --- | --- |
-| 設定カタログ | ADMXの用意も版の管理も不要<br />画面で設定を選べる | 対応しているアプリケーションと設定しか使えない<br />新しい版の設定を使えるのは、Intuneが対応してから |
-| ADMXのインポート | 画面で設定を選べる<br />プロファイルを削除すると取り込みも消える | プレビューの機能<br />ADMXは1 MB、20個まで。ADMLは`en-US`だけで、`comboBox`は使えない<br />参照先の`Windows.admx`も、英語のADMLと一緒にアップロードが必要<br />ADMXを入れ替えるには、使っているプロファイルを先に削除する手順になっている<br />版を並べて登録すると、プロファイルでは同じ名前の設定が並び、どの版の設定か見分けにくい（筆者が画面で確認）<br />値は、取り込みの次の同期で届いた<br />新旧の版のプロファイルを同時に割り当てると、値が消えることがある |
-| OMA-URI | プレビューではない<br />ADMXのファイルをそのまま使える<br />参照先のADMXを用意しなくてよい<br />AppNameとFileUidを固定すれば、中身の差し替えで版を更新できる<br />取り込みと値を1つのプロファイルにまとめると、1回の同期で反映できた | ADMXは350,000バイトまで<br />OMA-URIと値のXMLを手で書く必要があり、`./Device`と`./User`も書き分ける<br />書き間違いは管理センターでは検出されず、Windowsデバイスのイベントログで初めてわかる<br />取り込みのプロファイルを削除しても、取り込みは削除されない |
-
+| 設定カタログ | ADMXの用意もバージョンの管理も不要<br />画面で設定を選べる | 対応しているアプリケーションと設定しか使えない<br />新しいバージョンの設定を使えるのは、Intuneが対応してから |
+| ADMXのインポート | 画面で設定を選べる<br />プロファイルを削除すると取り込みも消える | プレビューの機能<br />ADMXは1 MB、20個まで。ADMLは`en-US`だけで、`comboBox`は使えない<br />参照先の`Windows.admx`も、英語のADMLと一緒にアップロードが必要<br />ADMXを入れ替えるには、使っているプロファイルを先に削除する手順になっている<br />バージョンを並べて登録すると、プロファイルでは同じ名前の設定が並び、どのバージョンの設定か見分けにくい（筆者が画面で確認）<br />値は、取り込みの次の同期で届いた<br />新旧のバージョンのプロファイルを同時に割り当てると、値が消えることがある |
+| OMA-URI | プレビューではない<br />ADMXのファイルをそのまま使える<br />参照先のADMXを用意しなくてよい<br />AppNameとFileUidを固定すれば、中身の差し替えでバージョンを更新できる<br />取り込みと値を1つのプロファイルにまとめると、1回の同期で反映できた | ADMXは350,000バイトまで<br />OMA-URIと値のXMLを手で書く必要があり、`./Device`と`./User`も書き分ける<br />書き間違いは管理センターでは検出されず、Windowsデバイスのイベントログで初めてわかる<br />取り込みのプロファイルを削除しても、取り込みは削除されない |
 
 配布したい設定が設定カタログにあれば、設定カタログを使います。
 設定カタログにない場合は、画面で設定を選べるADMXのインポートが扱いやすいと思います。
-OMA-URIは、ADMXのインポートの制限にあたる場合や、AppNameを固定して版の更新を管理したい場合に向いています。
+OMA-URIは、ADMXのインポートの制限にあたる場合や、AppNameを固定してバージョンの更新を管理したい場合に向いています。
 
 ## 終わりに
 
@@ -453,7 +462,7 @@ OMA-URIは、ADMXのインポートの制限にあたる場合や、AppNameを�
 違いは、ADMXの用意のしかた、AppNameを決める主体、そしてプロファイルを削除したときに取り込みが残るかどうかです。
 前回の記事のようにADMXを読めれば、どの方法でも、どのレジストリの値が変わるのかを確かめられます。
 
-ADMXの版の更新や、Terraformでの管理、ADMXで書き込めない場所の設定については、[IntuneでADMXを運用する](/post/2026-10-12-2)で紹介します。
+ADMXのバージョンの更新や、Terraformでの管理、ADMXで書き込めない場所の設定については、[IntuneでADMXを運用する](/post/2026-10-12-2)で紹介します。
 
 ## 参考資料
 
@@ -463,6 +472,7 @@ ADMXの版の更新や、Terraformでの管理、ADMXで書き込めない場所
 - [Win32 and Desktop Bridge app ADMX policy Ingestion](https://learn.microsoft.com/en-us/windows/client-management/win32-and-centennial-app-policy-configuration)
 - [Understanding ADMX policies](https://learn.microsoft.com/en-us/windows/client-management/understanding-admx-backed-policies)
 - [Enable ADMX policies in MDM](https://learn.microsoft.com/en-us/windows/client-management/enable-admx-backed-policies-in-mdm)
+- [Mobile Device Management overview](https://learn.microsoft.com/en-us/windows/client-management/mdm-overview)
 - [Policy CSP](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-configuration-service-provider)
 - [Deploy App Control policies using Microsoft Intune](https://learn.microsoft.com/en-us/windows/security/application-security/application-control/app-control-for-business/deployment/deploy-appcontrol-policies-using-intune)
 - [Mass-deploying with Group Policy Objects（Zoom）](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)
