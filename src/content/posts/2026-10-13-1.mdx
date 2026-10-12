@@ -1,7 +1,7 @@
 ---
 title: IntuneでサードパーティーのADMXを配布する
 description: Microsoft IntuneでサードパーティーのADMXの設定を配布する3つの方法（設定カタログ、ADMXのインポート、OMA-URI）を、Zoomを例に実機で確かめた結果とともに紹介します。Windowsデバイスで何が起き、プロファイルを削除すると何が残るのかも扱います。
-published: 2026-10-12
+published: 2026-10-13
 categories:
   - system-administration
 tags:
@@ -12,7 +12,6 @@ tags:
   - Zoom
 references:
   - 2026-10-05-1
-  - 2026-10-12-2
 draft: true
 ---
 
@@ -231,7 +230,7 @@ AppNameを`ZoomTf`として取り込んだときの記録です。
 ポリシーの名前（`DisableCloudRecording_Policy`）、エリア名（`ZoomTf~Policy~ZoomUsCommunication~zoommeetings`）、設定した文字列（`<enabled/>`）が記録されています。
 登録IDとコンピュータ名は伏せています。
 
-![イベントビューアでイベントID 814の一覧を表示し、DisableCloudRecording_Policyに<enabled/>を設定したイベントの詳細を開いた画面](/assets/posts/post/2026-10-12-1/event-viewer.png)
+![イベントビューアでイベントID 814の一覧を表示し、DisableCloudRecording_Policyに<enabled/>を設定したイベントの詳細を開いた画面](/assets/posts/post/2026-10-13-1/event-viewer.png)
 
 以降の検証結果は、これらの記録をもとにしています。
 
@@ -493,7 +492,7 @@ OMA-URIは、ADMXのインポートの制限にあたる場合や、AppNameを�
 違いは、ADMXの用意のしかた、AppNameを決める主体、そしてプロファイルを削除したときに取り込みが残るかどうかです。
 前回の記事のようにADMXを読めれば、どの方法でも、どのレジストリの値が変わるのかを確かめられます。
 
-ADMXのバージョンの更新や、Terraformでの管理、ADMXで書き込めない場所の設定については、[IntuneでADMXを運用する](/post/2026-10-12-2)で紹介します。
+次回は、ADMXのバージョンの更新や、Terraformでの管理、ADMXで書き込めない場所の設定について紹介する予定です。
 
 ## 参考資料
 
