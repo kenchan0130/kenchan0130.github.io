@@ -1,6 +1,6 @@
 ---
-title: IntuneでサードパーティーのADMXを配布する
-description: Microsoft IntuneでサードパーティーのADMXの設定を配布する3つの方法（設定カタログ、ADMXのインポート、OMA-URI）を、Zoomを例に実機で確かめた結果とともに紹介します。Windowsデバイスで何が起き、プロファイルを削除すると何が残るのかも扱います。
+title: IntuneでサードパーティのADMXを配布する
+description: Microsoft IntuneでサードパーティのADMXの設定を配布する3つの方法（設定カタログ、ADMXのインポート、OMA-URI）を、Zoomを例に実機で確かめた結果とともに紹介します。Windowsデバイスで何が起き、プロファイルを削除すると何が残るのかも扱います。
 published: 2026-10-13
 categories:
   - system-administration
@@ -18,9 +18,9 @@ draft: true
 前回の[ADMXのしくみと読み方](/post/2026-10-05-1)では、ADMXがレジストリのどこに何を書き込むかを定義するファイルであることを紹介しました。
 ADMXは、もともとActive Directoryのグループポリシーで使われてきたしくみです。
 現在は、ADMXの設定を、Microsoft Intune（以下、Intune）のようなMDMからも配布できます。
-Windowsに組み込まれていないサードパーティー製アプリケーションのADMXも、Windowsデバイスに取り込んで使えます。
+Windowsに組み込まれていないサードパーティ製アプリケーションのADMXも、Windowsデバイスに取り込んで使えます。
 
-今回は、IntuneでサードパーティーのADMXの設定をWindowsデバイスに配布する方法を紹介します。
+今回は、IntuneでサードパーティのADMXの設定をWindowsデバイスに配布する方法を紹介します。
 それぞれの方法でWindowsデバイスに何が届き、レジストリに値が書き込まれるまでに何が起きるのかを、実機で確かめた結果とともに説明します。
 題材には、ADMXが公開されているZoomのデスクトップアプリケーションを使います。
 
@@ -64,7 +64,7 @@ intune.server -> client.mdm: "OMA-URIと値"
 
 どのCSPのどの設定に渡すかは、OMA-URIというパスで決まります。
 OMA-URIは、ファイルシステムのパスのように、CSPの中の設定の住所を表します。
-サードパーティーのADMXでは、ADMXの取り込みも、取り込んだポリシーへの値の設定も、OMA-URIで指定します。
+サードパーティのADMXでは、ADMXの取り込みも、取り込んだポリシーへの値の設定も、OMA-URIで指定します。
 後述するZoomの例では、次の2つのOMA-URIを使います。
 
 ```text title="ZoomのADMXの取り込みと、取り込んだポリシーへの値の設定に使うOMA-URI"
@@ -106,7 +106,7 @@ value: 取り込んだADMXのポリシーへの値の設定 {
 
 ### ADMXの取り込みと値の設定
 
-サードパーティー製アプリケーションのADMXは、Windowsに組み込まれていません。
+サードパーティ製アプリケーションのADMXは、Windowsに組み込まれていません。
 そのため、Windowsデバイスは次の2段階で設定を受け取ります。
 
 1. ADMXの取り込み：ADMXの全文をPolicy CSPに渡し、Windowsデバイスにポリシーの定義として登録する
@@ -486,7 +486,7 @@ OMA-URIは、ADMXのインポートの制限にあたる場合や、AppNameを�
 
 ## 終わりに
 
-今回は、IntuneでサードパーティーのADMXを配布する3つの方法を紹介しました。
+今回は、IntuneでサードパーティのADMXを配布する3つの方法を紹介しました。
 
 どの方法でも、Windowsデバイスでは、Policy CSPがADMXを取り込み、その定義に従って値をレジストリに書き込みます。
 違いは、ADMXの用意のしかた、AppNameを決める主体、そしてプロファイルを削除したときに取り込みが残るかどうかです。
