@@ -291,12 +291,21 @@ uri: "" {
 
 取り込みと値の設定は、Windowsデバイスの次の場所で確認できます。
 
-| 確認できるもの | 場所 |
-| --- | --- |
-| 取り込んだADMXのファイル | `C:\ProgramData\Microsoft\PolicyManager\ADMXIngestion\<登録ID>\<AppName>\Policy\<FileUid>.admx` |
-| 取り込んだポリシーの一覧 | `HKLM\SOFTWARE\Microsoft\PolicyManager\AdmxDefault\<登録ID>\<エリア名>` |
-| 設定された値の状態 | `HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\<エリア名>` |
-| 処理の記録 | イベントビューアの「アプリケーションとサービス ログ > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider > Admin」 |
+```text title="取り込んだADMXのファイル"
+C:\ProgramData\Microsoft\PolicyManager\ADMXIngestion\<登録ID>\<AppName>\Policy\<FileUid>.admx
+```
+
+```text title="取り込んだポリシーの一覧（レジストリ）"
+HKLM\SOFTWARE\Microsoft\PolicyManager\AdmxDefault\<登録ID>\<エリア名>
+```
+
+```text title="設定された値の状態（レジストリ）"
+HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\<エリア名>
+```
+
+```text title="処理の記録（イベントビューア）"
+アプリケーションとサービス ログ > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider > Admin
+```
 
 `<登録ID>`は、WindowsデバイスがIntuneに登録されたときのIDです。
 `<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分です。
