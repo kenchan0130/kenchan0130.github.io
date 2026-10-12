@@ -29,7 +29,10 @@ draft: true
 - Terraformでの管理
 - ADMXで書き込めないレジストリへの対処
 
-検証した環境は、前回と同じWindows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン、Microsoft 365 Business Premiumのライセンスにより、Windows 11 Businessとして表示される）です。
+検証した環境は、前回と同じ次の環境です。
+
+- Windows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン）。Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではWindows 11 Businessと表示される
+
 Terraformのプロバイダは、deploymenttheory/microsoft365の1.4.0を使いました。
 
 ## ADMXのバージョンを更新する
@@ -145,7 +148,12 @@ export M365_CLIENT_SECRET=...
 
 ### ADMXのインポート
 
-ADMXのインポートは、ADMXとADMLのアップロード、プロファイル、プロファイルの設定の3種類のリソースで書きます。
+ADMXのインポートは、次の3種類のリソースで書きます。
+
+- ADMXとADMLのアップロード
+- プロファイル
+- プロファイルに含める設定
+
 
 ```hcl title="main.tf"
 resource "microsoft365_graph_beta_device_management_group_policy_uploaded_definition_files" "zoom" {
@@ -306,7 +314,7 @@ IMEがIntuneに問い合わせるのは、次のタイミングです。
 | 64ビットのPowerShellで実行する（`run_as_32_bit`） | 画面のデフォルトは32ビット。64ビットのWindowsで32ビットのPowerShellを使うと、`HKLM:\SOFTWARE`への書き込みが`WOW6432Node`に振り替えられる |
 | 署名の確認を強制する（`enforce_signature_check`） | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。署名しないスクリプトでは無効にする |
 
-最も重要なのは、一度実行に成功したスクリプトが再実行されない点です。
+特に注意が必要なのは、一度実行に成功したスクリプトが再実行されない点です。
 IMEは、実行に成功したスクリプトを、スクリプトやポリシーが変わるまで再実行しません。
 変わったかどうかは、スクリプトのハッシュで判断しているようです。
 今回の検証でも、スクリプトの内容を変えてアップロードし直すと、IMEのログに次のように記録され、スクリプトが再実行されました。
