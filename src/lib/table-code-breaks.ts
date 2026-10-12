@@ -1,4 +1,19 @@
-import type { Element, ElementContent, Parents, Text } from "hast";
+// hastの型パッケージは直接の依存関係ではないため、このプラグインで使う範囲だけを定義する。
+interface Text {
+  type: "text";
+  value: string;
+}
+
+interface Element {
+  type: "element";
+  tagName: string;
+  properties: Record<string, unknown>;
+  children: ElementContent[];
+}
+
+type ElementContent = Element | Text | { type: "comment"; value: string };
+
+type Parents = Element | { type: "root"; children: ElementContent[] };
 
 interface PluginContext {
   parent(node: Readonly<Element>): Readonly<Parents> | undefined;
@@ -24,7 +39,7 @@ const isInTableCell = (node: Readonly<Element>, ctx: PluginContext): boolean => 
 };
 
 const splitText = (text: Text): ElementContent[] => {
-  const parts = text.value.split(separators).filter((part) => part !== "");
+  const parts = text.value.split(separators).filter((part: string) => part !== "");
   const children: ElementContent[] = [];
   for (const part of parts) {
     if (children.length > 0) {
@@ -41,7 +56,7 @@ export const tableCodeBreaks = () => ({
     filter: ["code"],
     visit(node: Readonly<Element>, ctx: PluginContext) {
       if (!isInTableCell(node, ctx)) return;
-      const children = node.children.flatMap((child) =>
+      const children = node.children.flatMap((child: ElementContent) =>
         child.type === "text" ? splitText(child) : [child],
       );
       if (children.length === node.children.length) return;
