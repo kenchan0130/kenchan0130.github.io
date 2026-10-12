@@ -903,7 +903,7 @@ ADMXだけで目的の`policy`要素を見つけられる場合は、ADMLを開�
 ADMXで`displayName="$(string.ShellConfigureSmartScreen)"`を検索すると、先ほどの`policy`要素が見つかります。
 同じIDの`presentation`には、ドロップダウンリスト（`dropdownList`）が1つ置かれています。
 
-ADMXの`policy`要素から書き込み先を読み、表示名から探すときだけADMLを使う手順は、サードパーティー製アプリケーションのADMXでも同じです。
+ADMXの`policy`要素から書き込み先を読み、表示名から探すときだけADMLを使う手順は、サードパーティ製アプリケーションのADMXでも同じです。
 
 ## ADMXファイルの配置と読み込み
 
@@ -922,7 +922,7 @@ ADMXの`policy`要素から書き込み先を読み、表示名から探すと�
 `gpedit.msc`を含むエディタは、ドメインにセントラルストアがあればローカルストアの代わりにそちらを使います。
 
 表示言語のADMLがない場合は、ADMXの`resources`要素の`fallbackCulture`属性で指定した言語（デフォルトは`en-US`）のADMLを探します。
-日本語のADMLがなく英語のADMLだけを置いたサードパーティー製アプリケーションのポリシーが、英語で表示されるのはそのためです。
+日本語のADMLがなく英語のADMLだけを置いたサードパーティ製アプリケーションのポリシーが、英語で表示されるのはそのためです。
 
 ### 読み込み時のエラー
 
@@ -1039,10 +1039,10 @@ SmartScreenの場合は、まず`gpresult /h report.html`のレポートで「Wi
 MDMでは、Windowsデバイス自身がADMXを使い、MDMから受け取った設定をレジストリの値に変換します。
 
 変換に使うADMXは、Windows標準の設定のうちMDMに対応したものなら、OSに組み込まれています。
-サードパーティー製アプリケーションのADMXは、MDM経由でWindowsデバイスに取り込みます。
+サードパーティ製アプリケーションのADMXは、MDM経由でWindowsデバイスに取り込みます。
 
 MDMからポリシーを指定するときは、エディタの表示名ではなく、決められた名前を使います。
-取り込んだサードパーティー製アプリケーションのADMXでは、`policy`要素の`name`、カテゴリの`name`、`elements`の子要素の`id`で指定します。
+取り込んだサードパーティ製アプリケーションのADMXでは、`policy`要素の`name`、カテゴリの`name`、`elements`の子要素の`id`で指定します。
 Windows標準の設定は、Policy CSPのドキュメントで名前を確認します。
 SmartScreenのように、ADMXの`name`（`ShellConfigureSmartScreen`）と[Policy CSPの名前](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-smartscreen)（`EnableSmartScreenInShell`）が異なる設定もあるためです。
 どちらの場合も、ADMXを読めば、その設定がどのレジストリの値を変えるのかを確かめられます。
