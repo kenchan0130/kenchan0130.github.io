@@ -379,7 +379,11 @@ Microsoftのドキュメントからは、設定カタログを優先するよ�
 Microsoft Edgeのように、ADMXで管理するアプリケーションの設定も含まれています。
 
 設定カタログのEdgeの設定も、Windowsデバイスでは同じようにADMXを取り込んでから値を設定していました。
-「初回実行時のエクスペリエンスを非表示にする」（`HideFirstRunExperience`）を配布したところ、Windowsデバイスには次の2つのADMXが取り込まれました。
+次の画像は、Microsoft Edgeの「Hide the First-run experience and splash screen」（`HideFirstRunExperience`）を有効にした設定カタログのプロファイルです。
+
+![設定カタログのプロファイルの編集画面で、Microsoft EdgeのHide the First-run experience and splash screenを有効にした状態](/assets/posts/post/2026-10-13-1/settings-catalog.png)
+
+このプロファイルを配布したところ、Windowsデバイスには次の2つのADMXが取り込まれました。
 
 | AppName | FileUid | 内容 |
 | --- | --- | --- |
@@ -450,6 +454,11 @@ cp raw/staging_en_US_Windows.adml upload/en-US/Windows.adml
 | --- | --- |
 | Client will disable and hide cloud recording feature | 有効 |
 | Set the specified update channel when silent auto update is enabled | 有効、`1` |
+
+設定の一覧から設定を選ぶと、ADMLの説明と、有効、無効、入力欄が表示されます。
+次の画像は、「Set the specified update channel when silent auto update is enabled」を有効にして、`1`を入力したところです。
+
+![インポートされた管理用テンプレートのプロファイルで、Zoomの更新チャネルの設定を有効にし、値に1を入力した画面](/assets/posts/post/2026-10-13-1/imported-setting.png)
 
 ### Windowsデバイスでの動き
 
