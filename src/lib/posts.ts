@@ -9,7 +9,18 @@ export async function getPublishedPosts(): Promise<Post[]> {
     "posts",
     ({ data }) => import.meta.env.DEV || isPublicPost(data),
   );
-  return posts.sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+  return posts.sort(compareNewestFirst);
+}
+
+// 同じ日付の記事は、IDの末尾の連番が大きいほど後から公開されたものとして扱う
+function postSequence(post: Post): number {
+  return Number(post.id.slice(post.id.lastIndexOf("-") + 1));
+}
+
+function compareNewestFirst(a: Post, b: Post): number {
+  return (
+    b.data.published.valueOf() - a.data.published.valueOf() || postSequence(b) - postSequence(a)
+  );
 }
 
 export function postPath(post: Post): string {
@@ -50,12 +61,7 @@ export function getRelatedPosts(current: Post, posts: Post[], limit = 3): Post[]
       return { post, score: categories * 4 + tags * 2 };
     })
     .filter(({ score }) => score > 0)
-    .sort(
-      (a, b) =>
-        b.score - a.score ||
-        b.post.data.published.valueOf() - a.post.data.published.valueOf() ||
-        a.post.id.localeCompare(b.post.id),
-    )
+    .sort((a, b) => b.score - a.score || compareNewestFirst(a.post, b.post))
     .map(({ post }) => post);
 
   return [...manual, ...scored].slice(0, limit);
