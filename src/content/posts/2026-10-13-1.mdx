@@ -404,8 +404,17 @@ ADMXのインポートは、IntuneにADMXとADMLをアップロードし、そ�
 - 入力欄に`comboBox`を使うADMXはインポートできない
 - 別のADMXの名前空間を参照している場合は、参照先のADMXを先にアップロードする
 
-ZoomのADMXは、`using`要素で`Windows.admx`の名前空間（`Microsoft.Policies.Windows`）を宣言しています。
-そのため、`Windows.admx`を先にアップロードする必要があります。
+最後の制限は、ADMXの`using`要素に関係します。
+`using`要素で別のADMXの名前空間を宣言しているADMXは、その名前空間を持つADMXを先にアップロードしておく必要があります。
+特に`Windows.admx`の名前空間（`Microsoft.Policies.Windows`）を宣言しているADMXでは、`Windows.admx`のアップロードが必要です。
+`Windows.admx`は、Windows標準のカテゴリや対応バージョンをまとめたADMXで、サードパーティ製のADMXでも宣言されていることがあります。
+将来は、`Windows.admx`は自動で含まれるようになり、アップロードが不要になる予定です[^windows-admx]。
+
+[^windows-admx]: [Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#what-you-need-to-know)の「What you need to know」に書かれています。
+
+アップロードが必要かどうかは、`using`要素で宣言しているかどうかで決まるようです。
+宣言した名前空間の定義を実際に使っていなくても、アップロードが必要になります。
+たとえば、ZoomのADMXは`Windows.admx`の名前空間を宣言しています。
 
 ```xml title="ZoomMeetings_HKLM.admx（抜粋）" {3}
 <policyNamespaces>
@@ -414,20 +423,14 @@ ZoomのADMXは、`using`要素で`Windows.admx`の名前空間（`Microsoft.Poli
 </policyNamespaces>
 ```
 
-ただし、ZoomのADMXは`Windows.admx`の定義を実際には使っていません。
-`using`要素で宣言した名前空間の定義は、`windows:SUPPORTED_Windows8`のように接頭辞を付けて参照します。
-しかし、ZoomのADMXには`windows:`で始まる参照が1つもありません。
+しかし、ZoomのADMXは`Windows.admx`の定義を実際には使っていません。
+宣言した名前空間の定義は`windows:SUPPORTED_Windows8`のように接頭辞を付けて参照しますが、ZoomのADMXには`windows:`で始まる参照が1つもありません。
 対応バージョン（`SUPPORTED_WINXPSP2`）とカテゴリは、どちらもZoomのADMXの中で定義されています。
-7.2.0と6.6.5の`ZoomMeetings_HKLM.admx`、`ZoomMeetings_HKCU.admx`を調べましたが、どれも同じでした。
+7.2.0と6.6.5の`ZoomMeetings_HKLM.admx`、`ZoomMeetings_HKCU.admx`は、どれも同じでした。
+`using`要素が残っているのは、旧形式のADMから変換ツールで作られたためだと考えられます（ADMLに、変換ツールのFullArmor ADMX Migratorが付けたと思われる`ADMXMigrator_NoSupportedOn`という文字列があります）。
 
-`using`要素が残っているのは、ZoomのADMXが旧形式のADMから変換ツールで作られたためだと考えられます。
-ADMLに`ADMXMigrator_NoSupportedOn`という文字列があり、変換ツールのFullArmor ADMX Migratorが付けたものと思われます。
-
-それでも、ADMXのインポートは、宣言されている名前空間がすべてアップロード済みであることを確認します。
-そのため、使われていない`Windows.admx`も用意する必要があります。
-後述するカスタムプロファイルでは、`Windows.admx`を用意しなくても取り込めました。
-なお、`Windows.admx`は将来自動で含まれるようになり、アップロードが不要になる予定です（時期は未定）。
-このことは、[Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#what-you-need-to-know)の「What you need to know」に書かれています。
+それでも、ZoomのADMXをアップロードするには、`Windows.admx`を先にアップロードする必要がありました。
+一方で、後述するカスタムプロファイルでは、`Windows.admx`を用意しなくても取り込めました。
 
 ### ZoomのADMXをアップロードする
 
@@ -544,7 +547,6 @@ Graph APIでプロファイルを作成して試したところ、350,000文字�
 なお、このデータ型で選べるファイルの拡張子は`.xml`か`.txt`だけです。
 
 Zoom 7.2.0の`ZoomMeetings_HKLM.admx`は330,066文字で、上限に近い大きさです。
-Google Chromeの`chrome.admx`は461,542文字あり、文字列とXMLファイルのどちらでもプロファイルを作成できませんでした。
 
 同期すると、ADMXは指定したAppNameとFileUidで取り込まれました。
 ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXのインポートと違い、`Windows.admx`を用意する必要はありませんでした。
