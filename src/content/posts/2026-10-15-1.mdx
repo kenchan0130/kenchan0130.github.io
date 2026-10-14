@@ -41,6 +41,7 @@ Microsoft Intune（以下、Intune）では、設定カタログやスクリプ�
 ## Intuneでレジストリに値を配布する方法
 
 Intuneでレジストリに値を配布する主な方法は、次の5つです。
+値を書き込むのは、Policy CSPか、Intune管理拡張機能（IME: Intune Management Extension）のどちらかです。
 
 | 方法 | 書き込み元 | 書き込める場所 | 配布をやめたときの値 | 必要なライセンスの例 |
 | --- | --- | --- | --- | --- |
@@ -53,16 +54,50 @@ Intuneでレジストリに値を配布する主な方法は、次の5つです�
 [^intune-license]: Intune Plan 1は、Microsoft 365 Business Premium、E3、E5などに含まれます。
 [^remediations-license]: Windows Enterprise E3、E5、Windows Education A3、A5、Windows Virtual Desktop Access（VDA）のいずれかが必要です。Microsoft 365 Business Premiumには含まれません。
 
-設定カタログ、ADMXのインポート、カスタムプロファイルの3つは、Windowsに組み込まれたMDMクライアントがIntuneから設定を受け取り、Policy CSPがADMXの定義に従ってレジストリに書き込みます。
+2つの書き込み元は、次のように別の経路で設定を受け取ります。
+
+```d2 pad="0" title="構成プロファイルはIntuneからMDMクライアントに届き、Policy CSPがレジストリに書き込む。スクリプトはIMEがIntuneに問い合わせて受け取り、PowerShellがレジストリに書き込む"
+grid-columns: 2
+grid-gap: 48
+intune: Intune {
+  server: Intuneのサービス {shape: image; icon: /d2-icons/server.svg}
+}
+client: Windowsデバイス {
+  paths: "" {
+    grid-rows: 2
+    grid-gap: 32
+    style.fill: transparent
+    style.stroke-width: 0
+    profile: 構成プロファイル {
+      grid-columns: 2
+      grid-gap: 48
+      mdm: MDMクライアント {shape: image; icon: /d2-icons/monitor-cog.svg}
+      csp: Policy CSP {shape: image; icon: /d2-icons/cog.svg}
+      mdm -> csp
+    }
+    script: スクリプト {
+      grid-columns: 2
+      grid-gap: 48
+      ime: IME {shape: image; icon: /d2-icons/app-window.svg}
+      ps: powershell.exe {shape: image; icon: /d2-icons/file-code.svg}
+      ime -> ps: 起動
+    }
+  }
+  reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
+  paths.profile.csp -> reg
+  paths.script.ps -> reg
+}
+intune.server -> client.paths.profile.mdm: OMA-DM
+client.paths.script.ime -> intune.server: 問い合わせ
+```
+
+設定カタログ、ADMXのインポート、カスタムプロファイルは、MDMクライアントが受け取った設定を、Policy CSPがADMXの定義に従って書き込みます。
 しくみは、[Microsoft IntuneでサードパーティのADMXを配布する](/post/2026-10-14-1)で詳しく紹介しています。
-
 Policy CSPは、ポリシーが外されると、そのポリシーで書き込んだ値を削除します。
-今回の検証でも、プロファイルの削除や割り当ての解除など、どの外し方でも値は削除されました。
-ポリシーを外しても値が残る状態は「入れ墨」と呼ばれ、[ADMXのしくみと読み方](/post/2026-10-05-1)で紹介しています。
-Policy CSPで書き込んだ値では、入れ墨は基本的に起きません。
+そのため、ポリシーを外しても値が残る「入れ墨」は、基本的に起きません。
+入れ墨については、[ADMXのしくみと読み方](/post/2026-10-05-1)で紹介しています。
 
-プラットフォームスクリプトと修復スクリプトは、Intune管理拡張機能（IME: Intune Management Extension）がPowerShellのスクリプトを実行し、スクリプトがレジストリに直接書き込みます。
-IMEは、Windowsデバイスに自動でインストールされるIntuneのエージェントです。
+プラットフォームスクリプトと修復スクリプトは、IMEが受け取ったPowerShellのスクリプトがレジストリに直接書き込みます。
 スクリプトは配布をやめても値を元に戻さないため、入れ墨への対策は自分で用意する必要があります。
 
 ## 方法ごとの運用の注意点
@@ -132,7 +167,7 @@ device.a72 -> reg.v: 書き直さない
 それぞれの値は次のとおりです。
 キーは、どれも`HKLM\SOFTWARE\Policies\Zoom\Zoom Meetings`の下です。
 
-| 値 | 6.6.5のプロファイル | 7.2.0のプロファイル | 6.6.5のプロファイルを削除した後 |
+| 値 | 6.6.5 | 7.2.0 | 6.6.5の削除後 |
 | --- | --- | --- | --- |
 | `Meetings\DisableCloudRecording` | `1` | `1` | 削除された |
 | `General\SetUpdatingChannel` | `1` | `1` | 削除された |
@@ -286,65 +321,26 @@ ADMXのインポートとカスタムプロファイルでADMXを取り込む場
 
 ### IMEがスクリプトを実行するしくみ
 
-プラットフォームスクリプトと修復スクリプトは、構成プロファイルとは別のしくみで動きます。
-構成プロファイルはWindowsのMDMクライアントがOMA-DMで受け取りますが、スクリプトはIMEがIntuneに問い合わせて受け取ります。
-
-```d2 pad="0" title="構成プロファイルはIntuneからMDMクライアントに届き、Policy CSPがレジストリに書き込む。スクリプトはIMEがIntuneに問い合わせて受け取り、PowerShellがレジストリに書き込む"
-grid-columns: 2
-grid-gap: 48
-intune: Intune {
-  server: Intuneのサービス {shape: image; icon: /d2-icons/server.svg}
-}
-client: Windowsデバイス {
-  paths: "" {
-    grid-rows: 2
-    grid-gap: 32
-    style.fill: transparent
-    style.stroke-width: 0
-    profile: 構成プロファイル {
-      grid-columns: 2
-      grid-gap: 48
-      mdm: MDMクライアント {shape: image; icon: /d2-icons/monitor-cog.svg}
-      csp: Policy CSP {shape: image; icon: /d2-icons/cog.svg}
-      mdm -> csp
-    }
-    script: スクリプト {
-      grid-columns: 2
-      grid-gap: 48
-      ime: IME {shape: image; icon: /d2-icons/app-window.svg}
-      ps: powershell.exe {shape: image; icon: /d2-icons/file-code.svg}
-      ime -> ps: 起動
-    }
-  }
-  reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
-  paths.profile.csp -> reg
-  paths.script.ps -> reg
-}
-intune.server -> client.paths.profile.mdm: OMA-DM
-client.paths.script.ime -> intune.server: 問い合わせ
-```
-
-IMEは、プラットフォームスクリプトやWin32アプリなどを割り当てると、Windowsデバイスに自動でインストールされます。
-Microsoft Entra参加などの条件を満たすWindowsデバイスが対象で、Windows Homeエディションと、Sモードでは動きません。
-IMEは、Windowsのサービス（`IntuneManagementExtension`）として常駐します。
-
-IMEがIntuneに問い合わせるのは、次のタイミングです。
-
-- 8時間ごと
-- Windowsデバイスの再起動や、IMEのサービスの再起動の後
-
-[Understand Microsoft Intune Management Extension](https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows)には、IMEの問い合わせは、MDMクライアントの問い合わせとは独立していると書かれています。
+IMEは、MDMクライアントとは別にIntuneへ問い合わせて、割り当てられたスクリプトの追加や変更を受け取ります。
+問い合わせるのは、8時間ごとと、Windowsデバイスやサービス（`IntuneManagementExtension`）の再起動の後です。
+[Understand Microsoft Intune Management Extension](https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows)には、この問い合わせはMDMクライアントの問い合わせとは独立していると書かれています。
 今回の環境でも、Windowsの「設定」から同期しただけでは、スクリプトの変更は再起動するまで届きませんでした。
 
-問い合わせで割り当てられたスクリプトを受け取ると、IMEは次のように実行します。
+これはスクリプトを受け取るタイミングで、実行するタイミングとは別です。
+プラットフォームスクリプトは受け取ったときに実行し、修復スクリプトは割り当てで指定した間隔（1時間ごとなど）で実行します。
 
-1. スクリプトを`C:\Program Files (x86)\Microsoft Intune Management Extension\Policies\Scripts`に保存する
-2. `AgentExecutor.exe`が、Windows PowerShell（`powershell.exe`）を`-NoProfile -executionPolicy bypass -file <スクリプト>`で起動して実行する
-3. 終了コードと出力をIntuneに報告する
+受け取ったスクリプトは、次のように実行されます。
 
-今回の環境では、スクリプトのファイル名は`<ユーザーのID>_<スクリプトのID>.ps1`でした。
-すべてのユーザーに割り当てたため、ユーザーごとに管理されているようです。
-署名の確認を有効にしない場合は、実行ポリシーが`bypass`になるため、署名のないスクリプトも実行できます。
+```d2 title="IMEが受け取ったスクリプトをScriptsフォルダーに保存し、AgentExecutor.exeがPowerShellを起動して実行し、終了コードと出力をIntuneに報告する流れ"
+direction: right
+ime: IME {shape: image; icon: /d2-icons/app-window.svg}
+file: "スクリプトを保存\n（Policies\\Scripts）" {shape: image; icon: /d2-icons/file-code.svg}
+agent: AgentExecutor.exe {shape: image; icon: /d2-icons/file-cog.svg}
+ps: "powershell.exe\n-executionPolicy bypass" {shape: image; icon: /d2-icons/monitor-cog.svg}
+intune: "Intuneに報告\n（終了コードと出力）" {shape: image; icon: /d2-icons/server.svg}
+ime -> file -> agent -> ps
+ps -> intune
+```
 
 スクリプトの設定によって、実行のしかたが変わります。
 
@@ -352,18 +348,35 @@ IMEがIntuneに問い合わせるのは、次のタイミングです。
 | --- | --- |
 | サインインしたユーザーの資格情報で実行する（`run_as_account`） | 画面のデフォルトは`user`（サインインしたユーザー）。`system`はSYSTEMとして実行する。`HKLM`に書き込むには`system`にする |
 | 64ビットのPowerShellで実行する（`run_as_32_bit`） | 画面のデフォルトは32ビット。後述のとおり、書き込み先のキーが変わることがある |
-| 署名の確認を強制する（`enforce_signature_check`） | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。署名しないスクリプトでは無効にする |
+| 署名の確認を強制する（`enforce_signature_check`） | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。無効にすると、実行ポリシーが`bypass`になる |
 
 #### 32ビットと64ビットのPowerShell
 
 IMEは、スクリプトをWindows PowerShell 5.1で実行します。
-「64ビットのPowerShellで実行する」の設定によって、起動されるPowerShellが変わります。
-今回の環境で、プラットフォームスクリプトをどちらの設定でもSYSTEMとして実行し、次の2つのキーに値を書き込みました。
+「64ビットのPowerShellで実行する」の設定によって、起動されるPowerShellと、レジストリの書き込み先が変わります。
+今回の環境で、プラットフォームスクリプトをどちらの設定でもSYSTEMとして実行し、`HKLM:\SOFTWARE\IntuneBitnessTest`と`HKLM:\SOFTWARE\Policies\IntuneBitnessTest`に値を書き込んだ結果は、次のとおりです。
 
-- `HKLM:\SOFTWARE\IntuneBitnessTest`
-- `HKLM:\SOFTWARE\Policies\IntuneBitnessTest`
-
-結果は次のとおりです。
+```d2 title="32ビットのPowerShellがSOFTWAREの下に書き込んだ値はWOW6432Nodeの下に振り替えられ、Policiesの下は32ビットと64ビットで同じ場所に書き込まれた"
+grid-columns: 2
+grid-gap: 96
+ps: PowerShell {
+  grid-rows: 2
+  grid-gap: 48
+  p32: "32ビット\n（SysWOW64）" {shape: image; icon: /d2-icons/file-code.svg}
+  p64: "64ビット\n（System32）" {shape: image; icon: /d2-icons/file-code.svg}
+}
+reg: 'HKLM\SOFTWARE' {
+  grid-rows: 3
+  grid-gap: 24
+  wow: 'WOW6432Node\IntuneBitnessTest' {shape: image; icon: /d2-icons/database.svg}
+  pol: 'Policies\IntuneBitnessTest' {shape: image; icon: /d2-icons/database.svg}
+  native: 'IntuneBitnessTest' {shape: image; icon: /d2-icons/database.svg}
+}
+ps.p32 -> reg.wow: 振り替えられる
+ps.p64 -> reg.native
+ps.p32 -> reg.pol
+ps.p64 -> reg.pol
+```
 
 | 項目 | 32ビット（`run_as_32_bit = true`） | 64ビット（`run_as_32_bit = false`） |
 | --- | --- | --- |
@@ -371,28 +384,19 @@ IMEは、スクリプトをWindows PowerShell 5.1で実行します。
 | PowerShellのバージョン | 5.1.26100.9457 | 5.1.26100.9457 |
 | `[Environment]::Is64BitProcess` | `False` | `True` |
 | `PROCESSOR_ARCHITECTURE` | `x86` | `ARM64` |
-| `HKLM:\SOFTWARE\IntuneBitnessTest`の書き込み先 | `HKLM\SOFTWARE\WOW6432Node\IntuneBitnessTest` | `HKLM\SOFTWARE\IntuneBitnessTest` |
-| `HKLM:\SOFTWARE\Policies\IntuneBitnessTest`の書き込み先 | `HKLM\SOFTWARE\Policies\IntuneBitnessTest` | `HKLM\SOFTWARE\Policies\IntuneBitnessTest` |
 
-32ビットでは、スクリプトに`HKLM:\SOFTWARE\IntuneBitnessTest`と書いても、実際には`WOW6432Node`の下に書き込まれました。
-64ビットのアプリケーションは`WOW6432Node`の下を読まないため、意図した場所に値がないことになります。
-一方で、`HKLM:\SOFTWARE\Policies`の下は、どちらの設定でも同じ場所に書き込まれました。
-[Registry Keys Affected by WOW64](https://learn.microsoft.com/en-us/windows/win32/winprog64/shared-registry-keys)では、`HKLM\SOFTWARE\Policies`は32ビットと64ビットで共有されるキーとされています。
+32ビットでは、`HKLM\SOFTWARE`の下に書いた値が`WOW6432Node`の下に振り替えられ、64ビットのアプリケーションからは見えません。
+一方で、`HKLM\SOFTWARE\Policies`は、[Registry Keys Affected by WOW64](https://learn.microsoft.com/en-us/windows/win32/winprog64/shared-registry-keys)で32ビットと64ビットで共有されるキーとされており、振り替えられませんでした。
+画面のデフォルトは32ビットのため、`HKLM\SOFTWARE`の下に書き込むスクリプトでは、64ビットに変える必要があります。
 
-画面のデフォルトは32ビットのため、`HKLM\SOFTWARE`の下に書き込むスクリプトでは、64ビットで実行するように変更する必要があります。
+あとから64ビットに変えた場合の動きも確かめました。
+[Add PowerShell Scripts to Windows Devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-management/tools/run-powershell-scripts-windows)の表には、既存のスクリプトを64ビットに変えた場合について「the script opens (it doesn't run)」と書かれています。
+しかし今回の環境では、設定だけを64ビットに変えるとポリシーのハッシュが変わり、再起動後に64ビットで再実行されました。
+32ビットのときに`WOW6432Node`の下に書き込んだ値は残ったため、別に削除する必要があります。
 
-既存のスクリプトの設定を、あとから64ビットに変えた場合の動きも確かめました。
-[Add PowerShell Scripts to Windows Devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-management/tools/run-powershell-scripts-windows)の表には、既存のスクリプトの設定を64ビットに変えた場合について、「the script opens (it doesn't run)」と書かれています。
-しかし、今回の環境では、32ビットで実行に成功したスクリプトの設定だけを64ビットに変えると、IMEのログに記録されたポリシーのハッシュが変わりました。
-スクリプトは、Windowsデバイスの再起動後に64ビットのPowerShellで再実行され、`HKLM\SOFTWARE\IntuneBitnessTest`に値が書き込まれました。
-
-ただし、32ビットで実行したときに`WOW6432Node`の下に書き込んだ値は、そのまま残りました。
-あとから64ビットに変えた場合は、32ビットで書き込んだ値を別に削除する必要があります。
-
-なお、今回はARM64のWindowsで、32ビットのPowerShellはx86のエミュレーションで動きました。
-x64のWindowsでは試していません。
-修復スクリプトにも「64ビットのPowerShellで実行する」の設定があり、同じIMEが実行するため、同じ動きになると考えられます。
-ただし、修復スクリプトでは試していません。
+今回はARM64のWindowsで、32ビットのPowerShellはx86のエミュレーションで動きました。
+x64のWindowsと、修復スクリプトでは試していません。
+修復スクリプトにも同じ設定があり、同じIMEが実行するため、同じ動きになると考えられます。
 
 ### 方法4：プラットフォームスクリプト
 
@@ -400,62 +404,67 @@ x64のWindowsでは試していません。
 
 #### 一度成功したスクリプトは再実行されない
 
-IMEは、実行に成功したスクリプトを、スクリプトやポリシーが変わるまで再実行しません。
-変わったかどうかは、スクリプトのハッシュで判断しているようです。
+IMEは、スクリプトを受け取るたびに、前回のスクリプトとハッシュを比べて実行するかどうかを決めているようです。
+
+```d2 pad="0" title="IMEはスクリプトを受け取ると、ハッシュが変わっていれば実行し、変わっていなければ前回の結果で判断する。前回成功していれば実行せず、失敗していれば3回まで再実行する"
+direction: right
+hash: "ハッシュが\n変わった？" {shape: diamond}
+last: "前回は\n成功した？" {shape: diamond}
+run: 実行する {shape: image; icon: /d2-icons/file-code.svg}
+skip: 実行しない {shape: image; icon: /d2-icons/file-code.svg}
+hash -> run: はい
+hash -> last: いいえ
+last -> skip: はい
+last -> run: "いいえ\n（3回まで）"
+```
+
 今回の検証でも、スクリプトの内容を変えてアップロードし直すと、IMEのログに次のように記録され、スクリプトが再実行されました。
 
 ```text title="IntuneManagementExtension.log（抜粋）"
 [PowerShell] Policy id <スクリプトのID> for user <ユーザーのID> has different hash, reset download count. …
 ```
 
-ハッシュが変わるため、コメントを一文字直しただけでも、割り当て先のすべてのWindowsデバイスで再実行されると考えられます。
-反対に、内容を変えない限り、利用者や別のソフトウェアがレジストリの値を書き換えても、元に戻りません。
-再実行されても問題がないように、スクリプトは何度実行しても同じ結果になるように書いておく必要があります。
-
-失敗した場合（終了コードが0以外など）は、続く3回の問い合わせで再実行されます。
-3回とも失敗すると、スクリプトが変わるまで実行されません。
+コメントを一文字直しただけでも、割り当て先のすべてのWindowsデバイスで再実行されると考えられます。
+反対に、内容を変えない限り、利用者がレジストリの値を書き換えても元に戻りません。
+スクリプトは、何度実行しても同じ結果になるように書いておく必要があります。
 また、スクリプトは200 KB未満にする必要があり、30分でタイムアウトします。
-結果としてIntuneに報告されるのは、成功か失敗かと、スクリプトの出力だけです。
 
 #### スクリプトを削除しても値は残る
 
-プラットフォームスクリプトを削除したときに、書き込んだ値がどうなるかを確かめました。
-64ビットで次の2つの値を書き込んだスクリプトを、Intuneから削除しました。
-
-- `HKLM\SOFTWARE\IntuneBitnessTest`
-- `HKLM\SOFTWARE\Policies\IntuneBitnessTest`
-
-Windowsデバイスを再起動してIMEが問い合わせると、IMEのログに次のように記録されました。
+64ビットで`HKLM\SOFTWARE\IntuneBitnessTest`と`HKLM\SOFTWARE\Policies\IntuneBitnessTest`に値を書き込んだスクリプトを、Intuneから削除しました。
+再起動してIMEが問い合わせると、IMEのログに次のように記録されました。
 
 ```text title="IntuneManagementExtension.log（抜粋）"
 [PowerShell] Policy <スクリプトのID> for user <ユーザーのID> has been tombstoned. Cleaning up registry.
 ```
 
-IMEは、スクリプトを管理するための自分のレジストリを片付けますが、スクリプトが書き込んだ2つの値は、どちらも残りました。
-
-プラットフォームスクリプトで値を消したいときは、値を削除する処理をスクリプトに書いて実行してから、スクリプトを削除する必要があります。
-後述するTerraformのスクリプトでは、書き込んだ値の一覧を記録し、一覧から外した値を削除するようにしました。
+IMEは自分の管理用の情報を片付けますが、スクリプトが書き込んだ2つの値は残りました。
+値を消したいときは、値を削除するスクリプトを実行してから、スクリプトを削除する必要があります。
 
 ### 方法5：修復スクリプト
 
-修復スクリプト（Remediations）は、検出スクリプトと修復スクリプトの組で、指定した間隔で検出スクリプトを実行します。
-検出スクリプトが`exit 1`で終わったときだけ、修復スクリプトが実行されます。
-プラットフォームスクリプトと異なり、利用者や別のソフトウェアがレジストリの値を書き換えても、次の検出で元に戻せます。
+修復スクリプト（Remediations）は、検出スクリプトと修復スクリプトの組です。
+プラットフォームスクリプトと異なり、指定した間隔で検出スクリプトを実行するため、書き換えられた値を次の検出で元に戻せます。
+
+```d2 title="修復スクリプトは指定した間隔で検出スクリプトを実行し、exit 1で終わったときだけ修復スクリプトを実行する"
+direction: right
+timer: "指定した間隔\n（1時間ごと、毎日など）" {shape: image; icon: /d2-icons/server.svg}
+detect: 検出スクリプト {shape: image; icon: /d2-icons/file-code.svg}
+fix: 修復スクリプト {shape: image; icon: /d2-icons/file-cog.svg}
+none: 何もしない {shape: image; icon: /d2-icons/file-code.svg}
+timer -> detect
+detect -> fix: exit 1
+detect -> none: exit 0
+```
 
 [Use Remediations to Detect and Fix Support Issues](https://learn.microsoft.com/en-us/intune/device-management/tools/deploy-remediations)によると、ほかにも次の特徴があります。
 
-- 実行の間隔は、1回だけ、1時間ごと（24時間未満の間隔）、毎日から選ぶ
 - 検出スクリプトの出力（2,048文字まで）を、レポートやCSVで確認できる
 - 特定のWindowsデバイスで、その場で実行できる（プレビュー）
 - スクリプトのパッケージは200個まで
 - 間隔を短くするとWindowsデバイスの負荷が増えるため、急がないものは間隔を長くするよう勧められている
 
-修復スクリプトを使うには、利用者に次のいずれかのライセンスが必要です。
-
-- Windows Enterprise E3、E5（Microsoft 365 F3、E3、E5に含まれる）
-- Windows Education A3、A5（Microsoft 365 A3、A5に含まれる）
-- Windows Virtual Desktop Access（VDA）
-
+使うには、利用者にWindows Enterprise E3、E5などのライセンスが必要です。
 今回の環境にはライセンスがないため、修復スクリプトは後述するTerraformの`terraform validate`での確認までにとどめています。
 
 ## 5つの方法の比較と選び方
@@ -703,11 +712,37 @@ BOMを取り除く必要があるのは、ADMXのインポートのアップロ�
 
 ### プラットフォームスクリプトのテンプレート
 
-プラットフォームスクリプトと修復スクリプトには、前述のとおり、配布をやめても値が残る、一度成功すると再実行されない、という注意点があります。
-Terraformで書き込む値の一覧を管理し、それをスクリプトに埋め込むと、この2つを補えます。
-一覧から外した値はスクリプトが削除し、一覧を変えるとスクリプトの内容が変わってIMEが再実行するためです。
+プラットフォームスクリプトと修復スクリプトには、配布をやめても値が残る、一度成功すると再実行されない、という注意点がありました。
+そこで、書き込む値の一覧をTerraformで管理し、スクリプトに埋め込む汎用的なテンプレートを作りました。
 
-そこで、書き込むレジストリの値をTerraformから渡す、汎用的なスクリプトを作りました。
+```d2 title="Terraformの値の一覧をtemplatefileでスクリプトに埋め込む。一覧を変えるとスクリプトのハッシュが変わってIMEが再実行し、スクリプトは前回書き込んだ一覧と比べて外された値を削除する"
+grid-columns: 2
+grid-gap: 64
+tf: Terraform {
+  grid-rows: 2
+  grid-gap: 48
+  list: 値の一覧 {shape: image; icon: /d2-icons/file-digit.svg}
+  tpl: templatefile() {shape: image; icon: /d2-icons/file-code.svg}
+  list -> tpl
+}
+device: Windowsデバイス {
+  grid-rows: 2
+  grid-gap: 48
+  script: スクリプト {shape: image; icon: /d2-icons/file-cog.svg}
+  out: "" {
+    grid-columns: 2
+    grid-gap: 48
+    style.fill: transparent
+    style.stroke-width: 0
+    reg: 値 {shape: image; icon: /d2-icons/database.svg}
+    state: 前回書き込んだ一覧 {shape: image; icon: /d2-icons/database.svg}
+  }
+  script -> out.reg: "書き込む\n外した値は削除"
+  script -> out.state: 比べて記録
+}
+tf.tpl -> device.script: "一覧が変わると\n再実行される"
+```
+
 方針は次のとおりです。
 
 - 書き込む値の一覧をJSONで受け取り、Terraformの`templatefile()`でスクリプトに埋め込む
