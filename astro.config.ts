@@ -5,6 +5,7 @@ import { defineConfig } from "astro/config";
 import astroD2 from "astro-d2";
 import expressiveCode from "astro-expressive-code";
 import type { ExpressiveCodePlugin } from "astro-expressive-code";
+import { CACHE_DIR } from "./src/config/build";
 import { centerD2Containers, d2DiagramMarkup, d2DiagramSources } from "./src/lib/d2-diagrams";
 import { scrollableTables } from "./src/lib/scrollable-tables";
 import { tableCodeBreaks } from "./src/lib/table-code-breaks";
@@ -28,6 +29,7 @@ const focusableCodeBlocks: ExpressiveCodePlugin = {
 
 export default defineConfig({
   site: "https://kenchan0130.github.io",
+  cacheDir: `./${CACHE_DIR}`,
   trailingSlash: "never",
   build: {
     format: "file",

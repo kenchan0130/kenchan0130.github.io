@@ -27,8 +27,9 @@ pnpm dev
 
 ```sh
 pnpm optimize:images
-pnpm og
 ```
+
+OGP画像（`/og/<YYYY-MM-DD-N>.png`）はビルド時に生成されるため、コミットは不要です。
 
 共通のMDXコンポーネントとして `Revision` と `LinkCard` を利用できます。
 記事内の任意のimport、export、iframe、Liquid記法はCIで拒否されます。
