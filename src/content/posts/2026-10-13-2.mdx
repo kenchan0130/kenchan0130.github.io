@@ -1,6 +1,6 @@
 ---
-title: Intuneでレジストリの設定を運用する
-description: Microsoft IntuneでWindowsのレジストリの設定を運用するときの注意点として、ADMXのバージョンの更新、入れ墨、Terraformでの管理、ADMXで書き込めないレジストリをスクリプトで設定する方法を、実機で確かめた結果とともに紹介します。
+title: Microsoft IntuneでADMXの更新とレジストリの設定を管理する
+description: Microsoft Intuneで配布したADMXとレジストリの設定を変え続けるときに起きることを、実機で確かめた結果とともに紹介します。ADMXのバージョンの更新、配布をやめた値の扱い、Terraformでの管理、ADMXで書き込めないレジストリをスクリプトで設定する方法を扱います。
 published: 2026-10-13
 categories:
   - system-administration
@@ -18,24 +18,29 @@ references:
 draft: true
 ---
 
-前回の[Microsoft IntuneでサードパーティのADMXを配布する](/post/2026-10-14-1)では、ADMXの設定を配布する3つの方法を紹介しました。
-配布できるようになると、次に困るのは運用です。
-アプリケーションの新しいバージョンでADMXが更新されたり、配布をやめた設定の値が残ったりします。
+Microsoft Intune（以下、Intune）でサードパーティのADMXの設定を配布する3つの方法は、[前回の記事](/post/2026-10-14-1)で紹介しました。
+ただし、設定は一度配布して終わりではありません。
+アプリケーションの新しいバージョンが出ればADMXを更新し、必要に応じて配布する設定を増減させながら、使い続けることになります。
+そのため、配布する方法を選ぶときには、設定を変え続けられる形になっているかも考えておく必要があります。
 
-ADMXのポリシーも、最終的にはレジストリの値を設定するしくみです。
-ADMXで書き込めない場所は、スクリプトでレジストリに直接書き込むこともあります。
-今回は、Intuneでレジストリの設定を運用するときの次の話題を、実機で確かめた結果とともに紹介します。
+今回は、Intuneで配布したADMXとレジストリの設定を変え続けるときに何が起きるのかを、実機で確かめた結果とともに紹介します。
+ADMXのバージョンの更新では、ADMXのインポートで新旧のプロファイルを並べたまま古いほうを削除すると、値まで消えてしまいました。
+OMA-URIでAppNameとFileUidを固定し、中身だけを差し替えると、値を保ったまま更新できました。
+ADMXでは書き込めないレジストリの値は、Terraformで管理するスクリプトを使って書き込み、配布をやめた値も消せるようにしました。
 
-- ADMXのバージョンの更新
-- 入れ墨（設定をやめた値が残る問題）
-- Terraformでの管理
-- ADMXで書き込めないレジストリをスクリプトで設定する方法
+検証した環境は次のとおりで、前回の記事と同じです。
 
-検証した環境は、前回と同じ次の環境です。
+| 項目 | 内容 |
+| --- | --- |
+| OS | Windows 11 Pro 25H2（ビルド26200.9457）[^windows-business] |
+| 端末 | ARM64の仮想マシン |
+| 管理 | Microsoft Entra参加、Intuneに登録 |
+| ライセンス | Microsoft 365 Business Premium |
+| ADMX | ZoomのADMX 6.6.5と7.2.0の`ZoomMeetings_HKLM.admx`[^zoom-admx]、Visual Studio Code 1.141.0のADMX |
+| Terraformのプロバイダ | deploymenttheory/microsoft365 1.4.0 |
 
-- Windows 11 Pro 25H2（ビルド26200.9457、ARM64の仮想マシン）。Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではWindows 11 Businessと表示される
-
-Terraformのプロバイダは、deploymenttheory/microsoft365の1.4.0を使いました。
+[^windows-business]: Microsoft 365 Business Premiumのライセンスにより、今回の環境ではWindows 11 Businessと表示されます。
+[^zoom-admx]: 入手方法は、前回の記事の「[ZoomのADMXをアップロードする](/post/2026-10-14-1#zoomのadmxをアップロードする)」で紹介しています。
 
 ## ADMXのバージョンを更新する
 
@@ -44,7 +49,7 @@ ZoomのADMXを6.6.5から7.2.0に更新する例で、ADMXのインポートとO
 
 ### ADMXのインポートでの更新
 
-Microsoft Learnには、インポート済みのADMXを更新する方法が2つ書かれています。
+[Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#replace-existing-admx-files)の「Replace existing ADMX files」には、インポート済みのADMXを更新する方法が2つ書かれています。
 
 1. ADMXを使っているプロファイルとインポートしたADMXを削除してから、新しいADMXをインポートする
 2. 名前空間を変えた新しいADMXを用意して、インポートする
@@ -59,7 +64,7 @@ ZoomのADMXは、バージョンごとに名前空間が違います（6.6.5は`
 2. 7.2.0のプロファイルを作成して、同じ2つの設定を割り当てる
 3. 6.6.5のプロファイルを削除する
 
-3.の同期で、6.6.5のポリシーの削除（819）が記録され、`HKLM\SOFTWARE\Policies\Zoom\Zoom Meetings`の下の値がキーごと削除されました。
+3.の同期で、6.6.5のポリシーについてポリシーの削除イベント（819）が記録され、`HKLM\SOFTWARE\Policies\Zoom\Zoom Meetings`の下の値がキーごと削除されました。
 7.2.0のプロファイルも同じレジストリの値を設定しているはずですが、値は戻りませんでした。
 
 6.6.5と7.2.0は、Windowsデバイスでは別のAppNameで取り込まれ、別のポリシーとして扱われます。
@@ -78,38 +83,50 @@ ZoomのADMXは、バージョンごとに名前空間が違います（6.6.5は`
 3. もう一度同期する（値が設定される）
 
 ADMXのインポートでバージョンを更新するときは、新旧のプロファイルが同じWindowsデバイスに同時に割り当たる状態を避けるのが安全だと思います。
-古いバージョンのプロファイルを外したことを確認してから、新しいバージョンのプロファイルを割り当てると、この問題は避けられると考えられます（この順番は未検証です）。
-ただし、その間は設定のない時間ができます。
+古いバージョンのプロファイルを外したことを確認してから、新しいバージョンのプロファイルを割り当てると、この問題は避けられると考えられます。
+ただし、この順番は試していません。
+また、その間は設定のない時間ができます。
 
 ### OMA-URIでの更新
 
 OMA-URIでは、AppNameとFileUidを変えずに、取り込みの行の値だけを新しいバージョンのADMXに差し替えると、安全に更新できました。
 
-そのため、FileUidにはバージョンを含めない名前（`ZoomMeetings_HKLM`など）を付けておきます。
+前回の記事では、FileUidを`ZoomMeetings_HKLM_7_2`のように、バージョンを含めた名前にしました。
+バージョンを更新するときに中身だけを差し替えるには、FileUidにバージョンを含めない名前を付けておきます。
+今回は、AppNameを`ZoomUpg`、FileUidを`ZoomMeetings_HKLM`として、次のOMA-URIで取り込みました。
 
-```text title="バージョンを含めないAppNameとFileUid"
+```text title="FileUidにバージョンを含めない、ADMXを取り込むOMA-URI"
 ./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomUpg/Policy/ZoomMeetings_HKLM
 ```
 
-6.6.5のADMXで取り込み、クラウドレコーディングの無効化、更新チャネル、7.2.0ではなくなった`HideSelfView_Policy`の3つの値を設定しておきます。
-その後で、取り込みの行の値を7.2.0のADMXに差し替えて同期すると、イベントID 872が記録されました。
+まず、6.6.5のADMXを取り込み、次の3つの値を設定しておきます。
 
-```text title="取り込み済みのADMXの更新（イベントID 872）"
-ADMX インジェストで既存の Admx インジェストの更新を開始しています。…、アプリ名 (ZoomUpg)、設定の種類 (Policy)、一意の ID (ZoomMeetings_HKLM)、以前の ADMX ファイルのインジェストでポリシー値が設定されました (0x1)。
-```
+1. クラウドレコーディングの無効化
+2. 更新チャネル
+3. 7.2.0ではなくなった`HideSelfView_Policy`
+
+その後で、取り込みの行の値を7.2.0のADMXに差し替えて同期すると、ADMXの更新イベント（872）が次の内容で記録されました。
+
+| 項目 | 内容 |
+| --- | --- |
+| AppName | `ZoomUpg` |
+| 設定の種類 | `Policy` |
+| FileUid | `ZoomMeetings_HKLM` |
+| メッセージ | 以前の ADMX ファイルのインジェストでポリシー値が設定されました (0x1) |
 
 取り込みは7.2.0に置き換わり、レジストリの値はそのまま残りました。
 エリア名が変わらないので、値の行も直す必要はありません。
 
 7.2.0のADMXにはない`HideSelfView_Policy`の値も、そのまま残りました。
-この行をプロファイルから外すと、819で`HideSelfView`だけが削除され、同じキーのほかの値は残りました。
+この行をプロファイルから外すと、ポリシーの削除イベント（819）が記録され、`HideSelfView`だけが削除されました。
+同じキーのほかの値は残りました。
 新しいバージョンでなくなったポリシーは、値の行を外して削除します。
 
 OMA-URIでも、AppNameやFileUidを変えて新旧を並べると、ADMXのインポートと同じ問題が起きると考えられます。
 さらに、前回紹介したように、OMA-URIで取り込んだADMXはプロファイルを削除しても消えません。
 OMA-URIでは、AppNameとFileUidを固定して、中身だけを更新する運用が向いていると思います。
 
-## 入れ墨
+## 配布をやめた値が残るか確かめる
 
 [ADMXのしくみと読み方](/post/2026-10-05-1)では、ポリシーを外しても値が残る「入れ墨」を紹介しました。
 IntuneのPolicy CSPで書き込んだ値でも入れ墨が起きるのかを、次の条件で確かめました。
@@ -123,7 +140,7 @@ IntuneのPolicy CSPで書き込んだ値でも入れ墨が起きるのかを、�
 
 `HKCU`のポリシーでも、ADMXの取り込みは`./Device`の`ADMXInstall`で行い、値の設定だけを`./User`にします。
 
-どの条件でも、値は819で削除され、入れ墨は起きませんでした。
+どの条件でも、ポリシーの削除イベント（819）が記録されて値が削除され、入れ墨は起きませんでした。
 `Software\Policies`の配下に書き込むポリシーで、Policy CSPが自分で書き込んだ値であれば、外したときに削除されるようです。
 
 注意が必要なのは、ADMXのインポートでバージョンを更新したときのように、別のポリシーの削除で値が消える場合です。
@@ -148,14 +165,17 @@ export M365_CLIENT_ID=...
 export M365_CLIENT_SECRET=...
 ```
 
-### ADMXのインポート
+### ADMXのインポートをTerraformで書く
 
 ADMXのインポートは、次の3種類のリソースで書きます。
 
-- ADMXとADMLのアップロード
-- プロファイル
-- プロファイルに含める設定
+| リソース | 書くもの |
+| --- | --- |
+| `group_policy_uploaded_definition_files` | ADMXとADMLのアップロード |
+| `group_policy_configuration` | プロファイル |
+| `group_policy_definition` | プロファイルに含める設定 |
 
+リソースの名前は、どれも`microsoft365_graph_beta_device_management_`で始まります。
 
 ```hcl title="main.tf"
 resource "microsoft365_graph_beta_device_management_group_policy_uploaded_definition_files" "zoom" {
@@ -216,7 +236,7 @@ ADMXの`name`ではない点に注意が必要です。
 また、1.4.0の時点では、ADMXのアップロードのリソースは`terraform import`に対応していません。
 プロファイルの設定の`terraform import`には、同じプロファイルに設定が2つ以上あると別の設定を取り込んでしまう不具合があり、[#4132](https://github.com/deploymenttheory/terraform-provider-microsoft365/pull/4132)で修正を提案しています。
 
-### OMA-URI
+### カスタムプロファイル（OMA-URI）をTerraformで書く
 
 OMA-URIのカスタムプロファイルは、`windows_custom_configuration`で書きます。
 前回紹介した、取り込みと値を1つのプロファイルにまとめる形です。
@@ -254,10 +274,10 @@ BOMを取り除く必要があるのは、ADMXのインポートのアップロ�
 ADMXをファイルで管理し、`file()`で読み込むと、バージョンの更新はファイルを差し替えて`apply`するだけになります。
 AppNameとFileUidは変わらないので、前述の安全な更新方法をそのまま使えます。
 
-## ADMXで書き込めないレジストリ
+## ADMXで書き込めないレジストリがある
 
 ADMXの取り込みには、書き込める場所の制限があります。
-Microsoft Learnの[Win32 and Desktop Bridge app ADMX policy Ingestion](https://learn.microsoft.com/en-us/windows/client-management/win32-and-centennial-app-policy-configuration)によると、取り込んだADMXのポリシーは、次のキーの配下に書き込めません。
+[Win32 and Desktop Bridge app ADMX policy Ingestion](https://learn.microsoft.com/en-us/windows/client-management/win32-and-centennial-app-policy-configuration)によると、取り込んだADMXのポリシーは、次のキーの配下に書き込めません。
 
 - `System`
 - `Software\Microsoft`
@@ -269,14 +289,14 @@ Microsoft Learnの[Win32 and Desktop Bridge app ADMX policy Ingestion](https://l
 ### Visual Studio Codeの例
 
 Visual Studio Code（以下、VS Code）は、ADMXを配布しています。
-書き込み先は`Software\Policies\Microsoft\VSCode`で、2025-11-20に更新されたLearnの例外の一覧にはありません。
+書き込み先は`Software\Policies\Microsoft\VSCode`で、執筆時点のLearnの例外の一覧にはありません。
 VS Codeのリポジトリでも、Intuneで取り込めない問題が報告されています（[#242922](https://github.com/microsoft/vscode/issues/242922)、[#281840](https://github.com/microsoft/vscode/issues/281840)）。
 
 今回の環境（ビルド26200.9457）では、OMA-URIでVS Code 1.141.0のADMXを取り込み、`EnableFeedback`の値を書き込めました。
 しかし、これはドキュメントに書かれていない動きです。
 Windowsの更新で変わる可能性もあるので、例外の一覧にない場所はADMXでは書き込めないものとして扱うのがよいと思います。
 
-Learnのドキュメントには、取り込んだADMXで設定できない場合は、PowerShellのスクリプトなどでレジストリに直接書き込むよう書かれています。
+同じドキュメントには、取り込んだADMXで設定できない場合は、PowerShellのスクリプトなどでレジストリに直接書き込むよう書かれています。
 
 ## スクリプトでレジストリに書き込む
 
@@ -337,8 +357,8 @@ IMEは、実行に成功したスクリプトを、スクリプトやポリシ�
 
 スクリプトでレジストリに書き込む方法には、Policy CSPと比べて次の弱点があります。
 
-- 配布をやめても、書き込んだ値は残る（入れ墨になる）
-- 前述のとおり再実行されないため、利用者が値を書き換えても元に戻らない
+1. 配布をやめても、書き込んだ値は残る（入れ墨になる）
+2. 前述のとおり再実行されないため、利用者が値を書き換えても元に戻らない
 
 1つ目は、スクリプトの中で対策できます。
 2つ目は、後述する修復スクリプトで補えます。
@@ -637,7 +657,7 @@ locals {
 }
 ```
 
-Windowsデバイスを再起動すると、前述のとおり、IMEはスクリプトのハッシュが変わったことを検出し、スクリプトを再実行しました。
+`apply`から約5分後にWindowsデバイスを再起動すると、前述のとおり、IMEはスクリプトのハッシュが変わったことを検出し、スクリプトを再実行しました。
 
 ```text title="AgentExecutor.log（抜粋）"
 [vscode] Set: HKLM:\SOFTWARE\Policies\Microsoft\VSCode\UpdateMode
@@ -648,10 +668,9 @@ Windowsデバイスを再起動すると、前述のとおり、IMEはスクリ�
 `UpdateMode`は`none`に変わり、一覧から外した`TelemetryLevel`は削除されました。
 値の一覧を変えると、`templatefile()`で埋め込んだスクリプトの内容が変わるため、IMEが再実行します。
 
-今回は、`apply`から約5分後に、Windowsデバイスを再起動して同期したところで再実行されました。
-
 また、プラットフォームスクリプトの割り当てを外したり削除したりしても、IMEは値を戻す処理を実行しません。
-そのため、書き込んだ値は残ると考えられます（今回は確認していません）。
+そのため、書き込んだ値は残ると考えられます。
+ただし、今回は確かめていません。
 値を消したいときは、スクリプトを削除する前に一覧から外して`apply`し、Windowsデバイスで削除されたことを確認します。
 
 ## 修復スクリプトで値を保つ
@@ -696,12 +715,12 @@ resource "microsoft365_graph_beta_device_management_windows_remediation_script" 
 }
 ```
 
-筆者の環境にはライセンスがないため、修復スクリプトは`terraform validate`での確認までにとどめています。
+今回の環境にはライセンスがないため、修復スクリプトは`terraform validate`での確認までにとどめています。
 検出と修復の動きは、Windows PowerShell 5.1でスクリプトを直接実行して確かめました。
 
 ## 終わりに
 
-今回は、Intuneでレジストリの設定を運用するときの注意点を紹介しました。
+今回は、Intuneで配布したADMXとレジストリの設定を変え続けるときに起きることと、その対処を紹介しました。
 
 ADMXのバージョンの更新では、新旧のポリシーが同じレジストリの値を書き込む状態を作らないことが大切です。
 OMA-URIなら、AppNameとFileUidを固定して中身だけを差し替えると、安全に更新できました。
