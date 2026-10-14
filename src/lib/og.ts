@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import satori from "satori";
 import { html } from "satori-html";
 import sharp from "sharp";
+import { CACHE_DIR } from "../config/build";
 
 let fontPromise: Promise<ArrayBuffer> | undefined;
 let logoPromise: Promise<string> | undefined;
@@ -64,33 +65,45 @@ export async function createOgImage({ title, category = "Blog", date = "" }: OgO
 }
 
 // OGP画像の生成はsatoriがCJKフォントを解析するため1枚0.5秒以上かかる。ビルドのたびに作り直さないよう、
-// 記事ごとの入力と素材のハッシュが同じ画像をcacheDir（node_modules/.astro）に残して再利用する。
-// CIではactions/cacheでこのディレクトリを持ち越す。
-const cacheDirectory = path.join(process.cwd(), "node_modules", ".astro", "og");
+// 生成した画像をAstroのcacheDirに残して再利用する。CIではactions/cacheでこのディレクトリを持ち越す。
+// ファイル名に、記事ごとの入力と、描画結果に影響する素材と依存のバージョンのハッシュを含める。
+// そのため、どれかが変われば別のファイル名になり、古い画像を返すことはない。
+const cacheDirectory = path.join(process.cwd(), CACHE_DIR, "og");
 const cacheVersion = 1;
-let assetsHashPromise: Promise<string> | undefined;
+const rendererPackages = ["satori", "satori-html", "sharp"];
+let rendererHashPromise: Promise<string> | undefined;
 
-async function getAssetsHash(): Promise<string> {
-  assetsHashPromise ??= Promise.all(
-    [
+async function getRendererHash(): Promise<string> {
+  rendererHashPromise ??= (async () => {
+    const hash = createHash("sha256");
+    for (const file of [
       path.join("scripts", "assets", "NotoSansCJKjp-Regular.otf"),
       path.join("public", "assets", "icons", "logo.png"),
       path.join("src", "lib", "og.ts"),
-    ].map((file) => readFile(path.join(process.cwd(), file))),
-  ).then((buffers) => {
-    const hash = createHash("sha256");
-    for (const buffer of buffers) hash.update(buffer);
+    ]) {
+      hash.update(await readFile(path.join(process.cwd(), file)));
+    }
+    for (const name of rendererPackages) {
+      const manifest = await readFile(
+        path.join(process.cwd(), "node_modules", name, "package.json"),
+        "utf8",
+      );
+      hash.update(`${name}@${JSON.parse(manifest).version}`);
+    }
     return hash.digest("hex");
-  });
-  return assetsHashPromise;
+  })();
+  return rendererHashPromise;
 }
 
 export async function getOgImage(slug: string, options: OgOptions): Promise<Buffer> {
   const hash = createHash("sha256")
-    .update(JSON.stringify({ version: cacheVersion, assets: await getAssetsHash(), ...options }))
+    .update(
+      JSON.stringify({ version: cacheVersion, renderer: await getRendererHash(), ...options }),
+    )
     .digest("hex")
     .slice(0, 16);
-  const cachePath = path.join(cacheDirectory, `${slug}.${hash}.png`);
+  const cacheFile = `${slug}.${hash}.png`;
+  const cachePath = path.join(cacheDirectory, cacheFile);
   try {
     return await readFile(cachePath);
   } catch {
@@ -100,10 +113,13 @@ export async function getOgImage(slug: string, options: OgOptions): Promise<Buff
   await mkdir(cacheDirectory, { recursive: true });
   // 同じ記事の古い画像を消し、キャッシュが記事の数より増えないようにする。
   for (const file of await readdir(cacheDirectory)) {
-    if (file.startsWith(`${slug}.`) && file !== path.basename(cachePath)) {
-      await rm(path.join(cacheDirectory, file));
+    if (file.startsWith(`${slug}.`) && file !== cacheFile) {
+      await rm(path.join(cacheDirectory, file), { force: true });
     }
   }
-  await writeFile(cachePath, image);
+  // 書き込みの途中で中断されても壊れた画像がキャッシュに残らないよう、一時ファイルから置き換える。
+  const temporaryPath = `${cachePath}.${process.pid}.tmp`;
+  await writeFile(temporaryPath, image);
+  await rename(temporaryPath, cachePath);
   return image;
 }

@@ -133,7 +133,7 @@
 - `tags` は検索用の補助情報として、本文で扱う製品名、技術名、プラットフォーム名などに絞る
 - 関連記事を明示する場合は、`references` に対象記事のIDを追加する
 - 公開前の記事だけ `draft: true` とし、公開するときは `false` に戻す
-- OGP画像は `src/pages/og/[slug].png.ts` がビルド時に `/og/記事ID.png` として生成するため、コミットしない。生成結果は `node_modules/.astro/og` にキャッシュされ、`title`・`published`・`categories` やOGPの素材が変わった記事だけ作り直す。CIでは `actions/cache` でこのディレクトリを持ち越す
+- OGP画像は `src/pages/og/[slug].png.ts` がビルド時に `/og/記事ID.png` として生成するため、コミットしない。生成結果は `src/config/build.ts` の `CACHE_DIR`（Astroの `cacheDir`）配下の `og` にキャッシュされる。ファイル名に記事の入力、フォント・ロゴ・`og.ts`、描画に使う依存のバージョンのハッシュを含むため、どれかが変わった画像だけ作り直す
 - 連載の記事は、記事IDや公開日を変えたときに、関連する記事の `references` と本文のリンクも直す。続編を公開するときは、前の記事の結びや `references` から続編へのリンクを追加する
 
 ### 文体

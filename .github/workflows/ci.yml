@@ -70,14 +70,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # OGP画像はビルド時に生成し、node_modules/.astro/ogへキャッシュする。
-      # キーが一致しなくても前回のキャッシュを復元し、変わった記事の画像だけを作り直す。
-      - name: Restore OGP image cache
+      # ビルドで生成した画像をsrc/config/build.tsのCACHE_DIR配下にキャッシュし、次のビルドで再利用する。
+      # キャッシュの各ファイルは名前に入力のハッシュを含むため、古いキャッシュを復元しても誤った画像は使われない。
+      # キャッシュは作成後に更新できないため、出力に影響するファイルをkeyに含め、変わったときに保存し直す。
+      - name: Restore build cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: node_modules/.astro/og
-          key: og-images-${{ runner.os }}-${{ hashFiles('src/content/posts/**', 'src/lib/og.ts', 'scripts/assets/NotoSansCJKjp-Regular.otf', 'public/assets/icons/logo.png') }}
-          restore-keys: og-images-${{ runner.os }}-
+          key: build-cache-v1-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml', 'src/content/posts/**', 'src/lib/og.ts', 'scripts/assets/NotoSansCJKjp-Regular.otf', 'public/assets/icons/logo.png') }}
+          restore-keys: build-cache-v1-${{ runner.os }}-
 
       - name: Build
         run: |
