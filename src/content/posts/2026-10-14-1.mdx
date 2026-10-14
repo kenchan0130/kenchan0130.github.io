@@ -490,7 +490,7 @@ AppNameを`ZoomTf`として取り込んだときの記録です。
 ポリシーの名前（`DisableCloudRecording_Policy`）、エリア名（`ZoomTf~Policy~ZoomUsCommunication~zoommeetings`）、設定した文字列（`<enabled/>`）が記録されています。
 登録IDとコンピュータ名は伏せています。
 
-![イベントビューアでイベントID 814の一覧を表示し、DisableCloudRecording_Policyに<enabled/>を設定したイベントの詳細を開いた画面](/assets/posts/post/2026-10-14-1/event-viewer.png)
+![イベントビューアでイベントID 814の一覧を表示し、DisableCloudRecording_Policyに<enabled/>を設定したイベントの詳細を開いた画面](../../assets/posts/2026-10-14-1/event-viewer.png)
 
 ## IntuneでADMXの設定を配布する3つの方法
 
@@ -518,7 +518,7 @@ Microsoft Edgeのように、ADMXで管理するアプリケーションの設�
 Edgeの設定も、Windowsデバイスでは同じようにADMXを取り込んでから値が設定されていました。
 次の画像は、Microsoft Edgeの「Hide the First-run experience and splash screen」（`HideFirstRunExperience`）を有効にしたプロファイルです。
 
-![設定カタログのプロファイルの編集画面で、Microsoft EdgeのHide the First-run experience and splash screenを有効にした状態](/assets/posts/post/2026-10-14-1/settings-catalog.png)
+![設定カタログのプロファイルの編集画面で、Microsoft EdgeのHide the First-run experience and splash screenを有効にした状態](../../assets/posts/2026-10-14-1/settings-catalog.png)
 
 このプロファイルを配布したところ、Windowsデバイスには次の2つのADMXが取り込まれました。
 
@@ -618,7 +618,7 @@ cp raw/staging_en_US_Windows.adml upload/en-US/Windows.adml
 設定の一覧から設定を選ぶと、ADMLの説明と、有効、無効、入力欄が表示されます。
 次の画像は、「Set the specified update channel when silent auto update is enabled」を有効にして、`1`を入力したところです。
 
-![インポートされた管理用テンプレートのプロファイルで、Zoomの更新チャネルの設定を有効にし、値に1を入力した画面](/assets/posts/post/2026-10-14-1/imported-setting.png)
+![インポートされた管理用テンプレートのプロファイルで、Zoomの更新チャネルの設定を有効にし、値に1を入力した画面](../../assets/posts/2026-10-14-1/imported-setting.png)
 
 ### Windowsデバイスでの動き
 
@@ -685,7 +685,7 @@ ADMXのインポートと違い、ZoomのADMXが参照している`Windows.admx`
 次の画像は、「Zoom ADMX」を入力したところです。
 値には、ADMXのファイルの中身をそのまま貼り付けます。
 
-![カスタムプロファイルのOMA-URIの設定で、Zoom ADMXの名前、OMA-URI、データ型、値（ADMXの全文）を入力した行の編集画面](/assets/posts/post/2026-10-14-1/custom-profile-admx-row.png)
+![カスタムプロファイルのOMA-URIの設定で、Zoom ADMXの名前、OMA-URI、データ型、値（ADMXの全文）を入力した行の編集画面](../../assets/posts/2026-10-14-1/custom-profile-admx-row.png)
 
 AppNameは`ZoomMeetings`、FileUidは`ZoomMeetings_HKLM_7_2`としました。
 AppNameは値を設定するOMA-URIにも使うため、短くわかりやすい名前がよいと思います。
@@ -719,11 +719,11 @@ Zoom 7.2.0の`ZoomMeetings_HKLM.admx`は330,066文字で、上限に近い大き
 取り込みと同じように、1つずつ「行の編集」の画面で入力します。
 次の画像は、「Disable cloud recording」を入力したところです。
 
-![カスタムプロファイルのOMA-URIの設定で、Disable cloud recordingの名前、OMA-URI、データ型、値を入力した行の編集画面](/assets/posts/post/2026-10-14-1/custom-profile-row.png)
+![カスタムプロファイルのOMA-URIの設定で、Disable cloud recordingの名前、OMA-URI、データ型、値を入力した行の編集画面](../../assets/posts/2026-10-14-1/custom-profile-row.png)
 
 2つの設定を追加すると、プロファイルの一覧は次のようになります。
 
-![カスタムプロファイルのOMA-URIの設定の一覧に、Disable cloud recordingとUpdate channelの2行が並んでいる画面](/assets/posts/post/2026-10-14-1/custom-profile-settings-list.png)
+![カスタムプロファイルのOMA-URIの設定の一覧に、Disable cloud recordingとUpdate channelの2行が並んでいる画面](../../assets/posts/2026-10-14-1/custom-profile-settings-list.png)
 
 同期すると、ADMXのインポートと同じ2つの値がレジストリに書き込まれました。
 
@@ -765,7 +765,7 @@ Intuneが送ったコマンドは確認していませんが、イベントに�
 
 3つの設定を追加すると、プロファイルの一覧は次のようになります。
 
-![カスタムプロファイルのOMA-URIの設定の一覧に、Zoom ADMX、Disable cloud recording、Update channelの3行が並んでいる画面](/assets/posts/post/2026-10-14-1/custom-profile-list.png)
+![カスタムプロファイルのOMA-URIの設定の一覧に、Zoom ADMX、Disable cloud recording、Update channelの3行が並んでいる画面](../../assets/posts/2026-10-14-1/custom-profile-list.png)
 
 今回の検証では、最初の同期で取り込みと2つの値の設定が同じ秒に処理され、エラーもありませんでした。
 ただし、プロファイルの中の行が上から順に処理されることは、ドキュメントでは保証されていません。

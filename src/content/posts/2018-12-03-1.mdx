@@ -31,8 +31,8 @@ Google Apps Scriptについて従来の開発および使用方法について�
 
 Google Apps Scriptは、各Googleアプリのツールバーの**ツール > スクリプトエディタ**またはGoogle DriveにGoogle Apps Scriptのアプリケーションを追加することで作成できます。
 
-![Script Editor from ToolBar](/assets/posts/post/2018-12-03-1/script_editor_from_toolbar.png)
-![Google Drive Add App](/assets/posts/post/2018-12-03-1/google_drive_add_app.png)
+![Script Editor from ToolBar](../../assets/posts/2018-12-03-1/script_editor_from_toolbar.png)
+![Google Drive Add App](../../assets/posts/2018-12-03-1/google_drive_add_app.png)
 
 Google Apps ScriptはJavaScript 1.6をベースに、 1.7および1.8の一部とECMAScript 5 APIのサブセットを提供しています。
 
@@ -58,7 +58,7 @@ var myGlobalAnonymousFunction = function() {
 Google Apps Scriptはエディタから実行できます。
 デバッグなど動作確認を行う際や、手動で実行したい場合などで有効です。
 
-![エディタから実行の例](/assets/posts/post/2018-12-03-1/run_script_from_manual.png)
+![エディタから実行の例](../../assets/posts/2018-12-03-1/run_script_from_manual.png)
 
 #### イベントトリガでの実行
 
@@ -108,14 +108,14 @@ Simple Triggerを使用するには、予約されている関数名の関数を
 - 週毎
 - 月毎
 
-![時間トリガーの選択](/assets/posts/post/2018-12-03-1/time_base_trigger_type_selection.png)
+![時間トリガーの選択](../../assets/posts/2018-12-03-1/time_base_trigger_type_selection.png)
 
 **Googleカレンダーの予定更新での実行**
 
 Simple Triggerや時間でのトリガと比べると少し浮いてしまっていますが、
 Googleカレンダーの予定更新をトリガとしてスクリプトの実行が可能です。
 
-![Google カレンダーの予定更新トリガーの設定](/assets/posts/post/2018-12-03-1/calendar_trigger_settings.png)
+![Google カレンダーの予定更新トリガーの設定](../../assets/posts/2018-12-03-1/calendar_trigger_settings.png)
 
 ### ユーティリティサービス
 
@@ -304,7 +304,7 @@ $ yarn run clasp push --watch
 
 Google Apps ScriptのプロジェクトURLにアクセスしてみると、無事`.gs`ファイルとしてトランスパイルされたコードがGoogle Apps Scriptのプロジェクトにpushされていることが確認できます。
 
-![claspとTypeScriptを使用してGoogle Apps Scriptのプロジェクトにpushした例](/assets/posts/post/2018-12-03-1/clasp_push_with_typescript.png)
+![claspとTypeScriptを使用してGoogle Apps Scriptのプロジェクトにpushした例](../../assets/posts/2018-12-03-1/clasp_push_with_typescript.png)
 
 ここで注意することは、このタイミングで`clasp pull`をしてしまうと、ビルドされた`.gs`ファイルがpullされてしまうということです。
 そのため、TypeScriptで記述したソースコードは必ずGit管理し、Google Apps Scriptプロジェクトには常にpushだけを行うようにすることをお勧めします。

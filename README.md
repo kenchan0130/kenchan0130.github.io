@@ -22,13 +22,11 @@ pnpm dev
 ```
 
 記事は `src/content/posts/<YYYY-MM-DD-N>.mdx` に置きます。URLは
-`/post/YYYY-MM-DD-N` です。画像は
-`public/assets/posts/post/<YYYY-MM-DD-N>/` に置き、次を実行して、生成されたWebPもコミットします。
+`/post/YYYY-MM-DD-N` です。画像は `src/assets/posts/<YYYY-MM-DD-N>/` に置き、
+記事から `../../assets/posts/<YYYY-MM-DD-N>/image.png` のように参照します。
+幅ごとのWebPはビルド時に生成されるため、コミットは不要です。
 
-```sh
-pnpm optimize:images
-pnpm og
-```
+OGP画像（`/og/<YYYY-MM-DD-N>.png`）はビルド時に生成されるため、コミットは不要です。
 
 共通のMDXコンポーネントとして `Revision` と `LinkCard` を利用できます。
 記事内の任意のimport、export、iframe、Liquid記法はCIで拒否されます。

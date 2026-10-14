@@ -1,47 +1,66 @@
 ---
 import { existsSync } from "node:fs";
 import path from "node:path";
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
 import sharp from "sharp";
 
 interface Props {
-  src: string;
+  src: string | ImageMetadata;
   alt: string;
   title?: string;
   class?: string;
 }
 
 const { src, alt, title, class: className } = Astro.props;
-const decodedSource = decodeURIComponent(src);
-const localPath = decodedSource.startsWith("/")
-  ? path.join(process.cwd(), "public", decodedSource)
-  : undefined;
+let imageSource: string;
 let dimensions: { width?: number; height?: number } = {};
-if (localPath && existsSync(localPath)) {
-  try {
-    const metadata = await sharp(localPath).metadata();
-    dimensions = { width: metadata.width, height: metadata.height };
-  } catch {
-    dimensions = {};
+let srcset: string | undefined;
+if (typeof src === "string") {
+  // GIFアニメーションや外部の画像は変換せず、public/の画像だけ寸法を補う。
+  imageSource = decodeURIComponent(src);
+  const localPath = imageSource.startsWith("/")
+    ? path.join(process.cwd(), "public", imageSource)
+    : undefined;
+  if (localPath && existsSync(localPath)) {
+    try {
+      const metadata = await sharp(localPath).metadata();
+      dimensions = { width: metadata.width, height: metadata.height };
+    } catch {
+      dimensions = {};
+    }
+  }
+} else {
+  // src/assets/postsの画像は、ビルド時にAstroが幅ごとのWebPを生成する。元画像より大きい幅は作らない。
+  imageSource = src.src;
+  dimensions = { width: src.width, height: src.height };
+  const widths = [480, 720, 1440].filter((width) => width <= src.width);
+  if (widths.length > 0) {
+    const image = await getImage({
+      src,
+      width: widths[widths.length - 1],
+      widths,
+      format: "webp",
+      quality: 82,
+    });
+    srcset = image.srcSet.attribute;
   }
 }
-const variants = [480, 720, 1440]
-  .map((width) => ({ width, path: `${decodedSource}.w${width}.webp` }))
-  .filter(({ path: variant }) => existsSync(path.join(process.cwd(), "public", variant)));
 ---
 
 <span class:list={["post-image", className]} role="figure" aria-label={title ?? alt}>
   <picture>
     {
-      variants.length > 0 && (
+      srcset && (
         <source
           type="image/webp"
-          srcset={variants.map(({ path: variant, width }) => `${variant} ${width}w`).join(", ")}
+          srcset={srcset}
           sizes="(max-width: 48rem) calc(100vw - 2.5rem), 45rem"
         />
       )
     }
     <img
-      src={decodedSource}
+      src={imageSource}
       alt={alt}
       title={title}
       width={dimensions.width}

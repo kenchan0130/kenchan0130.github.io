@@ -36,6 +36,10 @@
 - Corepackを使用し、`packageManager`と`engines.pnpm`に指定されたpnpmを実行する
 - 依存関係は完全固定バージョンを使用し、キャレットやチルダを追加しない
 - pnpmの厳密なバージョンチェックを、検証の都合で無効化しない
+- 機能を追加するときは、Astroの標準機能、公式のインテグレーション（`@astrojs/*`）、すでに使っているツールで実現できないかを先に確認する
+- サニタイズ、エスケープ、HTMLやURLの解析など、セキュリティに関わる処理は自前で実装せず、広く使われているnpmのライブラリを積極的に使う
+- 公式のものでも広く使われているものでもない、見知らぬnpmパッケージを追加するときは、追加する前に人間へ確認する
+  - 確認するときは、パッケージで解決したい課題、公式の機能や既存のツールで足りない理由、保守状況、追加される依存関係、`pnpm audit`の結果を示す
 - 主なコマンドは次のとおり
   - 開発サーバー: `pnpm dev`
   - フォーマット確認: `pnpm format:check`
@@ -129,7 +133,7 @@
 - `tags` は検索用の補助情報として、本文で扱う製品名、技術名、プラットフォーム名などに絞る
 - 関連記事を明示する場合は、`references` に対象記事のIDを追加する
 - 公開前の記事だけ `draft: true` とし、公開するときは `false` に戻す
-- OGP画像は `public/og/記事ID.png` と `reports/og-cache.json` をコミットする。記事の追加、公開、`title`・`published`・`categories` の変更をしたら、`pnpm og` を実行して生成物もコミットする。`pnpm build` の `prebuild` で実行されるが、`astro build` を直接実行すると生成されない
+- OGP画像は `src/pages/og/[slug].png.ts` がビルド時に `/og/記事ID.png` として生成するため、コミットしない。生成結果は `src/config/build.ts` の `CACHE_DIR`（Astroの `cacheDir`）配下の `og` にキャッシュされる。ファイル名に記事の入力、フォント・ロゴ・`og.ts`、描画に使う依存のバージョンのハッシュを含むため、どれかが変わった画像だけ作り直す
 - 連載の記事は、記事IDや公開日を変えたときに、関連する記事の `references` と本文のリンクも直す。続編を公開するときは、前の記事の結びや `references` から続編へのリンクを追加する
 
 ### 文体
@@ -348,17 +352,20 @@ export const settings = {
 
 - 画像には代替テキストを設定
 - UI の説明では画像を積極的に活用
-- 画像は `public/assets/posts/post/記事ID` ディレクトリに保存
-- 記事からは `/assets/posts/post/記事ID/sample.png` のように参照
+- PNG・JPEGの画像は `src/assets/posts/記事ID` ディレクトリに保存する
+- 記事からは `../../assets/posts/記事ID/sample.png` のように相対パスで参照する
+- 公開されるURLは `/_astro/ファイル名_ハッシュ.拡張子` になり、画像を差し替えると変わる
+- GIFアニメーションや、本文からリンクするcsv・jsonなどのファイルは、変換せずにそのURLで公開するため `public/assets/posts/post/記事ID` に置き、`/assets/posts/post/記事ID/sample.gif` のように参照する
 - 代替テキストは必須。説明目的を持たない画像だけ明示的に空の代替テキストを使う
 - 画像のMarkdownタイトルは、本文とは別にキャプションが必要な場合だけ指定する
-- 画像追加後は `pnpm optimize:images` を実行し、生成されたWebPもコミットする。ビルドやCIではWebPを生成しない
-- 既存の画像を同じファイル名で差し替えた場合は、`pnpm optimize:images --force` でWebPを作り直す
-- `pnpm lint` に含まれる `pnpm verify:images` が、WebPの不足、幅の違い、元画像のないWebPを検出する
+- 幅ごとのWebPは、ビルド時にAstro（`astro:assets`）が `src/components/PostImage.astro` の指定で生成する。WebPはコミットしない
+- 生成したWebPは `src/config/build.ts` の `CACHE_DIR`（Astroの `cacheDir`）配下の `assets` にキャッシュされ、CIでも `actions/cache` で持ち越す。キャッシュのファイル名は元画像の内容と変換の設定から決まるため、画像を差し替えると作り直される
+- 画像サービス（sharp）の設定など、キャッシュのファイル名に含まれない変換の条件を変えたときは、`ci.yml` のキャッシュのキーの `v1` を上げ、ローカルでは `node_modules/.astro/assets` を削除する
+- `pnpm lint` に含まれる `pnpm lint:content` が、`public/assets/posts` に置かれたPNG・JPEG・WebPと、それらを `/assets/posts/` から参照する記事を検出する
 - 本文画像は共通の画像コンポーネントで寸法、遅延読み込み、レスポンシブ画像を補うため、独自の`img`要素を直接記述しない
 
 ```markdown
-![設定画面で保存ボタンを選択している状態](/assets/posts/post/2026-01-01-1/settings.png "設定を保存する前の画面")
+![設定画面で保存ボタンを選択している状態](../../assets/posts/2026-01-01-1/settings.png "設定を保存する前の画面")
 ```
 
 ### D2図

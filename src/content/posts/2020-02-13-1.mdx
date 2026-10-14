@@ -54,49 +54,49 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
 1. Oktaの管理ページにログインします。
 1. アプリケーションの追加ページに遷移します。
 
-    ![Oktaのアプリケーションの追加ページ](/assets/posts/post/2020-02-13-1/okta_add_applications.png)
+    ![Oktaのアプリケーションの追加ページ](../../assets/posts/2020-02-13-1/okta_add_applications.png)
 
 1. Jamf Proのアプリケーションを検索します。
 
-    ![OktaのJamf Proのアプリケーション検索](/assets/posts/post/2020-02-13-1/okta_search_jamf_application.png)
+    ![OktaのJamf Proのアプリケーション検索](../../assets/posts/2020-02-13-1/okta_search_jamf_application.png)
 
 1. 追加するJamf Proアプリケーションの構成情報を指定します。
     * **Application label**にはJamfのアプリケーションであることがわかるような任意の名前を付けます。
     * **Domain**にはJamf Pro Serverのドメイン名を指定します。
         * この値を使用してOktaの内部では、エンティティIDが`https://ドメイン名/saml/metadata`、ACS（Assertion Consumer Service）が`https://ドメイン名/saml/SSO`として振る舞います。
 
-    ![OktaのJamf Proのアプリケーションの追加](/assets/posts/post/2020-02-13-1/okta_add_jamf_application.png)
+    ![OktaのJamf Proのアプリケーションの追加](../../assets/posts/2020-02-13-1/okta_add_jamf_application.png)
 
 1. Jamfアプリケーションにアクセスを許可するユーザーをアサインします。
 
-   ![OktaのJamf Proアプリケーションにユーザーをアサイン](/assets/posts/post/2020-02-13-1/okta_assign_user_to_jamf_application.png)
+   ![OktaのJamf Proアプリケーションにユーザーをアサイン](../../assets/posts/2020-02-13-1/okta_assign_user_to_jamf_application.png)
 
 1. 「Sign On」タブに遷移して、**Identity Provider metadata**のURLをメモしておきます。
     * のちほどこのURLをJamf Pro Server側に設定します。
 
-    ![OktaのJamf ProアプリケーションのSign On設定](/assets/posts/post/2020-02-13-1/okta_sign_on_of_jamf_application.png)
+    ![OktaのJamf ProアプリケーションのSign On設定](../../assets/posts/2020-02-13-1/okta_sign_on_of_jamf_application.png)
 
 1. Jamf Pro Serverへのログインを許可するユーザーおよびグループをアサインします。
     * ここで指定されたNameIDの値を使用して、Jamf Pro Server側のどのユーザー名とマッピングするかが決まります。
         * **User Profile Mappings**を使用することで渡す値をカスタマイズできます。
 
-    ![OktaのJamf Proアプリケーションのアサイン](/assets/posts/post/2020-02-13-1/okta_assign_user_to_jamf_application.png)
+    ![OktaのJamf Proアプリケーションのアサイン](../../assets/posts/2020-02-13-1/okta_assign_user_to_jamf_application.png)
 
 1. 次に、セキュリティの認証ページに遷移します。
 
-    ![Oktaのセキュリティの認証ページへの遷移](/assets/posts/post/2020-02-13-1/okta_security_authentication.png)
+    ![Oktaのセキュリティの認証ページへの遷移](../../assets/posts/2020-02-13-1/okta_security_authentication.png)
 
 1. 「Sign On」タブに遷移して、Jamf Pro Serverにログイン可能なポリシーが1つまたは複数あり、すべての「Session Lifetime」の時間が同一の場合、その時間をメモします。
     * のちほど、この時間をJamf Pro Server側に設定します。
 
-    ![Oktaの認証のSing On設定](/assets/posts/post/2020-02-13-1/okta_authentication_sign_on.png)
+    ![Oktaの認証のSing On設定](../../assets/posts/2020-02-13-1/okta_authentication_sign_on.png)
 
 #### OktaをIdPとするSSOの設定 - Jamf Pro Server側
 
 1. Jamf Pro Serverにログインします。
 1. 左上の歯車から設定ページに遷移し、シングルサインオン設定ページに遷移します。
 
-    ![Jamf Pro Serverの設定ページ](/assets/posts/post/2020-02-13-1/jamf_settings.png)
+    ![Jamf Pro Serverの設定ページ](../../assets/posts/2020-02-13-1/jamf_settings.png)
 
 1. 「Single Sign-On認証を有効化」にチェックを付けます。
 1. 各種値を設定し、保存します。
@@ -122,7 +122,7 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
         * **User-Initiated Enrollment の Single Sign-On を有効化**は運用に合わせてチェックを付けます。
             * 今回は例であるため、チェックを外しています。
 
-    ![Jamf Pro ServerのSingle Sing-On設定 Oktaの内容](/assets/posts/post/2020-02-13-1/jamf_okta_single_sign_on.png)
+    ![Jamf Pro ServerのSingle Sing-On設定 Oktaの内容](../../assets/posts/2020-02-13-1/jamf_okta_single_sign_on.png)
 
 ### Azure Active DirectoryをIdPとするSSOの設定
 
@@ -134,26 +134,26 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
 1. Microsoft Azure Potalにログインします。
 1. エンタープライズアプリケーションのページに遷移し、新しいアプリケーションを追加するページに遷移します。
 
-    ![Azure ADのエンタープライズアプリケーションの追加](/assets/posts/post/2020-02-13-1/azure_ad_add_enterprise_application.png)
+    ![Azure ADのエンタープライズアプリケーションの追加](../../assets/posts/2020-02-13-1/azure_ad_add_enterprise_application.png)
 
 1. Jamf Proアプリケーションを検索し、アプリケーションを作成します。
 
-    ![Azure ADのJamf Proアプリケーションの作成](/assets/posts/post/2020-02-13-1/azure_ad_create_jamf_application.png)
+    ![Azure ADのJamf Proアプリケーションの作成](../../assets/posts/2020-02-13-1/azure_ad_create_jamf_application.png)
 
 1. シングルサインオン方式として「SAML」を選択します。
 
-    ![Azure ADのJamf Proアプリケーションのシングルサインオンモード選択](/assets/posts/post/2020-02-13-1/azure_ad_jamf_application_settings_single_sign_on_mode.png)
+    ![Azure ADのJamf Proアプリケーションのシングルサインオンモード選択](../../assets/posts/2020-02-13-1/azure_ad_jamf_application_settings_single_sign_on_mode.png)
 
 1. シングルサインオンの設定に遷移して、「基本的なSAML構成」の編集ページに遷移します。
 
-    ![Azure ADのJamf Proアプリケーションのシングルサインオン画面](/assets/posts/post/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on.png)
+    ![Azure ADのJamf Proアプリケーションのシングルサインオン画面](../../assets/posts/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on.png)
 
 1. 追加するJamf Proアプリケーションの構成情報を指定します。
     * 「識別子（エンティティID）」には「`https://サブドメイン名.jamfcloud.com/saml/metadata`」を指定します。
     * 「応答URL（Assertion Consumer Service URL）」には「`https://サブドメイン名.jamfcloud.com/saml/SSO`」を指定します。
     * **サインオンURL**には「`https://サブドメイン名.jamfcloud.com`」を指定します。
 
-    ![Azure ADのJamf Proアプリケーションのシングルサインオンの基本的なSAML構成画面](/assets/posts/post/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on_base_configuration.png)
+    ![Azure ADのJamf Proアプリケーションのシングルサインオンの基本的なSAML構成画面](../../assets/posts/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on_base_configuration.png)
 
 1. デフォルトで`NameID`に**User Principal Name**が使われているため、必要な場合は使用する属性を変更します。
     * ここで指定された属性の値を使用して、Jamf Pro Server側のどのユーザー名とマッピングするかが決まります。
@@ -161,18 +161,18 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
 1. 「SAML署名証明書」の項目から**アプリのフェデレーションメタデータURL**をメモしておきます。
     * のちほど、このURLをJamf Pro Server側に設定します。
 
-    ![Azure ADのJamf ProアプリケーションのシングルサインオンのアプリのフェデレーションメタデータURL取得](/assets/posts/post/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on_metadata.png)
+    ![Azure ADのJamf ProアプリケーションのシングルサインオンのアプリのフェデレーションメタデータURL取得](../../assets/posts/2020-02-13-1/azure_ad_jamf_application_settings_saml_single_sign_on_metadata.png)
 
 1. Jamf Pro Serverへのログインを許可するユーザーおよびグループをアサインします。
 
-    ![Azure ADのJamf Proアプリケーションへのユーザーアサイン](/assets/posts/post/2020-02-13-1/azure_ad_assign_user_to_jamf_application.png)
+    ![Azure ADのJamf Proアプリケーションへのユーザーアサイン](../../assets/posts/2020-02-13-1/azure_ad_assign_user_to_jamf_application.png)
 
 #### Azure Active DirectoryをIdPとするSSOの設定 - Jamf Pro Server側
 
 1. Jamf Pro Serverにログインします。
 1. 左上の歯車から設定ページに遷移し、シングルサインオン設定ページに遷移します。
 
-    ![Jamf Pro Serverの設定ページ](/assets/posts/post/2020-02-13-1/jamf_settings.png)
+    ![Jamf Pro Serverの設定ページ](../../assets/posts/2020-02-13-1/jamf_settings.png)
 
 1. 「Single Sign-On認証を有効化」にチェックを付けます。
 1. 各種値を設定し、保存します。
@@ -198,7 +198,7 @@ Jamf Pro Serverは**SAML 2.0**をサポートしているIdPであれば、ほ�
         * **User-Initiated Enrollment の Single Sign-On を有効化**は運用に合わせてチェックを付けます。
             * 今回は例であるため、チェックを外しています。
 
-    ![Jamf Pro ServerのSingle Sing-On設定 Azure ADの内容](/assets/posts/post/2020-02-13-1/jamf_azure_ad_single_sign_on.png)
+    ![Jamf Pro ServerのSingle Sing-On設定 Azure ADの内容](../../assets/posts/2020-02-13-1/jamf_azure_ad_single_sign_on.png)
 
 ## Jamf Pro Serverのユーザー作成について
 
