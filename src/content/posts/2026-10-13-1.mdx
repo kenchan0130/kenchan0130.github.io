@@ -27,14 +27,14 @@ ADMXの設定は、Microsoft Intune（以下、Intune）のようなMDMからも
 
 | 項目 | 内容 |
 | --- | --- |
-| OS | Windows 11 Pro 25H2（ビルド26200.9457） |
+| OS | Windows 11 Pro 25H2（ビルド26200.9457）[^windows-business] |
 | 端末 | ARM64の仮想マシン |
 | 管理 | Microsoft Entra参加、Intuneに登録 |
 | ライセンス | Microsoft 365 Business Premium |
-| ADMX | ZoomのADMX 7.2.0の`ZoomMeetings_HKLM.admx` |
+| ADMX | ZoomのADMX 7.2.0の`ZoomMeetings_HKLM.admx`[^zoom-admx] |
 
-Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではOSがWindows 11 Businessと表示されます。
-ZoomのADMXは、Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)で配布されています。
+[^windows-business]: Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではWindows 11 Businessと表示されます。
+[^zoom-admx]: Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)で配布されています。
 
 ## Windowsデバイスで何が起きるのか
 
