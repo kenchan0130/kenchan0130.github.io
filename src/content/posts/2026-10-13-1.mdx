@@ -572,7 +572,6 @@ Learnの「What you need to know」にも、依存しているADMXは`policyName
 ADMLには`ADMXMigrator_NoSupportedOn`という文字列があり、変換ツールのFullArmor ADMX Migratorが付けたものと思われます。
 
 それでも、ZoomのADMXをアップロードするには、`Windows.admx`を先にアップロードする必要がありました。
-一方で、後述するカスタムプロファイルでは、`Windows.admx`を用意しなくても取り込めました。
 
 ### ZoomのADMXをアップロードする
 
@@ -675,6 +674,7 @@ ADMXのインポートの制限にあたる場合や、AppNameなどを自分で
 「Windows 10 以降」の「テンプレート > カスタム」のプロファイルを作成し、OMA-URIの設定を追加します。
 ADMXを取り込むために追加する設定は、次の1つです。
 データ型は「文字列」です。
+ADMXのインポートと違い、ZoomのADMXが参照している`Windows.admx`を用意する必要はありません。
 
 | 名前 | OMA-URI | 値 |
 | --- | --- | --- |
@@ -701,7 +701,7 @@ Graph APIでプロファイルを作成して試したところ、350,000文字�
 Zoom 7.2.0の`ZoomMeetings_HKLM.admx`は330,066文字で、上限に近い大きさです。
 
 同期すると、ADMXは指定したAppNameとFileUidで取り込まれました。
-ZoomのADMXは`Windows.admx`の名前空間を参照していますが、ADMXのインポートと違い、`Windows.admx`を用意する必要はありませんでした。
+`Windows.admx`を用意していなくても、取り込みはエラーなく終わりました。
 参照先の`Windows.admx`は、Windowsデバイスに組み込まれているものが使われると考えられます。
 取り込まれたファイルは、文字コードがUTF-16に変わっていた以外は元のADMXのままで、ADMXのインポートのような書き換えはありませんでした。
 
