@@ -141,13 +141,60 @@ ADMXのポリシーでは、[前回の記事](/post/2026-10-05-1#レジストリ
 ./Device/Vendor/MSFT/Policy/Config/Camera/AllowCamera
 ```
 
-形式に当てはめると、次のように読めます。
+区切りごとに分けると、次のようになります。
 
-| 区切り | この例の値 | 意味 |
-| --- | --- | --- |
-| `{対象}` | `Device` | Windowsデバイス全体に効かせる |
-| `{CSPの名前}` | `Policy` | ポリシーを扱うPolicy CSPに渡す |
-| `{CSPの中の設定}` | `Config/Camera/AllowCamera` | `Config`はポリシーの設定、`Camera`は分類、`AllowCamera`は設定の名前 |
+```d2 title="カメラの使用を設定するOMA-URIを区切りごとに分け、対象、ベンダー、Policy CSP、ポリシーの設定、分類、設定の名前の意味を示した図"
+classes: {
+  seg: {shape: text; style.font: mono; style.font-size: 16}
+  bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
+  lab: {shape: text; style.font-size: 14; style.bold: true}
+  line: {horizontal-gap: 10; vertical-gap: 4; style.fill: transparent}
+  align-left: {}
+}
+uri: "" {
+  class: align-left
+  grid-rows: 2
+  grid-gap: 8
+  style.fill: transparent
+  r0: "" {
+    class: [line; align-left]
+    grid-rows: 3
+    grid-columns: 3
+    s0: "./Device" {class: seg}
+    s1: "/Vendor/MSFT" {class: seg}
+    s2: "/Policy" {class: seg}
+    b0: {class: bar; style.fill: "#9333ea"}
+    b1: {class: bar; style.fill: "#64748b"}
+    b2: {class: bar; style.fill: "#3b82f6"}
+    l0: "対象" {class: lab; style.font-color: "#9333ea"}
+    l1: "ベンダー" {class: lab; style.font-color: "#64748b"}
+    l2: "Policy CSP" {class: lab; style.font-color: "#3b82f6"}
+  }
+  r1: "" {
+    class: [line; align-left]
+    grid-rows: 3
+    grid-columns: 3
+    s0: "/Config" {class: seg}
+    s1: "/Camera" {class: seg}
+    s2: "/AllowCamera" {class: seg}
+    b0: {class: bar; style.fill: "#ea580c"}
+    b1: {class: bar; style.fill: "#dc2626"}
+    b2: {class: bar; style.fill: "#0d9488"}
+    l0: "ポリシーの設定" {class: lab; style.font-color: "#ea580c"}
+    l1: "分類" {class: lab; style.font-color: "#dc2626"}
+    l2: "設定の名前" {class: lab; style.font-color: "#0d9488"}
+  }
+}
+```
+
+左から順に読むと、次のことを表しています。
+
+1. `./Device`：Windowsデバイス全体に効かせる
+2. `/Vendor/MSFT`：Microsoftが提供するCSPの中から選ぶ
+3. `/Policy`：ポリシーを扱うPolicy CSPに渡す
+4. `/Config`：Policy CSPの中の、ポリシーを設定する場所
+5. `/Camera`：カメラに関するポリシーの分類
+6. `/AllowCamera`：その分類の中の、カメラの使用を許可するかどうかの設定
 
 値に`0`を指定するとカメラの使用が禁止され、`1`を指定すると許可されます。
 CSPの中の設定に何を書けるかは、[Policy CSP - Camera](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-camera)のように、CSPごとのドキュメントで確認します。
