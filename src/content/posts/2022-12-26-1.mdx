@@ -700,7 +700,7 @@ resource "azuread_service_principal_delegated_permission_grant" "oidc_app" {
 
 しかし、実際にこのスコープにアクセスするには、アプリケーションオブジェクトではなく、サービスプリンシパルオブジェクトごとに管理者の同意が必要です。
 
-![OIDCでログインする際に管理者権限でAPIアクセスの許可を委任してない場合に表示されるダイアログ](/assets/posts/post/2022-12-26-1/oidc_admin_privilege_delegation_dialog.png)
+![OIDCでログインする際に管理者権限でAPIアクセスの許可を委任してない場合に表示されるダイアログ](../../assets/posts/2022-12-26-1/oidc_admin_privilege_delegation_dialog.png)
 
 `azuread_service_principal_delegated_permission_grant`リソースでは、この管理者の同意を設定できます。
 
@@ -744,7 +744,7 @@ resource "azuread_service_principal_claims_mapping_policy_assignment" "jamf_pro"
 
 しかし、このAPIを使用すると、Azure Portal上で現在のクレームマッピングの情報が表示されず、クレームの変更もできなくなってしまいます。
 
-![Azure PortalにおけるSAMLの属性とクレームの変更画面](/assets/posts/post/2022-12-26-1/saml_attributes_and_claims_at_azure_portal.png)
+![Azure PortalにおけるSAMLの属性とクレームの変更画面](../../assets/posts/2022-12-26-1/saml_attributes_and_claims_at_azure_portal.png)
 
 [公式ドキュメント](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/active-directory-claims-mapping)にも、次のように記載されています。
 

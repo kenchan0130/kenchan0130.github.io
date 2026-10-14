@@ -45,11 +45,11 @@ swiftDialogを起動するスクリプトは[Installomatorのリポジトリ](ht
 
 1. [設定] > [コンピュータの管理] > [スクリプト]から新規スクリプトの作成に進みます。
 
-    ![Jamf Proの新規スクリプト作成の一般タブ](/assets/posts/post/2024-12-16-1/create_script_general_tab.png)
+    ![Jamf Proの新規スクリプト作成の一般タブ](../../assets/posts/2024-12-16-1/create_script_general_tab.png)
 
 2. 次に、スクリプトタブをクリックして、GitHubから取得してきた`00_Prepare_SwiftDialog.sh`を登録します。
 
-   ![Jamf Proの新規スクリプト作成のスクリプトタブの設定](/assets/posts/post/2024-12-16-1/create_script_script_tab.png)
+   ![Jamf Proの新規スクリプト作成のスクリプトタブの設定](../../assets/posts/2024-12-16-1/create_script_script_tab.png)
 
 3. 任意ですが、オプションタブをクリックして、優先度やパラメータ名を設定します。パラメータ名は本家のスクリプト内のコメントから取得したものを使用していますが、任意の名前でも問題ありません。
     * 「優先度」: `前`
@@ -63,7 +63,7 @@ swiftDialogを起動するスクリプトは[Installomatorのリポジトリ](ht
 
     * 「パラメータ7」: `Overlayicon as Path or URL in swiftDialog`
 
-    ![Jamf Proの新規スクリプト作成のオプションタブの設定](/assets/posts/post/2024-12-16-1/create_script_options_tab.png)
+    ![Jamf Proの新規スクリプト作成のオプションタブの設定](../../assets/posts/2024-12-16-1/create_script_options_tab.png)
 
 4. [保存]してスクリプトの登録は完了です。
 
@@ -75,17 +75,17 @@ swiftDialogを起動するスクリプトは[Installomatorのリポジトリ](ht
     * 「実行頻度」: `Ongoing`
       * Self Serviceから何度も実行できるようにするため選択してます。
 
-    ![JamfポリシーのGeneral設定](/assets/posts/post/2024-12-16-1/create_policy_general.png)
+    ![JamfポリシーのGeneral設定](../../assets/posts/2024-12-16-1/create_policy_general.png)
 
 3. スクリプトの項目を選択し、Installomatorおよび先程登録したswiftDialogを起動するスクリプトを追加します。
 
-    ![Jamfポリシーのスクリプト選択](/assets/posts/post/2024-12-16-1/create_policy_scripts.png)
+    ![Jamfポリシーのスクリプト選択](../../assets/posts/2024-12-16-1/create_policy_scripts.png)
 
 4. Installomatorのパラメータを設定します。
     * 「優先度」: `後`
     * 「パラメータ4」: `googlechromepkg`
 
-    ![JamfポリシーのスクリプトのInstallomatorの設定](/assets/posts/post/2024-12-16-1/create_policy_scripts_installomator.png)
+    ![JamfポリシーのスクリプトのInstallomatorの設定](../../assets/posts/2024-12-16-1/create_policy_scripts_installomator.png)
 
 5. Prepare swiftDialogのパラメータを設定します。
     * 「優先度」: `前`
@@ -97,7 +97,7 @@ swiftDialogを起動するスクリプトは[Installomatorのリポジトリ](ht
     * 「コマンドを実行」: `echo -e "progress: complete\nprogresstext: Done" >> /var/tmp/dialog.log; sleep 0.5; echo "quit:" >> /var/tmp/dialog.log;`
       * [Installomatorのリポジトリ](https://github.com/Installomator/Installomator/blob/main/MDM/Jamf/zz_Quit_SwiftDialog.sh)に用意されている、swiftDialogを終了するスクリプトを参考にしています。
 
-    ![Jamfポリシーのファイルとプロセスの設定](/assets/posts/post/2024-12-16-1/create_policy_files_and_processes.png)
+    ![Jamfポリシーのファイルとプロセスの設定](../../assets/posts/2024-12-16-1/create_policy_files_and_processes.png)
 
 7. [保存]してポリシーの設定は完了です。
 
@@ -105,7 +105,7 @@ swiftDialogを起動するスクリプトは[Installomatorのリポジトリ](ht
 
 Self Serviceからポリシーを実行すると、以下のように進捗が表示されます。
 
-![Self Serviceから実行した際の、インストールの進捗](/assets/posts/post/2024-12-16-1/progress_on_self_service.png)
+![Self Serviceから実行した際の、インストールの進捗](../../assets/posts/2024-12-16-1/progress_on_self_service.png)
 
 ## 終わりに
 

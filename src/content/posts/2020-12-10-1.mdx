@@ -31,7 +31,7 @@ Session Managerを使用することで、専用の踏み台サーバーの用�
 今回は、プライベートネットワークにあるAmazon AuroraのMySQLデータベースに接続することをゴールとします。
 作成する構成は以下の図のとおりです。
 
-![今回構築するインフラ構成図](/assets/posts/post/2020-12-10-1/infra_diagram.png)
+![今回構築するインフラ構成図](../../assets/posts/2020-12-10-1/infra_diagram.png)
 
 SSMエージェントを動作させているサーバー、つまり、踏み台の役目をするサーバーをECS on Fargeteにすることで、サーバーレスな構成にしています。
 
@@ -242,7 +242,7 @@ aws ssm create-activation \
 
 `default-instance-name`オプションはマネージドインスタンスの名前になるので、引数で渡して判別しやすいようにしています。
 
-![AWSのWebコンソール上のマネージドインスタンス一覧](/assets/posts/post/2020-12-10-1/managed_instance_list_view_at_aws_web_console.png)
+![AWSのWebコンソール上のマネージドインスタンス一覧](../../assets/posts/2020-12-10-1/managed_instance_list_view_at_aws_web_console.png)
 
 `iam-role`オプションは、立ち上げたコンテナが指定したロールにAssumeRoleされて実行されます。
 このロールにAsuumeRoleされるのは、`amazon-ssm-agent start`を行ってインスタンスが登録されたあとである点に注意が必要です。
@@ -1019,7 +1019,7 @@ Terraformはどのファイルにどの設定を書いてもよいですが、�
 環境構築が終わったので、あとはSSMエージェントのコンテナを起動するだけです。
 構築したセキュリティグループでタスクを実行すれば、セッションマネージャーを使用できます。
 
-![AWS WebコンソールでのECSのタスク実行](/assets/posts/post/2020-12-10-1/ecs_task_execution_with_aws_web_console.png)
+![AWS WebコンソールでのECSのタスク実行](../../assets/posts/2020-12-10-1/ecs_task_execution_with_aws_web_console.png)
 
 ## 注意点
 

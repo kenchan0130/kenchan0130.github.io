@@ -33,8 +33,8 @@ macOSでは、High Sierra（10.13）からUser Consentと呼ばれるプライ�
 
 アプリケーションが初めてUser Consentの対象となる項目にアクセスする際には、ダイアログでエンドユーザーに対してアクセス権の確認がされます。
 
-![カメラへのアクセス確認ダイアログ Zoomアプリケーションでの例](/assets/posts/post/2020-12-03-1/access_to_camera_dialog_with_zoom.png)
-![マイクへのアクセス確認ダイアログ Zoomアプリケーションでの例](/assets/posts/post/2020-12-03-1/access_to_microphone_dialog_with_zoom.png)
+![カメラへのアクセス確認ダイアログ Zoomアプリケーションでの例](../../assets/posts/2020-12-03-1/access_to_camera_dialog_with_zoom.png)
+![マイクへのアクセス確認ダイアログ Zoomアプリケーションでの例](../../assets/posts/2020-12-03-1/access_to_microphone_dialog_with_zoom.png)
 
 以降は、[システム環境設定] > [セキュリティとプライバシー] > [プライバシー]からであれば個別にアクセス権を変更できます。
 
@@ -94,18 +94,18 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
 
     * カテゴリの設定は任意ですが、このスクリプトの分類に使用できます。以下の画像では例として**Security**を指定しています。
 
-    ![TCC-Permitterの新規スクリプト作成の一般セクションの設定](/assets/posts/post/2020-12-03-1/create_script_general_ttc_permitter.png)
+    ![TCC-Permitterの新規スクリプト作成の一般セクションの設定](../../assets/posts/2020-12-03-1/create_script_general_ttc_permitter.png)
 
 1. 次に、ScriptセクションにGitHubからコピーしてきた`TCC-Permitter.sh`を貼り付けます。
 
-    ![TCC-Permitterの新規スクリプト作成のスクリプトセクションの設定](/assets/posts/post/2020-12-03-1/create_script_script_ttc_permitter.png)
+    ![TCC-Permitterの新規スクリプト作成のスクリプトセクションの設定](../../assets/posts/2020-12-03-1/create_script_script_ttc_permitter.png)
 
 1. Optionsセクションの**パラメータ4**にバンドルIDまたはバイナリパス、**パラメータ5**にTTCのサービス名を指定することがわかるような名前を入力してください。
 
     * これは設定しなくても動作しますが、ポリシー側で使用する際にわかりやすくなるので設定しています。
     * 以下の画像では例として**Bundle ID or Binary Path**、**TTC Service Name**という名前を設定しています。
 
-    ![TCC-Permitterの新規スクリプト作成のオプションセクションの設定](/assets/posts/post/2020-12-03-1/create_script_options_ttc_permitter.png)
+    ![TCC-Permitterの新規スクリプト作成のオプションセクションの設定](../../assets/posts/2020-12-03-1/create_script_options_ttc_permitter.png)
 
 1. [保存]してスクリプトの登録は完了です。
 
@@ -139,7 +139,7 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
           echo "<result>${DIABLED_VALUES}</result>"
           ```
 
-    ![Zoomの拒否となっているTCC Service名を取得する拡張属性の作成](/assets/posts/post/2020-12-03-1/create_extension_attributes_with_zoom.png)
+    ![Zoomの拒否となっているTCC Service名を取得する拡張属性の作成](../../assets/posts/2020-12-03-1/create_extension_attributes_with_zoom.png)
 
 1. [保存]して拡張属性の登録は完了です。
 
@@ -149,12 +149,12 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
 1. コンピュータグループセクションの表示名に認識しやすい名前を設定します。
     * 以下の画像では例として**Zoom Camera or Microphone or ScreenCapture**を指定しています。
 
-    ![Zoomのカメラ、マイクおよび画面キャプチャが拒否されているスマートコンピュータグループの作成](/assets/posts/post/2020-12-03-1/create_smart_computer_groups_computer_group_with_zoom.png)
+    ![Zoomのカメラ、マイクおよび画面キャプチャが拒否されているスマートコンピュータグループの作成](../../assets/posts/2020-12-03-1/create_smart_computer_groups_computer_group_with_zoom.png)
 
 1. Criteriaセクションに先程作成した拡張属性「**Zoom disabled TCC service values**」の値の条件を指定します。
     * カメラ、マイクおよび画面キャプチャのいずれかが拒否されているスマートコンピュータグループを作成するので、以下の画像のようにそれぞれを**or**条件でつなぎます。
 
-    ![Zoomのカメラ、マイクおよび画面キャプチャが拒否されているスマートコンピュータグループのCriteriaの設定](/assets/posts/post/2020-12-03-1/create_smart_computer_groups_criteria_with_zoom.png)
+    ![Zoomのカメラ、マイクおよび画面キャプチャが拒否されているスマートコンピュータグループのCriteriaの設定](../../assets/posts/2020-12-03-1/create_smart_computer_groups_criteria_with_zoom.png)
 
 1. [保存]してスマートコンピュータグループの設定は完了です。
 
@@ -169,18 +169,18 @@ ZoomアプリケーションはPPPCでは許可できない、カメラ、マイ
     * 「実行頻度」: `Ongoing`
         * ScopeにSmart Computer Groupを使用するため、Ongoingで問題ないです。
 
-    ![Installomatorを使用したZoomポリシーのオプションセクションのGeneral設定](/assets/posts/post/2020-12-03-1/create_policy_to_allow_access_for_zoom_optipons_general_using_ttc_permitter.png)
+    ![Installomatorを使用したZoomポリシーのオプションセクションのGeneral設定](../../assets/posts/2020-12-03-1/create_policy_to_allow_access_for_zoom_optipons_general_using_ttc_permitter.png)
 
 1. 次に、スクリプトの項目を選択し、登録したTCC-Permitterのスクリプトを追加します。
 1. パラメータ4とパラメータ5に値を設定します。
     * 「パラメータ4」: `us.zoom.xos`
     * 「パラメータ5」: `Camera,Microphone,ScreenCapture`
 
-    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプト設定](/assets/posts/post/2020-12-03-1/create_policy_to_allow_access_for_zoom_optipons_scripts_using_ttc_permitter.png)
+    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプト設定](../../assets/posts/2020-12-03-1/create_policy_to_allow_access_for_zoom_optipons_scripts_using_ttc_permitter.png)
 
 1. 次に、Scopeセクションからターゲットコンピュータを先程作成したスマートコンピュータグループ「**Zoom Camera or Microphone or ScreenCapture**」を設定します。
 
-    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプトのパラメータ設定](/assets/posts/post/2020-12-03-1/create_policy_to_allow_access_for_zoom_scope_smart_computer_group_using_ttc_permitter.png)
+    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプトのパラメータ設定](../../assets/posts/2020-12-03-1/create_policy_to_allow_access_for_zoom_scope_smart_computer_group_using_ttc_permitter.png)
 
 1. [保存]してポリシーの登録は完了です。
 

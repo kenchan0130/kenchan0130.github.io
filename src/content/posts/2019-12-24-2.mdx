@@ -41,7 +41,7 @@ Googleアカウントがあれば、無料で使用できます。
 
 ColaboratoryはデフォルトでPython2とPython3が使用できるようになっていますが、R言語も使用が可能です。
 
-![デフォルトのノートブックの設定](/assets/posts/post/2019-12-24-2/notebook_settings_default.png)
+![デフォルトのノートブックの設定](../../assets/posts/2019-12-24-2/notebook_settings_default.png)
 
 Rを動かすためには以下のJSONファイルを`.ipynb`拡張子で保存し、アップロードすることで実現が可能となります。
 
@@ -63,8 +63,8 @@ Rを動かすためには以下のJSONファイルを`.ipynb`拡張子で保存�
 }
 ```
 
-![ノートブックのアップロード](/assets/posts/post/2019-12-24-2/upload_notebook.png)
-![Rが使用できる状態のノートブックの設定](/assets/posts/post/2019-12-24-2/notebook_settings_with_r.png)
+![ノートブックのアップロード](../../assets/posts/2019-12-24-2/upload_notebook.png)
+![Rが使用できる状態のノートブックの設定](../../assets/posts/2019-12-24-2/notebook_settings_with_r.png)
 
 実際Rが動くか試すためにRのバージョン情報を表示してみます。
 
@@ -72,7 +72,7 @@ Rを動かすためには以下のJSONファイルを`.ipynb`拡張子で保存�
 R.version
 ```
 
-![Rのバージョン情報を表示](/assets/posts/post/2019-12-24-2/run_r_print_version.png)
+![Rのバージョン情報を表示](../../assets/posts/2019-12-24-2/run_r_print_version.png)
 
 執筆時点で最新版のRを使用できることが確認できました。
 必ず最新版とは限らないですが、ほぼ最新版が使用できるようになっているのだと思われます。
@@ -81,7 +81,7 @@ R.version
 
 ColaboratoryのRランタイムでは、PythonのようにGoogle Driveのマウントができないですが、ファイルはアップロードできます。
 
-![ノートブックにファイルをアップロード](/assets/posts/post/2019-12-24-2/notebook_file_upload.png)
+![ノートブックにファイルをアップロード](../../assets/posts/2019-12-24-2/notebook_file_upload.png)
 
 今回は、[免許・許可・登録等を受けている業者一覧](https://www.fsa.go.jp/menkyo/menkyo.html)から取得した金融商品取引業者を最低限のCSVデータにしたものをアップロードしてみます。
 デフォルトのワーキングディレクトリは`/content`であり、ファイルはこの配下にアップロードされます。
@@ -115,7 +115,7 @@ financial_instruments_traders_data <- fread('financial_instruments_traders.csv')
 financial_instruments_traders_data %>% head
 ```
 
-![data.tableで読みとったCSVのheadの表示](/assets/posts/post/2019-12-24-2/data_table_print_head.png)
+![data.tableで読みとったCSVのheadの表示](../../assets/posts/2019-12-24-2/data_table_print_head.png)
 
 無事読み込めました。ここからはRの世界です。
 
@@ -128,7 +128,7 @@ financial_instruments_traders_data %>%
   group_by(所管) %>% summarise(sum(第一種), sum(第二種))
 ```
 
-![各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数](/assets/posts/post/2019-12-24-2/summarised_group_by_shokan.png)
+![各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数](../../assets/posts/2019-12-24-2/summarised_group_by_shokan.png)
 
 もちろんプロットも可能です。今回は`ggplot2`を使ってプロットしてみます。
 まずは必要なライブラリを準備します。
@@ -155,7 +155,7 @@ g <- g + scale_fill_nejm()
 plot(g)
 ```
 
-![各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数のプロット](/assets/posts/post/2019-12-24-2/summarised_group_by_shokan_plot.png)
+![各所管ごとの第一種金融取引業者と第二種金融取引業者の合計数のプロット](../../assets/posts/2019-12-24-2/summarised_group_by_shokan_plot.png)
 
 残念ながら日本語が文字化けてしまっています。
 ローカル環境ではggplot2の`theme`関数を使用することで解決できますが、Colaboratoryでは解決方法がわかりませんでした。

@@ -352,17 +352,20 @@ export const settings = {
 
 - 画像には代替テキストを設定
 - UI の説明では画像を積極的に活用
-- 画像は `public/assets/posts/post/記事ID` ディレクトリに保存
-- 記事からは `/assets/posts/post/記事ID/sample.png` のように参照
+- PNG・JPEGの画像は `src/assets/posts/記事ID` ディレクトリに保存する
+- 記事からは `../../assets/posts/記事ID/sample.png` のように相対パスで参照する
+- 公開されるURLは `/_astro/ファイル名_ハッシュ.拡張子` になり、画像を差し替えると変わる
+- GIFアニメーションや、本文からリンクするcsv・jsonなどのファイルは、変換せずにそのURLで公開するため `public/assets/posts/post/記事ID` に置き、`/assets/posts/post/記事ID/sample.gif` のように参照する
 - 代替テキストは必須。説明目的を持たない画像だけ明示的に空の代替テキストを使う
 - 画像のMarkdownタイトルは、本文とは別にキャプションが必要な場合だけ指定する
-- 画像追加後は `pnpm optimize:images` を実行し、生成されたWebPもコミットする。ビルドやCIではWebPを生成しない
-- 既存の画像を同じファイル名で差し替えた場合は、`pnpm optimize:images --force` でWebPを作り直す
-- `pnpm lint` に含まれる `pnpm verify:images` が、WebPの不足、幅の違い、元画像のないWebPを検出する
+- 幅ごとのWebPは、ビルド時にAstro（`astro:assets`）が `src/components/PostImage.astro` の指定で生成する。WebPはコミットしない
+- 生成したWebPは `src/config/build.ts` の `CACHE_DIR`（Astroの `cacheDir`）配下の `assets` にキャッシュされ、CIでも `actions/cache` で持ち越す。キャッシュのファイル名は元画像の内容と変換の設定から決まるため、画像を差し替えると作り直される
+- 画像サービス（sharp）の設定など、キャッシュのファイル名に含まれない変換の条件を変えたときは、`ci.yml` のキャッシュのキーの `v1` を上げ、ローカルでは `node_modules/.astro/assets` を削除する
+- `pnpm lint` に含まれる `pnpm lint:content` が、`public/assets/posts` に置かれたPNG・JPEG・WebPと、それらを `/assets/posts/` から参照する記事を検出する
 - 本文画像は共通の画像コンポーネントで寸法、遅延読み込み、レスポンシブ画像を補うため、独自の`img`要素を直接記述しない
 
 ```markdown
-![設定画面で保存ボタンを選択している状態](/assets/posts/post/2026-01-01-1/settings.png "設定を保存する前の画面")
+![設定画面で保存ボタンを選択している状態](../../assets/posts/2026-01-01-1/settings.png "設定を保存する前の画面")
 ```
 
 ### D2図
