@@ -9,7 +9,6 @@
     "pnpm": "10.34.5"
   },
   "scripts": {
-    "prebuild": "pnpm og",
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist --force-language ja",
     "preview": "astro preview",
@@ -25,7 +24,6 @@
     "verify:images": "node scripts/verify-responsive-images.mjs",
     "optimize:images": "node scripts/optimize-images.mjs",
     "refresh:link-cards": "node scripts/refresh-link-cards.mjs",
-    "og": "node scripts/generate-og-images.mjs",
     "test:e2e": "playwright test",
     "test": "pnpm format:check && pnpm lint && pnpm check && pnpm build && pnpm verify:build && pnpm test:e2e",
     "audit": "pnpm audit --audit-level high"

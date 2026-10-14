@@ -93,6 +93,14 @@ if (!resumeHtml.includes('<meta name="format-detection" content="telephone=no">'
   errors.push("Resumeページで電話番号の自動検出が無効になっていません");
 }
 
+for (const slug of ["default", ...publishedSlugs]) {
+  try {
+    await access(path.join(distDirectory, "og", `${slug}.png`));
+  } catch {
+    errors.push(`OGPが生成されていません: ${slug}`);
+  }
+}
+
 for (const slug of unpublishedSlugs) {
   try {
     await access(path.join(distDirectory, "og", `${slug}.png`));
