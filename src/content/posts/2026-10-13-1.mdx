@@ -102,7 +102,7 @@ uri: "" {
     b0: {class: bar; style.fill: "#9333ea"}
     b1: {class: bar; style.fill: "#64748b"}
     l0: "Device か User" {class: lab; style.font-color: "#9333ea"}
-    l1: "ベンダー（Microsoft）" {class: lab; style.font-color: "#64748b"}
+    l1: "常にVendor/MSFT" {class: lab; style.font-color: "#64748b"}
   }
   r1: "" {
     class: [line; align-left]
@@ -117,6 +117,9 @@ uri: "" {
   }
 }
 ```
+
+`/Vendor/MSFT`は、CSPを提供するベンダー（`MSFT`はMicrosoft）を表します。
+Windowsに組み込まれたCSPは`MSFT`の下にあるため、ここは常に`/Vendor/MSFT`と書きます。
 
 先頭の`{対象}`は、設定をWindowsデバイス全体に効かせるか、ユーザーごとに効かせるかを表し、次の2つから選びます。
 
