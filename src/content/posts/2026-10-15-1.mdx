@@ -42,7 +42,7 @@ Microsoft Intune（以下、Intune）では、設定カタログやスクリプ�
 
 Intuneでレジストリに値を配布する主な方法は、次の5つです。
 
-| 方法 | 書き込むもの | 書き込める場所 | 配布をやめたときの値 | 必要なライセンスの例 |
+| 方法 | 書き込み元 | 書き込める場所 | 配布をやめたときの値 | 必要なライセンスの例 |
 | --- | --- | --- | --- | --- |
 | 設定カタログ | Policy CSP | Intuneが対応している設定 | 削除される | Intune Plan 1[^intune-license] |
 | ADMXのインポート | Policy CSP | アップロードしたADMXの設定 | 削除される | Intune Plan 1 |
@@ -99,6 +99,30 @@ ZoomのADMXはバージョンごとに名前空間が異なる（6.6.5は`ZoomMe
 #### 古いバージョンのプロファイルを削除すると、新しいバージョンの値も消える
 
 次の流れで6.6.5から7.2.0に切り替えたところ、7.2.0のプロファイルで設定している値まで消えました。
+
+```d2 title="6.6.5と7.2.0のプロファイルは、Windowsデバイスで別のAppNameのポリシーとして取り込まれ、同じレジストリの値を書き込む。6.6.5のプロファイルを削除すると、6.6.5のポリシーが値を削除し、7.2.0のポリシーは値を書き直さない"
+grid-columns: 3
+grid-gap: 48
+intune: Intune {
+  grid-rows: 2
+  grid-gap: 32
+  p66: "6.6.5のプロファイル\n（削除する）" {shape: image; icon: /d2-icons/file-cog.svg}
+  p72: "7.2.0のプロファイル" {shape: image; icon: /d2-icons/file-cog.svg}
+}
+device: Windowsデバイス {
+  grid-rows: 2
+  grid-gap: 32
+  a66: "6.6.5のポリシー\nfullarmor<GUID1>" {shape: image; icon: /d2-icons/cog.svg}
+  a72: "7.2.0のポリシー\nfullarmor<GUID2>" {shape: image; icon: /d2-icons/cog.svg}
+}
+reg: レジストリ {
+  v: "Zoom Meetingsの値" {shape: image; icon: /d2-icons/database.svg}
+}
+intune.p66 -> device.a66
+intune.p72 -> device.a72
+device.a66 -> reg.v: 削除（819）
+device.a72 -> reg.v: 書き直さない
+```
 
 1. 6.6.5のプロファイルで、3つの設定を有効にしている
 2. 7.2.0のプロファイルを追加し、7.2.0にもある2つの設定を同じ値で有効にする
@@ -161,7 +185,7 @@ ADMXのインポートの制限を受けず、取り込むときのAppNameとFil
 ADMXを取り込む行のOMA-URIには、AppNameとFileUidが含まれます。
 バージョンを更新するときは、このOMA-URIを変えずに、行の値（ADMXの全文）だけを新しいバージョンに差し替えます。
 
-```d2 title="ADMXを取り込む行のOMA-URIを区切りごとに分け、AppNameとFileUidは変えずに固定し、行の値のADMXの全文だけを新しいバージョンに差し替えることを示した図"
+```d2 title="ADMXを取り込む行のOMA-URIは、AppNameとFileUidを含めて変えずに固定し、行の値のADMXだけを6.6.5から7.2.0に差し替えることを示した図"
 classes: {
   seg: {shape: text; style.font: mono; style.font-size: 16}
   bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
@@ -169,11 +193,11 @@ classes: {
   line: {horizontal-gap: 10; vertical-gap: 4; style.fill: transparent}
   align-left: {}
 }
-uri: "" {
+grid-rows: 2
+grid-gap: 32
+uri: 行のOMA-URI（変えない） {
   class: align-left
-  grid-rows: 2
-  grid-gap: 8
-  style.fill: transparent
+  grid-rows: 1
   r0: "" {
     class: [line; align-left]
     grid-rows: 3
@@ -191,14 +215,13 @@ uri: "" {
     l2: "種類" {class: lab; style.font-color: "#64748b"}
     l3: "FileUid：固定。バージョンを含めない" {class: lab; style.font-color: "#db2777"}
   }
-  r1: "" {
-    class: [line; align-left]
-    grid-rows: 3
-    grid-columns: 1
-    s0: "値：ZoomMeetings_HKLM.admxの全文" {class: seg}
-    b0: {class: bar; style.fill: "#ea580c"}
-    l0: "6.6.5から7.2.0の全文に差し替える" {class: lab; style.font-color: "#ea580c"}
-  }
+}
+value: 行の値（ADMXの全文） {
+  grid-columns: 2
+  grid-gap: 64
+  old: "6.6.5のADMX" {shape: image; icon: /d2-icons/file-code.svg}
+  new: "7.2.0のADMX" {shape: image; icon: /d2-icons/file-code.svg}
+  old -> new: 差し替える
 }
 ```
 
@@ -246,11 +269,7 @@ FileUidにバージョンを含めると、新しいバージョンは別の行�
 5.で`HideSelfView_Policy`の行を外すと、`HideSelfView`だけが削除され、同じキーのほかの値は残りました。
 新しいバージョンでなくなったポリシーは、値の行を外して削除します。
 
-### 方法4：プラットフォームスクリプト
-
-プラットフォームスクリプトは、PowerShellのスクリプトをWindowsデバイスで実行する機能です。
-
-#### ADMXで書き込めないレジストリ
+### ADMXで書き込めないレジストリ
 
 ADMXのインポートとカスタムプロファイルでADMXを取り込む場合は、書き込める場所に制限があります。
 [Win32 and Desktop Bridge app ADMX policy Ingestion](https://learn.microsoft.com/en-us/windows/client-management/win32-and-centennial-app-policy-configuration)によると、取り込んだADMXのポリシーは、次のキーの配下に書き込めません。
@@ -265,12 +284,12 @@ ADMXのインポートとカスタムプロファイルでADMXを取り込む場
 同じドキュメントには、取り込んだADMXで設定できない場合は、PowerShellのスクリプトなどでレジストリに直接書き込むよう書かれています。
 設定カタログにもない設定で、書き込み先がこの制限にあたる場合は、プラットフォームスクリプトか修復スクリプトを使うことになります。
 
-#### プラットフォームスクリプトのしくみ
+### IMEがスクリプトを実行するしくみ
 
-プラットフォームスクリプトは、構成プロファイルとは別のしくみで動きます。
-構成プロファイルはWindowsのMDMクライアントがOMA-DMで受け取りますが、プラットフォームスクリプトはIMEがIntuneに問い合わせて受け取ります。
+プラットフォームスクリプトと修復スクリプトは、構成プロファイルとは別のしくみで動きます。
+構成プロファイルはWindowsのMDMクライアントがOMA-DMで受け取りますが、スクリプトはIMEがIntuneに問い合わせて受け取ります。
 
-```d2 pad="0" title="構成プロファイルはIntuneからMDMクライアントに届き、Policy CSPがレジストリに書き込む。プラットフォームスクリプトはIMEがIntuneに問い合わせて受け取り、PowerShellがレジストリに書き込む"
+```d2 pad="0" title="構成プロファイルはIntuneからMDMクライアントに届き、Policy CSPがレジストリに書き込む。スクリプトはIMEがIntuneに問い合わせて受け取り、PowerShellがレジストリに書き込む"
 grid-columns: 2
 grid-gap: 48
 intune: Intune {
@@ -289,7 +308,7 @@ client: Windowsデバイス {
       csp: Policy CSP {shape: image; icon: /d2-icons/cog.svg}
       mdm -> csp
     }
-    script: プラットフォームスクリプト {
+    script: スクリプト {
       grid-columns: 2
       grid-gap: 48
       ime: IME {shape: image; icon: /d2-icons/app-window.svg}
@@ -337,9 +356,9 @@ IMEがIntuneに問い合わせるのは、次のタイミングです。
 
 #### 32ビットと64ビットのPowerShell
 
-プラットフォームスクリプトは、Windows PowerShell 5.1で実行されます。
+IMEは、スクリプトをWindows PowerShell 5.1で実行します。
 「64ビットのPowerShellで実行する」の設定によって、起動されるPowerShellが変わります。
-今回の環境で、どちらの設定でもSYSTEMとして同じスクリプトを実行し、次の2つのキーに値を書き込みました。
+今回の環境で、プラットフォームスクリプトをどちらの設定でもSYSTEMとして実行し、次の2つのキーに値を書き込みました。
 
 - `HKLM:\SOFTWARE\IntuneBitnessTest`
 - `HKLM:\SOFTWARE\Policies\IntuneBitnessTest`
@@ -372,6 +391,12 @@ IMEがIntuneに問い合わせるのは、次のタイミングです。
 
 なお、今回はARM64のWindowsで、32ビットのPowerShellはx86のエミュレーションで動きました。
 x64のWindowsでは試していません。
+修復スクリプトにも「64ビットのPowerShellで実行する」の設定があり、同じIMEが実行するため、同じ動きになると考えられます。
+ただし、修復スクリプトでは試していません。
+
+### 方法4：プラットフォームスクリプト
+
+プラットフォームスクリプトは、PowerShellのスクリプトをWindowsデバイスで実行する機能です。
 
 #### 一度成功したスクリプトは再実行されない
 
