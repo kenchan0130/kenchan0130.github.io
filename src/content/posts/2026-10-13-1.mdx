@@ -135,6 +135,24 @@ ADMXのポリシーでは、[前回の記事](/post/2026-10-05-1#レジストリ
 [Policy CSP](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-configuration-service-provider)のドキュメントによると、`Device`の場合は`./Device`を省略して`./Vendor/MSFT/Policy/...`と書くこともできます。
 この記事では、対象がわかるように`./Device`を省略せずに書きます。
 
+たとえば、カメラの使用を許可するかどうかを設定する、Policy CSPの`Camera/AllowCamera`のOMA-URIは次のとおりです。
+
+```text title="カメラの使用を設定するOMA-URI"
+./Device/Vendor/MSFT/Policy/Config/Camera/AllowCamera
+```
+
+形式に当てはめると、次のように読めます。
+
+| 区切り | この例の値 | 意味 |
+| --- | --- | --- |
+| `{対象}` | `Device` | Windowsデバイス全体に効かせる |
+| `{CSPの名前}` | `Policy` | ポリシーを扱うPolicy CSPに渡す |
+| `{CSPの中の設定}` | `Config/Camera/AllowCamera` | `Config`はポリシーの設定、`Camera`は分類、`AllowCamera`は設定の名前 |
+
+値に`0`を指定するとカメラの使用が禁止され、`1`を指定すると許可されます。
+CSPの中の設定に何を書けるかは、[Policy CSP - Camera](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-csp-camera)のように、CSPごとのドキュメントで確認します。
+サードパーティのADMXのポリシーも同じPolicy CSPを使いますが、CSPの中の設定は、後述するようにADMXの内容から組み立てます。
+
 カスタムプロファイルでは、OMA-URIと値の組を自分で書きます。
 設定カタログとADMXのインポートでは、IntuneがOMA-URIと値を生成して送ります。
 
