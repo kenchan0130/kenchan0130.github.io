@@ -68,7 +68,7 @@ intune.server -> client.mdm: "OMA-URIと値"
 
 ### OMA-URIの読み方
 
-どのCSPのどの設定に渡すかは、OMA-URIというパスで決まります。
+OMA-DMで設定を送るときに、どのCSPのどの設定に渡すかを表すパスがOMA-URIです。
 OMA-URIは、ファイルのパスのように`/`で区切った、設定の住所です。
 Windowsの多くのCSPでは、次の形式になります。
 
@@ -119,6 +119,7 @@ uri: "" {
 
 ADMXのポリシーでは、[前回の記事](/post/2026-10-05-1#レジストリのパス)で紹介した`class`属性に合わせて選びます。
 `class="Machine"`のポリシーは`Device`、`class="User"`のポリシーは`User`です。
+`class="Both"`のポリシーは、どちらでも設定できます。
 
 [Policy CSP](https://learn.microsoft.com/en-us/windows/client-management/mdm/policy-configuration-service-provider)のドキュメントによると、`Device`の場合は`./Device`を省略して`./Vendor/MSFT/Policy/...`と書くこともできます。
 この記事では、対象がわかるように`./Device`を省略せずに書きます。
@@ -166,6 +167,8 @@ ADMXの取り込みには、次の形式のOMA-URIを使います。
 ```
 
 `{AppName}`はアプリケーションの名前、`{FileUid}`はADMXファイルの識別子で、どちらも取り込む側が決めます。
+途中の`Policy`は設定の種類で、`Policy`か`Preference`を指定します。
+ADMXのポリシーを取り込む場合は`Policy`です。
 ADMXの取り込みはWindowsデバイスへの操作のため、ユーザー向け（`class="User"`）のポリシーを含むADMXでも、対象は`Device`です。
 たとえば、ZoomのADMXを、AppNameを`ZoomMeetings`、FileUidを`ZoomMeetings_HKLM_7_2`として取り込むOMA-URIは次のとおりです。
 
@@ -176,7 +179,7 @@ ADMXの取り込みはWindowsデバイスへの操作のため、ユーザー向
 区切りごとに分けると、次のようになります。
 図の区切りを、各行の左から右へ、上の行から順につなげると、元のOMA-URIになります。
 
-```d2 title="ADMXを取り込むOMA-URIを区切りごとに分け、対象、Policy CSP、ADMXの取り込み、AppName、種類、FileUidの意味を示した図"
+```d2 title="ADMXを取り込むOMA-URIを区切りごとに分け、対象、ベンダー、Policy CSP、ADMXの取り込み、AppName、種類、FileUidの意味を示した図"
 classes: {
   seg: {shape: text; style.font: mono; style.font-size: 16}
   bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
@@ -200,13 +203,16 @@ uri: "" {
   r0: "" {
     class: [line; align-left]
     grid-rows: 3
-    grid-columns: 2
+    grid-columns: 3
     s0: "./Device" {class: seg}
-    s1: "/Vendor/MSFT/Policy" {class: seg}
+    s1: "/Vendor/MSFT" {class: seg}
+    s2: "/Policy" {class: seg}
     b0: {class: bar; style.fill: "#9333ea"}
-    b1: {class: bar; style.fill: "#3b82f6"}
+    b1: {class: bar; style.fill: "#64748b"}
+    b2: {class: bar; style.fill: "#3b82f6"}
     l0: "対象" {class: [lab; t-target]}
-    l1: "Policy CSP" {class: [lab; t-csp]}
+    l1: "ベンダー" {class: lab; style.font-color: "#64748b"}
+    l2: "Policy CSP" {class: [lab; t-csp]}
   }
   r1: "" {
     class: [line; align-left]
@@ -245,7 +251,7 @@ uri: "" {
 取り込んだADMXのポリシーには、次の形式のOMA-URIで値を設定します。
 
 ```text title="取り込んだADMXのポリシーに値を設定するOMA-URIの形式"
-./Device/Vendor/MSFT/Policy/Config/{AppName}~Policy~{カテゴリのパス}/{ポリシーの名前}
+./{対象}/Vendor/MSFT/Policy/Config/{AppName}~Policy~{カテゴリのパス}/{ポリシーの名前}
 ```
 
 `{AppName}`には、取り込むときに決めたAppNameを使います。
@@ -286,7 +292,7 @@ ZoomのADMXで、クラウドレコーディングを無効にするポリシー
 
 区切りごとに分けると、次のようになります。
 
-```d2 title="取り込んだADMXのポリシーに値を設定するOMA-URIを区切りごとに分け、対象、Policy CSP、ポリシーの設定、AppName、種類、カテゴリのパス、ポリシーの名前の意味を示した図"
+```d2 title="取り込んだADMXのポリシーに値を設定するOMA-URIを区切りごとに分け、対象、ベンダー、Policy CSP、ポリシーの設定、AppName、種類、カテゴリのパス、ポリシーの名前の意味を示した図"
 classes: {
   seg: {shape: text; style.font: mono; style.font-size: 16}
   bar: {shape: rectangle; label: ""; height: 4; style.stroke-width: 0}
@@ -310,13 +316,16 @@ uri: "" {
   r0: "" {
     class: [line; align-left]
     grid-rows: 3
-    grid-columns: 2
+    grid-columns: 3
     s0: "./Device" {class: seg}
-    s1: "/Vendor/MSFT/Policy" {class: seg}
+    s1: "/Vendor/MSFT" {class: seg}
+    s2: "/Policy" {class: seg}
     b0: {class: bar; style.fill: "#9333ea"}
-    b1: {class: bar; style.fill: "#3b82f6"}
+    b1: {class: bar; style.fill: "#64748b"}
+    b2: {class: bar; style.fill: "#3b82f6"}
     l0: "対象" {class: [lab; t-target]}
-    l1: "Policy CSP" {class: [lab; t-csp]}
+    l1: "ベンダー" {class: lab; style.font-color: "#64748b"}
+    l2: "Policy CSP" {class: [lab; t-csp]}
   }
   r1: "" {
     class: [line; align-left]
@@ -375,6 +384,8 @@ uri: "" {
 
 `<登録ID>`は、WindowsデバイスがIntuneに登録されたときのIDです。
 `<エリア名>`は、OMA-URIの`{AppName}~Policy~{カテゴリのパス}`の部分で、イベントビューアでは「領域」と表示されます。
+設定された値の状態の`device`は、対象が`Device`のポリシーの場合です。
+対象が`User`のポリシーは、ユーザーごとのキーに記録されると考えられます。
 
 処理の記録は、イベントビューアの「アプリケーションとサービス ログ > Microsoft > Windows > DeviceManagement-Enterprise-Diagnostics-Provider > Admin」で確認できます。
 
@@ -440,7 +451,7 @@ Edgeの設定も、Windowsデバイスでは同じようにADMXを取り込ん�
 | `microsoft_edgev80diff` | `microsoft_edgev80diff` | 18個のポリシーを含むADMX |
 
 1つ目は、Edgeの`msedge.admx`から、配布した設定だけを切り出したADMXでした。
-Intuneは、Edgeの大きなADMXから必要な設定だけを切り出して、取り込ませていることがわかります。
+Intuneは、Edgeの大きなADMXを丸ごと送らずに、配布する設定を小さなADMXに切り出して取り込ませていることがわかります。
 値は`HKLM\SOFTWARE\Policies\Microsoft\Edge\HideFirstRunExperience`に`1`として書き込まれました。
 
 Intuneに組み込まれている設定であれば、ADMXの用意も取り込みの管理も不要です。
@@ -467,8 +478,7 @@ ADMXのインポートは、IntuneにADMXとADMLをアップロードし、そ�
 
 [^windows-admx]: [Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#what-you-need-to-know)の「What you need to know」に書かれています。
 
-アップロードが必要かどうかは、`using`要素で宣言しているかどうかで決まるようです。
-Zoomの例では、宣言した名前空間の定義を実際には使っていなくても、アップロードが必要になりました。
+Learnの「What you need to know」にも、依存しているADMXは`policyNamespaces`の`using`要素で確認できると書かれています。
 たとえば、ZoomのADMXは`Windows.admx`の名前空間を宣言しています。
 
 ```xml title="ZoomMeetings_HKLM.admx（抜粋）" {3}
@@ -481,7 +491,7 @@ Zoomの例では、宣言した名前空間の定義を実際には使ってい�
 しかし、ZoomのADMXは`Windows.admx`の定義を実際には使っていません。
 宣言した名前空間の定義は`windows:SUPPORTED_Windows8`のように接頭辞を付けて参照しますが、ZoomのADMXには`windows:`で始まる参照が1つもありません。
 対応バージョン（`SUPPORTED_WINXPSP2`）とカテゴリは、どちらもZoomのADMXの中で定義されています。
-7.2.0と6.6.5の`ZoomMeetings_HKLM.admx`、`ZoomMeetings_HKCU.admx`は、どれも同じでした。
+7.2.0と6.6.5の`ZoomMeetings_HKLM.admx`、`ZoomMeetings_HKCU.admx`は、どれも`using`要素で宣言しているのに`windows:`の参照がありませんでした。
 `using`要素が残っているのは、旧形式のADMから変換ツールで作られたためだと考えられます。
 ADMLには`ADMXMigrator_NoSupportedOn`という文字列があり、変換ツールのFullArmor ADMX Migratorが付けたものと思われます。
 
@@ -608,6 +618,7 @@ Microsoft Learnの[App Control for Businessのドキュメント](https://learn.
 App Controlのドキュメントですが、この制限はカスタムのOMA-URI全般に当てはまるものとして書かれています。
 
 Graph APIでプロファイルを作成して試したところ、350,000文字の値は作成でき、それより長い値ではエラーになりました。
+英数字だけの値で試したため、このときの文字数とバイト数は同じです。
 データ型をXMLファイルにしてファイルでアップロードしても、上限は同じでした。
 なお、このデータ型で選べるファイルの拡張子は`.xml`か`.txt`だけです。
 
@@ -683,9 +694,9 @@ Intuneが送ったコマンドは確認していませんが、イベントに�
 ただし、プロファイルの中の行が上から順に処理されることは、ドキュメントでは保証されていません。
 値の設定が取り込みより先に処理されると、その同期では値の設定がエラーになる可能性があります。
 その場合は、次の同期で、取り込み済みのADMXのポリシーとして値が設定されると考えられます。
-なお、今回の検証では再現していません。
 
-1つのプロファイルにまとめると、ADMXと値の組み合わせを1ヵ所で管理でき、AppNameを変えたときに値の行のOMA-URIを直し忘れることもありません。
+1つのプロファイルにまとめると、ADMXと値の組み合わせを1ヵ所で管理できます。
+AppNameを変えたときも、値の行のOMA-URIを同じ画面で確認できるため、直し忘れに気付きやすくなります。
 一方で、別々のプロファイルに分けると、同じADMXを取り込んだうえで、値の設定だけを部署ごとに変えて割り当てるような使い方も考えられます。
 
 ## ADMXのインポートとOMA-URIを併用しない
@@ -712,18 +723,18 @@ ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちら�
 
 ここまでの結果を、観点ごとに比べると次のようになります。
 
-| 観点 | 設定カタログ | ADMXのインポート | OMA-URI |
+| 観点 | 設定カタログ | ADMXのインポート | カスタムプロファイル |
 | --- | --- | --- | --- |
 | 使える設定 | Intuneが対応しているアプリケーションと設定だけ | アップロードしたADMXの設定 | 取り込んだADMXの設定 |
 | 機能の状態 | 一般提供 | プレビュー | 一般提供 |
 | ADMXの用意 | 不要（Intuneが用意） | ADMXと`en-US`のADMLをアップロード | ADMXの全文をプロファイルに貼り付け |
-| 参照先のADMX | 不要 | 先にアップロードが必要 | 不要 |
+| 参照先のADMX | 不要 | 先にアップロードが必要 | Windowsに組み込まれたADMXなら不要。それ以外は未検証 |
 | ADMXの制限 | 該当なし | 1 MBまで、20個まで。`comboBox`を使うADMXは不可 | 350,000バイトまで |
 | AppName | Intuneが決める | `prefix`＋GUID | 自分で決める |
 | 値の入力 | 画面で選ぶ | 画面で選ぶ | OMA-URIと値のXMLを手で書く。書き間違いはWindowsデバイスに届くまでわからない |
 | 値が届くまで | 取り込みと同じ同期 | 取り込みの次の同期 | 1つのプロファイルにまとめると、取り込みと同じ同期 |
 | プロファイルの削除 | 未検証 | 値と取り込みが消える | 値は消える。取り込みは残る |
-| バージョンの更新 | Intuneが新しい設定に対応するのを待つ | プロファイルを削除してから入れ替えるか、別のバージョンとして追加する。新旧のプロファイルを同時に割り当てると値が消えることがある | 取り込みの行の中身を差し替える |
+| バージョンの更新 | Intuneが新しい設定に対応するのを待つ | プロファイルを削除してから入れ替えるか、別のバージョンとして追加する。新旧のプロファイルを同時に割り当てた状態で古いほうを削除すると、新しいほうで設定した値も消えることがある | 取り込みの行の中身を差し替える |
 
 配布したい設定が設定カタログにあれば、設定カタログを使います。
 設定カタログにない場合は、画面で設定を選べるADMXのインポートが扱いやすいと思います。
