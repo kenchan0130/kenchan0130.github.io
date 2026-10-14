@@ -33,7 +33,7 @@ ADMXの設定は、Microsoft Intune（以下、Intune）のようなMDMからも
 | ライセンス | Microsoft 365 Business Premium |
 | ADMX | ZoomのADMX 7.2.0の`ZoomMeetings_HKLM.admx`[^zoom-admx] |
 
-[^windows-business]: Microsoft 365 Business Premiumのライセンスにより、筆者の環境ではWindows 11 Businessと表示されます。
+[^windows-business]: Microsoft 365 Business Premiumのライセンスにより、今回の環境ではWindows 11 Businessと表示されます。
 [^zoom-admx]: Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)で配布されています。
 
 ## Windowsデバイスで何が起きるのか
@@ -588,7 +588,7 @@ ADMX file referenced not found NamespaceMissing:Microsoft.Policies.Windows. Plea
 日本語版のWindowsの`C:\Windows\PolicyDefinitions`には、英語の`Windows.adml`が含まれていない点に注意してください。
 
 英語の`Windows.adml`は、Microsoftのダウンロードセンターで配布されている[Administrative Templates (.admx) for Windows 11 2025 Update (25H2)](https://www.microsoft.com/en-us/download/details.aspx?id=108394)のMSIに含まれています。
-筆者は、次のように7-ZipでMSIを展開して取り出しました。
+今回は、次のように7-ZipでMSIを展開して取り出しました。
 展開したファイルは`staging_`で始まる名前になるため、アップロード用の名前に変えます。
 
 ```sh title="MSIからWindows.admxと英語のWindows.admlを取り出す"
