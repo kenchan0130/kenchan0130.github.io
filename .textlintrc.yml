@@ -50,5 +50,8 @@ filters:
       - Windows コンポーネント
       - Windows Defender SmartScreen を構成します
       - コンピューターのグループ ポリシーの更新間隔を設定する
+      - ADMX のインポート
+      - Windows 10 以降
+      - インポートされた管理用テンプレート (プレビュー)
       # 公式ドキュメントからの引用
       - たとえばgithubという名前のアクションを公開できるのはGitHub Organizationだけである。
