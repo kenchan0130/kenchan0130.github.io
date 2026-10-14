@@ -47,7 +47,7 @@ Identity PlatformはFirebaseではなくGCPのサービスですが、Firebase A
 
 このマルチテナント機能を使うことで、コンテキストを分けつつ、1つのプロジェクト内のFirebase Realtime Databaseを共有して使用できます。
 
-![Identity Plartformを使用した構成図](/assets/posts/post/2021-10-29-1/identity_platform_diagram.png)
+![Identity Plartformを使用した構成図](../../assets/posts/2021-10-29-1/identity_platform_diagram.png)
 
 ### Identity Platformのカスタムトークンの発行とカスタムクレームの設定
 
@@ -353,7 +353,7 @@ $ STAGE='prod' ts-node functionConfig.ts production
 
 さらに、本番環境に関しては、GitHub Actionsの`workflow_dispatch`機能を使用して、任意のタイミングでデプロイできるようにしました。
 
-![GitHub Actionsのworkflow_dispatchを使ったデプロイ](/assets/posts/post/2021-10-29-1/deploy_on_github_actions_by_workflow_dispatch.png)
+![GitHub Actionsのworkflow_dispatchを使ったデプロイ](../../assets/posts/2021-10-29-1/deploy_on_github_actions_by_workflow_dispatch.png)
 
 ### GitHub Actionsと周辺ファイル設定
 
@@ -426,11 +426,11 @@ step内のスクリプトが煩雑にならないように、Firebaseの環境�
 初回デプロイ時に、動作確認をしていると、Callable HTTPS Functionを呼び出した際に、CORSエラーとなりました。
 原因は、Cloud Functionsが任意のユーザーが呼び出せる様になっていなかったためです。
 
-![Callable HTTPS Functionを呼び出せない状態 at GCPコンソール](/assets/posts/post/2021-10-29-1/callable_https_function_non_allowed_all_users_at_gcp_console.png)
+![Callable HTTPS Functionを呼び出せない状態 at GCPコンソール](../../assets/posts/2021-10-29-1/callable_https_function_non_allowed_all_users_at_gcp_console.png)
 
 この問題は、**Cloud Functions 起動元**ロールに**allUsers**プリンシパルを設定した権限を、該当のCloud Functionsに付与することで解決しました。
 
-![Callable HTTPS Functionを呼び出せる状態 at GCPコンソール](/assets/posts/post/2021-10-29-1/callable_https_function_allowed_all_users_at_gcp_console.png)
+![Callable HTTPS Functionを呼び出せる状態 at GCPコンソール](../../assets/posts/2021-10-29-1/callable_https_function_allowed_all_users_at_gcp_console.png)
 
 しかし、別のProjectでは再現しなかったため、なぜ権限が付与されていなかったのかの原因まではわかりませんでした。
 もしわかる方がいらっしゃいましたらご教示ください。

@@ -79,23 +79,23 @@ Jamf Proのエージェントなど、管理者特権で実行する場合は特
 
     * カテゴリの設定は任意ですが、このスクリプトの分類に使用できます。以下の画像では例として「Applications」を指定しています。
 
-    ![Installomatorの新規スクリプト作成の一般セクションの設定](/assets/posts/post/2020-10-12-1/create_script_general_installomator.png)
+    ![Installomatorの新規スクリプト作成の一般セクションの設定](../../assets/posts/2020-10-12-1/create_script_general_installomator.png)
 
 1. 次に、ScriptセクションにGitHubから取得してきた`Installomator.sh`を貼り付けます。
 
-    ![Installomatorの新規スクリプト作成のスクリプトセクションの設定](/assets/posts/post/2020-10-12-1/create_script_script_installomator.png)
+    ![Installomatorの新規スクリプト作成のスクリプトセクションの設定](../../assets/posts/2020-10-12-1/create_script_script_installomator.png)
 
 1. `DEBUG=1`を`DEBUG=0`に変更します。
 
     * `DEBUG`を`1`のままにすると、一見動いているように見受けられますが、実際はアプリケーションがインストールされませんのでご注意ください。
 
-    ![InstallomatorのDEBUG設定の変更](/assets/posts/post/2020-10-12-1/create_script_script_installomator_edit_debug.png)
+    ![InstallomatorのDEBUG設定の変更](../../assets/posts/2020-10-12-1/create_script_script_installomator_edit_debug.png)
 
 1. 最後に、Optionsセクションの`パラメータ4`にアプリケーション（のラベル）名を指定することがわかるような名前を入力してください。
 
     * これは設定しなくても動作しますが、ポリシー側で使用する際にわかりやすくなるので設定しています。以下の画像では例として`application labal`という名前を設定しています。
 
-    ![Installomatorの新規スクリプト作成のオプションセクションの設定](/assets/posts/post/2020-10-12-1/create_script_options_installomator.png)
+    ![Installomatorの新規スクリプト作成のオプションセクションの設定](../../assets/posts/2020-10-12-1/create_script_options_installomator.png)
 
 1. [保存]してスクリプトの登録は完了です。
 
@@ -105,19 +105,19 @@ Jamf Proのエージェントなど、管理者特権で実行する場合は特
 
 1. [コンピュータ] > [ポリシー]から新規ポリシーを作成に進みます。
 
-    ![ポリシーの作成](/assets/posts/post/2020-10-12-1/create_new_policy.png)
+    ![ポリシーの作成](../../assets/posts/2020-10-12-1/create_new_policy.png)
 
 1. 表示名に**Zoom**、Self Serviceから常に実行できるように実行頻度を**Ongoing**に指定します。
 
-    ![Installomatorを使用したZoomポリシーのオプションセクションのGeneral設定](/assets/posts/post/2020-10-12-1/create_zoom_policy_options_general_using_installomator.png)
+    ![Installomatorを使用したZoomポリシーのオプションセクションのGeneral設定](../../assets/posts/2020-10-12-1/create_zoom_policy_options_general_using_installomator.png)
 
 1. スクリプトの項目を選択し、登録したInstallomatorのスクリプトを追加します。
 
-    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプト設定](/assets/posts/post/2020-10-12-1/create_zoom_policy_options_select_script_using_installomator.png)
+    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプト設定](../../assets/posts/2020-10-12-1/create_zoom_policy_options_select_script_using_installomator.png)
 
 1. スクリプト登録で設定したパラメータ名（パラメータ4）に**zoom**を設定します。
 
-    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプトのパラメータ設定](/assets/posts/post/2020-10-12-1/create_zoom_policy_options_set_script_parameters_using_installomator.png)
+    ![Installomatorを使用したZoomポリシーのオプションセクションのスクリプトのパラメータ設定](../../assets/posts/2020-10-12-1/create_zoom_policy_options_set_script_parameters_using_installomator.png)
 
 1. 今回は例として全コンピュータへ配布してみます。Scopeセクションからターゲットコンピュータを**All Computers**に設定します。
 
@@ -125,7 +125,7 @@ Jamf Proのエージェントなど、管理者特権で実行する場合は特
 
     * アイコンを設定しておくとエンドユーザーに認知してもらい易くなるので設定しておくと良いでしょう。
 
-    ![Installomatorを使用したZoomポリシーのSelf Serviceセクションの設定](/assets/posts/post/2020-10-12-1/create_zoom_policy_self_service_using_installomator.png)
+    ![Installomatorを使用したZoomポリシーのSelf Serviceセクションの設定](../../assets/posts/2020-10-12-1/create_zoom_policy_self_service_using_installomator.png)
 
 1. [保存]してポリシーの登録は完了です。
 
@@ -138,7 +138,7 @@ InstallomatorにはJamf Proのエージェントと一緒にインストール�
 デフォルトで通知するようになっており、通知をOFFにできます。
 もし、通知をOFFにしたい場合は、スクリプト内の`NOTIFY`変数に`silent`を設定してください。
 
-![InstallomatorのNOTIFY変数の場所](/assets/posts/post/2020-10-12-1/installomator_notify_variable.png)
+![InstallomatorのNOTIFY変数の場所](../../assets/posts/2020-10-12-1/installomator_notify_variable.png)
 
 ### 特定のプロセスが起動中の場合の処理方法の変更
 

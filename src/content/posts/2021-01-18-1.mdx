@@ -34,11 +34,11 @@ KeynoteはmacOSに最適化されており、個人的には使い勝手がと�
 
 Keynoteのテンプレートはカスタムテーマと呼ばれ、`kth`ファイルとして保存し、通常、ユーザーがそのファイルを開き、指示に従って操作することでテーマとして使用できます。
 
-![テンプレートをテーマとして登録する際の確認ダイアログ](/assets/posts/post/2021-01-18-1/template_registration_dialog.png)
+![テンプレートをテーマとして登録する際の確認ダイアログ](../../assets/posts/2021-01-18-1/template_registration_dialog.png)
 
 登録したテンプレートはテーマセレクタに表示され、いつでも使えます。
 
-![テーマセレクタにテンプレートが登録されている様子](/assets/posts/post/2021-01-18-1/template_on_theme_selector.png)
+![テーマセレクタにテンプレートが登録されている様子](../../assets/posts/2021-01-18-1/template_on_theme_selector.png)
 
 ## 作ったもの
 
@@ -83,7 +83,7 @@ Keynote Template Deploymentの[リリースページ](https://github.com/kenchan
 
 以下の画像ように、テーマセレクタ上での名前を指定できます。
 
-![テーマセレクタ上でのテーマの名前](/assets/posts/post/2021-01-18-1/theme_name_on_theme_selector.png)
+![テーマセレクタ上でのテーマの名前](../../assets/posts/2021-01-18-1/theme_name_on_theme_selector.png)
 
 文字数制限は（内部的にはSQLiteに保存しているため）ないに等しいです。ただし、あまりに長すぎるとテーマセレクタの動作を重くする可能性があるため、適切な文字数を設定してください。
 
@@ -113,11 +113,11 @@ Keynote Template DeploymentはJamf Proをサポートしています。
 
     * カテゴリの設定は任意ですが、このスクリプトの分類に使用できます。
 
-    ![Keynote Template Deploymentの新規スクリプト作成の一般セクションの設定](/assets/posts/post/2021-01-18-1/create_script_general_keynote_template_deployment.png)
+    ![Keynote Template Deploymentの新規スクリプト作成の一般セクションの設定](../../assets/posts/2021-01-18-1/create_script_general_keynote_template_deployment.png)
 
 1. 次に、ScriptセクションにGitHubから取得してきた`keynote-template-deployment.sh`を貼り付けます。
 
-    ![Keynote Template Deploymentの新規スクリプト作成のスクリプトセクションの設定](/assets/posts/post/2021-01-18-1/create_script_script_keynote_template_deployment.png)
+    ![Keynote Template Deploymentの新規スクリプト作成のスクリプトセクションの設定](../../assets/posts/2021-01-18-1/create_script_script_keynote_template_deployment.png)
 
 1. オプションセクションのパラメータラベルを設定します。
     * 設定しなくても動作しますが、ポリシー側で使用する際にわかりやすくなるので設定しています。
@@ -128,7 +128,7 @@ Keynote Template DeploymentはJamf Proをサポートしています。
     * 「パラメータ6」: Keynoteのテンプレートをユーザーに配布するタイプを指定することがわかるような名前
       * 例として、`Type of specify the local users (current/all)`を指定しています。
 
-    ![Keynote Template Deploymentの新規スクリプト作成のオプションセクションの設定](/assets/posts/post/2021-01-18-1/create_script_options_keynote_template_deployment.png)
+    ![Keynote Template Deploymentの新規スクリプト作成のオプションセクションの設定](../../assets/posts/2021-01-18-1/create_script_options_keynote_template_deployment.png)
 
 1. [保存]してスクリプトの登録は完了です。
 
@@ -142,7 +142,7 @@ Keynote Template DeploymentはJamf Proをサポートしています。
     * 「実行頻度」: `Ongoing`
         * Self Serviceで実行できるようにするため、`Ongoing`にしています。
 
-    ![Keynote Template Deploymentをポリシーとして設定 オプションセクションのGeneral設定](/assets/posts/post/2021-01-18-1/create_policy_options_general_using_keynote_template_deployment.png)
+    ![Keynote Template Deploymentをポリシーとして設定 オプションセクションのGeneral設定](../../assets/posts/2021-01-18-1/create_policy_options_general_using_keynote_template_deployment.png)
 
 1. 次に、スクリプトの項目を選択し、登録したKeynote Template Deploymentのスクリプトを追加します。
 1. パラメータ4とパラメータ5、パラメータ6に値を設定します。
@@ -151,12 +151,12 @@ Keynote Template DeploymentはJamf Proをサポートしています。
     * 「パラメータ6」: `all`
       * 今回はすべてのローカルユーザーに配布してみるため、`all`にしています。
 
-    ![Keynote Template Deploymentをポリシーとして設定 オプションセクションのスクリプト設定](/assets/posts/post/2021-01-18-1/create_policy_options_scripts_using_keynote_template_deployment.png)
+    ![Keynote Template Deploymentをポリシーとして設定 オプションセクションのスクリプト設定](../../assets/posts/2021-01-18-1/create_policy_options_scripts_using_keynote_template_deployment.png)
 
 1. 次に、Scopeセクションからターゲットコンピュータを`All Computers`にします。
 1. 最後に、Self ServiceセクションからSelf Serviceでポリシーを使用可能にします。
 
-    ![Keynote Template Deploymentをポリシーとして設定 Self Serviceセクションの設定](/assets/posts/post/2021-01-18-1/create_policy_self_service_using_keynote_template_deployment.png)
+    ![Keynote Template Deploymentをポリシーとして設定 Self Serviceセクションの設定](../../assets/posts/2021-01-18-1/create_policy_self_service_using_keynote_template_deployment.png)
 
 1. [保存]してポリシーの登録は完了です。
 

@@ -27,7 +27,7 @@ draft: false
 macOSのソフトウェアアップデートとは、マイナーバージョンアップデートやセキュリティアップデートを指します。
 これらのアップデートはデバイス上からは[システム環境設定] > [ソフトウェアアップデート]または`softwareupdate`コマンドを用いてOSをアップデートできます。
 
-![システム環境設定からソフトウェアアップデートをする様子](/assets/posts/post/2022-04-06-1/system_preferences_software_update.png)
+![システム環境設定からソフトウェアアップデートをする様子](../../assets/posts/2022-04-06-1/system_preferences_software_update.png)
 
 組織内でソフトウェアアップデートを展開する際は、Jamf Proのポリシー[^jamf-pro-managing-macos-updates]などMDMサービスを使用して展開する必要があります。
 
@@ -52,7 +52,7 @@ Apple Siliconの場合は、ソフトウェアアップデートのMDMコマン�
 
 ![ダイアログにカウトダウンを表示した例](/assets/posts/post/2022-04-06-1/dialog_with_count_down.gif)
 
-![ダイアログに遅延させる時間を選択できるようにした例](/assets/posts/post/2022-04-06-1/dialog_with_defer_times.png)
+![ダイアログに遅延させる時間を選択できるようにした例](../../assets/posts/2022-04-06-1/dialog_with_defer_times.png)
 
 ## S.U.P.E.R.M.A.N.の各設定項目について
 
@@ -276,11 +276,11 @@ S.U.P.E.R.M.A.N.はJamf Proをサポートしています。
 
     * カテゴリの設定は任意ですが、このスクリプトの分類に使用できます。
 
-    ![S.U.P.E.R.M.A.N.の新規スクリプト作成の一般セクションの設定](/assets/posts/post/2022-04-06-1/create_script_general_super_deployment.png)
+    ![S.U.P.E.R.M.A.N.の新規スクリプト作成の一般セクションの設定](../../assets/posts/2022-04-06-1/create_script_general_super_deployment.png)
 
 1. 次に、ScriptセクションにGitHubから取得してきた`super`スクリプトを貼り付けます。
 
-    ![S.U.P.E.R.M.A.N.の新規スクリプト作成のスクリプトセクションの設定](/assets/posts/post/2022-04-06-1/create_script_script_super_deployment.png)
+    ![S.U.P.E.R.M.A.N.の新規スクリプト作成のスクリプトセクションの設定](../../assets/posts/2022-04-06-1/create_script_script_super_deployment.png)
 
 1. [保存]してスクリプトの登録は完了です。
 
@@ -299,19 +299,19 @@ S.U.P.E.R.M.A.N.はJamf Proをサポートしています。
     * 「配布方法」: `Install Automatically`
         * 組織のユースに合うように設定してください。
 
-    ![S.U.P.E.R.M.A.N.の構成プロファイル設定 一般](/assets/posts/post/2022-04-06-1/create_configration_general.png)
+    ![S.U.P.E.R.M.A.N.の構成プロファイル設定 一般](../../assets/posts/2022-04-06-1/create_configration_general.png)
 
 1. アプリケーションとカスタム設定セクションの[外部アプリケーション]を選択します。
 1. [追加]からペイロードを設定します。
     * 「ソース」: `カスタムスキーマ`
     * 「環境設定ドメイン」: `com.macjutsu.super`
 
-    ![S.U.P.E.R.M.A.N.の構成プロファイル設定 アプリケーションとカスタム設定](/assets/posts/post/2022-04-06-1/create_configration_application_and_custom_settings.png)
+    ![S.U.P.E.R.M.A.N.の構成プロファイル設定 アプリケーションとカスタム設定](../../assets/posts/2022-04-06-1/create_configration_application_and_custom_settings.png)
 
 1. [スキーマを追加]から[S.U.P.E.R.M.A.N.用のカスタム設定マニフェスト](/assets/posts/post/2022-04-06-1/com.macjutsu.super.json)を登録します。
     * Jamf ProではJSON Schema用いて、アプリケーションが使用する設定値を動的に定義できます。[^jamf-pro-app-management-using-json-schema]
 
-    ![S.U.P.E.R.M.A.N.の構成プロファイル設定 アプリケーションとカスタム設定 スキーマ追加](/assets/posts/post/2022-04-06-1/create_configration_application_and_custom_settings_custom_schema.png)
+    ![S.U.P.E.R.M.A.N.の構成プロファイル設定 アプリケーションとカスタム設定 スキーマ追加](../../assets/posts/2022-04-06-1/create_configration_application_and_custom_settings_custom_schema.png)
 
 1. 設定したい項目を設定します。例として**Default Defer**を設定します。
     * 「Default Defer」: `3600`
@@ -331,13 +331,13 @@ S.U.P.E.R.M.A.N.はJamf Proをサポートしています。
     * 「実行頻度」: `Once every day`
         * 急ぎではないが常に監視しておきたいため、1日1回起動するようにしています。
 
-    ![ソフトウェアアップデートのポリシー設定 オプションセクションの一般設定](/assets/posts/post/2022-04-06-1/create_policy_optipons_general_using_super.png)
+    ![ソフトウェアアップデートのポリシー設定 オプションセクションの一般設定](../../assets/posts/2022-04-06-1/create_policy_optipons_general_using_super.png)
 
 1. 次に、スクリプトの項目を選択し、登録したS.U.P.E.R.M.A.N.のスクリプトを追加します。
 1. 次に、ファイルとプロセスの項目を選択し、各値を設定します。
     * 「コマンドを実行」: `/usr/local/bin/super`
 
-    ![ソフトウェアアップデートのポリシー設定 オプションセクションのファイルとプロセス設定](/assets/posts/post/2022-04-06-1/create_policy_optipons_file_and_process_using_super.png)
+    ![ソフトウェアアップデートのポリシー設定 オプションセクションのファイルとプロセス設定](../../assets/posts/2022-04-06-1/create_policy_optipons_file_and_process_using_super.png)
 
 1. 次に、Scopeセクションからターゲットコンピュータを`All Computers`にします。
 1. [保存]してポリシーの登録は完了です。

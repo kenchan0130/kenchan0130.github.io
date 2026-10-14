@@ -21,6 +21,30 @@ for (const file of files) {
   }
   for (const match of withoutCode.matchAll(/!\[([^\]]*)]\(([^)]+)\)/g)) {
     if (match[1].trim() === "") failures.push(`${file}: 画像altが空です (${match[2]})`);
+    // PNG・JPEGはビルド時にWebPへ変換するため、public/ではなくsrc/assets/posts/から参照する。
+    if (/^\/assets\/posts\/\S+\.(?:png|jpe?g)(?:\s|$)/i.test(match[2])) {
+      failures.push(
+        `${file}: 記事の画像はsrc/assets/posts/記事ID/に置き、相対パスで参照してください (${match[2]})`,
+      );
+    }
+  }
+}
+
+async function listFiles(target) {
+  const entries = await readdir(target, { withFileTypes: true }).catch(() => []);
+  const result = [];
+  for (const entry of entries) {
+    const file = path.join(target, entry.name);
+    result.push(...(entry.isDirectory() ? await listFiles(file) : [file]));
+  }
+  return result;
+}
+
+for (const file of await listFiles(path.join(process.cwd(), "public", "assets", "posts"))) {
+  if (/\.(?:png|jpe?g|webp)$/i.test(file)) {
+    failures.push(
+      `${path.relative(process.cwd(), file)}: 記事の画像はpublic/ではなくsrc/assets/posts/に置いてください`,
+    );
   }
 }
 

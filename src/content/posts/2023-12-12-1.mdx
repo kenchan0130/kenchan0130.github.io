@@ -34,7 +34,7 @@ Microsoft Intuneでエンロールされているデバイスは、デフォル�
 実際にデバイス上の設定を確認してみます。
 タスクスケジューラの`\Microsoft\Windows\EnterpriseMgmt\エンロールID`のタスクパスに登録されている`Schedule #3 created by enrollment client`タスクに、該当のトリガーが設定されていることが分かります。
 
-![タスクスケジューラにおける、8時間ごとにMicrosoft Intuneと同期するタスク](/assets/posts/post/2023-12-12-1/intune_sync_task_per_8hours_on_task_scheduler.png)
+![タスクスケジューラにおける、8時間ごとにMicrosoft Intuneと同期するタスク](../../assets/posts/2023-12-12-1/intune_sync_task_per_8hours_on_task_scheduler.png)
 
 また、ドキュメントには以下のように、条件によって同期時間が変わると記載されています。
 
@@ -53,7 +53,7 @@ Microsoft Intuneでエンロールされているデバイスは、デフォル�
 * `Schedule #1 created by enrollment client`
 * `Schedule #2 created by enrollment client`
 
-![タスクスケジューラにおける、いつくかの条件においてMicrosoft Intuneと同期するタスク](/assets/posts/post/2023-12-12-1/intune_sync_task_some_conditions_on_task_scheduler.png)
+![タスクスケジューラにおける、いつくかの条件においてMicrosoft Intuneと同期するタスク](../../assets/posts/2023-12-12-1/intune_sync_task_some_conditions_on_task_scheduler.png)
 
 ## 同期サイクルを変更する
 
@@ -63,9 +63,9 @@ Microsoft Intuneでエンロールされているデバイスは、デフォル�
 このタスクは管理者権限で作成されているため、以下の操作も管理者権限で行う必要があります。
 
 1. `Schedule #3 created by enrollment client` >[プロパティ] > [トリガー]を選択
-    ![properties of schedule 3 created by enrollment client task](/assets/posts/post/2023-12-12-1/properties_of_schedule_3_created_by_enrollment_client_task.png)
+    ![properties of schedule 3 created by enrollment client task](../../assets/posts/2023-12-12-1/properties_of_schedule_3_created_by_enrollment_client_task.png)
 2. [編集] > [繰り返し間隔]から時間を変更
-    ![trigger interval of schedule 3 created by enrollment client task](/assets/posts/post/2023-12-12-1/trigger_interval_of_schedule_3_created_by_enrollment_client_task.png)
+    ![trigger interval of schedule 3 created by enrollment client task](../../assets/posts/2023-12-12-1/trigger_interval_of_schedule_3_created_by_enrollment_client_task.png)
 
 エンロールされた際のこのタスクが作成されるため、以降タスクの設定が上書きされることは基本的にはありません。
 ただ、今後Microsoft Intuneの仕様が変わって、Windows Updateなどの後にタスクが作り直される可能性はあります。
@@ -168,28 +168,28 @@ Microsoft IntuneでPowerShellを配布する場合、選択肢としては大き
 
 1. Microsoft Intune管理センター >[デバイス] > [修復]から、スクリプトパッケージの作成を選択
 
-    ![プロアクティブな修復](/assets/posts/post/2023-12-12-1/proactive_remediation.png)
+    ![プロアクティブな修復](../../assets/posts/2023-12-12-1/proactive_remediation.png)
 
 2. 任意の名前を入力
 
-    ![カスタムスクリプトの作成 - 基本](/assets/posts/post/2023-12-12-1/create_script_package_basics_proactive_remediation.png)
+    ![カスタムスクリプトの作成 - 基本](../../assets/posts/2023-12-12-1/create_script_package_basics_proactive_remediation.png)
 
 3. 作成したスクリプトを「検出スクリプト」としてアップロード、「64ビットのPowerShellでスクリプトを実行する」を**はい**に設定
 
-    ![カスタムスクリプトの作成 - 設定](/assets/posts/post/2023-12-12-1/create_script_package_settings_proactive_remediation.png)
+    ![カスタムスクリプトの作成 - 設定](../../assets/posts/2023-12-12-1/create_script_package_settings_proactive_remediation.png)
 
 4. 任意でスコープタグを設定
 
-    ![カスタムスクリプトの作成 - スコープタグ](/assets/posts/post/2023-12-12-1/create_script_package_scope_tags_proactive_remediation.png)
+    ![カスタムスクリプトの作成 - スコープタグ](../../assets/posts/2023-12-12-1/create_script_package_scope_tags_proactive_remediation.png)
 
 5. 割り当て先を設定
     * 割り当てのポリシーは自由に選択できるが、ここでは、すべてのデバイスに対して、毎日実行するように設定
 
-    ![カスタムスクリプトの作成 - 割り当て](/assets/posts/post/2023-12-12-1/create_script_package_assignments_proactive_remediation.png)
+    ![カスタムスクリプトの作成 - 割り当て](../../assets/posts/2023-12-12-1/create_script_package_assignments_proactive_remediation.png)
 
 6. 内容を確認して作成
 
-    ![カスタムスクリプトの作成 - 確認および作成](/assets/posts/post/2023-12-12-1/create_script_package_review_proactive_remediation.png)
+    ![カスタムスクリプトの作成 - 確認および作成](../../assets/posts/2023-12-12-1/create_script_package_review_proactive_remediation.png)
 
 ## 終わりに
 
