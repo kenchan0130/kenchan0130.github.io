@@ -1,6 +1,6 @@
 ---
 title: Microsoft Intuneでレジストリに値を配布する方法を運用の観点で比べる
-description: Microsoft IntuneでWindowsのレジストリに値を配布する主な5つの方法（設定カタログ、ADMXのインポート、カスタムプロファイル、プラットフォームスクリプト、修復スクリプト）を、バージョンの更新や配布をやめたときの値など運用の観点で比べます。Terraformで管理すると楽になる点も紹介します。
+description: Microsoft IntuneでWindowsのレジストリに値を配布する主な5つの方法（設定カタログ、ADMXのインポート、カスタムプロファイル、プラットフォームスクリプト、修復スクリプト）を、バージョンの更新や配布をやめたときの値など運用の観点で比べます。
 published: 2026-10-15
 categories:
   - system-administration
@@ -8,7 +8,6 @@ tags:
   - ADMX
   - Microsoft Intune
   - Windows
-  - Terraform
   - PowerShell
   - Zoom
   - Visual Studio Code
@@ -22,7 +21,6 @@ Microsoft Intune（以下、Intune）では、設定カタログやスクリプ�
 配布した値は、アプリケーションの更新に合わせて見直していくことになりますが、更新のしやすさや配布をやめたときの値の扱いは、方法によって異なります。
 
 今回は、Intuneでレジストリに値を配布する主な5つの方法を、実機で確かめた結果とともに運用の観点で比べます。
-また、Terraformで管理すると楽になる点も紹介します。
 
 検証した環境は次のとおりです。
 
@@ -33,7 +31,6 @@ Microsoft Intune（以下、Intune）では、設定カタログやスクリプ�
 | 管理 | Microsoft Entra参加、Intuneに登録 |
 | ライセンス | Microsoft 365 Business Premium |
 | ADMX | ZoomのADMX 6.6.5と7.2.0の`ZoomMeetings_HKLM.admx`[^zoom-admx] |
-| Terraformのプロバイダ | deploymenttheory/microsoft365 [1.4.0](https://github.com/deploymenttheory/terraform-provider-microsoft365/releases/tag/v1.4.0)、microsoft/msgraph [0.6.0](https://github.com/microsoft/terraform-provider-msgraph/releases/tag/v0.6.0)、terraprovider/microsoft365wp [0.20.0](https://github.com/terraprovider/terraform-provider-microsoft365wp/releases/tag/v0.20.0) |
 
 [^windows-business]: Microsoft 365 Business Premiumのライセンスにより、今回の環境ではWindows 11 Businessと表示されます。
 [^zoom-admx]: Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)から、バージョンごとのZIPファイルとしてダウンロードできます。
@@ -45,13 +42,13 @@ Policy CSPは、MDMクライアント（Windowsに組み込まれた、Intuneな
 
 | 方法 | 書き込み元 | 書き込める場所 | 配布をやめたときの値 | 必要なライセンスの例 |
 | --- | --- | --- | --- | --- |
-| 設定カタログ | Policy CSP | Intuneが対応している設定 | 削除される | Intune Plan 1[^intune-license] |
-| ADMXのインポート | Policy CSP | アップロードしたADMXの設定 | 削除される | Intune Plan 1 |
-| カスタムプロファイル（OMA-URI） | Policy CSP | 取り込んだADMXの設定 | 削除される | Intune Plan 1 |
-| プラットフォームスクリプト | IME | 任意 | 残る | Intune Plan 1 |
+| 設定カタログ | Policy CSP | Intuneが対応している設定 | 削除される | Microsoft Intune Plan 1[^intune-license] |
+| ADMXのインポート | Policy CSP | アップロードしたADMXの設定 | 削除される | Microsoft Intune Plan 1 |
+| カスタムプロファイル（OMA-URI） | Policy CSP | 取り込んだADMXの設定 | 削除される | Microsoft Intune Plan 1 |
+| プラットフォームスクリプト | IME | 任意 | 残る | Microsoft Intune Plan 1 |
 | 修復スクリプト | IME | 任意 | 残る | Microsoft 365 E3、E5など[^remediations-license] |
 
-[^intune-license]: Intune Plan 1は、Microsoft 365 Business Premium、E3、E5などに含まれます。
+[^intune-license]: Microsoft Intune Plan 1は、Microsoft 365 Business Premium、E3、E5などに含まれます。
 [^remediations-license]: Windows Enterprise E3、E5（Microsoft 365 F3、E3、E5に含まれる）、Windows Education A3、A5、Windows Virtual Desktop Access（VDA）のいずれかが必要です。Microsoft 365 Business Premiumには含まれません。
 
 2つの書き込み元は、次のように別の経路で設定を受け取ります。
@@ -320,7 +317,9 @@ ADMXのインポートとカスタムプロファイルでADMXを取り込む場
 ### IMEがスクリプトを実行するしくみ
 
 IMEは、MDMクライアントとは別にIntuneへ問い合わせて、割り当てられたスクリプトの追加や変更を受け取ります。
-問い合わせるのは、8時間ごとと、Windowsデバイスやサービス（`IntuneManagementExtension`）の再起動、ユーザーのサインインの後です。
+IMEは、Windowsのサービス（`IntuneManagementExtension`）としてSYSTEMで動きます。
+サービスの実行ファイルは、`C:\Program Files (x86)\Microsoft Intune Management Extension\Microsoft.Management.Services.IntuneWindowsAgent.exe`です。
+問い合わせるのは、8時間ごとと、Windowsデバイスやこのサービスの再起動、ユーザーのサインインの後です。
 [Understand Microsoft Intune Management Extension](https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows)には、この問い合わせはMDMクライアントの問い合わせとは独立していると書かれています。
 同じドキュメントには、Windowsの「設定」からの同期でもIMEが問い合わせると書かれています。
 しかし、今回の環境では、同期しただけではスクリプトの変更は届かず、再起動してサインインした後に届きました。
@@ -342,11 +341,11 @@ ps -> intune
 
 スクリプトの設定によって、実行のしかたが変わります。
 
-| 設定（Terraformの属性） | 内容 |
+| 設定 | 内容 |
 | --- | --- |
-| サインインしたユーザーの資格情報で実行する（`run_as_account`） | 画面のデフォルトは`user`（サインインしたユーザー）。`system`はSYSTEMとして実行する。標準ユーザーは`HKLM`に書き込めないため、`system`にする |
-| 64ビットのPowerShellで実行する（`run_as_32_bit`） | 画面のデフォルトは32ビット。後述のとおり、書き込み先のキーが変わることがある |
-| 署名の確認を強制する（`enforce_signature_check`） | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。無効にすると、実行ポリシーが`bypass`になる |
+| サインインしたユーザーの資格情報で実行する | 画面のデフォルトは`user`（サインインしたユーザー）。`system`はSYSTEMとして実行する。標準ユーザーは`HKLM`に書き込めないため、`system`にする |
+| 64ビットのPowerShellで実行する | 画面のデフォルトは32ビット。後述のとおり、書き込み先のキーが変わることがある |
+| 署名の確認を強制する | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。無効にすると、実行ポリシーが`bypass`になる |
 
 #### 32ビットと64ビットのPowerShell
 
@@ -376,7 +375,7 @@ ps.p32 -> reg.pol
 ps.p64 -> reg.pol
 ```
 
-| 項目 | 32ビット（`run_as_32_bit = true`） | 64ビット（`run_as_32_bit = false`） |
+| 項目 | 32ビット（画面のデフォルト） | 64ビット |
 | --- | --- | --- |
 | PowerShellのパス | `C:\Windows\SysWOW64\WindowsPowerShell\v1.0\powershell.exe` | `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe` |
 | PowerShellのバージョン | 5.1.26100.9457 | 5.1.26100.9457 |
@@ -462,7 +461,7 @@ detect -> none: exit 0
 - 間隔を短くするとWindowsデバイスの負荷が増えるため、急がないものは間隔を長くするよう勧められている
 
 使うには、利用者にWindows Enterprise E3、E5などのライセンスが必要です。
-今回の環境にはライセンスがないため、修復スクリプトは後述するTerraformの`terraform validate`での確認までにとどめています。
+今回の環境にはライセンスがないため、修復スクリプトの動きは確かめていません。
 
 ## 5つの方法の比較と選び方
 
@@ -477,7 +476,7 @@ detect -> none: exit 0
 | 配布をやめたときの値 | 削除される | 削除される | 削除される。取り込みは残る | 残る | 残る |
 | 書き換えられた値 | 未検証 | 未検証 | 未検証 | 戻らない | 次の検出で戻せる |
 | 結果の確認 | 設定ごとの状態 | 設定ごとの状態 | 行ごとの状態 | 成功か失敗かと出力 | 検出と修復の結果と出力 |
-| 必要なライセンスの例 | Intune Plan 1 | Intune Plan 1 | Intune Plan 1 | Intune Plan 1 | Microsoft 365 E3、E5など |
+| 必要なライセンスの例 | Microsoft Intune Plan 1 | Microsoft Intune Plan 1 | Microsoft Intune Plan 1 | Microsoft Intune Plan 1 | Microsoft 365 E3、E5など |
 
 選ぶ順番は、次のように考えるのがよいと思います。
 
@@ -485,593 +484,6 @@ detect -> none: exit 0
 2. 設定カタログにない場合は、アプリケーションが配布しているADMXを使う。画面で選びたい場合はADMXのインポート、制限にあたる場合やバージョンの更新を安全に行いたい場合はカスタムプロファイル
 3. ADMXで書き込めない場所や、ADMXが配布されていない設定は、プラットフォームスクリプトを使う
 4. 書き換えられた値を戻したい場合で、ライセンスがあれば、修復スクリプトを使う
-
-## Terraformで管理する
-
-方法を組み合わせるほど、どの値をどの方法で配布しているのかを、Intune管理センターの画面だけで追うのは難しくなります。
-Terraformで書くと、どの方法でも次の利点があります。
-
-- 変更をGitHubのPull Requestなどでレビューし、`plan`で差分を確かめてから反映できる
-- 画面で直接変更されても、`plan`で差分として見つけ、`apply`で元に戻せる
-- 複数のテナントに、同じ設定を再現できる
-
-Intuneを扱えるTerraformのプロバイダには、コミュニティで開発されている[deploymenttheory/microsoft365](https://github.com/deploymenttheory/terraform-provider-microsoft365)と[terraprovider/microsoft365wp](https://github.com/terraprovider/terraform-provider-microsoft365wp)、Microsoftが開発している[microsoft/msgraph](https://github.com/microsoft/terraform-provider-msgraph)があります。
-今回は、5つの方法すべてに専用のリソースがあるdeploymenttheory/microsoft365を中心に使いました。
-microsoft/msgraphは、Graph APIのリソースをJSONで書いて汎用的に扱うプロバイダで、どの方法も原理的には書けますが、今回は設定カタログだけで試しています。
-
-### 設定カタログをTerraformで書く
-
-設定カタログは、3つのプロバイダのどれでも書けます。
-
-設定カタログの設定は、画面では名前で選べますが、実体は設定の定義のID（`settingDefinitionId`）と値です。
-Terraformで書くと、どの設定をどの値にしているのかがコードに残り、Intuneに組み込まれた設定でも変更をレビューできます。
-IDは、管理センターで作ったプロファイルをGraph APIで読むと確かめられます。
-Microsoft Edgeの「Hide the First-run experience and splash screen」を有効にする例を、3つのプロバイダで書くと次のとおりです。
-
-```hcl title="settings_catalog.tf（deploymenttheory/microsoft365）"
-locals {
-  edge_hide_first_run = "device_vendor_msft_policy_config_microsoft_edgev80diff~policy~microsoft_edge_hidefirstrunexperience"
-}
-
-resource "microsoft365_graph_beta_device_management_settings_catalog_configuration_policy" "edge" {
-  name         = "tf-sc-deploymenttheory"
-  platforms    = "windows10"
-  technologies = ["mdm"]
-
-  # 設定カタログのテンプレートを使わない場合も、空のまま指定する
-  template_reference = {
-    template_id = ""
-  }
-
-  configuration_policy = {
-    settings = [
-      {
-        setting_instance = {
-          odata_type            = "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"
-          setting_definition_id = local.edge_hide_first_run
-          choice_setting_value = {
-            value    = "${local.edge_hide_first_run}_1"
-            children = []
-          }
-        }
-      }
-    ]
-  }
-}
-```
-
-```hcl title="settings_catalog.tf（terraprovider/microsoft365wp）"
-resource "microsoft365wp_device_management_configuration_policy" "edge" {
-  name         = "tf-sc-microsoft365wp"
-  platforms    = "windows10"
-  technologies = "mdm"
-
-  settings = [
-    {
-      instance = {
-        definition_id = local.edge_hide_first_run
-        choice = {
-          value = {
-            value = "${local.edge_hide_first_run}_1"
-          }
-        }
-      }
-    }
-  ]
-}
-```
-
-```hcl title="settings_catalog.tf（microsoft/msgraph）"
-resource "msgraph_resource" "edge" {
-  url         = "deviceManagement/configurationPolicies"
-  api_version = "beta"
-  body = {
-    name         = "tf-sc-msgraph"
-    platforms    = "windows10"
-    technologies = "mdm"
-    settings = [
-      {
-        "@odata.type" = "#microsoft.graph.deviceManagementConfigurationSetting"
-        settingInstance = {
-          "@odata.type"       = "#microsoft.graph.deviceManagementConfigurationChoiceSettingInstance"
-          settingDefinitionId = local.edge_hide_first_run
-          choiceSettingValue = {
-            value    = "${local.edge_hide_first_run}_1"
-            children = []
-          }
-        }
-      }
-    ]
-  }
-}
-```
-
-3つとも同じ設定のプロファイルが作成され、続けて実行した`plan`は「No changes」でした。
-deploymenttheory/microsoft365の1.4.0では、テンプレートを使わない場合も`template_reference`を指定しないと、「The argument "template_reference" is required」というエラーになりました。
-
-### ADMXのインポートをTerraformで書く
-
-ADMXのインポートに専用のリソースがあるのは、deploymenttheory/microsoft365です。
-terraprovider/microsoft365wpには、ADMXのインポートのリソースはありません。
-
-Terraformで書くと、アップロードしたADMXのファイルと、それを使うプロファイルの対応がコードに残ります。
-前述のとおり、管理センターの設定を選ぶ画面ではADMXのバージョンを見分けられませんが、コードではリソースの名前やファイルのパスにバージョンを含めて区別できます。
-
-ADMXのインポートは、次の3種類のリソースで書きます。リソースの名前は、どれも`microsoft365_graph_beta_device_management_`で始まります。
-
-| リソース | 書くもの |
-| --- | --- |
-| `group_policy_uploaded_definition_files` | ADMXとADMLのアップロード |
-| `group_policy_configuration` | プロファイル |
-| `group_policy_definition` | プロファイルに含める設定 |
-
-```hcl title="main.tf"
-resource "microsoft365_graph_beta_device_management_group_policy_uploaded_definition_files" "zoom" {
-  file_name = "ZoomMeetings_HKLM.admx"
-  # ZoomのADMXとADMLはBOM付きのUTF-8で、BOMがあるとアップロードが失敗する
-  content = trimprefix(file("${path.module}/files/ZoomMeetings_HKLM.admx"), "\ufeff")
-
-  group_policy_uploaded_language_files = [
-    {
-      file_name     = "ZoomMeetings_HKLM.adml"
-      language_code = "en-US"
-      content       = trimprefix(file("${path.module}/files/en-US/ZoomMeetings_HKLM.adml"), "\ufeff")
-    }
-  ]
-}
-
-resource "microsoft365_graph_beta_device_management_group_policy_configuration" "zoom" {
-  display_name = "imported-zoom"
-}
-
-resource "microsoft365_graph_beta_device_management_group_policy_definition" "zoom_disable_cloud_recording" {
-  group_policy_configuration_id = microsoft365_graph_beta_device_management_group_policy_configuration.zoom.id
-  policy_name                   = "Client will disable and hide cloud recording feature"
-  class_type                    = "machine"
-  category_path                 = "\\Zoom Meetings\\Zoom Meetings Settings"
-  enabled                       = true
-
-  depends_on = [microsoft365_graph_beta_device_management_group_policy_uploaded_definition_files.zoom]
-}
-
-resource "microsoft365_graph_beta_device_management_group_policy_definition" "zoom_update_channel" {
-  group_policy_configuration_id = microsoft365_graph_beta_device_management_group_policy_configuration.zoom.id
-  policy_name                   = "Set the specified update channel when silent auto update is enabled"
-  class_type                    = "machine"
-  category_path                 = "\\Zoom Meetings\\Zoom General Settings"
-  enabled                       = true
-
-  values = [
-    {
-      label = "Set the specified update channel when silent auto update is enabled"
-      value = "1"
-    }
-  ]
-
-  depends_on = [microsoft365_graph_beta_device_management_group_policy_uploaded_definition_files.zoom]
-}
-```
-
-ZoomのADMXとADMLは、BOM付きのUTF-8です。
-`file()`で読んだままアップロードすると、`Data at the root level is invalid. Line 1, position 1.`というエラーになります。
-`trimprefix()`でBOMを取り除くと、アップロードできました。
-
-`group_policy_definition`の`policy_name`と`category_path`には、ADMLの英語の表示名を使います。
-ADMXの`name`ではない点に注意が必要です。
-
-なお、1.3.0には、入力欄のない（有効、無効だけの）ポリシーを作成すると、作成後にstateから消えてしまう不具合がありました。
-この不具合は筆者が送った[#4124](https://github.com/deploymenttheory/terraform-provider-microsoft365/pull/4124)で修正され、1.4.0に含まれています。
-また、1.4.0の時点では、ADMXのアップロードのリソースは`terraform import`に対応していません。
-プロファイルの設定の`terraform import`には、同じプロファイルに設定が2つ以上あると別の設定を取り込んでしまう不具合があり、[#4132](https://github.com/deploymenttheory/terraform-provider-microsoft365/pull/4132)で修正を提案しています。
-
-### カスタムプロファイル（OMA-URI）をTerraformで書く
-
-カスタムプロファイルは、deploymenttheory/microsoft365の`windows_custom_configuration`と、terraprovider/microsoft365wpの`device_configuration_custom`で書けます。
-
-Terraformで書くと、OMA-URIの値にADMXのファイルを`file()`で読み込めます。
-ADMXの全文を画面に貼り付ける必要がなく、バージョンの更新はファイルを差し替えて`apply`するだけになります。
-AppNameとFileUidもコードに固定されるので、前述の、値を保ったまま更新する方法を崩さずに運用できます。
-
-次の例は、取り込みと値の設定を、1つのプロファイルにまとめる形です。
-
-```hcl title="main.tf"
-resource "microsoft365_graph_beta_device_management_windows_custom_configuration" "zoom" {
-  display_name = "omauri-zoom"
-
-  assignments = [
-    {
-      type = "allLicensedUsersAssignmentTarget"
-    }
-  ]
-
-  oma_settings = [
-    {
-      odata_type   = "#microsoft.graph.omaSettingString"
-      display_name = "Zoom ADMX"
-      oma_uri      = "./Device/Vendor/MSFT/Policy/ConfigOperations/ADMXInstall/ZoomTf/Policy/ZoomMeetings_HKLM"
-      value        = file("${path.module}/files/ZoomMeetings_HKLM.admx")
-    },
-    {
-      odata_type   = "#microsoft.graph.omaSettingString"
-      display_name = "Disable cloud recording"
-      oma_uri      = "./Device/Vendor/MSFT/Policy/Config/ZoomTf~Policy~ZoomUsCommunication~zoommeetings/DisableCloudRecording_Policy"
-      value        = "<enabled/>"
-    },
-  ]
-}
-```
-
-OMA-URIの値は、BOM付きのままでも取り込めました。
-BOMを取り除く必要があるのは、ADMXのインポートのアップロードだけです。
-
-### プラットフォームスクリプトのテンプレート
-
-前述の2つの注意点（値が残る、再実行されない）に対応するため、書き込む値の一覧をTerraformで管理し、スクリプトに埋め込む汎用的なテンプレートを作りました。
-
-```d2 title="Terraformの値の一覧をtemplatefileでスクリプトに埋め込む。一覧を変えるとスクリプトのハッシュが変わってIMEが再実行し、スクリプトは前回書き込んだ一覧と比べて外された値を削除する"
-grid-columns: 2
-grid-gap: 64
-tf: Terraform {
-  grid-rows: 2
-  grid-gap: 48
-  list: 値の一覧 {shape: image; icon: /d2-icons/file-digit.svg}
-  tpl: templatefile() {shape: image; icon: /d2-icons/file-code.svg}
-  list -> tpl
-}
-device: Windowsデバイス {
-  grid-rows: 2
-  grid-gap: 48
-  script: スクリプト {shape: image; icon: /d2-icons/file-cog.svg}
-  out: "" {
-    grid-columns: 2
-    grid-gap: 48
-    style.fill: transparent
-    style.stroke-width: 0
-    reg: 値 {shape: image; icon: /d2-icons/database.svg}
-    state: 前回書き込んだ一覧 {shape: image; icon: /d2-icons/database.svg}
-  }
-  script -> out.reg: "書き込む\n外した値は削除"
-  script -> out.state: 比べて記録
-}
-tf.tpl -> device.script: "一覧が変わると\n再実行される"
-```
-
-方針は次のとおりです。
-
-- 書き込む値の一覧をJSONで受け取り、Terraformの`templatefile()`でスクリプトに埋め込む
-- 書き込んだ値の一覧をレジストリに記録し、次に実行したときに一覧から消えた値を削除する（入れ墨への対策）
-- 削除する代わりに、デフォルト値（`default`）に戻すこともできる
-- 型とデータがすでに同じ値は書き換えない
-- 検出（`detect`）と適用（`apply`）の2つのモードを持ち、修復スクリプトにも使えるようにする
-
-書き込む値は、次の形式で指定します。
-
-```hcl
-{
-  path    = "HKLM:\\SOFTWARE\\Policies\\Microsoft\\VSCode" # HKLM:\ か HKCU:\ で始まるキー
-  name    = "UpdateMode"                                   # 値の名前
-  type    = "String"                                       # String、ExpandString、MultiString、DWord、QWord
-  value   = "manual"                                       # 書き込むデータ
-  default = "default"                                      # 一覧から外したときに戻す値（省略すると値を削除）
-}
-```
-
-スクリプトの全文は次のとおりです。
-`${name}`、`${mode}`、`${settings_base64}`が、`templatefile()`で埋め込まれる変数です。
-
-```powershell title="registry.ps1.tftpl"
-# Applies registry values given by Terraform. Rendered with templatefile():
-#   name             Identifier of this set of values, used to record what was written
-#   mode             "apply" (platform script, remediation script) or "detect" (detection script)
-#   settings_base64  base64encode(jsonencode(list of settings))
-#
-# A setting: { "path": "HKLM:\\SOFTWARE\\...", "name": "...", "type": "DWord", "value": 0, "default": 1 }
-#   type     String, ExpandString, MultiString, DWord or QWord
-#   default  Optional. Value to restore when the setting is removed from the list.
-#            Without it, the value is deleted.
-
-$ErrorActionPreference = 'Stop'
-
-$Name = '${name}'
-$Mode = '${mode}'
-$SettingsBase64 = '${settings_base64}'
-
-# Values this script wrote are recorded here, so that removed settings can be cleaned up.
-# A script that runs as a standard user cannot write HKLM, so it records under HKCU.
-if ([Security.Principal.WindowsIdentity]::GetCurrent().IsSystem) {
-    $StateRoot = 'HKLM:\SOFTWARE\IntuneRegistrySettings'
-} else {
-    $StateRoot = 'HKCU:\SOFTWARE\IntuneRegistrySettings'
-}
-
-function Write-Log([string]$Message) {
-    Write-Output "[$Name] $Message"
-}
-
-function Get-RegistryValueType([string]$Type) {
-    $types = @{
-        'String'       = [Microsoft.Win32.RegistryValueKind]::String
-        'ExpandString' = [Microsoft.Win32.RegistryValueKind]::ExpandString
-        'MultiString'  = [Microsoft.Win32.RegistryValueKind]::MultiString
-        'DWord'        = [Microsoft.Win32.RegistryValueKind]::DWord
-        'QWord'        = [Microsoft.Win32.RegistryValueKind]::QWord
-    }
-    if (-not $types.ContainsKey($Type)) {
-        throw "Unsupported type '$Type'. Use String, ExpandString, MultiString, DWord or QWord."
-    }
-    return $types[$Type]
-}
-
-function ConvertTo-RegistryData($Value, [Microsoft.Win32.RegistryValueKind]$Kind) {
-    switch ($Kind) {
-        # Registry DWORD values are unsigned, but PowerShell writes them as Int32.
-        'DWord'       { return [BitConverter]::ToInt32([BitConverter]::GetBytes([uint32][int64]$Value), 0) }
-        'QWord'       { return [int64]$Value }
-        'MultiString' { return [string[]]@($Value) }
-        default       { return [string]$Value }
-    }
-}
-
-# Returns $true when the value exists with the same type and data.
-function Test-RegistryValue([string]$Path, [string]$ValueName, [Microsoft.Win32.RegistryValueKind]$Kind, $Data) {
-    $key = Get-Item -LiteralPath $Path -ErrorAction SilentlyContinue
-    if ($null -eq $key -or $key.GetValueNames() -notcontains $ValueName) {
-        return $false
-    }
-    if ($key.GetValueKind($ValueName) -ne $Kind) {
-        return $false
-    }
-    $current = $key.GetValue($ValueName, $null, 'DoNotExpandEnvironmentNames')
-    if ($Kind -eq 'MultiString') {
-        return (@($current) -join "`n") -ceq (@($Data) -join "`n")
-    }
-    return "$current" -ceq "$Data"
-}
-
-function Set-RegistryValue([string]$Path, [string]$ValueName, [Microsoft.Win32.RegistryValueKind]$Kind, $Data) {
-    if (-not (Test-Path -LiteralPath $Path)) {
-        New-Item -Path $Path -Force | Out-Null
-    }
-    New-ItemProperty -LiteralPath $Path -Name $ValueName -PropertyType $Kind -Value $Data -Force | Out-Null
-}
-
-# Windows PowerShell 5.1 returns a JSON array from ConvertFrom-Json as a single object.
-# Passing it through the pipeline enumerates the elements.
-function ConvertFrom-JsonArray([string]$Json) {
-    return @(ConvertFrom-Json -InputObject $Json | ForEach-Object { $_ })
-}
-
-function Get-SettingKey($Setting) {
-    return '{0}\{1}' -f $Setting.path, $Setting.name
-}
-
-try {
-    if (@('apply', 'detect') -notcontains $Mode) {
-        throw "Unsupported mode '$Mode'. Use apply or detect."
-    }
-
-    # A 32-bit process on 64-bit Windows writes HKLM:\SOFTWARE to WOW6432Node instead.
-    if ([Environment]::Is64BitOperatingSystem -and -not [Environment]::Is64BitProcess) {
-        throw 'Running as a 32-bit process. Set run_as_32_bit = false.'
-    }
-
-    $json = [Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($SettingsBase64))
-    $settings = ConvertFrom-JsonArray $json
-
-    $desired = [ordered]@{}
-    foreach ($setting in $settings) {
-        if ($setting.path -notmatch '^(HKLM|HKCU):\\') {
-            throw "Path must start with HKLM:\ or HKCU:\ : '$($setting.path)'"
-        }
-        $kind = Get-RegistryValueType $setting.type
-        $desired[(Get-SettingKey $setting)] = [pscustomobject]@{
-            Setting = $setting
-            Kind    = $kind
-            Data    = ConvertTo-RegistryData $setting.value $kind
-        }
-    }
-
-    # Settings written by the previous run.
-    $statePath = Join-Path $StateRoot $Name
-    $previous = @()
-    $stateKey = Get-Item -LiteralPath $statePath -ErrorAction SilentlyContinue
-    if ($null -ne $stateKey -and $stateKey.GetValueNames() -contains 'Settings') {
-        $previous = ConvertFrom-JsonArray $stateKey.GetValue('Settings')
-    }
-    $removed = @($previous | Where-Object { -not $desired.Contains((Get-SettingKey $_)) })
-
-    if ($Mode -eq 'detect') {
-        $drift = @()
-        foreach ($entry in $desired.Values) {
-            if (-not (Test-RegistryValue $entry.Setting.path $entry.Setting.name $entry.Kind $entry.Data)) {
-                $drift += Get-SettingKey $entry.Setting
-            }
-        }
-        foreach ($setting in $removed) {
-            $drift += '{0} (removed)' -f (Get-SettingKey $setting)
-        }
-        if ($drift.Count -gt 0) {
-            Write-Log ('Not compliant: {0}' -f ($drift -join ', '))
-            exit 1
-        }
-        Write-Log 'Compliant'
-        exit 0
-    }
-
-    foreach ($entry in $desired.Values) {
-        $key = Get-SettingKey $entry.Setting
-        if (Test-RegistryValue $entry.Setting.path $entry.Setting.name $entry.Kind $entry.Data) {
-            Write-Log "Unchanged: $key"
-            continue
-        }
-        Set-RegistryValue $entry.Setting.path $entry.Setting.name $entry.Kind $entry.Data
-        Write-Log "Set: $key"
-    }
-
-    foreach ($setting in $removed) {
-        $key = Get-SettingKey $setting
-        if ($null -ne $setting.default) {
-            $kind = Get-RegistryValueType $setting.type
-            Set-RegistryValue $setting.path $setting.name $kind (ConvertTo-RegistryData $setting.default $kind)
-            Write-Log "Restored default: $key"
-        } elseif ($null -ne (Get-ItemProperty -LiteralPath $setting.path -Name $setting.name -ErrorAction SilentlyContinue)) {
-            Remove-ItemProperty -LiteralPath $setting.path -Name $setting.name
-            Write-Log "Removed: $key"
-        }
-    }
-
-    # Record what this run manages, for the next run.
-    if (-not (Test-Path -LiteralPath $statePath)) {
-        New-Item -Path $statePath -Force | Out-Null
-    }
-    $state = ConvertTo-Json -InputObject @($desired.Values | ForEach-Object { $_.Setting }) -Compress -Depth 5
-    New-ItemProperty -LiteralPath $statePath -Name 'Settings' -PropertyType String -Value $state -Force | Out-Null
-
-    Write-Log ('Applied {0} setting(s), cleaned up {1} removed setting(s)' -f $desired.Count, $removed.Count)
-    exit 0
-} catch {
-    Write-Log "Failed: $($_.Exception.Message)"
-    exit 1
-}
-```
-
-- JSONは`base64encode()`で埋め込んでいます。値に`'`が含まれていても、PowerShellの文字列が壊れないようにするためです
-- 書き込んだ値の一覧は、SYSTEMで実行した場合は`HKLM:\SOFTWARE\IntuneRegistrySettings\<name>`に記録します
-- 前述のとおり、32ビットのPowerShellでは`HKLM:\SOFTWARE\Policies`などを除き、`HKLM:\SOFTWARE`への書き込みが`WOW6432Node`に振り替えられます。書き込み先によって結果が変わらないように、32ビットで実行されたらエラーにしています
-- Windows PowerShell 5.1の`ConvertFrom-Json`は、JSONの配列を1つのオブジェクトとして返します。そのまま`foreach`に渡すと要素に分かれないので、パイプラインを通して展開しています
-- スクリプトのコメントとログは英語にしています。文字コードの違いで、Windows PowerShell 5.1が日本語を正しく読めない場合があるためです
-
-このスクリプトは、Windows PowerShell 5.1で、値の追加、変更、削除、デフォルト値への復元、検出のそれぞれを確かめています。
-
-### プラットフォームスクリプトをTerraformで書く
-
-プラットフォームスクリプトは、deploymenttheory/microsoft365の`windows_platform_script`と、terraprovider/microsoft365wpの`device_management_script`で書けます。
-次の例は、VS Codeの自動更新を手動にし、テレメトリーを無効にします。
-
-```hcl title="registry.tf"
-locals {
-  vscode_registry_settings = [
-    {
-      path  = "HKLM:\\SOFTWARE\\Policies\\Microsoft\\VSCode"
-      name  = "UpdateMode"
-      type  = "String"
-      value = "manual"
-    },
-    {
-      path  = "HKLM:\\SOFTWARE\\Policies\\Microsoft\\VSCode"
-      name  = "TelemetryLevel"
-      type  = "String"
-      value = "off"
-    },
-  ]
-}
-
-resource "microsoft365_graph_beta_device_management_windows_platform_script" "vscode_registry" {
-  display_name = "vscode-registry"
-  file_name    = "vscode-registry.ps1"
-  script_content = templatefile("${path.module}/registry.ps1.tftpl", {
-    name            = "vscode"
-    mode            = "apply"
-    settings_base64 = base64encode(jsonencode(local.vscode_registry_settings))
-  })
-  run_as_account          = "system"
-  run_as_32_bit           = false
-  enforce_signature_check = false
-
-  assignments = [
-    {
-      type = "allLicensedUsersAssignmentTarget"
-    }
-  ]
-}
-```
-
-`HKLM`に書き込めるように、`run_as_account`は`system`にします。
-`run_as_32_bit`は`false`にして、64ビットのPowerShellで実行します。
-
-`apply`してから約10分後、IMEがスクリプトを受け取り、SYSTEMとして実行しました。
-IMEのログ（`C:\ProgramData\Microsoft\IntuneManagementExtension\Logs\AgentExecutor.log`）には、スクリプトの出力が記録されています。
-
-```text title="AgentExecutor.log（抜粋）"
-[vscode] Set: HKLM:\SOFTWARE\Policies\Microsoft\VSCode\UpdateMode
-[vscode] Set: HKLM:\SOFTWARE\Policies\Microsoft\VSCode\TelemetryLevel
-[vscode] Applied 2 setting(s), cleaned up 0 removed setting(s)
-```
-
-`HKLM\SOFTWARE\Policies\Microsoft\VSCode`に、`UpdateMode`（`manual`）と`TelemetryLevel`（`off`）が書き込まれました。
-
-次に、Terraformで`TelemetryLevel`を一覧から外し、`UpdateMode`を`none`に変えて`apply`しました。
-`UpdateMode`には、一覧から外したときに戻すデフォルト値として`default`を指定しています。
-
-```hcl title="registry.tf" ins={7-8} del={10-15}
-locals {
-  vscode_registry_settings = [
-    {
-      path    = "HKLM:\\SOFTWARE\\Policies\\Microsoft\\VSCode"
-      name    = "UpdateMode"
-      type    = "String"
-      value   = "none"
-      default = "default"
-    },
-    {
-      path  = "HKLM:\\SOFTWARE\\Policies\\Microsoft\\VSCode"
-      name  = "TelemetryLevel"
-      type  = "String"
-      value = "off"
-    },
-  ]
-}
-```
-
-`apply`から約5分後にWindowsデバイスを再起動すると、前述のとおり、IMEはスクリプトのハッシュが変わったことを検出し、スクリプトを再実行しました。
-
-```text title="AgentExecutor.log（抜粋）"
-[vscode] Set: HKLM:\SOFTWARE\Policies\Microsoft\VSCode\UpdateMode
-[vscode] Removed: HKLM:\SOFTWARE\Policies\Microsoft\VSCode\TelemetryLevel
-[vscode] Applied 1 setting(s), cleaned up 1 removed setting(s)
-```
-
-`UpdateMode`は`none`に変わり、一覧から外した`TelemetryLevel`は削除されました。
-値を消したいときは、スクリプトを削除する前に一覧から外して`apply`し、Windowsデバイスで削除されたことを確認します。
-
-### 修復スクリプトをTerraformで書く
-
-修復スクリプトに専用のリソースがあるのは、deploymenttheory/microsoft365の`windows_remediation_script`です。
-terraprovider/microsoft365wpには、修復スクリプトのリソースはありません。
-
-前述のスクリプトは、`mode`を`detect`にすると、値が一覧と異なる場合に`exit 1`で終わります。
-同じテンプレートと同じ値の一覧から、検出スクリプトと修復スクリプトの2つを作れます。
-検出と修復で、確かめる値と書き込む値がずれません。
-
-```hcl title="remediation.tf"
-locals {
-  vscode_registry_script = {
-    name            = "vscode"
-    settings_base64 = base64encode(jsonencode(local.vscode_registry_settings))
-  }
-}
-
-resource "microsoft365_graph_beta_device_management_windows_remediation_script" "vscode_registry" {
-  display_name   = "vscode-registry"
-  publisher      = "IT"
-  run_as_account = "system"
-  run_as_32_bit  = false
-
-  detection_script_content   = templatefile("${path.module}/registry.ps1.tftpl", merge(local.vscode_registry_script, { mode = "detect" }))
-  remediation_script_content = templatefile("${path.module}/registry.ps1.tftpl", merge(local.vscode_registry_script, { mode = "apply" }))
-
-  assignments = [
-    {
-      type = "allLicensedUsersAssignmentTarget"
-      daily_schedule = {
-        interval = 1
-        time     = "09:00:00"
-        use_utc  = false
-      }
-    },
-  ]
-}
-```
 
 ## 終わりに
 
@@ -1083,7 +495,8 @@ resource "microsoft365_graph_beta_device_management_windows_remediation_script" 
 
 ADMXで書き込めない場所は、プラットフォームスクリプトや修復スクリプトで書き込めます。
 ただし、値の削除や、書き換えられた値を戻す処理は、自分で用意する必要があります。
-Terraformで値の一覧とスクリプトをまとめて管理すると、こうした処理を1つのスクリプトに閉じ込められると思います。
+
+次回は、これらの方法をTerraformでまとめて管理し、値の削除や再実行をスクリプトに任せる方法を紹介する予定です。
 
 ## 参考資料
 
@@ -1093,7 +506,4 @@ Terraformで値の一覧とスクリプトをまとめて管理すると、こ�
 - [Understand Microsoft Intune Management Extension](https://learn.microsoft.com/en-us/intune/device-management/tools/management-extension-windows)
 - [Add PowerShell Scripts to Windows Devices in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-management/tools/run-powershell-scripts-windows)
 - [Use Remediations to Detect and Fix Support Issues](https://learn.microsoft.com/en-us/intune/device-management/tools/deploy-remediations)
-- [deploymenttheory/microsoft365（Terraform Registry）](https://registry.terraform.io/providers/deploymenttheory/microsoft365/latest)
-- [terraprovider/microsoft365wp（Terraform Registry）](https://registry.terraform.io/providers/terraprovider/microsoft365wp/latest)
-- [microsoft/msgraph（Terraform Registry）](https://registry.terraform.io/providers/microsoft/msgraph/latest)
 - [Visual Studio Code: Enterprise policies](https://code.visualstudio.com/docs/enterprise/policies)
