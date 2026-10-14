@@ -34,7 +34,7 @@ ADMXの設定は、Microsoft Intune（以下、Intune）のようなMDMからも
 | ADMX | ZoomのADMX 7.2.0の`ZoomMeetings_HKLM.admx`[^zoom-admx] |
 
 [^windows-business]: Microsoft 365 Business Premiumのライセンスにより、今回の環境ではWindows 11 Businessと表示されます。
-[^zoom-admx]: Zoomのサポート記事[Mass-deploying with Group Policy Objects](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0065466)で配布されています。
+[^zoom-admx]: 入手方法は「ZoomのADMXをアップロードする」で紹介します。
 
 ## Windowsデバイスで何が起きるのか
 
@@ -142,6 +142,7 @@ ADMXのポリシーでは、[前回の記事](/post/2026-10-05-1#レジストリ
 ```
 
 区切りごとに分けると、次のようになります。
+図の区切りを、各行の左から右へ、上の行から順につなげると、元のOMA-URIになります。
 
 ```d2 title="カメラの使用を設定するOMA-URIを区切りごとに分け、対象、ベンダー、Policy CSP、ポリシーの設定、分類、設定の名前の意味を示した図"
 classes: {
@@ -253,7 +254,6 @@ ADMXの取り込みはWindowsデバイスへの操作のため、ユーザー向
 ```
 
 区切りごとに分けると、次のようになります。
-図の区切りを、各行の左から右へ、上の行から順につなげると、元のOMA-URIになります。
 
 ```d2 title="ADMXを取り込むOMA-URIを区切りごとに分け、対象、ベンダー、Policy CSP、ADMXの取り込み、AppName、種類、FileUidの意味を示した図"
 classes: {
@@ -480,7 +480,8 @@ uri: "" {
 イベントIDは、Intuneの設定ごとに決まるものではなく、Windows側で処理の種類ごとに決まっているようです。
 そのため、Intune以外のMDMから配布しても、同じ処理なら同じイベントIDが記録されると考えられます。
 一方で、値の種類が違えば別のイベントIDになります。
-たとえば、ADMXのポリシーのように文字列で設定する値はポリシー文字列の設定イベント（814）ですが、整数で設定するWindows Updateのポリシーなどはポリシー整数の設定イベント（813）として記録されていました。
+たとえば、ADMXのポリシーのように文字列で設定する値は、ポリシー文字列の設定イベント（814）として記録されます。
+一方で、Windows Updateのポリシーなど整数で設定する値は、ポリシー整数の設定イベント（813）として記録されていました。
 また、筆者が探した範囲では、Microsoftはこれらのイベントの一覧を公開していません。
 Windowsのバージョンによって変わる可能性もあります。
 
@@ -554,7 +555,7 @@ ADMXのインポートは、IntuneにADMXとADMLをアップロードし、そ�
 
 [^windows-admx]: [Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#what-you-need-to-know)の「What you need to know」に書かれています。
 
-Learnの「What you need to know」にも、依存しているADMXは`policyNamespaces`の`using`要素で確認できると書かれています。
+同じ「What you need to know」には、依存しているADMXは`policyNamespaces`の`using`要素で確認できるとも書かれています。
 たとえば、ZoomのADMXは`Windows.admx`の名前空間を宣言しています。
 
 ```xml title="ZoomMeetings_HKLM.admx（抜粋）" {3}
@@ -601,7 +602,7 @@ cp raw/staging_Windows.admx upload/Windows.admx
 cp raw/staging_en_US_Windows.adml upload/en-US/Windows.adml
 ```
 
-アップロードは、Intune管理センターの「デバイス > 構成 > ADMX のインポート」から行います。
+アップロードは、Intune管理センターの「デバイス > Windows > 構成」を開き、「ADMX のインポート」のタブから行います。
 `Windows.admx`、続いて`ZoomMeetings_HKLM.admx`をアップロードし、どちらも状態が「Available」になれば完了です。
 
 ### プロファイルを作成する
@@ -811,6 +812,8 @@ ADMXの用意と値の設定は、ADMXのインポートかOMA-URIのどちら�
 | 値が届くまで | 取り込みと同じ同期 | 取り込みの次の同期 | 1つのプロファイルにまとめると、取り込みと同じ同期 |
 | プロファイルの削除 | 未検証 | 値と取り込みが消える | 値は消える。取り込みは残る |
 | バージョンの更新 | Intuneが新しい設定に対応するのを待つ | プロファイルを削除してから入れ替えるか、別のバージョンとして追加する。新旧のプロファイルを同時に割り当てた状態で古いほうを削除すると、新しいほうで設定した値も消えることがある | 取り込みの行の中身を差し替える |
+
+バージョンの更新の手順と注意点は、次回の記事で詳しく紹介します。
 
 配布したい設定が設定カタログにあれば、設定カタログを使います。
 設定カタログにない場合は、画面で設定を選べるADMXのインポートが扱いやすいと思います。
