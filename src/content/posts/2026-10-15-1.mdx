@@ -15,17 +15,17 @@ tags:
 references:
   - 2026-10-05-1
   - 2026-10-14-1
-draft: true
+draft: false
 ---
 
 Microsoft Intune（以下、Intune）では、設定カタログやスクリプトなど、いくつかの方法でWindowsデバイスのレジストリに値を配布できます。
 値は、一度配布して終わりではありません。
 アプリケーションの新しいバージョンに合わせて設定を更新したり、配布する値を見直したりしながら運用していくことになります。
-方法によって、更新のしやすさや、配布をやめたときに値が残るかどうかが違います。
+方法によって、更新のしやすさや、配布をやめたときに値が残るかどうかが異なります。
 
-今回は、Intuneでレジストリに値を配布する5つの方法を、運用の観点で比べます。
+今回は、Intuneでレジストリに値を配布する主な5つの方法を、運用の観点で比べます。
 それぞれの方法で運用するときの注意点を、実機で確かめた結果とともに紹介します。
-最後に、必須ではありませんが、あると管理が楽になるTerraformでの管理方法も紹介します。
+最後に、これらの方法をTerraformで管理すると、運用のどこが楽になるのかも紹介します。
 
 検証した環境は次のとおりです。
 
@@ -43,40 +43,26 @@ Microsoft Intune（以下、Intune）では、設定カタログやスクリプ�
 
 ## Intuneでレジストリに値を配布する方法
 
-Intuneでレジストリに値を配布する方法は、次の5つです。
+Intuneでレジストリに値を配布する主な方法は、次の5つです。
 
-| 方法 | しくみ | 書き込める場所 | 配布をやめたときの値 | ライセンス |
+| 方法 | 書き込むもの | 書き込める場所 | 配布をやめたときの値 | 必要なライセンスの例 |
 | --- | --- | --- | --- | --- |
-| 1. 設定カタログ | Policy CSP | Intuneが対応している設定 | 削除される | Intuneのみ |
-| 2. ADMXのインポート | Policy CSP | アップロードしたADMXの設定 | 削除される | Intuneのみ |
-| 3. カスタムプロファイル（OMA-URI） | Policy CSP | 取り込んだADMXの設定 | 削除される | Intuneのみ |
-| 4. プラットフォームスクリプト | Intune管理拡張機能 | 任意 | 残る | Intuneのみ |
-| 5. 修復スクリプト | Intune管理拡張機能 | 任意 | 残る | Windows Enterprise E3、E5など |
+| 1. 設定カタログ | Policy CSP | Intuneが対応している設定 | 削除される | Microsoft 365 Business Premium、E3など |
+| 2. ADMXのインポート | Policy CSP | アップロードしたADMXの設定 | 削除される | Microsoft 365 Business Premium、E3など |
+| 3. カスタムプロファイル（OMA-URI） | Policy CSP | 取り込んだADMXの設定 | 削除される | Microsoft 365 Business Premium、E3など |
+| 4. プラットフォームスクリプト | IME | 任意 | 残る | Microsoft 365 Business Premium、E3など |
+| 5. 修復スクリプト | IME | 任意 | 残る | Microsoft 365 E3、E5など[^remediations-license] |
 
-方法1〜3は、ADMXのポリシーとして値を配布します。
-Windowsに組み込まれたMDMクライアントが設定を受け取り、Policy CSPがADMXの定義に従ってレジストリに書き込みます。
+[^remediations-license]: Windows Enterprise E3、E5、Windows Education A3、A5、Windows Virtual Desktop Access（VDA）のいずれかが必要です。Microsoft 365 Business Premiumには含まれません。
+
+方法1〜3は、Policy CSPが値を書き込む方法です。
+Windowsに組み込まれたMDMクライアントがIntuneから設定を受け取り、Policy CSPがADMXの定義に従ってレジストリに書き込みます。
 しくみは、[前回の記事](/post/2026-10-14-1)で詳しく紹介しました。
 
-方法4と5は、PowerShellのスクリプトでレジストリに直接書き込みます。
-スクリプトは、Windowsデバイスに自動でインストールされるIntune管理拡張機能（IME: Intune Management Extension）が実行します。
+方法4と5は、Intune管理拡張機能（IME: Intune Management Extension）がPowerShellのスクリプトを実行し、スクリプトがレジストリに直接書き込む方法です。
+IMEは、Windowsデバイスに自動でインストールされるIntuneのエージェントです。
 
-### ADMXで書き込めないレジストリ
-
-方法2と3でADMXを取り込む場合は、書き込める場所に制限があります。
-[Win32 and Desktop Bridge app ADMX policy Ingestion](https://learn.microsoft.com/en-us/windows/client-management/win32-and-centennial-app-policy-configuration)によると、取り込んだADMXのポリシーは、次のキーの配下に書き込めません。
-
-- `System`
-- `Software\Microsoft`
-- `Software\Policies\Microsoft`
-
-例外として、`Software\Policies\Microsoft\Office`や`Software\Microsoft\Edge`など、書き込める場所も一覧で示されています。
-たとえば、Visual Studio Code（以下、VS Code）はADMXを配布していますが、書き込み先の`Software\Policies\Microsoft\VSCode`は、執筆時点の例外の一覧にありません。
-
-同じドキュメントには、取り込んだADMXで設定できない場合は、PowerShellのスクリプトなどでレジストリに直接書き込むよう書かれています。
-設定カタログにもない設定で、書き込み先がこの制限にあたる場合は、方法4か5を使うことになります。
-
-### Policy CSPで書き込んだ値は、配布をやめると削除される
-
+表の「配布をやめたときの値」は、今回の検証の結果です。
 [ADMXのしくみと読み方](/post/2026-10-05-1)では、グループポリシーを外しても値が残る「入れ墨」を紹介しました。
 方法1〜3のPolicy CSPで書き込んだ値では、次のどの外し方でもポリシーの削除イベント（819）が記録され、値が削除されました。
 
@@ -89,12 +75,16 @@ Windowsに組み込まれたMDMクライアントが設定を受け取り、Poli
 
 Policy CSPは、ポリシーが外されると、そのポリシーで書き込んだ値をADMXの定義に従って削除します。
 そのため、方法1〜3では入れ墨を意識する必要は基本的にありません。
-ただし、後述するように、ADMXのインポートでバージョンを更新するときは、この動きによって値まで消える場合があります。
+ただし、ADMXのインポートでバージョンを更新するときは、この動きによって値まで消える場合があります。
 
 一方で、方法4と5のスクリプトは、配布をやめても書き込んだ値を元に戻しません。
 入れ墨への対策は、スクリプトの中に自分で用意する必要があります。
 
-## 方法1：設定カタログ
+## 方法ごとの運用の注意点
+
+5つの方法それぞれについて、運用するときに便利な点と注意が必要な点を、実機で確かめた結果とともに説明します。
+
+### 方法1：設定カタログ
 
 設定カタログは、Intuneに組み込まれた設定から選んで配布する方法です。
 Microsoft EdgeやGoogle Chromeなど、主要なアプリケーションのADMXの設定が含まれています。
@@ -108,7 +98,7 @@ Microsoft EdgeやGoogle Chromeなど、主要なアプリケーションのADMX�
 ただ、設定カタログにあるのは、Intuneが対応している主要なアプリケーションの設定だけです。
 対応していないアプリケーションや、まだ追加されていない新しいポリシーは、ほかの方法で配布する必要があります。
 
-## 方法2：ADMXのインポート
+### 方法2：ADMXのインポート
 
 ADMXのインポートは、IntuneにADMXとADMLをアップロードし、その設定を「インポートされた管理用テンプレート」のプロファイルで配布する方法です。
 画面で設定を選べるため、OMA-URIや値のXMLを手で書く必要がありません。
@@ -120,6 +110,7 @@ ADMXのインポートは、IntuneにADMXとADMLをアップロードし、そ�
 - ADMLは`en-US`だけ
 - 入力欄に`comboBox`を使うADMXはインポートできない
 - 参照しているADMX（`Windows.admx`など）も、先にアップロードする必要がある
+- `Software\Policies\Microsoft`など、例外を除いて書き込めないキーがある
 
 運用で特に注意が必要なのは、ADMXのバージョンの更新です。
 [Import custom and third-party partner ADMX templates in Microsoft Intune](https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/import-custom-admx-templates#replace-existing-admx-files)の「Replace existing ADMX files」には、インポート済みのADMXを更新する方法が2つ書かれています。
@@ -128,10 +119,10 @@ ADMXのインポートは、IntuneにADMXとADMLをアップロードし、そ�
 2. 名前空間を変えた新しいADMXを用意して、インポートする
 
 1つ目の方法では、削除してからインポートし直すまでの間、値が配布されません。
-ZoomのADMXはバージョンごとに名前空間が違う（6.6.5は`ZoomMeetings_HKLM_6_6`、7.2.0は`ZoomMeetings_HKLM_7_2`）ため、2つ目の方法で、6.6.5を残したまま7.2.0をアップロードできました。
+ZoomのADMXはバージョンごとに名前空間が異なる（6.6.5は`ZoomMeetings_HKLM_6_6`、7.2.0は`ZoomMeetings_HKLM_7_2`）ため、2つ目の方法で、6.6.5を残したまま7.2.0をアップロードできました。
 しかし、2つのバージョンを並べて切り替えると、次の2つの問題がありました。
 
-### 古いバージョンのプロファイルを削除すると、新しいバージョンの値も消える
+#### 古いバージョンのプロファイルを削除すると、新しいバージョンの値も消える
 
 次の流れで6.6.5から7.2.0に切り替えたところ、7.2.0のプロファイルで設定している値まで消えました。
 
@@ -169,7 +160,7 @@ ADMXのインポートでバージョンを更新するときは、新旧のプ�
 ただし、この順番は試していません。
 また、その間は値を配布できません。
 
-### プロファイルの画面でバージョンを見分けられない
+#### プロファイルの画面でバージョンを見分けられない
 
 アップロードしたADMXの一覧では、「バージョン」の列に6.6と7.2が表示され、見分けられます。
 この値は、ADMXの`policyDefinitions`要素の`revision`属性です。
@@ -185,17 +176,18 @@ Graph APIで確かめても、2つの設定は、表示名、カテゴリのパ�
 並べている期間が長くなると、どちらのバージョンの設定を編集しているのかがわからなくなります。
 2つのバージョンを並べる場合は、プロファイルの名前にバージョンを含め、移行が終わったら古いバージョンのADMXを削除するのがよいと思います。
 
-## 方法3：カスタムプロファイル（OMA-URI）
+### 方法3：カスタムプロファイル（OMA-URI）
 
 カスタムプロファイルでは、ADMXの取り込みと値の設定を、それぞれOMA-URIで書きます。
 ADMXのインポートの制限（個数、言語、`comboBox`）にかからず、参照先の`Windows.admx`を用意しなくても取り込めます。
 その代わり、OMA-URIと値のXMLを手で書く必要があり、書き間違いはWindowsデバイスに届くまでわかりません。
 1つの値は350,000文字までのため、大きなADMXは取り込めません。
+ADMXで書き込めないキーがある点は、ADMXのインポートと同じです。
 
 運用の観点で大きいのは、AppNameとFileUidを自分で決められる点です。
 AppNameとFileUidを変えずに、取り込みの行の値だけを新しいバージョンのADMXに差し替えると、値を保ったまま更新できました。
 
-### AppNameとFileUidを固定してバージョンを更新する
+#### AppNameとFileUidを固定してバージョンを更新する
 
 次の流れで、ZoomのADMXを6.6.5から7.2.0に更新しました。
 
@@ -241,16 +233,67 @@ FileUidにバージョンを含めると、新しいバージョンでは別のF
 さらに、[前回の記事](/post/2026-10-14-1)で紹介したように、OMA-URIで取り込んだADMXはプロファイルを削除しても消えません。
 OMA-URIでは、AppNameとFileUidを固定して、中身だけを更新する運用が向いていると思います。
 
-## 方法4：プラットフォームスクリプト
+### 方法4：プラットフォームスクリプト
 
 プラットフォームスクリプトは、PowerShellのスクリプトをWindowsデバイスで実行する機能です。
 ADMXで書き込めない場所にも、レジストリの値を書き込めます。
 追加のライセンスはいりません。
 
-### プラットフォームスクリプトのしくみ
+#### ADMXで書き込めないレジストリ
+
+方法2と3でADMXを取り込む場合は、書き込める場所に制限があります。
+プラットフォームスクリプトは、この制限で書き込めない値を配布するときに使います。
+[Win32 and Desktop Bridge app ADMX policy Ingestion](https://learn.microsoft.com/en-us/windows/client-management/win32-and-centennial-app-policy-configuration)によると、取り込んだADMXのポリシーは、次のキーの配下に書き込めません。
+
+- `System`
+- `Software\Microsoft`
+- `Software\Policies\Microsoft`
+
+例外として、`Software\Policies\Microsoft\Office`や`Software\Microsoft\Edge`など、書き込める場所も一覧で示されています。
+たとえば、Visual Studio Code（以下、VS Code）はADMXを配布していますが、書き込み先の`Software\Policies\Microsoft\VSCode`は、執筆時点の例外の一覧にありません。
+
+同じドキュメントには、取り込んだADMXで設定できない場合は、PowerShellのスクリプトなどでレジストリに直接書き込むよう書かれています。
+設定カタログにもない設定で、書き込み先がこの制限にあたる場合は、プラットフォームスクリプトか修復スクリプトを使うことになります。
+
+#### プラットフォームスクリプトのしくみ
 
 プラットフォームスクリプトは、構成プロファイルとは別のしくみで動きます。
 構成プロファイルはWindowsのMDMクライアントがOMA-DMで受け取りますが、プラットフォームスクリプトはIMEがIntuneに問い合わせて受け取ります。
+
+```d2 pad="0" title="構成プロファイルはIntuneからMDMクライアントに届き、Policy CSPがレジストリに書き込む。プラットフォームスクリプトはIMEがIntuneに問い合わせて受け取り、PowerShellがレジストリに書き込む"
+grid-columns: 2
+grid-gap: 48
+intune: Intune {
+  server: Intuneのサービス {shape: image; icon: /d2-icons/server.svg}
+}
+client: Windowsデバイス {
+  paths: "" {
+    grid-rows: 2
+    grid-gap: 32
+    style.fill: transparent
+    style.stroke-width: 0
+    profile: 構成プロファイル {
+      grid-columns: 2
+      grid-gap: 48
+      mdm: MDMクライアント {shape: image; icon: /d2-icons/monitor-cog.svg}
+      csp: Policy CSP {shape: image; icon: /d2-icons/cog.svg}
+      mdm -> csp
+    }
+    script: プラットフォームスクリプト {
+      grid-columns: 2
+      grid-gap: 48
+      ime: IME {shape: image; icon: /d2-icons/app-window.svg}
+      ps: powershell.exe {shape: image; icon: /d2-icons/file-code.svg}
+      ime -> ps: 起動
+    }
+  }
+  reg: レジストリ {shape: image; icon: /d2-icons/database.svg}
+  paths.profile.csp -> reg
+  paths.script.ps -> reg
+}
+intune.server -> client.paths.profile.mdm: OMA-DM
+client.paths.script.ime -> intune.server: 問い合わせ
+```
 
 IMEは、プラットフォームスクリプトやWin32アプリなどを割り当てると、Windowsデバイスに自動でインストールされます。
 Microsoft Entra参加などの条件を満たすWindowsデバイスが対象で、Windows Homeエディションと、Sモードでは動きません。
@@ -282,7 +325,7 @@ IMEがIntuneに問い合わせるのは、次のタイミングです。
 | 64ビットのPowerShellで実行する（`run_as_32_bit`） | 画面のデフォルトは32ビット。後述のとおり、書き込み先のキーが変わることがある |
 | 署名の確認を強制する（`enforce_signature_check`） | 画面のデフォルトは有効で、信頼された発行元の署名が必要になる。署名しないスクリプトでは無効にする |
 
-### 32ビットと64ビットのPowerShell
+#### 32ビットと64ビットのPowerShell
 
 プラットフォームスクリプトは、Windows PowerShell 5.1で実行されます。
 「64ビットのPowerShellで実行する」の設定によって、起動されるPowerShellが変わります。
@@ -320,7 +363,7 @@ IMEがIntuneに問い合わせるのは、次のタイミングです。
 なお、今回はARM64のWindowsで、32ビットのPowerShellはx86のエミュレーションで動きました。
 x64のWindowsでは試していません。
 
-### 一度成功したスクリプトは再実行されない
+#### 一度成功したスクリプトは再実行されない
 
 運用で特に注意が必要なのは、一度実行に成功したスクリプトが再実行されない点です。
 IMEは、実行に成功したスクリプトを、スクリプトやポリシーが変わるまで再実行しません。
@@ -340,7 +383,7 @@ IMEは、実行に成功したスクリプトを、スクリプトやポリシ�
 また、スクリプトは200 KB未満にする必要があり、30分でタイムアウトします。
 結果としてIntuneに報告されるのは、成功か失敗かと、スクリプトの出力だけです。
 
-### スクリプトを削除しても値は残る
+#### スクリプトを削除しても値は残る
 
 プラットフォームスクリプトを削除したときに、書き込んだ値がどうなるかを確かめました。
 64ビットで次の2つの値を書き込んだスクリプトを、Intuneから削除しました。
@@ -359,11 +402,11 @@ IMEは、スクリプトを管理するための自分のレジストリを片�
 プラットフォームスクリプトで値を消したいときは、値を削除する処理をスクリプトに書いて実行してから、スクリプトを削除する必要があります。
 後述するTerraformのスクリプトでは、書き込んだ値の一覧を記録し、一覧から外した値を削除するようにしました。
 
-## 方法5：修復スクリプト
+### 方法5：修復スクリプト
 
 修復スクリプト（Remediations）は、検出スクリプトと修復スクリプトの組で、指定した間隔で検出スクリプトを実行します。
 検出スクリプトが`exit 1`で終わったときだけ、修復スクリプトが実行されます。
-プラットフォームスクリプトと違い、利用者や別のソフトウェアがレジストリの値を書き換えても、次の検出で元に戻せます。
+プラットフォームスクリプトと異なり、利用者や別のソフトウェアがレジストリの値を書き換えても、次の検出で元に戻せます。
 
 [Use Remediations to Detect and Fix Support Issues](https://learn.microsoft.com/en-us/intune/device-management/tools/deploy-remediations)によると、ほかにも次の特徴があります。
 
@@ -397,7 +440,7 @@ IMEは、スクリプトを管理するための自分のレジストリを片�
 | 配布をやめたときの値 | 削除される | 削除される | 削除される。取り込みは残る | 残る | 残る |
 | 書き換えられた値 | 未検証 | 未検証 | 未検証 | 戻らない | 次の検出で戻せる |
 | 結果の確認 | 設定ごとの状態 | 設定ごとの状態 | 行ごとの状態 | 成功か失敗かと出力 | 検出と修復の結果と出力 |
-| ライセンス | Intuneのみ | Intuneのみ | Intuneのみ | Intuneのみ | Windows Enterprise E3、E5など |
+| 必要なライセンスの例 | Microsoft 365 Business Premium、E3など | Microsoft 365 Business Premium、E3など | Microsoft 365 Business Premium、E3など | Microsoft 365 Business Premium、E3など | Microsoft 365 E3、E5など |
 
 選ぶ順番は、次のように考えるのがよいと思います。
 
@@ -408,75 +451,28 @@ IMEは、スクリプトを管理するための自分のレジストリを片�
 
 方法4と5を使う場合は、入れ墨への対策と、何度実行しても同じ結果になるスクリプトを用意する必要があります。
 
-## プラスα：Terraformで管理する
+## Terraformで管理する
 
 ここまでの方法は、どれもIntune管理センターの画面で管理できます。
 ただ、方法を組み合わせるほど、どの値をどの方法で配布しているのかを画面だけで追うのは難しくなります。
-そこで、必須ではありませんが、プロファイルとスクリプトをTerraformで管理すると、運用が楽になると考えています。
+ここでは、それぞれの方法をTerraformで書く例と、Terraformで書くと運用のどこが楽になるのかを紹介します。
 
-Terraformで管理する利点は、次のとおりです。
+どの方法でも、Terraformで書くと次の利点があります。
 
-- ADMXのファイル、OMA-URIの値、スクリプト、書き込む値の一覧を、1つのリポジトリでバージョン管理できる
 - 変更をGitHubのPull Requestなどでレビューし、`plan`で差分を確かめてから反映できる
+- 画面で直接変更されても、`plan`で差分として見つけ、`apply`で元に戻せる
 - 複数のテナントに、同じ設定を再現できる
-- ADMXのバージョンの更新は、ファイルを差し替えて`apply`するだけになる
-- 書き込む値の一覧からスクリプトを作ると、一覧を変えたときにスクリプトの内容が変わり、プラットフォームスクリプトが再実行される
 
-次の点には注意が必要です。
-
-- Intuneを扱うTerraformのプロバイダは、Graph APIのベータ版を使うものが多く、APIの変更の影響を受けることがある
-- プロバイダの不具合にあたることがある。今回もdeploymenttheory/microsoft365で2件の不具合にあたった
-- 画面で直接変更すると、Terraformの定義とずれる
-- 強い権限を持つMicrosoft Entra IDのアプリケーションを管理する必要がある
-- ADMXの全文がstateに入るため、stateが大きくなる
-
-### プロバイダを選ぶ
-
-Intuneを扱えるTerraformのプロバイダには、次の3つがあります。
-
-| プロバイダ | 開発元 | 特徴 |
-| --- | --- | --- |
-| [deploymenttheory/microsoft365](https://github.com/deploymenttheory/terraform-provider-microsoft365) | コミュニティ | Intuneのリソースが多い。READMEには、パブリックプレビューで公式のサポートはないと書かれている |
-| [terraprovider/microsoft365wp](https://github.com/terraprovider/terraform-provider-microsoft365wp) | コミュニティ | IntuneとMicrosoft Entra IDの設定を扱う |
-| [microsoft/msgraph](https://github.com/microsoft/terraform-provider-msgraph) | Microsoft | Graph APIのリソースを、JSONを書いて汎用的に扱う |
-
-この記事の5つの方法に対応するリソースは、次のとおりです。
-
-| 方法 | deploymenttheory/microsoft365 | terraprovider/microsoft365wp | microsoft/msgraph |
-| --- | --- | --- | --- |
-| 1. 設定カタログ | `settings_catalog_configuration_policy` | `device_management_configuration_policy` | `msgraph_resource` |
-| 2. ADMXのインポート | `group_policy_uploaded_definition_files`など | なし | `msgraph_resource` |
-| 3. カスタムプロファイル | `windows_custom_configuration` | `device_configuration_custom` | `msgraph_resource` |
-| 4. プラットフォームスクリプト | `windows_platform_script` | `device_management_script` | `msgraph_resource` |
-| 5. 修復スクリプト | `windows_remediation_script` | なし | `msgraph_resource` |
-
-deploymenttheory/microsoft365とterraprovider/microsoft365wpのリソース名は、それぞれ`microsoft365_graph_beta_device_management_`と`microsoft365wp_`で始まります。
-
-今回は、5つの方法にすべて対応しているdeploymenttheory/microsoft365を中心に使いました。
-microsoft/msgraphはMicrosoftが開発していますが、Graph APIのJSONをそのまま書くため、ほかの2つより記述が長くなります。
-1つのプロバイダで足りないリソースや、不具合のあるリソースだけを、ほかのプロバイダで補うこともできます。
-
-### 認証とプロバイダの設定
-
-認証には、Microsoft Entra IDのアプリケーションを使います。
-プロファイルの管理には`DeviceManagementConfiguration.ReadWrite.All`、スクリプトの管理には`DeviceManagementScripts.ReadWrite.All`のアプリケーションの権限が必要です。
-
-deploymenttheory/microsoft365の設定は、環境変数でも指定できます。
-1.4.0では、`M365_CLOUD`（またはプロバイダの`cloud`）を指定しないと、`plan`が「Invalid Microsoft Cloud Type」で失敗しました。
-
-```sh
-export M365_CLOUD=public
-export M365_AUTH_METHOD=client_secret
-export M365_TENANT_ID=...
-export M365_CLIENT_ID=...
-export M365_CLIENT_SECRET=...
-```
-
-terraprovider/microsoft365wpとmicrosoft/msgraphは、`ARM_TENANT_ID`、`ARM_CLIENT_ID`、`ARM_CLIENT_SECRET`の環境変数で認証できました。
+Intuneを扱えるTerraformのプロバイダには、コミュニティで開発されている[deploymenttheory/microsoft365](https://github.com/deploymenttheory/terraform-provider-microsoft365)と[terraprovider/microsoft365wp](https://github.com/terraprovider/terraform-provider-microsoft365wp)、Microsoftが開発している[microsoft/msgraph](https://github.com/microsoft/terraform-provider-msgraph)があります。
+今回は、5つの方法にすべて対応しているdeploymenttheory/microsoft365を中心に使い、方法ごとにほかのプロバイダの対応も示します。
+microsoft/msgraphは、Graph APIのリソースをJSONで書いて汎用的に扱うプロバイダです。
 
 ### 設定カタログをTerraformで書く
 
-設定カタログの設定は、設定の定義のID（`settingDefinitionId`）と値で書きます。
+設定カタログは、3つのプロバイダのどれでも書けます。
+
+設定カタログの設定は、画面では名前で選べますが、実体は設定の定義のID（`settingDefinitionId`）と値です。
+Terraformで書くと、どの設定をどの値にしているのかがコードに残り、Intuneに組み込まれた設定でも変更をレビューできます。
 IDは、管理センターで作ったプロファイルをGraph APIで読むと確かめられます。
 Microsoft Edgeの「Hide the First-run experience and splash screen」を有効にする例を、3つのプロバイダで書くと次のとおりです。
 
@@ -563,7 +559,14 @@ deploymenttheory/microsoft365の1.4.0では、テンプレートを使わない�
 
 ### ADMXのインポートをTerraformで書く
 
-ADMXのインポートは、次の3種類のリソースで書きます。
+ADMXのインポートに対応しているのは、deploymenttheory/microsoft365です。
+terraprovider/microsoft365wpには、ADMXのインポートのリソースはありません。
+
+Terraformで書くと、アップロードしたADMXのファイルと、それを使うプロファイルの対応がコードに残ります。
+前述のとおり、管理センターの設定を選ぶ画面ではADMXのバージョンを見分けられませんが、コードではリソースの名前やファイルのパスにバージョンを含めて区別できます。
+新しいバージョンに切り替えるときも、古いプロファイルを外す変更と新しいプロファイルを割り当てる変更を、Pull Requestで順に確かめながら進められます。
+
+ADMXのインポートは、次の3種類のリソースで書きます。リソースの名前は、どれも`microsoft365_graph_beta_device_management_`で始まります。
 
 | リソース | 書くもの |
 | --- | --- |
@@ -632,8 +635,13 @@ ADMXの`name`ではない点に注意が必要です。
 
 ### カスタムプロファイル（OMA-URI）をTerraformで書く
 
-OMA-URIのカスタムプロファイルは、`windows_custom_configuration`で書きます。
-取り込みと値の設定を、1つのプロファイルにまとめる形です。
+カスタムプロファイルは、deploymenttheory/microsoft365の`windows_custom_configuration`と、terraprovider/microsoft365wpの`device_configuration_custom`で書けます。
+
+Terraformで書くと、OMA-URIの値にADMXのファイルを`file()`で読み込めます。
+ADMXの全文を画面に貼り付ける必要がなく、バージョンの更新はファイルを差し替えて`apply`するだけになります。
+AppNameとFileUidもコードに固定されるので、前述の、値を保ったまま更新する方法を崩さずに運用できます。
+
+次の例は、取り込みと値の設定を、1つのプロファイルにまとめる形です。
 
 ```hcl title="main.tf"
 resource "microsoft365_graph_beta_device_management_windows_custom_configuration" "zoom" {
@@ -665,12 +673,14 @@ resource "microsoft365_graph_beta_device_management_windows_custom_configuration
 OMA-URIの値は、BOM付きのままでも取り込めました。
 BOMを取り除く必要があるのは、ADMXのインポートのアップロードだけです。
 
-ADMXをファイルで管理し、`file()`で読み込むと、バージョンの更新はファイルを差し替えて`apply`するだけになります。
-AppNameとFileUidは変わらないので、前述の、値を保ったまま更新する方法をそのまま使えます。
 
 ### プラットフォームスクリプトのテンプレート
 
-プラットフォームスクリプトと修復スクリプトのために、書き込むレジストリの値をTerraformから渡す、汎用的なスクリプトを作りました。
+プラットフォームスクリプトと修復スクリプトには、前述のとおり、配布をやめても値が残る、一度成功すると再実行されない、という注意点があります。
+Terraformで書き込む値の一覧を管理し、それをスクリプトに埋め込むと、この2つを補えます。
+一覧から外した値はスクリプトが削除し、一覧を変えるとスクリプトの内容が変わってIMEが再実行するためです。
+
+そこで、書き込むレジストリの値をTerraformから渡す、汎用的なスクリプトを作りました。
 方針は次のとおりです。
 
 - 書き込む値の一覧をJSONで受け取り、Terraformの`templatefile()`でスクリプトに埋め込む
@@ -882,8 +892,8 @@ try {
 
 ### プラットフォームスクリプトをTerraformで書く
 
-プラットフォームスクリプトは、`windows_platform_script`で書きます。
-VS Codeの自動更新を手動にし、テレメトリーを無効にする例です。
+プラットフォームスクリプトは、deploymenttheory/microsoft365の`windows_platform_script`と、terraprovider/microsoft365wpの`device_management_script`で書けます。
+次の例は、VS Codeの自動更新を手動にし、テレメトリーを無効にします。
 
 ```hcl title="registry.tf"
 locals {
@@ -974,8 +984,12 @@ locals {
 
 ### 修復スクリプトをTerraformで書く
 
-前述のスクリプトは、`mode`を`detect`にすると、値が一覧と違う場合に`exit 1`で終わります。
-同じテンプレートから、検出スクリプトと修復スクリプトの2つを作れます。
+修復スクリプトに対応しているのは、deploymenttheory/microsoft365の`windows_remediation_script`です。
+terraprovider/microsoft365wpには、修復スクリプトのリソースはありません。
+
+前述のスクリプトは、`mode`を`detect`にすると、値が一覧と異なる場合に`exit 1`で終わります。
+同じテンプレートと同じ値の一覧から、検出スクリプトと修復スクリプトの2つを作れます。
+検出と修復で、確かめる値と書き込む値がずれません。
 
 ```hcl title="remediation.tf"
 locals {
