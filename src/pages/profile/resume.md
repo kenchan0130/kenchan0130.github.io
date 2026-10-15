@@ -26,7 +26,10 @@ YouTube|[https://www.youtube.com/channel/UCJAx2EAohTGjRGqG0wWkoNQ](https://www.y
 
 ## 資格・試験
 
-* 情報処理安全確保支援士（試験合格）
+取得年|資格・試験
+---|---
+2026|個人情報保護士
+2025|情報処理安全確保支援士試験 合格
 
 ## 職務経歴
 
