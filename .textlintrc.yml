@@ -53,5 +53,7 @@ filters:
       - ADMX のインポート
       - Windows 10 以降
       - インポートされた管理用テンプレート (プレビュー)
+      # Terraform Registryでのプロバイダの名前
+      - microsoft/msgraph
       # 公式ドキュメントからの引用
       - たとえばgithubという名前のアクションを公開できるのはGitHub Organizationだけである。
