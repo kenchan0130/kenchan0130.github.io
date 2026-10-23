@@ -50,6 +50,6 @@ description: "アプリ「個人情報保護士 試験対策 問題集・模試�
 
 ## 8. 問い合わせ
 
-[お問い合わせフォーム](https://docs.google.com/forms/d/e/1FAIpQLSeKlnlVv1q5MRZm_DbZSmy-qpvAEYGkrueaeATx9xJyeY3j8g/viewform)か、X の [@kenchan0130](https://x.com/kenchan0130) までご連絡ください。お問い合わせフォームで入力された内容は、Google フォームを通じて受け取り、お問い合わせへの対応にだけ使います。
+[お問い合わせフォーム](https://docs.google.com/forms/d/e/1FAIpQLSeKlnlVv1q5MRZm_DbZSmy-qpvAEYGkrueaeATx9xJyeY3j8g/viewform)からお送りください。
 
 制定日: 2026年10月23日
