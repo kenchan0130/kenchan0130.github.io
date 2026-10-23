@@ -28,4 +28,6 @@ description: "アプリ「個人情報保護士 試験対策 問題集・模試�
 
 ## 問い合わせ
 
-本アプリの「設定」の「ご意見・不具合を送る」か、X の [@kenchan0130](https://x.com/kenchan0130) までご連絡ください。アプリから送った内容には返信できません。
+[お問い合わせフォーム](https://docs.google.com/forms/d/e/1FAIpQLSeKlnlVv1q5MRZm_DbZSmy-qpvAEYGkrueaeATx9xJyeY3j8g/viewform)からご連絡ください。返信が必要な場合は、フォームにメールアドレスを入力してください。
+
+問題の誤りや不具合は、本アプリの「設定」の「ご意見・不具合を送る」からも送れます（アプリから送った内容には返信できません）。X の [@kenchan0130](https://x.com/kenchan0130) でも受け付けています。
