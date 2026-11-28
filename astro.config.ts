@@ -31,6 +31,10 @@ export default defineConfig({
   site: "https://kenchan0130.github.io",
   cacheDir: `./${CACHE_DIR}`,
   trailingSlash: "never",
+  redirects: {
+    // ストアに登録したURL。全アプリ共通のポリシーへ移した
+    "/apps/p-info-exam/privacy": "/apps/privacy",
+  },
   build: {
     format: "file",
   },
