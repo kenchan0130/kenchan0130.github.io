@@ -34,6 +34,9 @@ export default defineConfig({
   redirects: {
     // ストアに登録したURL。全アプリ共通のポリシーへ移した
     "/apps/p-info-exam/privacy": "/apps/privacy",
+    // もじまちのストア登録のURL。全アプリ共通のポリシーの、もじまちの節へ移す
+    "/apps/mojimachi/privacy": "/apps/privacy#もじまち",
+    "/apps/mojimachi/privacy/en": "/apps/privacy#mojimachi",
   },
   build: {
     format: "file",
