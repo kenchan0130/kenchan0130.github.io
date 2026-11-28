@@ -95,7 +95,7 @@ This policy applies to all apps published by the developer. As of this writing, 
 
 | App | Crash and error reporting | Ads | Analytics |
 | --- | --- | --- | --- |
-| [個人情報保護士 試験対策 問題集・模試 (Personal Information Protection Specialist Exam Prep)](#個人情報保護士-試験対策-問題集模試-personal-information-protection-specialist-exam-prep) | Sentry | None | None |
+| [個人情報保護士 試験対策 問題集・模試](#個人情報保護士-試験対策-問題集模試-1) | Sentry | None | None |
 
 ### 2. Basic approach
 
@@ -131,7 +131,7 @@ Please use the [contact form](https://docs.google.com/forms/d/e/1FAIpQLSeKlnlVv1
 
 ### 9. App-specific details
 
-#### 個人情報保護士 試験対策 問題集・模試 (Personal Information Protection Specialist Exam Prep)
+#### 個人情報保護士 試験対策 問題集・模試
 
 ##### Information stored
 
