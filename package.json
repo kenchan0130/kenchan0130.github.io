@@ -33,7 +33,7 @@
     "@astrojs/sitemap": "3.7.3",
     "@fontsource-variable/noto-sans-jp": "5.3.0",
     "@lucide/astro": "1.27.0",
-    "astro": "7.2.8",
+    "astro": "7.4.7",
     "astro-d2": "0.14.0",
     "astro-expressive-code": "0.44.1",
     "hast-util-from-html": "2.0.3",
